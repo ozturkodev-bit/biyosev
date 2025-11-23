@@ -1159,7 +1159,7 @@ if (!isNaN(num) && rawName.length > 2) {
     });
 
 if(students.length === 0) {
-    alert("Listeden öğrenci çıkarılamadı. Lütfen listeyi kontrol edin.");
+  alert("Listeden öğrenci çıkarılamadı. Lütfen listeyi kontrol edin.");
 } else {
     await setDoc(doc(db, "student_lists", code), { students });
     const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
