@@ -962,14 +962,13 @@ async function showResultScreen(data) {
             
             document.getElementById('logoutBtn').onclick = resetApp;
 
-           const dashboardHtml = `
-                <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
-                    <button onclick="window.changeTab('results')" class="flex-1 min-w-[120px] px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow text-sm font-semibold">📊 Sonuçlar</button>
-                    <button onclick="window.changeTab('content_mgmt')" class="flex-1 min-w-[120px] px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded shadow text-sm font-semibold">📝 İçerik Yönetimi</button>
-                    
-                    <button onclick="window.changeTab('myexams')" class="flex-1 min-w-[120px] px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-sm font-semibold">📂 Sınavlarım</button>
-                    <button onclick="window.changeTab('settings')" class="flex-1 min-w-[120px] px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded shadow text-sm font-semibold">⚙️ Ayarlar</button>
-                </div>
+            const dashboardHtml = `
+    <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
+        <button onclick="window.changeTab('results')" class="flex-1 min-w-[120px] px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow text-sm font-semibold">📊 Sonuçlar</button>
+        <button onclick="window.changeTab('settings')" class="flex-1 min-w-[120px] px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded shadow text-sm font-semibold">⚙️ Ayarlar</button>
+        <button onclick="window.changeTab('datamanagement')" class="flex-1 min-w-[120px] px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-sm font-semibold">📚 Veri Yönetimi</button>
+        <button onclick="window.changeTab('myexams')" class="flex-1 min-w-[120px] px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-sm font-semibold">📂 Sınavlarım</button>
+    </div>
                 
                 <div id="tab-results" class="tab-content">
                     <div class="flex justify-between items-center mb-4">
@@ -1008,56 +1007,6 @@ async function showResultScreen(data) {
                     </div>
                 </div>
 
-                <div id="tab-content_mgmt" class="tab-content hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        
-                        <div class="bg-white p-4 rounded-xl border border-orange-200 shadow-sm">
-                            <h3 class="font-bold text-orange-700 text-lg mb-4 border-b pb-2">1. Soru Yükleme Paneli</h3>
-                            
-                            <div class="bg-orange-50 p-4 rounded-lg mb-4">
-                                <label class="block font-bold text-orange-800 mb-2">Hangi Sınava Soru Eklenecek?</label>
-                                <select id="selectQCode" class="w-full p-3 border border-orange-300 rounded bg-white font-bold text-gray-700 focus:ring-2 focus:ring-orange-500 outline-none">
-                                    <option value="">-- Sınav Kodları Yükleniyor --</option>
-                                </select>
-                            </div>
-
-                            <textarea id="jsonInput" rows="12" class="w-full p-3 font-mono text-xs border rounded bg-gray-900 text-green-400 focus:ring-2 focus:ring-orange-500 outline-none" placeholder='[{"question":"Soru?","options":["A","B"],"answer":"A"}]'></textarea>
-                            
-                            <div class="flex justify-between mt-3 items-center">
-                                <button onclick="window.loadSampleJson()" class="text-xs text-gray-500 underline hover:text-orange-600">Örnek Formatı Getir</button>
-                                <button id="btnUploadQ" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-bold shadow transition transform hover:scale-105">
-                                    SORULARI KAYDET
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-xl border border-teal-200 shadow-sm">
-                            <h3 class="font-bold text-teal-700 text-lg mb-4 border-b pb-2">2. Öğrenci Listesi Paneli</h3>
-                            
-                            <div class="bg-teal-50 p-4 rounded-lg mb-4">
-                                <label class="block font-bold text-teal-800 mb-2">Hangi Sınava Öğrenci Eklenecek?</label>
-                                <select id="selectListCode" class="w-full p-3 border border-teal-300 rounded bg-white font-bold text-gray-700 focus:ring-2 focus:ring-teal-500 outline-none">
-                                    <option value="">-- Sınav Kodları Yükleniyor --</option>
-                                </select>
-                            </div>
-
-                            <div class="paste-area h-[260px] overflow-y-auto bg-gray-50 border-2 border-dashed border-teal-300 rounded-lg p-4 focus-within:border-teal-500 focus-within:bg-white transition" 
-                                 id="listInput" 
-                                 contenteditable="true" 
-                                 data-placeholder="Excel'den Kopyala (No | Sınıf | Ad Soyad)">
-                            </div>
-                            
-                            <div class="text-xs text-gray-500 mt-2 italic">
-                                * E-okul listesini buraya sürükleyip bırakabilir veya kopyalayıp yapıştırabilirsiniz.
-                            </div>
-                            
-                            <button id="btnUploadList" class="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-bold shadow transition transform hover:scale-105">
-                                LİSTEYİ KAYDET
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="tab-settings" class="tab-content hidden">
                     <div class="max-w-lg mx-auto space-y-4">
                          <div class="bg-gray-50 p-4 rounded border">
@@ -1079,6 +1028,46 @@ async function showResultScreen(data) {
                          </div>
                     </div>
                 </div>
+<div id="tab-datamanagement" class="tab-content hidden">
+    <div class="max-w-4xl mx-auto">
+        <!-- Sınav Kodu Seçimi -->
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
+            <label class="block font-bold text-purple-800 mb-2">Sınav Kodu Seçin</label>
+            <select id="dataManagementExamCode" class="w-full p-3 border rounded-lg bg-white font-bold">
+                <option value="">-- Sınav Seçin --</option>
+            </select>
+            <div id="selectedExamInfo" class="mt-2 text-sm text-purple-600 hidden"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Soru Yönetimi Bölümü -->
+            <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                <h3 class="font-bold text-orange-800 text-lg mb-4">📝 Soru Yönetimi</h3>
+                
+                <div class="mb-4">
+                    <textarea id="jsonInput" rows="8" class="w-full p-3 font-mono text-xs border rounded bg-gray-900 text-green-400" placeholder='[{"question":"Soru?","options":["A","B","C","D"],"answer":"A"}]'></textarea>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <button onclick="window.loadSampleJson()" class="text-xs text-gray-500 underline">Örnek Format</button>
+                    <button id="btnUploadQuestions" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded font-bold shadow disabled:opacity-50 disabled:cursor-not-allowed" disabled>Soruları Kaydet</button>
+                </div>
+            </div>
+
+            <!-- Öğrenci Yönetimi Bölümü -->
+            <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                <h3 class="font-bold text-teal-800 text-lg mb-4">👥 Öğrenci Yönetimi</h3>
+                
+                <div class="mb-4">
+                    <div class="paste-area" id="listInput" contenteditable="true" placeholder="Excel'den Kopyala (No | Sınıf | Ad Soyad)"></div>
+                    <div class="text-xs text-gray-500 mt-1">Excel verilerini bu alana yapıştırın veya sürükleyip bırakın</div>
+                </div>
+                
+                <button id="btnUploadStudents" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded font-bold shadow disabled:opacity-50 disabled:cursor-not-allowed" disabled>Öğrencileri Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
 
                  <div id="tab-myexams" class="tab-content hidden">
                     <div id="myExamsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">Yükleniyor...</div>
@@ -1087,60 +1076,26 @@ async function showResultScreen(data) {
             
             document.getElementById('mainContentArea').innerHTML = dashboardHtml;
             
-          // --- TAB YÖNETİMİ VE SELECT DOLDURMA ---
-            window.changeTab = async (t) => {
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-                document.getElementById('tab-' + t).classList.remove('hidden');
-                
-                if(t === 'results') loadResults();
-                if(t === 'myexams') loadMyExams();
-                
-                // Eğer İçerik Yönetimi sekmesi açılırsa, select menülerini doldur
-                if(t === 'content_mgmt') {
-                    const qSelect = document.getElementById('selectQCode');
-                    const lSelect = document.getElementById('selectListCode');
-                    
-                    // Yükleniyor ibaresi koy
-                    const loadingOpt = '<option value="">Yükleniyor...</option>';
-                    qSelect.innerHTML = loadingOpt;
-                    lSelect.innerHTML = loadingOpt;
+            // --- TAB YÖNETİMİ ---
+           window.changeTab = (t) => {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById('tab-' + t).classList.remove('hidden');
+    if(t === 'results') loadResults();
+    if(t === 'myexams') loadMyExams();
+    if(t === 'datamanagement') loadExamCodesToSelect(); // Yeni: veri yönetimi sekmesi açıldığında sınav kodlarını yükle
+};
 
-                    try {
-                        const snap = await getDocs(collection(db, "exam_settings"));
-                        let optionsHtml = '<option value="">-- Lütfen Sınav Seçiniz --</option>';
-                        
-                        snap.forEach(doc => {
-                            if(doc.id !== 'admin_config') {
-                                optionsHtml += `<option value="${doc.id}">${doc.id}</option>`;
-                            }
-                        });
-
-                        qSelect.innerHTML = optionsHtml;
-                        lSelect.innerHTML = optionsHtml;
-                    } catch(e) {
-                        qSelect.innerHTML = '<option>Hata oluştu</option>';
-                        lSelect.innerHTML = '<option>Hata oluştu</option>';
-                        alert("Sınav listesi çekilemedi: " + e.message);
-                    }
-                }
-            };
-
-            // --- SORU YÜKLEME (GÜNCELLENDİ) ---
+            // --- SORU YÜKLEME ---
             window.loadSampleJson = () => {
                 document.getElementById('jsonInput').value = `[\n  {\n    "question": "Türkiye'nin başkenti neresidir?",\n    "options": ["İstanbul", "Ankara", "İzmir", "Bursa"],\n    "answer": "Ankara"\n  }\n]`;
             };
 
             document.getElementById('btnUploadQ').onclick = async () => {
-                // Input yerine SELECT'ten değeri alıyoruz
-                const code = document.getElementById('selectQCode').value;
+                const code = sanitizeExamCode(document.getElementById('uploadQCode').value);
                 const rawJson = document.getElementById('jsonInput').value;
                 
-                if(!code) return alert("Lütfen açılır menüden bir sınav seçiniz.");
-                if(!rawJson.trim()) return alert("Lütfen soru JSON verisini giriniz.");
+                if(!code) return alert("Sınav kodu girin.");
                 
-                // ONAY MEKANİZMASI
-                if(!confirm(`"${code}" sınav koduna soruları kaydetmek üzeresiniz. Emin misiniz?`)) return;
-
                 try {
                     const parsed = JSON.parse(rawJson);
                     if(!Array.isArray(parsed)) throw new Error("JSON bir liste [...] ile başlamalı.");
@@ -1152,8 +1107,8 @@ async function showResultScreen(data) {
                     alert(`❌ JSON Format Hatası:\n${e.message}\n\nLütfen virgüllere ve parantezlere dikkat edin.`);
                 }
             };
-            
-            // --- AYARLAR KAYDETME (Değişmedi) ---
+
+            // --- AYARLAR KAYDETME ---
             document.getElementById('btnSaveSettings').onclick = async () => {
                 const code = sanitizeExamCode(document.getElementById('setExamCode').value);
                 if(!code) return alert("Kod gerekli");
@@ -1164,8 +1119,8 @@ async function showResultScreen(data) {
                 }, { merge: true });
                 alert("Ayarlar kaydedildi.");
             };
-            
-             // --- ÖĞRETMEN ADI KAYDETME (Değişmedi) ---
+
+            // --- ÖĞRETMEN ADI KAYDETME ---
             document.getElementById('btnSaveTeacher').onclick = async () => {
                 const teacherName = sanitizeInput(document.getElementById('setTeacherName').value);
                 if(!teacherName) return alert("Öğretmen adı gerekli");
@@ -1177,8 +1132,7 @@ async function showResultScreen(data) {
                 systemPreparerName = teacherName;
                 alert("Öğretmen adı güncellendi.");
             };
-            
-            // --- ŞİFRE DEĞİŞTİRME (Değişmedi) ---
+// --- ŞİFRE DEĞİŞTİRME ---
             document.getElementById('btnChangePass').onclick = async () => {
                 const newP = document.getElementById('newAdminPass').value;
                 if(newP.length < 4) return alert("Şifre çok kısa.");
@@ -1189,18 +1143,15 @@ async function showResultScreen(data) {
                 }
             };
 
-            // --- LİSTE YÜKLEME (GÜNCELLENDİ) ---
+            // --- GELİŞMİŞ LİSTE YÜKLEME (AKILLI AYRIŞTIRICI - SON GÜVENİLİR VERSİYON) ---
             document.getElementById('btnUploadList').onclick = async () => {
-                // Input yerine SELECT'ten değeri alıyoruz
-                const code = document.getElementById('selectListCode').value;
+                const code = sanitizeExamCode(document.getElementById('uploadListCode').value);
+                // paste-area içindeki metni al (Sürükle bırak veya kopyala yapıştır ile gelen)
                 const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
                 
-                if(!code) return alert("Lütfen açılır menüden bir sınav seçiniz.");
+                if(!code) return alert("Lütfen bir sınav kodu giriniz (Örn: 9A_MAT).");
                 if(!txt.trim()) return alert("Lütfen Excel'den kopyaladığınız listeyi yapıştırın.");
                 
-                // ONAY MEKANİZMASI
-                if(!confirm(`"${code}" sınav koduna öğrenci listesini kaydetmek üzeresiniz. Emin misiniz?`)) return;
-
                 const students = [];
                 const lines = txt.split('\n');
                 let currentClass = "";
@@ -1208,15 +1159,16 @@ async function showResultScreen(data) {
                 const btn = document.getElementById('btnUploadList');
                 btn.innerText = "Ayrıştırılıyor...";
                 btn.disabled = true;
-                
-                // ... (Geri kalan liste işleme kodu aynı kalacak, aşağıdan devam ediyor)
+
                 try {
                     for (let i = 0; i < lines.length; i++) {
                         let line = lines[i].trim();
                         if (!line) continue;
                         
+                        // Garip kodları (OOG01001R020 gibi) temizle
                         line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
                         
+                        // 1. SINIF TESPİTİ (Örn: AL - 9. Sınıf / A Şubesi)
                         const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
                         if (classMatch) {
                             currentClass = classMatch[1] + classMatch[2]; 
@@ -1225,16 +1177,20 @@ async function showResultScreen(data) {
 
                         if (!currentClass) continue;
 
+                        // 2. ÖĞRENCİ TESPİTİ (GÜÇLÜ REGEX ile Adı ve Soyadı birlikte yakalanır)
+                        // Örnek Satır: 1 175 İBRAHİM EFE YILDIRIM Erkek
                         const studentMatch = line.match(/^\s*\d+\s+(\d+)\s+(.+)\s+(Erkek|Kız)/i);
 
                         if (studentMatch) {
                             const num = studentMatch[1].trim(); 
-                            const rawName = studentMatch[2].trim();
+                            const rawName = studentMatch[2].trim(); // Adı ve Soyadı birlikte gelir
                             
+                            // Başlık satırlarını veya toplam satırlarını atla
                             if (rawName.includes("Adı Soyadı Cinsiyeti") || line.includes("Öğrenci Sayısı")) {
                                 continue;
                             }
 
+                            // --- GEÇERLİLİK KONTROLÜ VE EKLEME ---
                             if (!isNaN(num) && rawName.length > 2) {
                                 students.push({ 
                                     number: num, 
@@ -1252,58 +1208,37 @@ async function showResultScreen(data) {
                     await setDoc(doc(db, "student_lists", code), { students });
                     
                     const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
-                    alert(`✅ BAŞARILI!\n\nToplam ${students.length} öğrenci "${code}" sınavına eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
+                    alert(`✅ BAŞARILI!\n\nToplam ${students.length} öğrenci eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
                     document.getElementById('listInput').innerText = '';
 
                 } catch(e) { 
                     alert("Hata: " + e.message); 
                 } finally {
-                    btn.innerText = "LİSTEYİ KAYDET";
+                    btn.innerText = "Listeyi Kaydet";
                     btn.disabled = false;
                 }
             };
-            // --- SÜRÜKLE BIRAK İŞLEVSELLİĞİ (D&D) KODU ---
-            // --- SEKME YÖNLENDİRME YARDIMCISI (Bunu buraya ekliyoruz) ---
-            window.redirectToTab = (tabName, code) => {
-                document.getElementById('customModal').classList.add('hidden'); // Modalı kapat
-                
-                // Eğer soru veya liste düzenlemeye gidiliyorsa yeni ortak sekmeye yönlendir
-                if(tabName === 'questions' || tabName === 'lists') {
-                    window.changeTab('content_mgmt');
-                    
-                    // Selectlerin dolmasını bekle ve sonra seç
-                    setTimeout(() => {
-                        const selectId = tabName === 'questions' ? 'selectQCode' : 'selectListCode';
-                        const selectEl = document.getElementById(selectId);
-                        if(selectEl) selectEl.value = code;
-                    }, 1000); // Selectlerin Firebase'den dolması için biraz süre veriyoruz
-                } else {
-                    window.changeTab(tabName);
-                }
-            }
-
+            
             // --- SÜRÜKLE BIRAK İŞLEVSELLİĞİ (D&D) KODU ---
             const listInputArea = document.getElementById('listInput');
-            if(listInputArea) {
-                // 1. Varsayılan davranışı engelle
-                listInputArea.addEventListener('dragover', (e) => {
-                    e.preventDefault(); 
-                    listInputArea.classList.add('border-teal-500', 'bg-teal-50');
-                });
-                listInputArea.addEventListener('dragleave', (e) => {
-                    e.preventDefault();
-                    listInputArea.classList.remove('border-teal-500', 'bg-teal-50'); 
-                });
-                // 2. Dosya bırakıldığında içeriği oku
-                listInputArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    listInputArea.classList.remove('border-teal-500', 'bg-teal-50'); 
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        readExcelFile(files[0]);
-                    }
-                });
-            }
+            // 1. Varsayılan davranışı engelle (Dosyanın indirilmesini önler)
+            listInputArea.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                listInputArea.classList.add('border-indigo-500', 'bg-indigo-50');
+            });
+            listInputArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
+            });
+            // 2. Dosya bırakıldığında içeriği oku
+            listInputArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    readExcelFile(files[0]);
+                }
+            });
 
             // 3. Dosya okuma fonksiyonu
             const readExcelFile = (file) => {
@@ -1314,12 +1249,14 @@ async function showResultScreen(data) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     try {
+                        // **ÖNEMLİ:** XLSX kütüphanesinin çalıştığı varsayılır. (HTML başlığında olmalı)
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
-                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); 
-                        document.getElementById('listInput').innerText = rawText;
+                        // İçeriği metin olarak al (TSV - Tab Separated Values formatında)
+                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); // Tab yerine Boşluk kullanıldı
+                        listInputArea.innerText = rawText;
                         alert('✅ Excel dosyasının içeriği başarıyla yüklendi. Şimdi "Listeyi Kaydet" butonuna basabilirsiniz.');
                     } catch (error) {
                         alert('Dosya okuma hatası: ' + error.message);
@@ -1329,10 +1266,170 @@ async function showResultScreen(data) {
                 reader.readAsArrayBuffer(file);
             };
 
-            // Başlangıç Yüklemesi (BU SATIR ÇOK ÖNEMLİ - SİTEYİ BU AÇAR)
+    // --- VERİ YÖNETİMİ FONKSİYONLARI ---
+    async function loadExamCodesToSelect() {
+        const select = document.getElementById('dataManagementExamCode');
+        const infoDiv = document.getElementById('selectedExamInfo');
+        
+        try {
+            const configSnap = await getDocs(collection(db, "exam_settings"));
+            const exams = [];
+            
+            configSnap.forEach(doc => {
+                if(doc.id !== 'admin_config') {
+                    exams.push({
+                        code: doc.id,
+                        teacher_name: doc.data().teacher_name || systemPreparerName,
+                        exam_description: doc.data().exam_description || ""
+                    });
+                }
+            });
+            
+            select.innerHTML = '<option value="">-- Sınav Seçin --</option>';
+            exams.forEach(exam => {
+                select.innerHTML += `<option value="${exam.code}">${exam.code} - ${exam.exam_description}</option>`;
+            });
+            
+            // Seçim değiştiğinde bilgi göster
+            select.onchange = () => {
+                const selectedCode = select.value;
+                const selectedExam = exams.find(e => e.code === selectedCode);
+                
+                if(selectedExam) {
+                    infoDiv.innerHTML = `
+                        <strong>Seçilen Sınav:</strong> ${selectedExam.code}<br>
+                        <strong>Açıklama:</strong> ${selectedExam.exam_description}<br>
+                        <strong>Hazırlayan:</strong> ${selectedExam.teacher_name}
+                    `;
+                    infoDiv.classList.remove('hidden');
+                    
+                    // Butonları aktif et
+                    document.getElementById('btnUploadQuestions').disabled = false;
+                    document.getElementById('btnUploadStudents').disabled = false;
+                } else {
+                    infoDiv.classList.add('hidden');
+                    document.getElementById('btnUploadQuestions').disabled = true;
+                    document.getElementById('btnUploadStudents').disabled = true;
+                }
+            };
+            
+        } catch(e) {
+            console.error("Sınav kodları yüklenemedi:", e);
+            select.innerHTML = '<option value="">Yüklenemedi</option>';
+        }
+    }
+
+    // Soru kaydetme fonksiyonu
+    document.getElementById('btnUploadQuestions').onclick = async () => {
+        const code = document.getElementById('dataManagementExamCode').value;
+        const rawJson = document.getElementById('jsonInput').value;
+        
+        if(!code) {
+            alert("Lütfen bir sınav kodu seçin.");
+            return;
+        }
+        
+        if(!confirm(`"${code}" sınavına soruları kaydetmek istediğinize emin misiniz?`)) {
+            return;
+        }
+        
+        try {
+            const parsed = JSON.parse(rawJson);
+            if(!Array.isArray(parsed)) throw new Error("JSON bir liste [...] ile başlamalı.");
+            
+            await setDoc(getQuestionsRef(code), { questions_list: parsed });
+            alert(`✅ ${code} sınavına ${parsed.length} soru başarıyla kaydedildi.`);
+            document.getElementById('jsonInput').value = '';
+        } catch(e) {
+            alert(`❌ JSON Format Hatası:\n${e.message}\n\nLütfen virgüllere ve parantezlere dikkat edin.`);
+        }
+    };
+
+    // Öğrenci kaydetme fonksiyonu
+    document.getElementById('btnUploadStudents').onclick = async () => {
+        const code = document.getElementById('dataManagementExamCode').value;
+        const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
+        
+        if(!code) {
+            alert("Lütfen bir sınav kodu seçin.");
+            return;
+        }
+        
+        if(!confirm(`"${code}" sınavına öğrenci listesini kaydetmek istediğinize emin misiniz?`)) {
+            return;
+        }
+        
+        if(!txt.trim()) {
+            alert("Lütfen Excel'den kopyaladığınız listeyi yapıştırın.");
+            return;
+        }
+        
+        const students = [];
+        const lines = txt.split('\n');
+        let currentClass = "";
+        
+        const btn = document.getElementById('btnUploadStudents');
+        btn.innerText = "Ayrıştırılıyor...";
+        btn.disabled = true;
+
+        try {
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line) continue;
+                
+                line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
+                
+                const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
+                if (classMatch) {
+                    currentClass = classMatch[1] + classMatch[2]; 
+                    continue;
+                }
+
+                if (!currentClass) continue;
+
+                const studentMatch = line.match(/^\s*\d+\s+(\d+)\s+(.+)\s+(Erkek|Kız)/i);
+                if (studentMatch) {
+                    const num = studentMatch[1].trim(); 
+                    const rawName = studentMatch[2].trim();
+                    
+                    if (rawName.includes("Adı Soyadı Cinsiyeti") || line.includes("Öğrenci Sayısı")) {
+                        continue;
+                    }
+
+                    if (!isNaN(num) && rawName.length > 2) {
+                        students.push({ 
+                            number: num, 
+                            className: currentClass, 
+                            name: rawName 
+                        });
+                    }
+                }
+            }
+
+            if(students.length === 0) {
+                throw new Error(`Listeden öğrenci çıkarılamadı. Toplam ${lines.length} satır işlendi, 0 öğrenci bulundu.`);
+            }
+            
+            await setDoc(doc(db, "student_lists", code), { students });
+            
+            const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
+            alert(`✅ BAŞARILI!\n\n${code} sınavına toplam ${students.length} öğrenci eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
+            document.getElementById('listInput').innerText = '';
+
+        } catch(e) { 
+            alert("Hata: " + e.message); 
+        } finally {
+            btn.innerText = "Öğrencileri Kaydet";
+            btn.disabled = false;
+        }
+    };
+
+    // Initial Load
+    loadResults();
+} // <-- showDashboard fonksiyonunun kapanış parantezi
+            // Initial Load
             loadResults();
-        } 
-        // <-- showDashboard fonksiyonunun kapanış parantezi burasıdır.
+        } // <-- showDashboard fonksiyonunun kapanış parantezi burada bitiyor
 
         // --- DASHBOARD YARDIMCILARI ---
         function loadResults() {
@@ -1718,24 +1815,9 @@ async function showResultScreen(data) {
         }
 
         // YENİ: İlgili sekmeye yönlendirme yardımcısı
-        
         window.redirectToTab = (tabName, code) => {
             document.getElementById('customModal').classList.add('hidden'); // Modalı kapat
-            
-            // Eğer soru veya liste düzenlemeye gidiliyorsa yeni ortak sekmeye yönlendir
-            if(tabName === 'questions' || tabName === 'lists') {
-                window.changeTab('content_mgmt');
-                
-                // Selectlerin dolmasını bekle ve sonra seç
-                setTimeout(() => {
-                    const selectId = tabName === 'questions' ? 'selectQCode' : 'selectListCode';
-                    const selectEl = document.getElementById(selectId);
-                    if(selectEl) selectEl.value = code;
-                }, 1000); // Selectlerin Firebase'den dolması için biraz süre veriyoruz
-            } else {
-                window.changeTab(tabName);
-            }
-        }
+            window.changeTab(tabName); // Sekmeyi değiştir
             
             // İlgili inputu doldur
             setTimeout(() => {
