@@ -1263,25 +1263,47 @@ async function showResultScreen(data) {
                 }
             };
             // --- SÜRÜKLE BIRAK İŞLEVSELLİĞİ (D&D) KODU ---
-            const listInputArea = document.getElementById('listInput');
-            // 1. Varsayılan davranışı engelle (Dosyanın indirilmesini önler)
-            listInputArea.addEventListener('dragover', (e) => {
-                e.preventDefault(); 
-                listInputArea.classList.add('border-indigo-500', 'bg-indigo-50');
-            });
-            listInputArea.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
-            });
-            // 2. Dosya bırakıldığında içeriği oku
-            listInputArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    readExcelFile(files[0]);
+            // --- SEKME YÖNLENDİRME YARDIMCISI (Bunu buraya ekliyoruz) ---
+            window.redirectToTab = (tabName, code) => {
+                document.getElementById('customModal').classList.add('hidden'); // Modalı kapat
+                
+                // Eğer soru veya liste düzenlemeye gidiliyorsa yeni ortak sekmeye yönlendir
+                if(tabName === 'questions' || tabName === 'lists') {
+                    window.changeTab('content_mgmt');
+                    
+                    // Selectlerin dolmasını bekle ve sonra seç
+                    setTimeout(() => {
+                        const selectId = tabName === 'questions' ? 'selectQCode' : 'selectListCode';
+                        const selectEl = document.getElementById(selectId);
+                        if(selectEl) selectEl.value = code;
+                    }, 1000); // Selectlerin Firebase'den dolması için biraz süre veriyoruz
+                } else {
+                    window.changeTab(tabName);
                 }
-            });
+            }
+
+            // --- SÜRÜKLE BIRAK İŞLEVSELLİĞİ (D&D) KODU ---
+            const listInputArea = document.getElementById('listInput');
+            if(listInputArea) {
+                // 1. Varsayılan davranışı engelle
+                listInputArea.addEventListener('dragover', (e) => {
+                    e.preventDefault(); 
+                    listInputArea.classList.add('border-teal-500', 'bg-teal-50');
+                });
+                listInputArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    listInputArea.classList.remove('border-teal-500', 'bg-teal-50'); 
+                });
+                // 2. Dosya bırakıldığında içeriği oku
+                listInputArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    listInputArea.classList.remove('border-teal-500', 'bg-teal-50'); 
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        readExcelFile(files[0]);
+                    }
+                });
+            }
 
             // 3. Dosya okuma fonksiyonu
             const readExcelFile = (file) => {
@@ -1292,14 +1314,12 @@ async function showResultScreen(data) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     try {
-                        // **ÖNEMLİ:** XLSX kütüphanesinin çalıştığı varsayılır. (HTML başlığında olmalı)
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
-                        // İçeriği metin olarak al (TSV - Tab Separated Values formatında)
-                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); // Tab yerine Boşluk kullanıldı
-                        listInputArea.innerText = rawText;
+                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); 
+                        document.getElementById('listInput').innerText = rawText;
                         alert('✅ Excel dosyasının içeriği başarıyla yüklendi. Şimdi "Listeyi Kaydet" butonuna basabilirsiniz.');
                     } catch (error) {
                         alert('Dosya okuma hatası: ' + error.message);
@@ -1309,10 +1329,10 @@ async function showResultScreen(data) {
                 reader.readAsArrayBuffer(file);
             };
 
-
-            // Initial Load
+            // Başlangıç Yüklemesi (BU SATIR ÇOK ÖNEMLİ - SİTEYİ BU AÇAR)
             loadResults();
-        } // <-- showDashboard fonksiyonunun kapanış parantezi burada bitiyor
+        } 
+        // <-- showDashboard fonksiyonunun kapanış parantezi burasıdır.
 
         // --- DASHBOARD YARDIMCILARI ---
         function loadResults() {
