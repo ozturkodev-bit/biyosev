@@ -33,6 +33,24 @@
             outline: none;
             border-color: #4f46e5;
         }
+        .footer-logo {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 10px;
+    color: #6b7280;
+    background: rgba(255,255,255,0.8);
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    z-index: 1000;
+    font-family: 'Inter', sans-serif;
+}
+.footer-logo:hover {
+    opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -1024,18 +1042,18 @@ async function showResultScreen(data) {
 
                 <div id="tab-settings" class="tab-content hidden">
                     <div class="max-w-lg mx-auto space-y-4">
-                         <div class="bg-gray-50 p-4 rounded border">
-                            <h3 class="font-bold mb-2">Sınav Oluştur / Düzenle</h3>
-                            <input id="setExamCode" class="w-full p-2 border rounded mb-2 uppercase" placeholder="Sınav Kodu">
-                            <input id="setTime" type="number" class="w-full p-2 border rounded mb-2" placeholder="Süre (Dakika)">
-                            <input id="setDesc" class="w-full p-2 border rounded mb-2" placeholder="Açıklama">
-                            <button id="btnSaveSettings" class="w-full bg-gray-700 text-white p-2 rounded font-bold">Kaydet</button>
-                         </div>
-                         <div class="bg-blue-50 p-4 rounded border border-blue-200">
-                            <h3 class="font-bold text-blue-700 mb-2">Sınav Hazırlayan Öğretmen</h3>
-                            <input id="setTeacherName" class="w-full p-2 border rounded mb-2" placeholder="Öğretmen Adı" value="${systemPreparerName}">
-                            <button id="btnSaveTeacher" class="w-full bg-blue-600 text-white p-2 rounded font-bold">Öğretmeni Kaydet</button>
-                         </div>
+                     <div class="bg-gray-50 p-4 rounded border">
+    <h3 class="font-bold mb-2">Sınav Oluştur / Düzenle</h3>
+    <input id="setExamCode" class="w-full p-2 border rounded mb-2 uppercase" placeholder="Sınav Kodu">
+    
+    <!-- YENİ EKLENEN UYGULAYICI ÖĞRETMEN ALANI -->
+    <input id="setTeacherName" class="w-full p-2 border rounded mb-2" placeholder="Uygulayıcı Öğretmen Adı">
+    
+    <input id="setTime" type="number" class="w-full p-2 border rounded mb-2" placeholder="Süre (Dakika)">
+    <input id="setDesc" class="w-full p-2 border rounded mb-2" placeholder="Açıklama">
+    <button id="btnSaveSettings" class="w-full bg-gray-700 text-white p-2 rounded font-bold">Kaydet</button>
+</div>
+                        
                          <div class="bg-red-50 p-4 rounded border border-red-200">
                             <h3 class="font-bold text-red-700 mb-2">Yönetici Şifresi Değiştir</h3>
                             <input id="newAdminPass" type="password" class="w-full p-2 border rounded mb-2" placeholder="Yeni Şifre">
@@ -1095,16 +1113,20 @@ async function showResultScreen(data) {
             };
 
             // --- AYARLAR KAYDETME ---
-            document.getElementById('btnSaveSettings').onclick = async () => {
-                const code = sanitizeExamCode(document.getElementById('setExamCode').value);
-                if(!code) return alert("Kod gerekli");
-                await setDoc(getConfigRef(code), {
-                    teacher_name: systemPreparerName,
-                    time_limit: parseInt(document.getElementById('setTime').value) * 60,
-                    exam_description: sanitizeInput(document.getElementById('setDesc').value)
-                }, { merge: true });
-                alert("Ayarlar kaydedildi.");
-            };
+           document.getElementById('btnSaveSettings').onclick = async () => {
+    const code = sanitizeExamCode(document.getElementById('setExamCode').value);
+    const teacherName = sanitizeInput(document.getElementById('setTeacherName').value);
+    
+    if(!code) return alert("Kod gerekli");
+    
+    await setDoc(getConfigRef(code), {
+        teacher_name: teacherName || systemPreparerName,
+        time_limit: parseInt(document.getElementById('setTime').value) * 60,
+        exam_description: sanitizeInput(document.getElementById('setDesc').value)
+    }, { merge: true });
+    
+    alert("Ayarlar kaydedildi.");
+};
 
             // --- ÖĞRETMEN ADI KAYDETME ---
             document.getElementById('btnSaveTeacher').onclick = async () => {
@@ -2002,6 +2024,11 @@ async function showResultScreen(data) {
         initializeFirebase();
 
     </script>
+    <!-- Footer Logo -->
+<div class="footer-logo">
+    <span style="font-weight: 600; color: #4f46e5;">Ö.S</span>
+    <span style="color: #6b7280;">Sevinç</span>
+</div>
 </body>
 </html>
 
