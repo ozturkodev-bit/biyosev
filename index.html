@@ -1150,36 +1150,30 @@ async function showResultScreen(data) {
                                 continue;
                             }
 
-                        // --- GEÇERLİLİK KONTROLÜ VE EKLEME ---
-                            if (!isNaN(num) && rawName.length > 2) {
-                                students.push({ 
-                                    number: num, 
-                                    className: currentClass, 
-                                    name: rawName 
-                                });
-                            }
-                        }
-                    }
+                       // --- GEÇERLİLİK KONTROLÜ VE EKLEME ---
+if (!isNaN(num) && rawName.length > 2) {
+    students.push({ 
+        number: num, 
+        className: currentClass, 
+        name: rawName 
+    });
+}
+}
+}
 
-// TRY EKLE - BU SATIRI EKLEYİN
-try {
-    if(students.length === 0) {
-        throw new Error(`Listeden öğrenci çıkarılamadı. Toplam ${lines.length} satır işlendi, 0 öğrenci bulundu.\nKopyaladığınız listeye dikkat edin.`);
-    }
-    
+// Öğrenci kontrolü ve kaydetme
+if(students.length === 0) {
+    alert("Listeden öğrenci çıkarılamadı. Lütfen listeyi kontrol edin.");
+} else {
     await setDoc(doc(db, "student_lists", code), { students });
-    
     const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
     alert(`✅ BAŞARILI!\n\nToplam ${students.length} öğrenci eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
     document.getElementById('listInput').innerText = '';
-
-} catch(e) { 
-    alert("Hata: " + e.message); 
-} finally {
-    btn.innerText = "Listeyi Kaydet";
-    btn.disabled = false;
 }
-            };
+
+btn.innerText = "Listeyi Kaydet";
+btn.disabled = false;
+};
             // --- SÜRÜKLE BIRAK İŞLEVSELLİĞİ (D&D) KODU ---
             const listInputArea = document.getElementById('listInput');
             // 1. Varsayılan davranışı engelle (Dosyanın indirilmesini önler)
