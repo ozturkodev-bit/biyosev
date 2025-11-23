@@ -1108,49 +1108,9 @@ async function showResultScreen(data) {
                 }
             };
 
-            // --- AYARLAR KAYDETME ---
-            document.getElementById('btnSaveSettings').onclick = async () => {
-                const code = sanitizeExamCode(document.getElementById('setExamCode').value);
-                if(!code) return alert("Kod gerekli");
-                await setDoc(getConfigRef(code), {
-                    teacher_name: systemPreparerName,
-                    time_limit: parseInt(document.getElementById('setTime').value) * 60,
-                    exam_description: sanitizeInput(document.getElementById('setDesc').value)
-                }, { merge: true });
-                alert("Ayarlar kaydedildi.");
-            };
-
-            // --- ÖĞRETMEN ADI KAYDETME ---
-            document.getElementById('btnSaveTeacher').onclick = async () => {
-                const teacherName = sanitizeInput(document.getElementById('setTeacherName').value);
-                if(!teacherName) return alert("Öğretmen adı gerekli");
-                
-                await setDoc(doc(db, "exam_settings", "admin_config"), { 
-                    preparer_name: teacherName 
-                }, { merge: true });
-                
-                systemPreparerName = teacherName;
-                alert("Öğretmen adı güncellendi.");
-            };
-// --- ŞİFRE DEĞİŞTİRME ---
-            document.getElementById('btnChangePass').onclick = async () => {
-                const newP = document.getElementById('newAdminPass').value;
-                if(newP.length < 4) return alert("Şifre çok kısa.");
-                if(confirm("Şifreyi değiştirmek istediğinize emin misiniz?")) {
-                    await setDoc(doc(db, "exam_settings", "admin_config"), { master_code: newP }, { merge: true });
-                    adminMasterCode = newP;
-                    alert("Şifre güncellendi.");
-                }
-            };
-
+           
             // --- GELİŞMİŞ LİSTE YÜKLEME (AKILLI AYRIŞTIRICI - SON GÜVENİLİR VERSİYON) ---
-            document.getElementById('btnUploadList').onclick = async () => {
-                const code = sanitizeExamCode(document.getElementById('uploadListCode').value);
-                // paste-area içindeki metni al (Sürükle bırak veya kopyala yapıştır ile gelen)
-                const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
-                
-                if(!code) return alert("Lütfen bir sınav kodu giriniz (Örn: 9A_MAT).");
-                if(!txt.trim()) return alert("Lütfen Excel'den kopyaladığınız listeyi yapıştırın.");
+            
                 
                 const students = [];
                 const lines = txt.split('\n');
@@ -1422,8 +1382,122 @@ async function showResultScreen(data) {
             btn.innerText = "Öğrencileri Kaydet";
             btn.disabled = false;
         }
-    };
+    // --- TÜM BUTONLARI TEKRAR BAĞLA ---
+    
+    // 1. AYARLAR BUTONLARI
+    document.getElementById('btnSaveSettings')?.addEventListener('click', async () => {
+        const code = sanitizeExamCode(document.getElementById('setExamCode').value);
+        if(!code) return alert("Kod gerekli");
+        await setDoc(getConfigRef(code), {
+            teacher_name: systemPreparerName,
+            time_limit: parseInt(document.getElementById('setTime').value) * 60,
+            exam_description: sanitizeInput(document.getElementById('setDesc').value)
+        }, { merge: true });
+        alert("Ayarlar kaydedildi.");
+    });
 
+    document.getElementById('btnSaveTeacher')?.addEventListener('click', async () => {
+        const teacherName = sanitizeInput(document.getElementById('setTeacherName').value);
+        if(!teacherName) return alert("Öğretmen adı gerekli");
+        
+        await setDoc(doc(db, "exam_settings", "admin_config"), { 
+            preparer_name: teacherName 
+        }, { merge: true });
+        
+        systemPreparerName = teacherName;
+        alert("Öğretmen adı güncellendi.");
+    });
+
+    document.getElementById('btnChangePass')?.addEventListener('click', async () => {
+        const newP = document.getElementById('newAdminPass').value;
+        if(newP.length < 4) return alert("Şifre çok kısa.");
+        if(confirm("Şifreyi değiştirmek istediğinize emin misiniz?")) {
+            await setDoc(doc(db, "exam_settings", "admin_config"), { master_code: newP }, { merge: true });
+            adminMasterCode = newP;
+            alert("Şifre güncellendi.");
+        }
+    });
+
+    // 2. SORU YÜKLEME BUTONU (eski sekme için)
+   
+
+    // 3. LİSTE YÜKLEME BUTONU (eski sekme için)
+    document.getElementById('btnUploadList')?.addEventListener('click', async () => {
+        const code = sanitizeExamCode(document.getElementById('uploadListCode').value);
+        const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
+        
+        if(!code) return alert("Lütfen bir sınav kodu giriniz (Örn: 9A_MAT).");
+        if(!txt.trim()) return alert("Lütfen Excel'den kopyaladığınız listeyi yapıştırın.");
+        
+        const students = [];
+        const lines = txt.split('\n');
+        let currentClass = "";
+        
+        const btn = document.getElementById('btnUploadList');
+        btn.innerText = "Ayrıştırılıyor...";
+        btn.disabled = true;
+
+        try {
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line) continue;
+                
+                line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
+                
+                const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
+                if (classMatch) {
+                    currentClass = classMatch[1] + classMatch[2]; 
+                    continue;
+                }
+
+                if (!currentClass) continue;
+
+                const studentMatch = line.match(/^\s*\d+\s+(\d+)\s+(.+)\s+(Erkek|Kız)/i);
+                if (studentMatch) {
+                    const num = studentMatch[1].trim(); 
+                    const rawName = studentMatch[2].trim();
+                    
+                    if (rawName.includes("Adı Soyadı Cinsiyeti") || line.includes("Öğrenci Sayısı")) {
+                        continue;
+                    }
+
+                    if (!isNaN(num) && rawName.length > 2) {
+                        students.push({ 
+                            number: num, 
+                            className: currentClass, 
+                            name: rawName 
+                        });
+                    }
+                }
+            }
+
+            if(students.length === 0) {
+                throw new Error(`Listeden öğrenci çıkarılamadı. Toplam ${lines.length} satır işlendi, 0 öğrenci bulundu.`);
+            }
+            
+            await setDoc(doc(db, "student_lists", code), { students });
+            
+            const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
+            alert(`✅ BAŞARILI!\n\nToplam ${students.length} öğrenci eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
+            document.getElementById('listInput').innerText = '';
+
+        } catch(e) { 
+            alert("Hata: " + e.message); 
+        } finally {
+            btn.innerText = "Listeyi Kaydet";
+            btn.disabled = false;
+        }
+    });
+
+    // 4. EXCEL İNDİR BUTONLARI
+    document.getElementById('exportExcelBtn')?.addEventListener('click', window.exportToExcel);
+    document.getElementById('exportDetailedBtn')?.addEventListener('click', window.exportDetailedResults);
+
+    // 5. SİLME BUTONLARI
+    document.getElementById('bulkDeleteFilteredBtn')?.addEventListener('click', window.bulkDeleteFiltered);
+    document.getElementById('bulkDeleteAllBtn')?.addEventListener('click', window.bulkDeleteAll);
+
+   
     // Initial Load
     loadResults();
 } // <-- showDashboard fonksiyonunun kapanış parantezi
