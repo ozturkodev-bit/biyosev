@@ -431,13 +431,26 @@
 
             let name, number, className;
             if (document.getElementById('studentSelector')) {
-                const selVal = document.getElementById('studentSelector').value;
-                const inputNum = document.getElementById('numberVerify').value;
-                if (!selVal || !inputNum) { showCustomAlert("Hata", "Eksik bilgi."); return; }
-                const [realNum, realName] = selVal.split('_');
-                if (realNum !== inputNum) { return showCustomAlert("Hatalı Doğrulama", "Numara eşleşmiyor."); }
-                name = sanitizeInput(realName);
-                number = realNum;
+               const selVal = document.getElementById('studentSelector').value;
+const inputNum = document.getElementById('numberVerify').value;
+if (!selVal || !inputNum) { showCustomAlert("Hata", "Eksik bilgi."); return }
+
+const parts = selVal.split('_');
+if (parts.length < 2) {
+    // Veri hatası oluşursa (Numara_Ad formatı bozulmuşsa)
+    return showCustomAlert("Hata", "Öğrenci veri formatı hatası. Lütfen Yöneticiye başvurun.");
+}
+
+const realNum = parts[0];
+// Geriye kalan tüm parçaları birleştir (Ad Soyad'ın ortasında '_' olsa bile)
+let rawName = parts.slice(1).join('_');
+// İsimdeki baştaki ve sondaki tırnakları temizle
+let realName = rawName.replace(/^"|"$/g, '').trim(); 
+
+if (realNum !== inputNum) { return showCustomAlert("Hatalı Doğrulama", "Numara eşleşmiyor.") }
+
+name = sanitizeInput(realName);
+number = realNum;
                 className = sanitizeInput(document.getElementById('classSelector').value);
             } else {
                 name = sanitizeInput(document.getElementById('nameInput').value);
