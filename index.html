@@ -780,4 +780,406 @@
                                 <input id="setTime" type="number" class="w-1/3 p-2 border rounded mb-2" placeholder="Süre (Dk)">
                                 <input id="setDesc" class="flex-1 p-2 border rounded mb-2" placeholder="Açıklama (Örn: 1. Dönem 1. Yazılı)">
                             </div>
-                            <button id="btnSaveSettings" class="w-full bg-gray-700 text-white p-
+                            <button id="btnSaveSettings" class="w-full bg-gray-700 text-white p-2 rounded font-bold hover:bg-gray-800">Sınavı Kaydet / Oluştur</button>
+                         </div>
+                         <div class="bg-red-50 p-4 rounded border border-red-200">
+                            <h3 class="font-bold text-red-700 mb-2">Yönetici Şifresi Değiştir</h3>
+                            <input id="newAdminPass" type="password" class="w-full p-2 border rounded mb-2" placeholder="Yeni Şifre">
+                            <button id="btnChangePass" class="w-full bg-red-600 text-white p-2 rounded font-bold">Şifreyi Güncelle</button>
+                         </div>
+                    </div>
+                </div>
+
+                <div id="tab-lists" class="tab-content hidden">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-teal-50 p-4 rounded border border-teal-200 mb-4">
+                            <label class="font-bold text-teal-800">Hangi Sınav İçin?</label>
+                            <select id="uploadListCode" class="w-full p-2 border rounded uppercase font-bold bg-white text-teal-700">
+                                <option value="">-- Sınav Seçiniz --</option>
+                            </select>
+                        </div>
+                        <div class="paste-area" id="listInput" contenteditable="true" placeholder="Excel'den Kopyala (No | Sınıf | Ad Soyad)"></div>
+                        <div class="text-xs text-gray-500 mt-1">Excel verilerini buraya yapıştırın.</div>
+                        <button id="btnUploadList" class="w-full mt-2 bg-teal-600 text-white py-2 rounded font-bold">Listeyi Kaydet</button>
+                    </div>
+                </div>
+
+                 <div id="tab-myexams" class="tab-content hidden">
+                    <div id="myExamsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">Yükleniyor...</div>
+                </div>
+            `;
+            
+            document.getElementById('mainContentArea').innerHTML = dashboardHtml;
+            
+            // --- DROPDOWN DOLDURMA (YENİ) ---
+            window.populateExamSelects = async () => {
+                const qSelect = document.getElementById('uploadQCode');
+                const lSelect = document.getElementById('uploadListCode');
+                qSelect.innerHTML = '<option value="">-- Sınav Seçiniz --</option>';
+                lSelect.innerHTML = '<option value="">-- Sınav Seçiniz --</option>';
+
+                const snap = await getDocs(collection(db, "exam_settings"));
+                snap.forEach(doc => {
+                    if(doc.id !== 'admin_config') {
+                        const opt1 = document.createElement('option');
+                        opt1.value = doc.id; opt1.text = doc.id;
+                        qSelect.appendChild(opt1);
+                        const opt2 = document.createElement('option');
+                        opt2.value = doc.id; opt2.text = doc.id;
+                        lSelect.appendChild(opt2);
+                    }
+                });
+            };
+
+            window.changeTab = (t) => {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+                document.getElementById('tab-' + t).classList.remove('hidden');
+                if(t === 'results') loadResults();
+                if(t === 'myexams') loadMyExams();
+                if(t === 'questions' || t === 'lists') window.populateExamSelects();
+            };
+
+            // --- AYARLAR KAYDETME (ÖĞRETMEN ADI DAHİL) ---
+            document.getElementById('btnSaveSettings').onclick = async () => {
+                const code = sanitizeExamCode(document.getElementById('setExamCode').value);
+                const teacher = sanitizeInput(document.getElementById('setTeacherName').value);
+                if(!code) return alert("Kod gerekli");
+                if(!teacher) return alert("Öğretmen adı gerekli");
+
+                await setDoc(getConfigRef(code), {
+                    teacher_name: teacher,
+                    time_limit: parseInt(document.getElementById('setTime').value) * 60,
+                    exam_description: sanitizeInput(document.getElementById('setDesc').value)
+                }, { merge: true });
+                alert("Sınav ayarları kaydedildi.");
+                window.populateExamSelects();
+            };
+
+            window.loadSampleJson = () => { document.getElementById('jsonInput').value = `[\n  {\n    "question": "Türkiye'nin başkenti neresidir?",\n    "options": ["İstanbul", "Ankara", "İzmir", "Bursa"],\n    "answer": "Ankara"\n  }\n]`; };
+
+            // --- SORU YÜKLEME (ONAYLI & SELECT) ---
+            document.getElementById('btnUploadQ').onclick = async () => {
+                const code = document.getElementById('uploadQCode').value;
+                const rawJson = document.getElementById('jsonInput').value;
+                if(!code) return alert("Lütfen listeden sınav seçin.");
+                if(!confirm(`${code} kodlu sınava soruları yüklemek istiyor musunuz?`)) return;
+                
+                try {
+                    const parsed = JSON.parse(rawJson);
+                    if(!Array.isArray(parsed)) throw new Error("JSON formatı hatalı.");
+                    await setDoc(getQuestionsRef(code), { questions_list: parsed });
+                    alert(`✅ ${code} için ${parsed.length} soru yüklendi.`);
+                    document.getElementById('jsonInput').value = '';
+                } catch(e) { alert(`Hata: ${e.message}`); }
+            };
+
+            document.getElementById('btnChangePass').onclick = async () => {
+                const newP = document.getElementById('newAdminPass').value;
+                if(newP.length < 4) return alert("Şifre çok kısa.");
+                if(confirm("Şifreyi değiştirmek istediğinize emin misiniz?")) {
+                    await setDoc(doc(db, "exam_settings", "admin_config"), { master_code: newP }, { merge: true });
+                    adminMasterCode = newP;
+                    alert("Şifre güncellendi.");
+                }
+            };
+
+            // --- LİSTE YÜKLEME (ONAYLI & SELECT) ---
+            document.getElementById('btnUploadList').onclick = async () => {
+                const code = document.getElementById('uploadListCode').value;
+                const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
+                
+                if(!code) return alert("Lütfen listeden sınav seçin.");
+                if(!txt.trim()) return alert("Liste boş.");
+                if(!confirm(`${code} kodlu sınava öğrenci listesi yüklemek istiyor musunuz?`)) return;
+
+                const students = [];
+                const lines = txt.split('\n');
+                let currentClass = "";
+                const btn = document.getElementById('btnUploadList');
+                btn.innerText = "Ayrıştırılıyor..."; btn.disabled = true;
+
+                try {
+                    for (let i = 0; i < lines.length; i++) {
+                        let line = lines[i].trim();
+                        if (!line) continue;
+                        line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
+                        const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
+                        if (classMatch) { currentClass = classMatch[1] + classMatch[2]; continue; }
+                        if (!currentClass) continue;
+                        const studentMatch = line.match(/^\s*\d+\s+(\d+)\s+(.+)\s+(Erkek|Kız)/i);
+                        if (studentMatch) {
+                            const num = studentMatch[1].trim(); 
+                            const rawName = studentMatch[2].trim();
+                            if (rawName.includes("Adı Soyadı Cinsiyeti") || line.includes("Öğrenci Sayısı")) continue;
+                            if (!isNaN(num) && rawName.length > 2) {
+                                students.push({ number: num, className: currentClass, name: rawName });
+                            }
+                        }
+                    }
+                    if(students.length === 0) throw new Error("Öğrenci bulunamadı.");
+                    await setDoc(doc(db, "student_lists", code), { students });
+                    alert(`✅ BAŞARILI! ${students.length} öğrenci eklendi.`);
+                    document.getElementById('listInput').innerText = '';
+                } catch(e) { alert("Hata: " + e.message); } 
+                finally { btn.innerText = "Listeyi Kaydet"; btn.disabled = false; }
+            };
+            
+            // D&D
+            const listInputArea = document.getElementById('listInput');
+            listInputArea.addEventListener('dragover', (e) => { e.preventDefault(); listInputArea.classList.add('border-indigo-500', 'bg-indigo-50'); });
+            listInputArea.addEventListener('dragleave', (e) => { e.preventDefault(); listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); });
+            listInputArea.addEventListener('drop', (e) => {
+                e.preventDefault(); listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
+                const files = e.dataTransfer.files;
+                if (files.length > 0) readExcelFile(files[0]);
+            });
+
+            const readExcelFile = (file) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); 
+                        listInputArea.innerText = rawText;
+                        alert('✅ Excel yüklendi.');
+                    } catch (error) { alert('Hata: ' + error.message); }
+                };
+                reader.readAsArrayBuffer(file);
+            };
+
+            loadResults();
+        }
+
+        function loadResults() {
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '<tr><td colspan="9" class="p-4 text-center">Yükleniyor...</td></tr>';
+            onSnapshot(query(collection(db, "quiz_submissions"), orderBy("timestamp", "desc"), limit(500)), (snap) => {
+                allSubmissions = snap.docs.map(d => {
+                    const data = d.data();
+                    let dateTime = "Bilinmiyor";
+                    if (data.timestamp && data.timestamp.toDate) {
+                        const date = data.timestamp.toDate();
+                        dateTime = `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR')}`;
+                    }
+                    return { id: d.id, ...data, formattedDateTime: dateTime };
+                });
+                renderResultsTable();
+                updateClassFilter();
+            });
+            document.getElementById('filterCode').oninput = renderResultsTable;
+            document.getElementById('filterName').oninput = renderResultsTable;
+            document.getElementById('filterClass').onchange = renderResultsTable;
+        }
+
+        function updateClassFilter() {
+            const classFilter = document.getElementById('filterClass');
+            const classes = [...new Set(allSubmissions.map(s => s.className))].filter(c => c).sort();
+            classFilter.innerHTML = '<option value="">Tüm Sınıflar</option>';
+            classes.forEach(c => { classFilter.innerHTML += `<option value="${c}">${c}</option>`; });
+        }
+
+        function renderResultsTable() {
+            const fCode = document.getElementById('filterCode').value.toLowerCase();
+            const fName = document.getElementById('filterName').value.toLowerCase();
+            const fClass = document.getElementById('filterClass').value;
+            const tbody = document.getElementById('resultsTableBody');
+            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass)).sort((a,b) => b.score - a.score);
+            tbody.innerHTML = filtered.map(s => {
+                const timeSpent = s.timeSpent || 0;
+                const minutes = Math.floor(timeSpent / 60);
+                const seconds = timeSpent % 60;
+                return `<tr class="hover:bg-gray-50"><td class="p-3"><div class="font-bold text-gray-800">${s.name}</div><div class="text-xs text-gray-500">${s.number} - ${s.className}</div></td><td class="p-3 font-mono text-xs">${s.examCode}</td><td class="p-3 font-bold ${s.score >= 50 ? 'text-green-600':'text-red-600'}">${s.score}</td><td class="p-3 text-xs">${s.correct}D / ${s.incorrect}Y / ${s.empty}B</td><td class="p-3 text-xs">${minutes}:${seconds < 10 ? '0' : ''}${seconds}</td><td class="p-3 text-xs">${s.focusLossCount || 0}</td><td class="p-3 text-xs font-mono">${s.ipAddress || 'N/A'}</td><td class="p-3 text-xs">${s.formattedDateTime}</td><td class="p-3"><button onclick="window.deleteSub('${s.id}')" class="text-red-600 hover:underline text-xs">Sil</button></td></tr>`;
+            }).join('');
+        }
+
+        window.deleteSub = async (id) => { if(confirm("Silmek istiyor musunuz?")) await deleteDoc(doc(db, "quiz_submissions", id)); }
+
+        window.bulkDeleteFiltered = async () => {
+            const fCode = document.getElementById('filterCode').value.toLowerCase();
+            const fName = document.getElementById('filterName').value.toLowerCase();
+            const fClass = document.getElementById('filterClass').value;
+            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass));
+            if(filtered.length === 0) return alert("Kayıt yok.");
+            if(confirm(`${filtered.length} kaydı silmek istiyor musunuz?`)) { for(const item of filtered) await deleteDoc(doc(db, "quiz_submissions", item.id)); alert("Silindi."); }
+        }
+
+        window.bulkDeleteAll = async () => {
+            if(allSubmissions.length === 0) return alert("Kayıt yok.");
+            if(confirm(`TÜM kayıtları (${allSubmissions.length} adet) silmek istediğinize emin misiniz?`)) { for(const item of allSubmissions) await deleteDoc(doc(db, "quiz_submissions", item.id)); alert("Tümü silindi."); }
+        }
+        
+        window.exportToExcel = () => {
+            const data = allSubmissions.map(s => {
+                const timeSpent = s.timeSpent || 0;
+                let dateTime = "Bilinmiyor"; if (s.timestamp && s.timestamp.toDate) dateTime = s.timestamp.toDate().toLocaleString('tr-TR');
+                return { 'Ad Soyad': s.name, 'Numara': s.number, 'Sınıf': s.className, 'Sınav Kodu': s.examCode, 'Puan': s.score, 'Doğru': s.correct, 'Yanlış': s.incorrect, 'Boş': s.empty, 'Süre (sn)': timeSpent, 'Odak Kaybı': s.focusLossCount, 'IP': s.ipAddress, 'Tarih': dateTime };
+            });
+            const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Sonuclar"); XLSX.writeFile(wb, "sinav_sonuclari.xlsx");
+        }
+
+        window.exportDetailedResults = () => {
+             const fCode = document.getElementById('filterCode').value.toLowerCase();
+            const fName = document.getElementById('filterName').value.toLowerCase();
+            const fClass = document.getElementById('filterClass').value;
+            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass));
+            
+            if(filtered.length === 0) return alert("Filtreye uygun kayıt yok.");
+            
+            const data = filtered.map(s => {
+                const timeSpent = s.timeSpent || 0;
+                let dateTime = "Bilinmiyor"; if (s.timestamp && s.timestamp.toDate) dateTime = s.timestamp.toDate().toLocaleString('tr-TR');
+                const result = { 'Ad Soyad': s.name, 'Numara': s.number, 'Sınıf': s.className, 'Sınav Kodu': s.examCode, 'Puan': s.score, 'Doğru': s.correct, 'Yanlış': s.incorrect, 'Boş': s.empty, 'Süre': timeSpent, 'Odak Kaybı': s.focusLossCount, 'IP': s.ipAddress, 'Tarih': dateTime };
+                if(s.allAnswers && s.allAnswers.length > 0) { s.allAnswers.forEach((answer, index) => { result[`Soru ${index + 1}`] = answer || ''; }); }
+                return result;
+            });
+            const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detayli"); XLSX.writeFile(wb, "detayli_sonuclar.xlsx");
+        }
+
+        async function loadMyExams() {
+            const container = document.getElementById('myExamsList');
+            container.innerHTML = `<div class="col-span-full text-center py-10"><div class="loader mb-4"></div><p class="font-bold text-gray-600">Yükleniyor...</p></div>`;
+            try {
+                const [configSnap, questionsSnap, listsSnap, submissionsSnap] = await Promise.all([ getDocs(collection(db, "exam_settings")), getDocs(collection(db, "questions_pool")), getDocs(collection(db, "student_lists")), getDocs(collection(db, "quiz_submissions")) ]);
+                const exams = []; const questionsData = {}; const studentLists = {}; const submissionCounts = {};
+                questionsSnap.forEach(doc => { questionsData[doc.id] = doc.data().questions_list?.length || 0; });
+                listsSnap.forEach(doc => { studentLists[doc.id] = doc.data().students?.length || 0; });
+                submissionsSnap.forEach(doc => { const c = doc.data().examCode; if (c) submissionCounts[c] = (submissionCounts[c] || 0) + 1; });
+                
+                configSnap.forEach(doc => {
+                    if(doc.id !== 'admin_config') {
+                        const data = doc.data();
+                        exams.push({ code: doc.id, teacher_name: data.teacher_name || "Belirtilmemiş", time_limit: data.time_limit || 600, exam_description: data.exam_description || "", custom_name: data.custom_name || "", is_active: data.is_active, question_count: questionsData[doc.id] || 0, student_count: studentLists[doc.id] || 0, submission_count: submissionCounts[doc.id] || 0 });
+                    }
+                });
+                
+                if(exams.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10 font-bold">Sınav yok.</div>'; return; }
+                
+                container.innerHTML = exams.map(exam => {
+                    const isActive = exam.is_active !== false; 
+                    return `
+                    <div class="bg-white p-6 border rounded-xl shadow-sm hover:shadow-md transition-all relative flex flex-col ${isActive ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500 bg-gray-50'}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div><div class="flex items-center gap-2"><h3 class="font-extrabold text-xl text-indigo-700 tracking-tight">${exam.code}</h3>${!isActive ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 border border-red-200">KAPALI</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-600 border border-green-200">AKTİF</span>'}</div><p class="text-sm text-gray-500 italic mt-1">${exam.exam_description}</p></div>
+                            <button onclick="window.toggleExamStatus('${exam.code}', ${isActive})" class="text-xs font-bold px-3 py-1 rounded-full border ${isActive ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}">${isActive ? '⛔ Kapat' : '✅ Aç'}</button>
+                        </div>
+                        <div class="space-y-3 text-sm flex-grow ${!isActive ? 'opacity-60 grayscale-[50%]' : ''}">
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium w-1/3">Özel İsim:</span><input type="text" class="text-xs p-1 border rounded w-32 text-right outline-none" placeholder="Özel ad" value="${exam.custom_name || ''}" onchange="window.updateExamName('${exam.code}', this.value)"></div>
+                            <div class="flex items-center justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium w-1/3">Hazırlayan:</span><div class="flex-1 flex space-x-2"><input id="teacherName-${exam.code}" type="text" value="${exam.teacher_name}" class="p-1 px-2 border rounded text-sm flex-1 outline-none"><button onclick="window.updateExamTeacher('${exam.code}')" class="bg-green-500 text-white px-2 rounded text-xs hover:bg-green-600">💾</button></div></div>
+                            <div class="flex justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Süre:</span><span class="font-bold text-gray-800">${Math.floor(exam.time_limit/60)} dk</span></div>
+                            <div class="flex justify-between items-center py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Soru Sayısı:</span><button onclick="window.showExamQuestions('${exam.code}')" class="text-blue-600 font-bold hover:underline">${exam.question_count} Soru</button></div>
+                            <div class="flex justify-between items-center py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Öğrenci Sayısı:</span><button onclick="window.showExamStudents('${exam.code}')" class="text-blue-600 font-bold hover:underline">${exam.student_count} Öğrenci</button></div>
+                             <div class="flex justify-between py-1"><span class="text-gray-600 font-medium">Katılım:</span><span class="font-bold text-lg text-gray-800">${exam.submission_count}</span></div>
+                        </div>
+                        <button onclick="window.deleteExam('${exam.code}')" class="mt-4 w-full bg-white text-gray-400 text-xs py-2 rounded border hover:bg-red-50 hover:text-red-500 transition">Sınavı Tamamen Sil</button>
+                    </div>
+                `}).join('');
+            } catch (error) { container.innerHTML = `<div class="col-span-full text-center text-red-500 py-10">Hata: ${error.message}</div>`; }
+        }
+        
+        window.updateExamName = async (code, name) => { try { await setDoc(getConfigRef(code), { custom_name: sanitizeInput(name) }, { merge: true }); } catch(e) { alert("Hata: " + e.message); } }
+        window.updateExamTeacher = async (code) => {
+            const inputBtn = document.getElementById(`teacherName-${code}`);
+            try { await setDoc(getConfigRef(code), { teacher_name: sanitizeInput(inputBtn.value) }, { merge: true }); inputBtn.classList.add('bg-green-100'); setTimeout(()=>inputBtn.classList.remove('bg-green-100'),1000); } catch(e) { alert("Hata: " + e.message); }
+        }
+
+        // --- POPUP WINDOWS ---
+        window.showExamQuestions = async (code) => {
+            try {
+                const qSnap = await getDoc(getQuestionsRef(code));
+                const questions = qSnap.exists() ? qSnap.data().questions_list : [];
+                let content = `
+                    <div class="sticky top-0 bg-white z-20 pb-4 border-b mb-4">
+                        <div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-indigo-700">${code} - Soru Yönetimi</h3><button onclick="document.getElementById('customModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800 font-bold text-xl">&times;</button></div>
+                        <div class="bg-orange-50 p-3 rounded border border-orange-200 text-sm shadow-inner"><h4 class="font-bold text-orange-800 mb-2 flex items-center"><span id="formTitle">Yeni Soru Ekle</span><button onclick="window.clearQuestionForm()" class="ml-auto text-xs text-gray-500 underline">Temizle</button></h4><input type="hidden" id="editIndex" value="-1"><textarea id="qText" class="w-full p-2 border rounded mb-2 text-sm outline-none" rows="2" placeholder="Soru metni..."></textarea><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2"><div class="flex items-center"><span class="w-6 font-bold text-gray-500">A)</span><input id="optA" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">B)</span><input id="optB" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">C)</span><input id="optC" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">D)</span><input id="optD" class="flex-1 p-1 border rounded"></div><div class="flex items-center col-span-1 sm:col-span-2"><span class="w-6 font-bold text-gray-500">E)</span><input id="optE" class="flex-1 p-1 border rounded bg-gray-50" placeholder="(Opsiyonel)"></div></div><div class="flex gap-2 mb-2"><input id="qImg" class="flex-1 p-1 border rounded text-xs" placeholder="Resim Linki"><select id="qAns" class="p-1 border rounded font-bold text-indigo-700 bg-white"><option value="">Cevap</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select></div><button onclick="window.saveQuestion('${code}')" id="saveBtn" class="w-full bg-orange-600 text-white py-2 rounded font-bold hover:bg-orange-700 transition shadow">Kaydet</button></div>
+                    </div><div class="max-h-[40vh] overflow-y-auto space-y-3 pr-1 pb-2">`;
+                if(questions.length === 0) content += `<p class="text-gray-400 text-center py-4 italic">Soru yok.</p>`;
+                else {
+                    questions.forEach((q, i) => {
+                        content += `<div class="p-3 border rounded bg-white hover:shadow-md transition relative group border-l-4 border-l-indigo-500"><div class="flex justify-between items-start mb-1"><span class="font-bold text-xs text-white bg-indigo-500 px-2 py-0.5 rounded-full">Soru ${i+1}</span><div class="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"><button onclick="window.editQuestion('${code}', ${i})" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Düzenle</button><button onclick="window.deleteQuestion('${code}', ${i})" class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">Sil</button></div></div><p class="text-sm font-bold text-gray-800 mb-2">${sanitizeInput(q.question)}</p></div>`;
+                    });
+                }
+                content += `</div>`;
+                showCustomAlert(``, content);
+                document.getElementById('modalContent').classList.remove('max-w-3xl'); document.getElementById('modalContent').classList.add('max-w-4xl');
+            } catch(e) { alert("Hata: " + e.message); }
+        }
+
+        window.saveQuestion = async (code) => {
+            const qText = document.getElementById('qText').value.trim();
+            const optA = document.getElementById('optA').value.trim(); const optB = document.getElementById('optB').value.trim(); const optC = document.getElementById('optC').value.trim(); const optD = document.getElementById('optD').value.trim(); const optE = document.getElementById('optE').value.trim();
+            const ansKey = document.getElementById('qAns').value; const img = document.getElementById('qImg').value.trim(); const editIndex = parseInt(document.getElementById('editIndex').value);
+            if(!qText || !optA || !optB || !optC || !optD || !ansKey) return alert("Eksik bilgi.");
+            let finalOptions = [optA, optB, optC, optD]; if(optE) finalOptions.push(optE);
+            let correctText = ""; if(ansKey === 'A') correctText = optA; else if(ansKey === 'B') correctText = optB; else if(ansKey === 'C') correctText = optC; else if(ansKey === 'D') correctText = optD; else if(ansKey === 'E') correctText = optE;
+            const newQ = { question: qText, options: finalOptions, answer: correctText, image: img || "" };
+            try { const ref = getQuestionsRef(code); const snap = await getDoc(ref); let list = snap.exists() ? snap.data().questions_list : []; if(editIndex > -1) list[editIndex] = newQ; else list.push(newQ); await setDoc(ref, { questions_list: list }, { merge: true }); window.showExamQuestions(code); } catch(e) { alert("Hata: " + e.message); }
+        }
+
+        window.editQuestion = async (code, index) => {
+            const snap = await getDoc(getQuestionsRef(code)); const q = snap.data().questions_list[index];
+            document.getElementById('qText').value = q.question;
+            document.getElementById('optA').value = q.options[0] || ""; document.getElementById('optB').value = q.options[1] || ""; document.getElementById('optC').value = q.options[2] || ""; document.getElementById('optD').value = q.options[3] || ""; document.getElementById('optE').value = q.options[4] || "";
+            document.getElementById('qImg').value = q.image || "";
+            let ansKey = ""; if(q.answer === q.options[0]) ansKey = "A"; else if(q.answer === q.options[1]) ansKey = "B"; else if(q.answer === q.options[2]) ansKey = "C"; else if(q.answer === q.options[3]) ansKey = "D"; else if(q.options[4] && q.answer === q.options[4]) ansKey = "E";
+            document.getElementById('qAns').value = ansKey; document.getElementById('editIndex').value = index;
+            document.getElementById('formTitle').innerText = `Düzenleniyor: Soru ${index+1}`; document.getElementById('saveBtn').innerText = "Değişiklikleri Kaydet";
+            document.querySelector('.bg-orange-50').scrollIntoView({behavior: 'smooth'});
+        }
+
+        window.clearQuestionForm = () => {
+            document.getElementById('qText').value = ""; document.getElementById('optA').value = ""; document.getElementById('optB').value = ""; document.getElementById('optC').value = ""; document.getElementById('optD').value = ""; document.getElementById('optE').value = ""; document.getElementById('qImg').value = ""; document.getElementById('qAns').value = ""; document.getElementById('editIndex').value = "-1";
+            document.getElementById('formTitle').innerText = "Yeni Soru Ekle"; document.getElementById('saveBtn').innerText = "Kaydet";
+        }
+
+        window.deleteQuestion = async (code, index) => { if(!confirm("Silmek istiyor musunuz?")) return; const ref = getQuestionsRef(code); const snap = await getDoc(ref); let list = snap.data().questions_list; list.splice(index, 1); await setDoc(ref, { questions_list: list }, { merge: true }); window.showExamQuestions(code); }
+
+        window.showExamStudents = async (code) => {
+            try {
+                const snap = await getDoc(doc(db, "student_lists", code)); const students = snap.exists() ? snap.data().students : [];
+                students.sort((a,b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
+                let content = `
+                    <div class="sticky top-0 bg-white z-20 pb-4 border-b mb-4"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-teal-700">${code} - Öğrenci Yönetimi</h3><button onclick="document.getElementById('customModal').classList.add('hidden')" class="text-gray-500 font-bold text-xl">&times;</button></div><div class="bg-teal-50 p-3 rounded border border-teal-200 text-sm shadow-inner"><h4 class="font-bold text-teal-800 mb-2">Öğrenci Ekle</h4><div class="flex gap-2"><input id="addNum" placeholder="No" class="w-20 p-2 border rounded"><input id="addClass" placeholder="Sınıf" class="w-20 p-2 border rounded"><input id="addName" placeholder="Ad Soyad" class="flex-1 p-2 border rounded"><button onclick="window.addStudent('${code}')" class="bg-teal-600 text-white px-4 py-2 rounded font-bold hover:bg-teal-700 shadow">Ekle</button></div></div></div><div class="max-h-[50vh] overflow-y-auto border rounded-lg shadow-sm"><table class="min-w-full text-sm divide-y divide-gray-200"><thead class="bg-gray-100 sticky top-0"><tr><th class="p-3 text-left">No</th><th class="p-3 text-left">Sınıf</th><th class="p-3 text-left">Ad Soyad</th><th class="p-3 text-right">İşlem</th></tr></thead><tbody class="bg-white divide-y divide-gray-100">`;
+                if(students.length === 0) content += `<tr><td colspan="4" class="p-4 text-center text-gray-400">Liste boş.</td></tr>`;
+                else { students.forEach(s => { content += `<tr class="hover:bg-teal-50 transition"><td class="p-3 font-mono font-bold text-teal-700">${s.number}</td><td class="p-3">${s.className}</td><td class="p-3 font-medium">${s.name}</td><td class="p-3 text-right"><button onclick="window.deleteStudent('${code}', '${s.number}')" class="bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded text-xs font-bold hover:bg-red-600 hover:text-white transition">Sil</button></td></tr>`; }); }
+                content += `</tbody></table></div>`; showCustomAlert(``, content);
+            } catch(e) { alert("Hata: " + e.message); }
+        }
+
+        window.addStudent = async (code) => {
+            const num = document.getElementById('addNum').value.trim(); const cls = document.getElementById('addClass').value.trim(); const name = document.getElementById('addName').value.trim();
+            if(!num || !cls || !name) return alert("Eksik bilgi.");
+            const ref = doc(db, "student_lists", code); const snap = await getDoc(ref); let students = snap.exists() ? snap.data().students : [];
+            if(students.some(s => s.number === num)) return alert("Bu numara kayıtlı!");
+            students.push({ number: num, className: cls, name: name }); await setDoc(ref, { students }, { merge: true }); window.showExamStudents(code);
+        }
+
+        window.deleteStudent = async (code, num) => { if(!confirm("Silmek istiyor musunuz?")) return; const ref = doc(db, "student_lists", code); const snap = await getDoc(ref); let students = snap.data().students.filter(s => s.number !== num); await setDoc(ref, { students }, { merge: true }); window.showExamStudents(code); }
+
+        window.deleteExam = async (code) => {
+            if(confirm(`⚠️ DİKKAT!\n"${code}" tamamen silinecek. Onaylıyor musunuz?`)) {
+                try {
+                    await deleteDoc(doc(db, "exam_settings", code)); await deleteDoc(doc(db, "questions_pool", code)); await deleteDoc(doc(db, "student_lists", code));
+                    const subSnap = await getDocs(query(collection(db, "quiz_submissions"), where("examCode", "==", code)));
+                    subSnap.forEach(d => deleteDoc(d.ref)); alert("Silindi."); loadMyExams();
+                } catch(e) { alert("Hata: " + e.message); }
+            }
+        }
+
+        window.toggleExamStatus = async (code, currentStatus) => { try { await setDoc(getConfigRef(code), { is_active: !currentStatus }, { merge: true }); loadMyExams(); } catch (e) { alert("Hata: " + e.message); } }
+
+        function showCustomAlert(title, msg) {
+            return new Promise(resolve => {
+                const modal = document.getElementById('customModal'); const content = document.getElementById('modalContent');
+                content.innerHTML = `<h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3><div class="text-left">${msg}</div><button id="modalCloseBtn" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded font-bold hover:bg-indigo-700">Tamam</button>`;
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+                document.getElementById('modalCloseBtn').onclick = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); resolve(); };
+            });
+        }
+
+        initializeFirebase();
+    </script>
+</body>
+</html>
