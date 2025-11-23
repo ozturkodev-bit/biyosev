@@ -1150,7 +1150,7 @@ async function showResultScreen(data) {
                                 continue;
                             }
 
-                       // --- GEÇERLİLİK KONTROLÜ VE EKLEME ---
+                      // --- GEÇERLİLİK KONTROLÜ VE EKLEME ---
 if (!isNaN(num) && rawName.length > 2) {
     students.push({ 
         number: num, 
@@ -1161,13 +1161,12 @@ if (!isNaN(num) && rawName.length > 2) {
 }
 }
 
-// Öğrenci kontrolü ve kaydetme
 if(students.length === 0) {
     alert("Listeden öğrenci çıkarılamadı. Lütfen listeyi kontrol edin.");
 } else {
     await setDoc(doc(db, "student_lists", code), { students });
     const uniqueClasses = [...new Set(students.map(s => s.className))].join(", ");
-    alert(`✅ BAŞARILI!\n\nToplam ${students.length} öğrenci eklendi.\nAlgılanan Sınıflar: ${uniqueClasses}`);
+    alert(`✅ BAŞARILI! Toplam ${students.length} öğrenci eklendi. Sınıflar: ${uniqueClasses}`);
     document.getElementById('listInput').innerText = '';
 }
 
