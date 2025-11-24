@@ -969,22 +969,27 @@ number = realNum;
                 if (files.length > 0) readExcelFile(files[0]);
             });
 
-            const readExcelFile = (file) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheetName];
-                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); 
-                        listInputArea.innerText = rawText;
-                        alert('✅ Excel yüklendi.');
-                    } catch (error) { alert('Hata: ' + error.message); }
-                };
-                reader.readAsArrayBuffer(file);
-            };
-
+           const readExcelFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' });
+            
+            // TIRNAKLARI TEMİZLE
+            const cleanedText = rawText.replace(/"/g, '');
+            
+            document.getElementById('listInput').innerText = cleanedText;
+            alert('✅ Excel yüklendi. Tırnaklar temizlendi.');
+        } catch (error) { 
+            alert('Hata: ' + error.message); 
+        }
+    };
+    reader.readAsArrayBuffer(file);
+};
             loadResults();
         }
 
