@@ -122,6 +122,7 @@
         // Admin ve Tablo Verileri
         let allSubmissions = [];
         let isTeacherMode = false;
+        let isPreviewMode = false; // <-- YENİ EKLENECEK SATIR BU
 
         // --- INPUT VALIDATION FONKSİYONLARI ---
         function sanitizeInput(input) {
@@ -612,7 +613,8 @@ number = realNum;
         function startAutoSave() { autoSaveInterval = setInterval(() => saveProgress(), 15000); }
 
         async function saveProgress() {
-            if (isTeacherMode || !isDbConnected) return;
+    if (isTeacherMode && isPreviewMode) return; // <--- YENİ EKLENDİ
+    if (isTeacherMode || !isDbConnected) return;
             try {
                 const now = Date.now();
                 const remainingSeconds = Math.floor((examendTimeStamp - now) / 1000);
@@ -624,8 +626,23 @@ number = realNum;
         }
 
         // --- SINAV BİTİRME ---
-        async function finishQuiz(force = false) {
-            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+       async function finishQuiz(force = false) {
+    // --- ÖNİZLEME MODU KONTROLÜ (YENİ) ---
+    if (isPreviewMode) {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        if (autoSaveInterval) { clearInterval(autoSaveInterval); autoSaveInterval = null; }
+        window.onblur = null; document.oncontextmenu = null;
+        
+        alert("Önizleme modu tamamlandı. Panele dönülüyor.");
+        document.getElementById('app').className = 'app-card teacher-mode'; 
+        isPreviewMode = false; 
+        showDashboard(); 
+        window.changeTab('myexams'); 
+        return; 
+    }
+    // -------------------------------------
+
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
             if (autoSaveInterval) { clearInterval(autoSaveInterval); autoSaveInterval = null; }
             window.onblur = null; document.oncontextmenu = null;
 
@@ -1100,10 +1117,19 @@ number = realNum;
                 container.innerHTML = exams.map(exam => {
                     const isActive = exam.is_active !== false; 
                     return `
-                    <div class="bg-white p-6 border rounded-xl shadow-sm hover:shadow-md transition-all relative flex flex-col ${isActive ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500 bg-gray-50'}">
+                   <div class="bg-white p-6 border rounded-xl shadow-sm hover:shadow-md transition-all relative flex flex-col ${isActive ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500 bg-gray-50'}">
                         <div class="flex justify-between items-start mb-4">
-                            <div><div class="flex items-center gap-2"><h3 class="font-extrabold text-xl text-indigo-700 tracking-tight">${exam.code}</h3>${!isActive ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 border border-red-200">KAPALI</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-600 border border-green-200">AKTİF</span>'}</div><p class="text-sm text-gray-500 italic mt-1">${exam.exam_description}</p></div>
-                            <button onclick="window.toggleExamStatus('${exam.code}', ${isActive})" class="text-xs font-bold px-3 py-1 rounded-full border ${isActive ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}">${isActive ? '⛔ Kapat' : '✅ Aç'}</button>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-extrabold text-xl text-indigo-700 tracking-tight">${exam.code}</h3>
+                                    ${!isActive ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 border border-red-200">KAPALI</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-600 border border-green-200">AKTİF</span>'}
+                                </div>
+                                <p class="text-sm text-gray-500 italic mt-1">${exam.exam_description}</p>
+                            </div>
+                            <div class="flex flex-col gap-2 items-end">
+                                <button onclick="window.toggleExamStatus('${exam.code}', ${isActive})" class="text-xs font-bold px-3 py-1 rounded-full border w-24 ${isActive ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}">${isActive ? '⛔ Kapat' : '✅ Aç'}</button>
+                                <button id="btn-preview-${exam.code}" onclick="window.previewExam('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100">👁️ Önizle</button>
+                            </div>
                         </div>
                         <div class="space-y-3 text-sm flex-grow ${!isActive ? 'opacity-60 grayscale-[50%]' : ''}">
                             <div class="flex items-center justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium w-1/3">Özel İsim:</span><input type="text" class="text-xs p-1 border rounded w-32 text-right outline-none" placeholder="Özel ad" value="${exam.custom_name || ''}" onchange="window.updateExamName('${exam.code}', this.value)"></div>
@@ -1209,7 +1235,33 @@ number = realNum;
         }
 
         window.toggleExamStatus = async (code, currentStatus) => { try { await setDoc(getConfigRef(code), { is_active: !currentStatus }, { merge: true }); loadMyExams(); } catch (e) { alert("Hata: " + e.message); } }
+// --- YENİ EKLENEN ÖNİZLEME FONKSİYONU ---
+        window.previewExam = async (code) => {
+            const btn = document.getElementById(`btn-preview-${code}`);
+            if(btn) btn.innerText = "Yükleniyor...";
+            
+            await fetchExamData(code);
+            
+            // Modları ayarla
+            isPreviewMode = true;
+            isTeacherMode = true; // Hata almamak için açık kalmalı
+            
+            // Sahte öğrenci verisi
+            studentData = { name: "YÖNETİCİ (ÖNİZLEME)", number: "0000", className: "TEST", examCode: code };
 
+            // Oturumu başlat
+            startNewSession("preview_seed"); 
+            startQuiz();
+            
+            // Header'ı değiştir
+            document.getElementById('loginHeader').innerHTML = `
+                <div class="flex justify-between items-center px-4 py-2 bg-orange-600 text-white rounded-t-lg">
+                    <div class="flex items-center gap-2"><span class="text-xl">👁️</span> <span class="font-bold">ÖNİZLEME MODU</span></div>
+                    <button onclick="finishQuiz(true)" class="bg-white text-orange-800 px-3 py-1 rounded text-xs font-bold hover:bg-gray-100">Önizlemeyi Kapat ✕</button>
+                </div>`;
+            
+            if(btn) btn.innerHTML = '👁️ Önizle';
+        };
         function showCustomAlert(title, msg) {
             return new Promise(resolve => {
                 const modal = document.getElementById('customModal'); const content = document.getElementById('modalContent');
