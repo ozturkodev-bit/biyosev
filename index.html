@@ -934,6 +934,9 @@ number = realNum;
                     for (let i = 0; i < lines.length; i++) {
                         let line = lines[i].trim();
                         if (!line) continue;
+
+                        line = line.replace(/"/g, '').trim();  // TIRNAKLARI SİL
+                        
                         line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
                         const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
                         if (classMatch) { currentClass = classMatch[1] + classMatch[2]; continue; }
