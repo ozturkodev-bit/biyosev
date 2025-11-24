@@ -290,7 +290,7 @@
 
                     <div class="mt-auto pt-6 text-center">
                         <p class="text-[10px] text-gray-400 font-medium tracking-wide border-t border-gray-200 pt-2 inline-block px-4">
-                            Site tasarımı Biyoloji Öğretmeni <span class="text-indigo-400 font-bold">Ö.Sevinç</span> tarafından yapılmıştır.
+                            Site tasarımı <span class="text-indigo-400 font-bold">Ö.Sevinç</span> tarafından yapılmıştır.
                         </p>
                     </div>
                 </div>
@@ -934,6 +934,9 @@ number = realNum;
                     for (let i = 0; i < lines.length; i++) {
                         let line = lines[i].trim();
                         if (!line) continue;
+
+                        line = line.replace(/"/g, '').trim();  // TIRNAKLARI SİL
+                        
                         line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
                         const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
                         if (classMatch) { currentClass = classMatch[1] + classMatch[2]; continue; }
@@ -966,22 +969,27 @@ number = realNum;
                 if (files.length > 0) readExcelFile(files[0]);
             });
 
-            const readExcelFile = (file) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheetName];
-                        const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' }); 
-                        listInputArea.innerText = rawText;
-                        alert('✅ Excel yüklendi.');
-                    } catch (error) { alert('Hata: ' + error.message); }
-                };
-                reader.readAsArrayBuffer(file);
-            };
-
+           const readExcelFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' });
+            
+            // TIRNAKLARI TEMİZLE
+            const cleanedText = rawText.replace(/"/g, '');
+            
+            document.getElementById('listInput').innerText = cleanedText;
+            alert('✅ Excel yüklendi. Tırnaklar temizlendi.');
+        } catch (error) { 
+            alert('Hata: ' + error.message); 
+        }
+    };
+    reader.readAsArrayBuffer(file);
+};
             loadResults();
         }
 
