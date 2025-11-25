@@ -1270,70 +1270,85 @@ number = realNum;
                 modal.classList.remove('hidden'); modal.classList.add('flex');
                 document.getElementById('modalCloseBtn').onclick = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); resolve(); };
             });
-        }
-// --- DIŞA AKTARMA (EXPORT) FONKSİYONLARI ---
+        }// --- GÜNCELLENMİŞ DIŞA AKTARMA (EXPORT) FONKSİYONLARI ---
         window.askExportFormat = async (code) => {
-            // 1. Soruları Çek
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "...";
+            const btn = document.getElementById(`btn-preview-${code}`).nextElementSibling; // Aktar butonunu bul
+            const originalText = btn ? btn.innerText : "📤 Aktar";
+            if(btn) btn.innerText = "...";
             
             try {
+                // 1. Soruları Çek
                 const qSnap = await getDoc(getQuestionsRef(code));
                 const questions = qSnap.exists() ? qSnap.data().questions_list : [];
 
-                btn.innerText = originalText;
+                if(btn) btn.innerText = originalText;
 
                 if (questions.length === 0) {
                     alert("Bu sınavda dışarı aktarılacak soru bulunmamaktadır.");
                     return;
                 }
 
-                // 2. Modal İçeriğini Hazırla
-                const content = `
+                // 2. Modalı Manuel Olarak Aç (showCustomAlert kullanmıyoruz)
+                const modal = document.getElementById('customModal');
+                const content = document.getElementById('modalContent');
+                
+                // Modal İçeriği - Tamam butonu yok, İptal var.
+                content.innerHTML = `
                     <div class="text-center p-4">
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">${code} - Soruları Dışa Aktar</h3>
-                        <p class="text-sm text-gray-500 mb-6">${questions.length} adet soru bulundu. Hangi formatta indirmek istersiniz?</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-800">${code} - Dışa Aktar</h3>
+                            <button id="closeExportModal" class="text-gray-500 font-bold text-xl hover:text-red-500">&times;</button>
+                        </div>
                         
-                        <div class="flex justify-center gap-4">
-                            <button id="btnExportJson" class="flex flex-col items-center p-4 border-2 border-orange-100 rounded-xl hover:bg-orange-50 hover:border-orange-300 transition w-32">
-                                <span class="text-2xl mb-1">{}</span>
-                                <span class="font-bold text-orange-700">JSON</span>
-                                <span class="text-[10px] text-gray-400">Yedekleme İçin</span>
+                        <p class="text-sm text-gray-600 mb-6 bg-blue-50 p-2 rounded border border-blue-100">
+                            ${questions.length} soru bulundu.<br>İndirmek istediğiniz formatın üzerine tıklayınız.
+                        </p>
+                        
+                        <div class="flex justify-center gap-6 mb-4">
+                            <button id="btnExportJson" class="group flex flex-col items-center justify-center p-4 bg-white border-2 border-orange-200 rounded-xl hover:bg-orange-50 hover:border-orange-500 transition-all w-36 shadow-sm active:scale-95">
+                                <span class="text-3xl mb-2 group-hover:scale-110 transition">💾</span>
+                                <span class="font-bold text-orange-700">JSON Formatı</span>
+                                <span class="text-[10px] text-gray-400 mt-1">Yedekleme için</span>
                             </button>
 
-                            <button id="btnExportWord" class="flex flex-col items-center p-4 border-2 border-blue-100 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition w-32">
-                                <span class="text-2xl mb-1">📝</span>
-                                <span class="font-bold text-blue-700">WORD</span>
-                                <span class="text-[10px] text-gray-400">Çıktı Almak İçin</span>
+                            <button id="btnExportWord" class="group flex flex-col items-center justify-center p-4 bg-white border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-500 transition-all w-36 shadow-sm active:scale-95">
+                                <span class="text-3xl mb-2 group-hover:scale-110 transition">📝</span>
+                                <span class="font-bold text-blue-700">Word Belgesi</span>
+                                <span class="text-[10px] text-gray-400 mt-1">Çıktı almak için</span>
                             </button>
                         </div>
+                        <div class="text-xs text-gray-400 italic">İşlem butonlara tıklandığı an başlayacaktır.</div>
                     </div>
                 `;
 
-                // 3. Modalı Göster
-                await showCustomAlert("", content);
+                // Modalı Görünür Yap
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                // 3. Tıklama Olaylarını Tanımla
                 
-                // 4. Event Listenerları Ekle (Modal açıldıktan sonra)
-                // Not: showCustomAlert modalı açtığında butonlar DOM'a eklenmiş olur.
-                // Ancak showCustomAlert kendi "Tamam" butonuyla kapanıyor. Biz butonlara basınca işlem yapıp kapatacağız.
-                
+                // Kapatma Fonksiyonu
+                const closeModal = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
+
+                document.getElementById('closeExportModal').onclick = closeModal;
+
+                // JSON İndir ve Kapat
                 document.getElementById('btnExportJson').onclick = () => {
                     window.downloadJSON(code, questions);
-                    document.getElementById('customModal').classList.add('hidden');
+                    closeModal();
                 };
 
+                // Word İndir ve Kapat
                 document.getElementById('btnExportWord').onclick = () => {
                     window.downloadWord(code, questions);
-                    document.getElementById('customModal').classList.add('hidden');
+                    closeModal();
                 };
 
-                // Varsayılan "Tamam" butonunu gizle ki kullanıcı sadece seçim yapsın
-                const closeBtn = document.getElementById('modalCloseBtn');
-                if(closeBtn) closeBtn.style.display = 'none';
-
             } catch (e) {
-                btn.innerText = originalText;
+                if(btn) btn.innerText = originalText;
                 alert("Hata: " + e.message);
             }
         };
@@ -1352,25 +1367,37 @@ number = realNum;
             let htmlContent = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head><meta charset='utf-8'><title>${code} Sınav Soruları</title>
-                <style>body{font-family:Arial, sans-serif;} .question-box{margin-bottom:20px; border-bottom:1px solid #ccc; padding-bottom:10px;} .q-title{font-weight:bold; margin-bottom:5px;} .options{margin-left:20px;} .answer{color:green; font-weight:bold; margin-top:5px;}</style>
+                <style>
+                    body{font-family:'Times New Roman', serif; font-size:12pt;} 
+                    .header {text-align:center; font-weight:bold; font-size:14pt; margin-bottom:20px;}
+                    .question-box{margin-bottom:15px; page-break-inside: avoid;} 
+                    .q-text{font-weight:bold; margin-bottom:5px;} 
+                    .options{margin-left:20px; margin-bottom:5px;} 
+                    .answer{color:#cc0000; font-weight:bold; font-size:10pt; border-top:1px dashed #ccc; display:inline-block; margin-top:5px;}
+                    img {max-width:300px; height:auto; display:block; margin:5px 0;}
+                </style>
                 </head><body>
-                <h1>${code} Sınav Soruları</h1>
+                <div class="header">${code} SINAV SORULARI</div>
             `;
 
             questions.forEach((q, index) => {
+                // Şıkları güvenli hale getir
+                const opts = q.options || [];
+                
                 htmlContent += `
                     <div class="question-box">
-                        <div class="q-title">Soru ${index + 1}: ${sanitizeInput(q.question)}</div>
-                        ${q.image ? `<p>[Görsel Linki: <a href="${q.image}">${q.image}</a>]</p>` : ''}
+                        <div class="q-text">${index + 1}. ${sanitizeInput(q.question)}</div>
+                        ${q.image ? `<img src="${q.image}">` : ''}
                         <div class="options">
-                            A) ${q.options[0] || ''}<br>
-                            B) ${q.options[1] || ''}<br>
-                            C) ${q.options[2] || ''}<br>
-                            D) ${q.options[3] || ''}<br>
-                            ${q.options[4] ? `E) ${q.options[4]}<br>` : ''}
+                            A) ${sanitizeInput(opts[0] || '')}<br>
+                            B) ${sanitizeInput(opts[1] || '')}<br>
+                            C) ${sanitizeInput(opts[2] || '')}<br>
+                            D) ${sanitizeInput(opts[3] || '')}<br>
+                            ${opts[4] ? `E) ${sanitizeInput(opts[4])}<br>` : ''}
                         </div>
                         <div class="answer">Doğru Cevap: ${q.answer}</div>
                     </div>
+                    <br>
                 `;
             });
 
@@ -1383,7 +1410,7 @@ number = realNum;
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = code + "_sorular.doc"; // Word formatı
+            link.download = code + "_sorular.doc";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
