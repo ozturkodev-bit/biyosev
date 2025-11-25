@@ -1129,7 +1129,8 @@ number = realNum;
                            <div class="flex flex-col gap-2 items-end">
     <button onclick="window.toggleExamStatus('${exam.code}', ${isActive})" class="text-xs font-bold px-3 py-1 rounded-full border w-24 ${isActive ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}">${isActive ? '⛔ Kapat' : '✅ Aç'}</button>
     <button id="btn-preview-${exam.code}" onclick="window.previewExam('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100">👁️ Önizle</button>
-    <button onclick="window.askExportFormat('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100">📤 Aktar</button>
+    <button onclick="window.askExportFormat('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100">📤 Dışa Aktar</button>
+<button onclick="window.importExamQuestions('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100">📥 İçe Aktar</button>
 </div>
                         </div>
                         <div class="space-y-3 text-sm flex-grow ${!isActive ? 'opacity-60 grayscale-[50%]' : ''}">
@@ -1415,7 +1416,61 @@ number = realNum;
             link.click();
             document.body.removeChild(link);
         };
-        
+        // --- İÇE AKTARMA (IMPORT) FONKSİYONU ---
+        window.importExamQuestions = (code) => {
+            // 1. Gizli bir dosya yükleme inputu oluştur
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json'; // Sadece JSON kabul et
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        // 2. Dosyayı Oku ve Parse Et
+                        const content = event.target.result;
+                        const questions = JSON.parse(content);
+
+                        // 3. Basit Doğrulama (Format kontrolü)
+                        if (!Array.isArray(questions)) {
+                            throw new Error("Dosya formatı hatalı. Sorular bir liste ([...]) içinde olmalı.");
+                        }
+                        if (questions.length > 0 && (!questions[0].question || !questions[0].answer)) {
+                            throw new Error("Dosya içeriği sınav formatına uygun değil (Soru veya Cevap alanları eksik).");
+                        }
+
+                        // 4. Onay İste
+                        if (!confirm(`"${code}" kodlu sınava ${questions.length} adet soru yüklenecek.\n\nDİKKAT: Bu işlem mevcut soruları silecektir. Onaylıyor musunuz?`)) {
+                            return;
+                        }
+
+                        // 5. Firebase'e Kaydet
+                        // Not: getQuestionsRef ve setDoc fonksiyonları yukarıdaki global importlardan geliyor.
+                        const ref = doc(db, "questions_pool", code); 
+                        
+                        // Butona görsel geri bildirim verelim (Eğer butonu bulabilirsek)
+                        // Bu kısım opsiyonel ama şık durur
+                        
+                        await setDoc(ref, { questions_list: questions });
+                        
+                        alert(`✅ Başarılı! ${questions.length} soru içeri aktarıldı.`);
+                        
+                        // Listeyi yenile ki sayı güncellensin
+                        if(window.loadMyExams) window.loadMyExams();
+
+                    } catch (err) {
+                        alert("❌ Yükleme Hatası:\n" + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            // Dosya seçiciyi aç
+            input.click();
+        };
         initializeFirebase();
         // --- ÖZEL ÖNİZLEME KAPATMA FONKSİYONU (KESİN ÇÖZÜM) ---
 window.forceClosePreview = function() {
