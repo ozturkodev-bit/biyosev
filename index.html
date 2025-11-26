@@ -1562,12 +1562,19 @@ async function showStudentDashboard(studentResult) {
         const allSnap = await getDocs(allResultsQuery);
         const allData = allSnap.docs.map(d => d.data());
 
-        // 2. ÖĞRENCİNİN GEÇMİŞ SINAVLARI (Gelişim Grafiği için)
-        const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", studentResult.number));
-        const historySnap = await getDocs(historyQuery);
-        const historyData = historySnap.docs
-            .map(d => ({ code: d.examCode, score: parseFloat(d.score), date: d.timestamp }))
-            .sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+       // 2. ÖĞRENCİNİN GEÇMİŞ SINAVLARI (Gelişim Grafiği için)
+const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", studentResult.number));
+const historySnap = await getDocs(historyQuery);
+const historyData = historySnap.docs
+    .map(doc => {
+        const data = doc.data();
+        return { 
+            code: data.examCode, 
+            score: parseFloat(data.score), 
+            date: data.timestamp 
+        };
+    })
+    .sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
 
         // --- İSTATİSTİK HESAPLAMALARI ---
         
