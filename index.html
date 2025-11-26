@@ -1896,22 +1896,16 @@ function safeText(selector, fallback = '') {
 // PDF İndirme Fonksiyonu (Tüm İstatistiklerle Güncellenmiş Versiyon)
 window.downloadSimplePDF = function() {
     try {
-        // Kütüphane ve Veri Kontrolü
-        if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdf.autoTable) {
+        // 1. Kütüphane Kontrolü (window.jspdf üzerinden)
+        if (!window.jspdf || !window.jspdf.jsPDF) {
             alert('PDF kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin.');
-            return;
-        }
-
-        const stats = window.lastStudentStats;
-        if (!stats) {
-            alert('PDF oluşturulacak istatistik verisi bulunamadı. Lütfen önce sınav sonucunu görüntüleyin.');
             return;
         }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Türkçe karakter desteği için font ayarı
+        / 2. Font Ayarı (Türkçe karakterler için)
         doc.setFont("times", "normal");
         
         let y = 20;
