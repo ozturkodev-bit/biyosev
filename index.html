@@ -1611,27 +1611,28 @@ async function showStudentDashboard(studentResult) {
 
         // --- ARAYÜZ OLUŞTURMA ---
         `
-          let htmlContent = `<div class="flex justify-center gap-3 mb-6 flex-wrap">
+         let htmlContent = `<div class="flex justify-center gap-3 mb-6 flex-wrap">
 <button onclick="downloadSimplePDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📄 PDF İndir</button>
 <button onclick="shareSimpleWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📱 WhatsApp'ta Paylaş</button>
-</div>`;
-    <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
-        <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
-            <span>🏆 Kazanılan Rozetler</span>
-            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">${badges.length}</span>
-        </h3>
-        <div class="flex flex-wrap gap-2">
-            ${badges.length > 0 ? 
-                badges.map(badge => `
-                    <span class="${badge.color} px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm">
-                        ${badge.icon} ${badge.name}
-                    </span>
-                `).join('') 
-                : 
-                '<div class="text-center text-gray-500 py-4"><span class="text-2xl">🎯</span><p class="mt-2">Henüz rozet kazanılmadı<br><span class="text-xs">Daha iyi performans için çalışmaya devam edin!</span></p></div>'
-            }
-        </div>
+</div>
+
+<div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
+    <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+        <span>🏆 Kazanılan Rozetler</span>
+        <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">${badges.length}</span>
+    </h3>
+    <div class="flex flex-wrap gap-2">
+        ${badges.length > 0 ? 
+            badges.map(badge => `
+                <span class="${badge.color} px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm">
+                    ${badge.icon} ${badge.name}
+                </span>
+            `).join('') 
+            : 
+            '<div class="text-center text-gray-500 py-4"><span class="text-2xl">🎯</span><p class="mt-2">Henüz rozet kazanılmadı<br><span class="text-xs">Daha iyi performans için çalışmaya devam edin!</span></p></div>'
+        }
     </div>
+</div>`;
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col items-center justify-center">
