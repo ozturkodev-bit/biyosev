@@ -58,6 +58,7 @@
     </div>
 
     <script type="module">
+       
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
             getFirestore, 
@@ -81,7 +82,7 @@
             signInAnonymously, 
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
+         import { jsPDF } from "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.es.min.js";
         const firebaseConfig = {
             apiKey: "AIzaSyCHhFAHbWnclad6yFuI-Pw9gX6F_Dx1B2c",
             authDomain: "online-sinav-b3644.firebaseapp.com",
@@ -1768,39 +1769,29 @@ function safeText(selector, fallback = '') {
     return el && el.textContent ? el.textContent.trim() : fallback;
 }
 
-// PDF İndirme Fonksiyonu (Düzeltilmiş Versiyon)
+// PDF İndirme Fonksiyonu (Import Yöntemi ile Güncellendi)
 window.downloadSimplePDF = function() {
     try {
-        // 1. Kütüphane Kontrolü
-        if (typeof window.jspdf === 'undefined') {
-            alert('PDF kütüphanesi (jsPDF) henüz yüklenmedi. Lütfen sayfayı yenileyip tekrar deneyin.');
-            return;
-        }
-
-        const { jsPDF } = window.jspdf;
+        // jsPDF yukarıda import edildiği için doğrudan kullanılabilir
         const doc = new jsPDF();
 
-        // 2. Türkçe Karakter Desteği İçin Font Ayarı
-        // Varsayılan Helvetica yerine Times kullanmak Türkçe karakterleri (ğ, ş, ı) daha iyi gösterir.
+        // Türkçe karakter sorunu yaşamamak için font ayarı
         doc.setFont("times", "normal");
 
-        // 3. Verileri Sayfadan Güvenli Şekilde Al
-        // safeText fonksiyonu modül içinde tanımlı olduğu için buradan erişilebilir.
+        // Verileri sayfadan al
         const studentName = safeText('h1.text-xl', 'Ogrenci');
         const score = safeText('.text-indigo-800', '0');
-        // Net metnindeki emojileri veya gereksiz boşlukları temizleyelim
+        // Net metnindeki emojileri temizle
         let netText = safeText('.text-gray-700', '0 D - 0 Y - 0 B').replace(/[^a-zA-Z0-9\s\-\.]/g, ''); 
 
-        // 4. PDF İçeriğini Oluştur (EMOJİ KULLANMADAN)
-        // Başlık
+        // PDF İçeriği (Emoji KULLANMADAN)
         doc.setFontSize(18);
         doc.setTextColor(40, 40, 40);
-        doc.text('SINAV SONUC RAPORU', 105, 20, { align: 'center' }); // Türkçe karakter yerine İngilizce harf tercih edildi garanti olsun diye
+        doc.text('SINAV SONUC RAPORU', 105, 20, { align: 'center' });
 
         doc.setLineWidth(0.5);
-        doc.line(20, 25, 190, 25); // Alt çizgi
+        doc.line(20, 25, 190, 25); // Çizgi
 
-        // İçerik Bilgileri
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
 
@@ -1812,13 +1803,11 @@ window.downloadSimplePDF = function() {
         const tarihStr = bugun.getDate() + "/" + (bugun.getMonth() + 1) + "/" + bugun.getFullYear();
         doc.text(`Tarih: ${tarihStr}`, 20, 70);
 
-        // Alt Bilgi
         doc.setFontSize(10);
         doc.setTextColor(150, 150, 150);
         doc.text('Bu belge otomatik olarak olusturulmustur.', 105, 280, { align: 'center' });
 
-        // 5. Dosyayı Kaydet
-        // Dosya ismindeki Türkçe karakterleri ve boşlukları temizle
+        // Dosya ismini temizle ve kaydet
         const safeName = studentName
             .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
             .replace(/ş/g, 's').replace(/Ş/g, 'S')
@@ -1828,11 +1817,11 @@ window.downloadSimplePDF = function() {
             .replace(/ç/g, 'c').replace(/Ç/g, 'C')
             .replace(/[^a-zA-Z0-9]/g, '_');
 
-        doc.save(`${safeName}_Sonuc_Raporu.pdf`);
+        doc.save(`${safeName}_Sonuc.pdf`);
 
     } catch (error) {
         console.error('PDF Hatası:', error);
-        alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
+        alert('PDF oluşturulurken hata: ' + error.message);
     }
 };
 // WhatsApp Paylaşım (basit)
@@ -2037,6 +2026,6 @@ function calculateBadges(studentResult, rank, totalStudents, historyData) {
 }
 
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
 </body>
 </html>
