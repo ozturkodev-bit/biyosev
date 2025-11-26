@@ -354,20 +354,40 @@
                 `;
                 infoArea.classList.remove('hidden');
 
-                if (!success || studentList.length === 0) {
-                    // Manuel Giriş Modu
-                    loginFields.innerHTML = `
-                        <div class="bg-red-50 p-2 rounded text-xs text-red-700 mb-2">⚠️ Liste bulunamadı. Manuel giriş yapınız.</div>
-                        <input id="nameInput" type="text" placeholder="Ad Soyad" class="w-full p-3 border rounded-lg">
-                        <input id="numberInput" type="number" placeholder="Okul No" class="w-full p-3 border rounded-lg">
-                        <input id="classInput" type="text" placeholder="Sınıf (Örn: 10A)" class="w-full p-3 border rounded-lg">
-                    `;
-                    const checkManual = () => {
-                         const valid = document.getElementById('nameInput').value && document.getElementById('numberInput').value && document.getElementById('classInput').value;
-                         btn.disabled = !valid;
-                         btn.classList.toggle('opacity-50', !valid);
-                         btn.classList.toggle('cursor-not-allowed', !valid);
-                    };
+                // Manuel Giriş Modu (Liste Yoksa)
+    if (!success || studentList.length === 0) {
+        loginFields.innerHTML = `
+            <div class="bg-red-50 p-2 rounded text-xs text-red-700 mb-2">⚠️ Liste bulunamadı. Manuel giriş yapınız.</div>
+            <input id="nameInput" type="text" placeholder="Ad Soyad" class="w-full p-3 border rounded-lg">
+            <input id="numberInput" type="number" placeholder="Okul No" class="w-full p-3 border rounded-lg">
+            <input id="classInput" type="text" placeholder="Sınıf (Örn: 10A)" class="w-full p-3 border rounded-lg">
+            
+            <div class="relative mt-2">
+                <input id="studentPasswordManual" type="text" placeholder="Sınav Şifresi Belirleyiniz" class="w-full p-3 border rounded-lg bg-orange-50 text-orange-900 font-bold border-orange-200 placeholder-orange-300">
+                <p class="text-[10px] text-gray-400 mt-1 pl-1">* Sonucunuzu görmek için bu şifre gereklidir.</p>
+            </div>
+        `;
+
+        // Butonun aktif olması için kontrol fonksiyonu (Şifre alanı da eklendi)
+        const checkManual = () => {
+             const valid = document.getElementById('nameInput').value && 
+                           document.getElementById('numberInput').value && 
+                           document.getElementById('classInput').value &&
+                           document.getElementById('studentPasswordManual').value; // <-- ŞİFRE KONTROLÜ
+             
+             btn.disabled = !valid;
+             btn.classList.toggle('opacity-50', !valid);
+             btn.classList.toggle('cursor-not-allowed', !valid);
+        };
+
+        // Giriş yapıldıkça butonu kontrol et
+        document.getElementById('nameInput').oninput = checkManual;
+        document.getElementById('numberInput').oninput = checkManual;
+        document.getElementById('classInput').oninput = checkManual;
+        document.getElementById('studentPasswordManual').oninput = checkManual; // <-- YENİ EKLENEN KONTROL
+    
+    } else {
+// ... (Kodun geri kalanı aynı kalacak)
                     document.getElementById('nameInput').oninput = checkManual;
                     document.getElementById('numberInput').oninput = checkManual;
                     document.getElementById('classInput').oninput = checkManual;
@@ -385,9 +405,14 @@
                         <select id="studentSelector" class="w-full p-3 border rounded-lg bg-gray-100" disabled>
                             <option value="">-- Önce Sınıf Seçin --</option>
                         </select>
-                        <div id="verificationArea" class="hidden mt-2">
-                            <input id="numberVerify" type="number" placeholder="Doğrulama için Okul Numaranız" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-indigo-500">
-                        </div>
+                       <div id="verificationArea" class="hidden mt-2 space-y-2">
+    <input id="numberVerify" type="number" placeholder="Doğrulama: Okul Numaranız" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-indigo-500">
+    
+    <div class="relative">
+        <input id="studentPassword" type="text" placeholder="Sınav Şifresi Belirleyiniz (Sonuç İçin)" class="w-full p-3 border-2 border-orange-300 rounded-lg focus:ring-orange-500 bg-orange-50 text-orange-900 font-bold placeholder-orange-300">
+        <p class="text-[10px] text-gray-400 mt-1 pl-1">* Sonucunuzu daha sonra görmek için bu şifre gereklidir.</p>
+    </div>
+</div>
                     `;
 
                     document.getElementById('classSelector').onchange = (e) => {
@@ -425,75 +450,105 @@
             }, 500);
         }
 
-        // Öğrenci Giriş İşlemi
-        async function handleStudentLogin() {
-            const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
-            if (!code) { showCustomAlert("Hata", "Geçersiz sınav kodu."); return; }
+       async function handleStudentLogin() {
+    const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
+    if (!code) { showCustomAlert("Hata", "Geçersiz sınav kodu."); return; }
 
-            let name, number, className;
-            if (document.getElementById('studentSelector')) {
-               const selVal = document.getElementById('studentSelector').value;
-const inputNum = document.getElementById('numberVerify').value;
-if (!selVal || !inputNum) { showCustomAlert("Hata", "Eksik bilgi."); return }
+    let name, number, className, password;
+    
+    // --- LİSTEDEN SEÇİM MODU ---
+    if (document.getElementById('studentSelector')) {
+        const selVal = document.getElementById('studentSelector').value;
+        const inputNum = document.getElementById('numberVerify').value;
+        password = sanitizeInput(document.getElementById('studentPassword').value.trim()); // Şifreyi al
 
-const parts = selVal.split('_');
-if (parts.length < 2) {
-    // Veri hatası oluşursa (Numara_Ad formatı bozulmuşsa)
-    return showCustomAlert("Hata", "Öğrenci veri formatı hatası. Lütfen Yöneticiye başvurun.");
-}
+        if (!selVal || !inputNum) { showCustomAlert("Hata", "Eksik bilgi."); return }
 
-const realNum = parts[0];
-// Geriye kalan tüm parçaları birleştir (Ad Soyad'ın ortasında '_' olsa bile)
-let rawName = parts.slice(1).join('_');
-// İsimdeki baştaki ve sondaki tırnakları temizle
-let realName = rawName.replace(/^"|"$/g, '').trim(); 
+        const parts = selVal.split('_');
+        if (parts.length < 2) return showCustomAlert("Hata", "Format hatası.");
 
-if (realNum !== inputNum) { return showCustomAlert("Hatalı Doğrulama", "Numara eşleşmiyor.") }
+        const realNum = parts[0];
+        let rawName = parts.slice(1).join('_');
+        let realName = rawName.replace(/^"|"$/g, '').trim(); 
 
-name = sanitizeInput(realName);
-number = realNum;
-                className = sanitizeInput(document.getElementById('classSelector').value);
+        if (realNum !== inputNum) { return showCustomAlert("Hatalı Doğrulama", "Girdiğiniz numara seçilen öğrenciyle eşleşmiyor.") }
+        
+        name = sanitizeInput(realName);
+        number = realNum;
+        className = sanitizeInput(document.getElementById('classSelector').value);
+    } 
+    // --- MANUEL GİRİŞ MODU ---
+    else {
+        name = sanitizeInput(document.getElementById('nameInput').value);
+        number = document.getElementById('numberInput').value;
+        className = sanitizeInput(document.getElementById('classInput').value);
+        password = sanitizeInput(document.getElementById('studentPasswordManual') ? document.getElementById('studentPasswordManual').value.trim() : "");
+    }
+
+    // ŞİFRE KONTROLÜ (Boş olamaz)
+    if (!name || !number || !className || !password) { 
+        showCustomAlert("Eksik Bilgi", "Lütfen tüm alanları ve <b>Sınav Şifresini</b> doldurun.<br>Bu şifre sonucunuzu başkalarının görmemesi içindir."); 
+        return; 
+    }
+
+    if (quizQuestions.length === 0) return showCustomAlert("Hata", "Bu sınavda hiç soru yok.");
+
+    // Password'ü studentData içine ekliyoruz
+    studentData = { name, number, className, examCode: code, password: password };
+    
+    const studentKey = `${code}_${number}`;
+    const loadBtn = document.getElementById('startQuizButton');
+    loadBtn.innerText = "Kontrol Ediliyor..."; loadBtn.disabled = true;
+
+    try {
+        // 1. ÖNCEKİ SONUÇ KONTROLÜ
+        const subQ = query(collection(db, "quiz_submissions"), where("studentKey", "==", studentKey));
+        const subSnap = await getDocs(subQ);
+        
+        if (!subSnap.empty) {
+            // Sonuç var, ŞİFRE DOĞRULAMA YAP
+            const existingData = subSnap.docs[0].data();
+            
+            // Eğer veritabanındaki şifre ile girilen şifre eşleşiyorsa
+            if (existingData.password === password) {
+                loadBtn.innerText = "Giriş"; loadBtn.disabled = false;
+                showCustomAlert("Giriş Başarılı", "Kimlik doğrulandı. Sonuç paneline yönlendiriliyorsunuz...").then(() => {
+                    // Burada önceki cevabımda verdiğim dashboard fonksiyonunu çağırıyoruz
+                    showStudentDashboard(existingData);
+                });
             } else {
-                name = sanitizeInput(document.getElementById('nameInput').value);
-                number = document.getElementById('numberInput').value;
-                className = sanitizeInput(document.getElementById('classInput').value);
-            }
-
-            if (!name || !number || !className) { showCustomAlert("Hata", "Tüm alanları doldurun."); return; }
-            if (quizQuestions.length === 0) return showCustomAlert("Hata", "Bu sınavda hiç soru yok.");
-
-            studentData = { name, number, className, examCode: code };
-            const studentKey = `${code}_${number}`;
-            const loadBtn = document.getElementById('startQuizButton');
-            loadBtn.innerText = "Kontrol Ediliyor..."; loadBtn.disabled = true;
-
-            try {
-                const subQ = query(collection(db, "quiz_submissions"), where("studentKey", "==", studentKey));
-                const subSnap = await getDocs(subQ);
-                if (!subSnap.empty) {
-                    loadBtn.innerText = "Giriş"; loadBtn.disabled = false;
-                    return showCustomAlert("Sınav Tamamlandı", "Bu sınavı zaten tamamladınız.");
-                }
-
-                const sesQ = query(collection(db, "active_sessions"), where("studentKey", "==", studentKey));
-                const sesSnap = await getDocs(sesQ);
-                if (!sesSnap.empty) {
-                    const session = sesSnap.docs[0].data();
-                    showCustomAlert("Devam Ediliyor", "Önceki oturumunuz bulundu.").then(() => {
-                        restoreSession({ id: sesSnap.docs[0].id, ...session });
-                        startQuiz();
-                    });
-                } else {
-                    startNewSession(number);
-                    startQuiz();
-                }
-
-            } catch(e) {
-                showCustomAlert("Hata", "Giriş yapılırken hata oluştu: " + e.message);
                 loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
+                showCustomAlert("Erişim Reddedildi", "<b>Hatalı Şifre!</b><br>Bu öğrencinin sonucunu görüntülemek için sınava başlarken belirlenen şifreyi girmelisiniz.");
             }
+            return;
         }
 
+        // 2. AKTİF OTURUM KONTROLÜ
+        const sesQ = query(collection(db, "active_sessions"), where("studentKey", "==", studentKey));
+        const sesSnap = await getDocs(sesQ);
+        if (!sesSnap.empty) {
+            const session = sesSnap.docs[0].data();
+            // Kaldığı yerden devam ederken de şifre kontrolü (Opsiyonel ama güvenli)
+            if (session.password && session.password !== password) {
+                 loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
+                 return showCustomAlert("Hata", "Yarım kalan oturuma devam etmek için doğru şifreyi girmelisiniz.");
+            }
+            
+            showCustomAlert("Devam Ediliyor", "Önceki oturumunuz bulundu.").then(() => {
+                restoreSession({ id: sesSnap.docs[0].id, ...session });
+                startQuiz();
+            });
+        } else {
+            // YENİ SINAV BAŞLATIYORUZ (Şifre studentData içinde zaten var)
+            startNewSession(number);
+            startQuiz();
+        }
+
+    } catch(e) {
+        showCustomAlert("Hata", "Giriş yapılırken hata oluştu: " + e.message);
+        loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
+    }
+}
         // --- OTURUM YÖNETİMİ ---
         function seededShuffle(array, seed) {
             let hash = 0;
