@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sınav Sistemi V16 (Ö.Sevinç Özel Sürüm)</title>
+    <title>Sınav Sistemi V16 (Ö.Sevinç)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -124,8 +125,9 @@
         // Admin ve Tablo Verileri
         let allSubmissions = [];
         let isTeacherMode = false;
-        let isPreviewMode = false; // <-- YENİ EKLENECEK SATIR BU
+        let isPreviewMode = false; 
 
+        window.lastStudentStats = null;
         // --- INPUT VALIDATION FONKSİYONLARI ---
         function sanitizeInput(input) {
             if (typeof input !== 'string') return '';
@@ -710,61 +712,183 @@
             showResultScreen(finalData);
         }
 
-        // --- SONUÇ EKRANI ---
-        async function showResultScreen(data) {
-            document.getElementById('app').className = 'app-card max-w-4xl';
-            document.getElementById('loginHeader').innerHTML = '<h1 class="text-2xl font-bold">Sınav Tamamlandı</h1>';
+      // YENİ showResultScreen FONKSİYONU
+async function showResultScreen(data) {
+    document.getElementById('app').className = 'app-card max-w-4xl';
+    document.getElementById('loginHeader').innerHTML = '<h1 class="text-2xl font-bold">Sınav Tamamlandı</h1>';
+    
+    let rankInfo = "Sıralama yükleniyor...";
+    let myRank = "—", totalStudents = "—", schoolAverage = "—"; // Varsayılan değerler
+    let classAverages = []; // Varsayılan
+    let historyData = []; // Varsayılan
+    let badges = []; // Varsayılan
+    
+    const studentResult = data; 
+
+    if(isDbConnected) {
+        try {
+            // 1. TÜM SINAV SONUÇLARINI ÇEK
+            const allResultsQuery = query(collection(db, "quiz_submissions"), where("examCode", "==", studentResult.examCode));
+            const allSnap = await getDocs(allResultsQuery);
+            const allData = allSnap.docs.map(d => d.data());
+
+            // 2. ÖĞRENCİNİN GEÇMİŞ SINAVLARI
+            const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", String(studentResult.number)));
+            const historySnap = await getDocs(historyQuery);
+            historyData = historySnap.docs
+                .map(doc => {
+                    const result = doc.data();
+                    return { code: result.examCode, score: parseFloat(result.score) || 0, date: result.timestamp };
+                })
+                .sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+
+
+            // --- İSTATİSTİK HESAPLAMALARI ---
             
-            let rankInfo = "Sıralama yükleniyor...";
-            let allStudentResults = [];
-
-            if(isDbConnected) {
-                try {
-                    const currentExamQuery = query(collection(db, "quiz_submissions"), where("examCode", "==", data.examCode));
-                    const currentExamSnap = await getDocs(currentExamQuery);
-                    const scores = currentExamSnap.docs.map(d => parseFloat(d.data().score)).sort((a,b) => b-a);
-                    const rank = scores.indexOf(parseFloat(data.score)) + 1;
-                    rankInfo = `${rank}. sıra (${scores.length} kişi arasında)`;
-
-                    const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", String(data.number)));
-                    const historySnap = await getDocs(historyQuery);
-                    allStudentResults = historySnap.docs.map(d => { const result = d.data(); return { examCode: result.examCode, score: parseFloat(result.score) || 0, timestamp: result.timestamp }; }).sort((a,b) => (a.timestamp?.seconds||0) - (b.timestamp?.seconds||0));
-                } catch(e) { rankInfo = "Sıralama alınamadı"; }
+            // A. Sıralama
+            allData.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+            myRank = allData.findIndex(d => d.number === studentResult.number) + 1;
+            totalStudents = allData.length;
+            rankInfo = `${myRank}. sıra (${totalStudents} kişi arasında)`;
+            
+            // B. Okul Ortalaması
+            const totalScoreSum = allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0);
+            schoolAverage = (totalScoreSum / totalStudents).toFixed(2);
+            
+            // C. Sınıf Bazlı Analiz
+            const classStats = {};
+            allData.forEach(d => {
+                if (!classStats[d.className]) classStats[d.className] = { totalScore: 0, count: 0, scores: [] };
+                classStats[d.className].totalScore += parseFloat(d.score);
+                classStats[d.className].count += 1;
+                classStats[d.className].scores.push(parseFloat(d.score));
+            });
+            
+            classAverages = Object.keys(classStats).map(cls => {
+                return { className: cls, avg: (classStats[cls].totalScore / classStats[cls].count).toFixed(2), count: classStats[cls].count };
+            }).sort((a, b) => parseFloat(b.avg) - parseFloat(a.avg));
+            
+            // D. Rozetler
+            // Not: calculateBadges fonksiyonunun kodun başka bir yerinde tanımlı olması gerekiyor.
+            if(typeof calculateBadges === 'function') {
+                badges = calculateBadges(studentResult, myRank, totalStudents, historyData);
             }
+            
+            // E. GLOBAL PDF VERİSİNE KAYDETME (!!! BURASI ÇOK ÖNEMLİ !!!)
+            window.lastStudentStats = {
+                student: studentResult.name,
+                number: studentResult.number,
+                class: studentResult.className,
+                examCode: studentResult.examCode,
+                score: parseFloat(studentResult.score).toFixed(2),
+                correct: studentResult.correct,
+                incorrect: studentResult.incorrect,
+                empty: studentResult.empty,
+                timeSpent: studentResult.timeSpent,
+                focusLoss: studentResult.focusLossCount,
+                rank: myRank,
+                totalStudents: totalStudents,
+                schoolAverage: schoolAverage,
+                classAverages: classAverages,
+                badges: badges.map(b => b.name) // Sadece rozet isimlerini kaydet
+            };
+            // ---------------------------------------------------
 
-            document.getElementById('mainContentArea').innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="text-center">
-                            <div class="inline-block p-4 rounded-full bg-indigo-100 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            </div>
-                            <div class="text-5xl font-extrabold text-gray-800 mb-2">${data.score}</div>
-                            <p class="text-gray-500 font-medium mb-2">Puanınız</p>
-                            <div class="text-sm text-gray-600 bg-gray-100 p-2 rounded">${rankInfo}</div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="bg-green-50 p-3 rounded-lg border border-green-100"><p class="text-2xl font-bold text-green-600">${data.correct}</p><p class="text-xs text-green-800">Doğru</p></div>
-                            <div class="bg-red-50 p-3 rounded-lg border border-red-100"><p class="text-2xl font-bold text-red-600">${data.incorrect}</p><p class="text-xs text-red-800">Yanlış</p></div>
-                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200"><p class="text-2xl font-bold text-gray-600">${data.empty}</p><p class="text-xs text-gray-800">Boş</p></div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg border shadow-sm">
-                            <h3 class="font-bold text-gray-700 mb-3">Sınav Geçmişi</h3>
-                            <div class="max-h-40 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="p-2 text-left text-xs">Sınav Kodu</th><th class="p-2 text-left text-xs">Puan</th></tr></thead><tbody>${allStudentResults.map(exam => `<tr class="${exam.examCode === data.examCode ? 'bg-indigo-50' : 'hover:bg-gray-50'} border-b"><td class="p-2 text-xs font-medium">${exam.examCode}</td><td class="p-2 text-xs font-bold ${exam.score >= 50 ? 'text-green-600' : 'text-red-600'}">${exam.score}</td></tr>`).join('')}</tbody></table></div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border shadow-sm"><h3 class="font-bold text-gray-700 mb-4">Gelişim Grafiği</h3><div class="h-64"><canvas id="progressChart"></canvas></div></div>
+        } catch(e) { 
+            console.error("İstatistik yüklenirken hata:", e);
+            rankInfo = "Sıralama alınamadı"; 
+        } 
+    } 
+    
+    // Sınıf ortalaması değerini HTML'e basmak için hazırlayalım
+    const myClassAvg = classAverages.find(c => c.className === studentResult.className)?.avg || '—';
+
+    // HTML İÇERİĞİ
+    document.getElementById('mainContentArea').innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4"> 
+                <div class="text-center"> 
+                    <div class="inline-block p-4 rounded-full bg-indigo-100 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div> 
+                    <div class="text-5xl font-extrabold text-gray-800 mb-2">${studentResult.score}</div> 
+                    <p class="text-gray-500 font-medium mb-2">Puanınız</p> 
+                    <div class="text-sm text-gray-600 bg-gray-100 p-2 rounded">${rankInfo}</div> 
+                </div> 
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col items-center justify-center"> 
+                        <span class="text-sm text-green-600 font-bold mb-1">NET DURUMU</span> 
+                        <div class="text-sm font-bold text-gray-700"> 
+                            <span class="text-green-600">${studentResult.correct} D</span> - <span class="text-red-600">${studentResult.incorrect} Y</span> - <span class="text-gray-500">${studentResult.empty} B</span> 
+                        </div> 
+                    </div> 
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col items-center justify-center"> 
+                        <span class="text-sm text-blue-600 font-bold mb-1">OKUL ORTALAMASI</span> 
+                        <span class="text-xl font-extrabold text-blue-800"> ${schoolAverage} </span> 
+                    </div> 
+                    <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100 flex flex-col items-center justify-center"> 
+                        <span class="text-sm text-yellow-600 font-bold mb-1">SINIF ORTALAMASI</span> 
+                        <span class="text-xl font-extrabold text-yellow-800"> ${myClassAvg} </span> 
+                    </div> 
                 </div>
-                <div class="mt-6 text-center"><button onclick="location.reload()" class="button bg-gray-800 text-white py-3 px-6 rounded-lg font-bold hover:bg-gray-900">Çıkış Yap</button></div>
-            `;
+                
+                ${badges.length > 0 ? `
+                <div class="p-4 bg-gray-50 rounded-xl border">
+                    <h4 class="font-bold text-gray-700 mb-3">Kazanılan Rozetler</h4>
+                    <div class="flex flex-wrap gap-2">
+                        ${badges.map(b => `<span class="${b.color} text-xs font-bold px-2 py-1 rounded-full">${b.icon} ${b.name}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            </div> 
             
-            if (allStudentResults.length > 0) {
-                setTimeout(() => {
-                    const ctx = document.getElementById('progressChart').getContext('2d');
-                    new Chart(ctx, { type: 'bar', data: { labels: allStudentResults.map(r => r.examCode), datasets: [{ label: 'Puan', data: allStudentResults.map(r => r.score), backgroundColor: allStudentResults.map(exam => exam.examCode === data.examCode ? 'rgba(79, 70, 229, 0.8)' : 'rgba(79, 70, 229, 0.4)'), borderColor: 'rgba(79, 70, 229, 1)', borderWidth: 1, borderRadius: 4, }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
-                }, 500);
-            }
-        }
+            <div class="space-y-4">
+                 <div class="bg-white p-4 rounded-xl shadow-sm border"> 
+                    <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2"> 
+                        <span>🏆 Sınıf Başarı Ortalamaları</span> 
+                    </h3> 
+                    <div class="overflow-x-auto"> 
+                        <table class="w-full text-sm"> 
+                            <thead class="bg-gray-100"> 
+                                <tr> 
+                                    <th class="p-2 text-left">Sınıf</th> 
+                                    <th class="p-2 text-center">Öğrenci Sayısı</th> 
+                                    <th class="p-2 text-right">Ortalama Puan</th> 
+                                </tr> 
+                            </thead> 
+                            <tbody class="divide-y"> 
+                                ${classAverages.map(c => ` 
+                                    <tr class="${c.className === studentResult.className ? 'bg-indigo-50 font-bold text-indigo-700' : ''}"> 
+                                        <td class="p-2">${c.className}</td> 
+                                        <td class="p-2 text-center">${c.count}</td> 
+                                        <td class="p-2 text-right">${c.avg}</td> 
+                                    </tr> 
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-xl shadow-sm border"> 
+                    <h3 class="font-bold text-gray-700 mb-4">Sınav Güvenlik ve Süre Bilgileri</h3>
+                    <p class="text-sm text-gray-600">Harcanan Süre: 
+                        <span class="font-bold text-indigo-600">${Math.floor(studentResult.timeSpent / 60)} dakika ${studentResult.timeSpent % 60} saniye</span>
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">Odak Kaybı Sayısı: 
+                        <span class="font-bold ${studentResult.focusLossCount > 0 ? 'text-red-600' : 'text-green-600'}">${studentResult.focusLossCount} kez</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center border-t pt-4">
+            <button onclick="window.downloadSimplePDF()" class="button bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg">
+                📄 İstatistikleri PDF Olarak İndir
+            </button>
+        </div>
+    `;
+    // ... (grafik ve diğer HTML elementlerinin oluşturulma kısmı buradan devam eder)
+}
 
         // --- YÖNETİCİ MODÜLÜ ---
         function showTeacherLogin() {
@@ -1769,53 +1893,147 @@ function safeText(selector, fallback = '') {
     return el && el.textContent ? el.textContent.trim() : fallback;
 }
 
-// PDF İndirme Fonksiyonu (Kesin Çözüm - UMD Versiyonu)
+// PDF İndirme Fonksiyonu (Tüm İstatistiklerle Güncellenmiş Versiyon)
 window.downloadSimplePDF = function() {
     try {
-        // 1. Kütüphane Kontrolü (window.jspdf üzerinden)
-        if (!window.jspdf || !window.jspdf.jsPDF) {
+        // Kütüphane ve Veri Kontrolü
+        if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdf.autoTable) {
             alert('PDF kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin.');
             return;
         }
 
-        // jsPDF nesnesini global alandan çekiyoruz
+        const stats = window.lastStudentStats;
+        if (!stats) {
+            alert('PDF oluşturulacak istatistik verisi bulunamadı. Lütfen önce sınav sonucunu görüntüleyin.');
+            return;
+        }
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
-        // 2. Font Ayarı (Türkçe karakterler için)
+        
+        // Türkçe karakter desteği için font ayarı
         doc.setFont("times", "normal");
+        
+        let y = 20;
 
-        // 3. Verileri Sayfadan Al
-        const studentName = safeText('h1.text-xl', 'Ogrenci');
-        const score = safeText('.text-indigo-800', '0');
-        // Net bilgisini temizle
-        let netText = safeText('.text-gray-700', '0 D - 0 Y - 0 B').replace(/[^a-zA-Z0-9\s\-\.]/g, ''); 
+        // BAŞLIK
+        doc.setFontSize(24);
+        doc.setTextColor(79, 70, 229); // Mavi/Mor ton
+        doc.text('SINAV SONUÇ RAPORU', 105, y, { align: 'center' });
+        y += 8;
 
-        // 4. PDF İçeriği
-        doc.setFontSize(18);
-        doc.setTextColor(40, 40, 40);
-        doc.text('SINAV SONUC RAPORU', 105, 20, { align: 'center' });
-
+        // ALT ÇİZGİ
         doc.setLineWidth(0.5);
-        doc.line(20, 25, 190, 25);
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, y, 190, y); 
+        y += 10;
+
+        // TEMEL BİLGİLER
+        doc.setFontSize(14);
+        doc.setTextColor(40, 40, 40);
+        doc.text(`Öğrenci: ${stats.student} (${stats.number})`, 20, y);
+        doc.text(`Sınıf: ${stats.class}`, 120, y);
+        y += 7;
+        doc.text(`Sınav Kodu: ${stats.examCode}`, 20, y);
+        doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 120, y);
+        y += 10;
+        
+        // TEMEL İSTATİSTİKLER KUTUSU (PUAN & SIRALAMA)
+        doc.setFontSize(16);
+        doc.setTextColor(255, 255, 255);
+        doc.setFillColor(79, 70, 229); 
+        doc.rect(20, y - 5, 170, 25, 'F');
+        doc.text(`PUAN: ${stats.score}`, 105, y + 8, { align: 'center' });
+        doc.text(`SIRALAMA: ${stats.rank} / ${stats.totalStudents}`, 105, y + 18, { align: 'center' });
+        y += 30;
+        
+        // NET/ORTALAMA BİLGİLERİ
+        doc.setFontSize(14);
+        doc.setTextColor(40, 40, 40);
+        doc.text('Temel İstatistikler', 20, y);
+        y += 7;
 
         doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-
-        doc.text(`Ogrenci: ${studentName}`, 20, 40);
-        doc.text(`Puan: ${score}`, 20, 50);
-        doc.text(`Net Durumu: ${netText}`, 20, 60);
         
-        const bugun = new Date();
-        const tarihStr = bugun.getDate() + "/" + (bugun.getMonth() + 1) + "/" + bugun.getFullYear();
-        doc.text(`Tarih: ${tarihStr}`, 20, 70);
+        // Net Durumu
+        doc.text('Doğru / Yanlış / Boş:', 20, y);
+        doc.setTextColor(34, 197, 94); // Yeşil
+        doc.text(`${stats.correct} D`, 70, y);
+        doc.setTextColor(239, 68, 68); // Kırmızı
+        doc.text(`${stats.incorrect} Y`, 85, y);
+        doc.setTextColor(156, 163, 175); // Gri
+        doc.text(`${stats.empty} B`, 100, y);
+        
+        // Ortalamalar
+        const myClassAvg = stats.classAverages.find(c => c.className === stats.class)?.avg || '—';
+        doc.setTextColor(40, 40, 40);
+        doc.text(`Okul Ortalaması: ${stats.schoolAverage}`, 120, y);
+        y += 7;
+        doc.text(`Sınıf Ortalamanız: ${myClassAvg}`, 120, y);
+        y += 10;
 
+        // GÜVENLİK VE SÜRE BİLGİLERİ
+        doc.setFontSize(14);
+        doc.setTextColor(79, 70, 229);
+        doc.text('Sınav Güvenlik ve Süre', 20, y);
+        y += 7;
+        
+        doc.setFontSize(12);
+        doc.setTextColor(40, 40, 40);
+        const timeSpentMin = Math.floor(stats.timeSpent / 60);
+        const timeSpentSec = stats.timeSpent % 60;
+        doc.text(`Harcanan Süre: ${timeSpentMin} dk ${timeSpentSec} sn`, 20, y);
+        y += 7;
+        doc.text(`Odak Kaybı Sayısı: ${stats.focusLoss} kez`, 20, y);
+        y += 10;
+        
+        // ROZETLER
+        if (stats.badges && stats.badges.length > 0) {
+            y += 5;
+            doc.setFontSize(14);
+            doc.setTextColor(79, 70, 229);
+            doc.text('Kazanılan Rozetler:', 20, y);
+            y += 7;
+            doc.setFontSize(12);
+            doc.setTextColor(40, 40, 40);
+            doc.text(stats.badges.join(' • '), 25, y);
+            y += 10;
+        }
+
+        // SINIFLAR ARASI KARŞILAŞTIRMA TABLOSU
+        if (stats.classAverages && stats.classAverages.length > 0) {
+             y += 5;
+             doc.setFontSize(14);
+             doc.setTextColor(79, 70, 229);
+             doc.text('Sınıf Başarı Sıralaması (Ortalama Puan)', 20, y);
+             y += 7;
+
+             doc.autoTable({
+                 startY: y,
+                 head: [['Sınıf', 'Öğrenci Sayısı', 'Ortalama Puan']],
+                 body: stats.classAverages.map(c => [
+                     c.className,
+                     c.count,
+                     c.avg
+                 ]),
+                 theme: 'grid',
+                 headStyles: { fillColor: [79, 70, 229] },
+                 styles: { font: 'times', fontSize: 10 },
+                 columnStyles: {
+                     0: { fontStyle: 'bold' },
+                     2: { halign: 'right' }
+                 }
+             });
+             y = doc.autoTable.previous.finalY + 10;
+        }
+
+        // ALT BİLGİ
         doc.setFontSize(10);
         doc.setTextColor(150, 150, 150);
-        doc.text('Bu belge otomatik olarak olusturulmustur.', 105, 280, { align: 'center' });
+        doc.text('Bu belge, tüm istatistiklerle birlikte otomatik olarak olusturulmustur. (Ö.Sevinç)', 105, 280, { align: 'center' });
 
-        // 5. Dosya İsmi Temizliği ve Kayıt
-        const safeName = studentName
+        // Dosyayı Kaydet
+        const safeName = stats.student
             .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
             .replace(/ş/g, 's').replace(/Ş/g, 'S')
             .replace(/ı/g, 'i').replace(/İ/g, 'I')
@@ -1824,11 +2042,11 @@ window.downloadSimplePDF = function() {
             .replace(/ç/g, 'c').replace(/Ç/g, 'C')
             .replace(/[^a-zA-Z0-9]/g, '_');
 
-        doc.save(`${safeName}_Sonuc.pdf`);
+        doc.save(`${safeName}_Detayli_Rapor.pdf`);
 
     } catch (error) {
         console.error('PDF Hatası:', error);
-        alert('PDF oluşturulurken hata: ' + error.message);
+        alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
     }
 };
 // WhatsApp Paylaşım (basit)
