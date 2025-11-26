@@ -1768,54 +1768,73 @@ function safeText(selector, fallback = '') {
     return el && el.textContent ? el.textContent.trim() : fallback;
 }
 
-// PDF İndirme (basit)
+// PDF İndirme Fonksiyonu (Düzeltilmiş Versiyon)
 window.downloadSimplePDF = function() {
     try {
-        // jsPDF hazır mı?
-       if (typeof window.jspdf === 'undefined') {  // ✅ DOĞRU
-            console.error('jsPDF yüklü değil.');
-            alert('PDF oluşturma kütüphanesi yüklenmemiş. Lütfen jsPDF\'yi sayfaya ekleyin.');
+        // 1. Kütüphane Kontrolü
+        if (typeof window.jspdf === 'undefined') {
+            alert('PDF kütüphanesi (jsPDF) henüz yüklenmedi. Lütfen sayfayı yenileyip tekrar deneyin.');
             return;
         }
 
-        // Öğrenci bilgilerini sayfadan al (güvenli)
-        const studentName = safeText('h1.text-xl', 'Öğrenci');
-        const score = safeText('.text-indigo-800', '0');
-        const netText = safeText('.text-gray-700', '0 D - 0 Y - 0 B');
-
-        console.log("PDF oluşturuluyor:", { studentName, score, netText });
-
-        // PDF oluştur
-        const { jsPDF } = window.jspdf;  // ✅ BU SATIRI EKLE
+        const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
+        // 2. Türkçe Karakter Desteği İçin Font Ayarı
+        // Varsayılan Helvetica yerine Times kullanmak Türkçe karakterleri (ğ, ş, ı) daha iyi gösterir.
+        doc.setFont("times", "normal");
+
+        // 3. Verileri Sayfadan Güvenli Şekilde Al
+        // safeText fonksiyonu modül içinde tanımlı olduğu için buradan erişilebilir.
+        const studentName = safeText('h1.text-xl', 'Ogrenci');
+        const score = safeText('.text-indigo-800', '0');
+        // Net metnindeki emojileri veya gereksiz boşlukları temizleyelim
+        let netText = safeText('.text-gray-700', '0 D - 0 Y - 0 B').replace(/[^a-zA-Z0-9\s\-\.]/g, ''); 
+
+        // 4. PDF İçeriğini Oluştur (EMOJİ KULLANMADAN)
         // Başlık
-        doc.setFontSize(20);
+        doc.setFontSize(18);
         doc.setTextColor(40, 40, 40);
-        doc.text('📊 Sınav Sonuç Raporu', 105, 25, { align: 'center' });
+        doc.text('SINAV SONUC RAPORU', 105, 20, { align: 'center' }); // Türkçe karakter yerine İngilizce harf tercih edildi garanti olsun diye
 
-        // Öğrenci bilgileri
+        doc.setLineWidth(0.5);
+        doc.line(20, 25, 190, 25); // Alt çizgi
+
+        // İçerik Bilgileri
         doc.setFontSize(12);
-        doc.setTextColor(80, 80, 80);
-        doc.text(`Öğrenci: ${studentName}`, 20, 50);
-        doc.text(`Puan: ${score}`, 20, 65);
-        doc.text(`Net Durumu: ${netText}`, 20, 80);
-        doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 20, 95);
+        doc.setTextColor(0, 0, 0);
 
-        // Başarı mesajı (alt bilgi)
+        doc.text(`Ogrenci: ${studentName}`, 20, 40);
+        doc.text(`Puan: ${score}`, 20, 50);
+        doc.text(`Net Durumu: ${netText}`, 20, 60);
+        
+        const bugun = new Date();
+        const tarihStr = bugun.getDate() + "/" + (bugun.getMonth() + 1) + "/" + bugun.getFullYear();
+        doc.text(`Tarih: ${tarihStr}`, 20, 70);
+
+        // Alt Bilgi
         doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 280, { align: 'center' });
+        doc.setTextColor(150, 150, 150);
+        doc.text('Bu belge otomatik olarak olusturulmustur.', 105, 280, { align: 'center' });
 
-        // Güvenli dosya adı (özel karakterleri basitçe değiştir)
-        const safeFileName = `${studentName.replace(/\s+/g, '_').replace(/[^\w\-\.ÇÖĞÜİçöğüışŞ]/g, '') || 'rapor'}`;
-        doc.save(`${safeFileName}_sinav_raporu.pdf`);
+        // 5. Dosyayı Kaydet
+        // Dosya ismindeki Türkçe karakterleri ve boşlukları temizle
+        const safeName = studentName
+            .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+            .replace(/ş/g, 's').replace(/Ş/g, 'S')
+            .replace(/ı/g, 'i').replace(/İ/g, 'I')
+            .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+            .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+            .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+            .replace(/[^a-zA-Z0-9]/g, '_');
+
+        doc.save(`${safeName}_Sonuc_Raporu.pdf`);
+
     } catch (error) {
-        console.error('PDF hatası (downloadSimplePDF):', error);
-        alert('PDF oluşturulamadı. Konsolu kontrol edin.');
+        console.error('PDF Hatası:', error);
+        alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
     }
 };
-
 // WhatsApp Paylaşım (basit)
 window.shareSimpleWhatsApp = function() {
     try {
