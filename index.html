@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sınav Sistemi V16 (Ö.Sevinç Özel Sürüm)</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -82,7 +83,6 @@
             signInAnonymously, 
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-         import { jsPDF } from "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.es.min.js";
         const firebaseConfig = {
             apiKey: "AIzaSyCHhFAHbWnclad6yFuI-Pw9gX6F_Dx1B2c",
             authDomain: "online-sinav-b3644.firebaseapp.com",
@@ -1769,28 +1769,35 @@ function safeText(selector, fallback = '') {
     return el && el.textContent ? el.textContent.trim() : fallback;
 }
 
-// PDF İndirme Fonksiyonu (Import Yöntemi ile Güncellendi)
+// PDF İndirme Fonksiyonu (Kesin Çözüm - UMD Versiyonu)
 window.downloadSimplePDF = function() {
     try {
-        // jsPDF yukarıda import edildiği için doğrudan kullanılabilir
+        // 1. Kütüphane Kontrolü (window.jspdf üzerinden)
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert('PDF kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin.');
+            return;
+        }
+
+        // jsPDF nesnesini global alandan çekiyoruz
+        const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Türkçe karakter sorunu yaşamamak için font ayarı
+        // 2. Font Ayarı (Türkçe karakterler için)
         doc.setFont("times", "normal");
 
-        // Verileri sayfadan al
+        // 3. Verileri Sayfadan Al
         const studentName = safeText('h1.text-xl', 'Ogrenci');
         const score = safeText('.text-indigo-800', '0');
-        // Net metnindeki emojileri temizle
+        // Net bilgisini temizle
         let netText = safeText('.text-gray-700', '0 D - 0 Y - 0 B').replace(/[^a-zA-Z0-9\s\-\.]/g, ''); 
 
-        // PDF İçeriği (Emoji KULLANMADAN)
+        // 4. PDF İçeriği
         doc.setFontSize(18);
         doc.setTextColor(40, 40, 40);
         doc.text('SINAV SONUC RAPORU', 105, 20, { align: 'center' });
 
         doc.setLineWidth(0.5);
-        doc.line(20, 25, 190, 25); // Çizgi
+        doc.line(20, 25, 190, 25);
 
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
@@ -1807,7 +1814,7 @@ window.downloadSimplePDF = function() {
         doc.setTextColor(150, 150, 150);
         doc.text('Bu belge otomatik olarak olusturulmustur.', 105, 280, { align: 'center' });
 
-        // Dosya ismini temizle ve kaydet
+        // 5. Dosya İsmi Temizliği ve Kayıt
         const safeName = studentName
             .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
             .replace(/ş/g, 's').replace(/Ş/g, 'S')
