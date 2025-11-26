@@ -306,79 +306,155 @@
         // Kod Girildikçe Çalışan Fonksiyon
         let typingTimer;
         async function handleCodeEntry() {
-            clearTimeout(typingTimer);
-            const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
-            const infoArea = document.getElementById('examInfoArea');
-            const loginFields = document.getElementById('studentLoginFields');
-            const btn = document.getElementById('startQuizButton');
+    clearTimeout(typingTimer);
+    const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
+    const infoArea = document.getElementById('examInfoArea');
+    const loginFields = document.getElementById('studentLoginFields');
+    const btn = document.getElementById('startQuizButton');
 
-            if (code.length < 3) {
-                infoArea.classList.add('hidden');
-                document.getElementById('teacherDisplayArea').classList.add('opacity-0');
-                return;
-            }
+    if (code.length < 3) {
+        infoArea.classList.add('hidden');
+        document.getElementById('teacherDisplayArea').classList.add('opacity-0');
+        return;
+    }
 
-            typingTimer = setTimeout(async () => {
-                const success = await fetchExamData(code);
-                const isExamActive = currentExamConfig.is_active !== false; 
+    typingTimer = setTimeout(async () => {
+        const success = await fetchExamData(code);
+        const isExamActive = currentExamConfig.is_active !== false; 
 
-                // Öğretmen ismini güncelle ve görünür yap (Eğer başarılıysa)
-                if (success) {
-                    const tDisp = document.getElementById('teacherNameDisplay');
-                    const tArea = document.getElementById('teacherDisplayArea');
-                    tDisp.innerText = currentExamConfig.teacher_name || "Sistem Yöneticisi";
-                    tArea.classList.remove('opacity-0');
-                } else {
-                    document.getElementById('teacherDisplayArea').classList.add('opacity-0');
-                }
+        // Öğretmen ismini güncelle ve görünür yap (Eğer başarılıysa)
+        if (success) {
+            const tDisp = document.getElementById('teacherNameDisplay');
+            const tArea = document.getElementById('teacherDisplayArea');
+            tDisp.innerText = currentExamConfig.teacher_name || "Sistem Yöneticisi";
+            tArea.classList.remove('opacity-0');
+        } else {
+            document.getElementById('teacherDisplayArea').classList.add('opacity-0');
+        }
 
-                if (success && !isExamActive) {
-                    infoArea.innerHTML = `
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md" role="alert">
-                            <p class="font-bold text-lg">⛔ Sınav Erişimi Kapalı</p>
-                            <p>Bu sınav şu anda oturuma kapalıdır.</p>
-                        </div>
-                    `;
-                    infoArea.classList.remove('hidden');
-                    loginFields.innerHTML = ''; 
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                    return; 
-                }
+        if (success && !isExamActive) {
+            infoArea.innerHTML = `
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md" role="alert">
+                    <p class="font-bold text-lg">⛔ Sınav Erişimi Kapalı</p>
+                    <p>Bu sınav şu anda oturuma kapalıdır.</p>
+                </div>
+            `;
+            infoArea.classList.remove('hidden');
+            loginFields.innerHTML = ''; 
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            return; 
+        }
 
-                const mins = Math.floor(currentExamConfig.time_limit / 60);
-                infoArea.innerHTML = `
-                    <p class="font-bold">Sınav: ${code}</p>
-                    <p>${sanitizeInput(currentExamConfig.exam_description)}</p>
-                    <p class="text-xs mt-1">⏱️ Süre: ${mins} Dakika | 📝 Soru: ${quizQuestions.length}</p>
-                `;
-                infoArea.classList.remove('hidden');
-
-                // Manuel Giriş Modu (Liste Yoksa)
-    if (!success || studentList.length === 0) {
-        loginFields.innerHTML = `
-            <div class="bg-red-50 p-2 rounded text-xs text-red-700 mb-2">⚠️ Liste bulunamadı. Manuel giriş yapınız.</div>
-            <input id="nameInput" type="text" placeholder="Ad Soyad" class="w-full p-3 border rounded-lg">
-            <input id="numberInput" type="number" placeholder="Okul No" class="w-full p-3 border rounded-lg">
-            <input id="classInput" type="text" placeholder="Sınıf (Örn: 10A)" class="w-full p-3 border rounded-lg">
-            
-            <div class="relative mt-2">
-                <input id="studentPasswordManual" type="text" placeholder="Sınav Şifresi Belirleyiniz" class="w-full p-3 border rounded-lg bg-orange-50 text-orange-900 font-bold border-orange-200 placeholder-orange-300">
-                <p class="text-[10px] text-gray-400 mt-1 pl-1">* Sonucunuzu görmek için bu şifre gereklidir.</p>
-            </div>
+        const mins = Math.floor(currentExamConfig.time_limit / 60);
+        infoArea.innerHTML = `
+            <p class="font-bold">Sınav: ${code}</p>
+            <p>${sanitizeInput(currentExamConfig.exam_description)}</p>
+            <p class="text-xs mt-1">⏱️ Süre: ${mins} Dakika | 📝 Soru: ${quizQuestions.length}</p>
         `;
+        infoArea.classList.remove('hidden');
 
-        // Butonun aktif olması için kontrol fonksiyonu (Şifre alanı da eklendi)
-        const checkManual = () => {
-             const valid = document.getElementById('nameInput').value && 
-                           document.getElementById('numberInput').value && 
-                           document.getElementById('classInput').value &&
-                           document.getElementById('studentPasswordManual').value; // <-- ŞİFRE KONTROLÜ
-             
-             btn.disabled = !valid;
-             btn.classList.toggle('opacity-50', !valid);
-             btn.classList.toggle('cursor-not-allowed', !valid);
-        };
+        // Manuel Giriş Modu (Liste Yoksa)
+        if (!success || studentList.length === 0) {
+            loginFields.innerHTML = `
+                <div class="bg-red-50 p-2 rounded text-xs text-red-700 mb-2">⚠️ Liste bulunamadı. Manuel giriş yapınız.</div>
+                <input id="nameInput" type="text" placeholder="Ad Soyad" class="w-full p-3 border rounded-lg">
+                <input id="numberInput" type="number" placeholder="Okul No" class="w-full p-3 border rounded-lg">
+                <input id="classInput" type="text" placeholder="Sınıf (Örn: 10A)" class="w-full p-3 border rounded-lg">
+                
+                <div class="relative mt-2">
+                    <input id="studentPasswordManual" type="text" placeholder="Sınav Şifresi Belirleyiniz" class="w-full p-3 border rounded-lg bg-orange-50 text-orange-900 font-bold border-orange-200 placeholder-orange-300">
+                    <p class="text-[10px] text-gray-400 mt-1 pl-1">* Sonucunuzu görmek için bu şifre gereklidir.</p>
+                </div>
+            `;
+
+            // Butonun aktif olması için kontrol fonksiyonu (Şifre alanı da eklendi)
+            const checkManual = () => {
+                 const valid = document.getElementById('nameInput').value && 
+                               document.getElementById('numberInput').value && 
+                               document.getElementById('classInput').value &&
+                               document.getElementById('studentPasswordManual').value; // <-- ŞİFRE KONTROLÜ
+                 
+                 btn.disabled = !valid;
+                 btn.classList.toggle('opacity-50', !valid);
+                 btn.classList.toggle('cursor-not-allowed', !valid);
+            };
+
+            // Giriş yapıldıkça butonu kontrol et
+            document.getElementById('nameInput').oninput = checkManual;
+            document.getElementById('numberInput').oninput = checkManual;
+            document.getElementById('classInput').oninput = checkManual;
+            document.getElementById('studentPasswordManual').oninput = checkManual; // <-- YENİ EKLENEN KONTROL
+        
+        // **BURADAKİ ELSE DOĞRU YAPILANDIRILMIŞ HALİDİR**
+        } else { 
+            // Liste Modu
+            const students = studentList.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+            const classes = [...new Set(students.map(s => s.className))].sort();
+
+            loginFields.innerHTML = `
+                <select id="classSelector" class="w-full p-3 border rounded-lg font-bold text-indigo-700 bg-white">
+                    <option value="">-- Sınıfınızı Seçin --</option>
+                    ${classes.map(c => `<option value="${sanitizeInput(c)}">${sanitizeInput(c)}</option>`).join('')}
+                </select>
+                <select id="studentSelector" class="w-full p-3 border rounded-lg bg-gray-100" disabled>
+                    <option value="">-- Önce Sınıf Seçin --</option>
+                </select>
+                <div id="verificationArea" class="hidden mt-2 space-y-2">
+                    <input id="numberVerify" type="number" placeholder="Doğrulama: Okul Numaranız" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-indigo-500">
+                    
+                    <div class="relative">
+                        <input id="studentPassword" type="text" placeholder="Sınav Şifresi Belirleyiniz (Sonuç İçin)" class="w-full p-3 border-2 border-orange-300 rounded-lg focus:ring-orange-500 bg-orange-50 text-orange-900 font-bold placeholder-orange-300">
+                        <p class="text-[10px] text-gray-400 mt-1 pl-1">* Sonucunuzu daha sonra görmek için bu şifre gereklidir.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Sınıf Seçiciyi Doldurma ve Öğrenci Seçiciyi Dinleme
+            document.getElementById('classSelector').onchange = (e) => {
+                const selectedClass = e.target.value;
+                const studentSelect = document.getElementById('studentSelector');
+                const verifyArea = document.getElementById('verificationArea');
+                
+                studentSelect.innerHTML = selectedClass ? 
+                    students.filter(s => s.className === selectedClass).map(s => `<option value="${s.number}_${sanitizeInput(s.name)}">${sanitizeInput(s.name)} (${s.number})</option>`).join('')
+                    : '<option value="">-- Önce Sınıf Seçin --</option>';
+
+                studentSelect.disabled = !selectedClass;
+                verifyArea.classList.add('hidden');
+                btn.disabled = true;
+            };
+
+            // Öğrenci Seçiciyi Dinleme
+            document.getElementById('studentSelector').onchange = (e) => {
+                const selectedStudent = e.target.value;
+                const verifyArea = document.getElementById('verificationArea');
+                const numberVerify = document.getElementById('numberVerify');
+                const studentPassword = document.getElementById('studentPassword');
+
+                verifyArea.classList.toggle('hidden', !selectedStudent);
+                btn.disabled = true; // Doğrulama yapılana kadar kapalı
+                
+                // Şifre ve numara alanları dolunca butonu aç
+                const checkStudentValidation = () => {
+                    const studentNum = selectedStudent ? selectedStudent.split('_')[0] : '';
+                    const isNumValid = numberVerify.value === studentNum;
+                    const isPasswordValid = studentPassword.value.trim().length > 0;
+                    
+                    const isValid = isNumValid && isPasswordValid;
+                    btn.disabled = !isValid;
+                    btn.classList.toggle('opacity-50', !isValid);
+                    btn.classList.toggle('cursor-not-allowed', !isValid);
+                };
+
+                numberVerify.oninput = checkStudentValidation;
+                studentPassword.oninput = checkStudentValidation;
+            };
+        } 
+        // **handleCodeEntry fonksiyonunun içinde, setTimeout fonksiyonunun kapanışı**
+    }, 800); 
+    
+} // **handleCodeEntry fonksiyonunun kapanışı**
 
         // Giriş yapıldıkça butonu kontrol et
         document.getElementById('nameInput').oninput = checkManual;
