@@ -1772,7 +1772,7 @@ function safeText(selector, fallback = '') {
 window.downloadSimplePDF = function() {
     try {
         // jsPDF hazır mı?
-        if (typeof jsPDF === 'undefined') {
+       if (typeof window.jspdf === 'undefined') {  // ✅ DOĞRU
             console.error('jsPDF yüklü değil.');
             alert('PDF oluşturma kütüphanesi yüklenmemiş. Lütfen jsPDF\'yi sayfaya ekleyin.');
             return;
@@ -1786,6 +1786,7 @@ window.downloadSimplePDF = function() {
         console.log("PDF oluşturuluyor:", { studentName, score, netText });
 
         // PDF oluştur
+        const { jsPDF } = window.jspdf;  // ✅ BU SATIRI EKLE
         const doc = new jsPDF();
 
         // Başlık
