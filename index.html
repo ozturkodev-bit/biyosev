@@ -468,7 +468,7 @@
                     document.getElementById('numberInput').oninput = checkManual;
                     document.getElementById('classInput').oninput = checkManual;
 
-                } else {
+                
                     // Liste Modu
                     const students = studentList.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
                     const classes = [...new Set(students.map(s => s.className))].sort();
