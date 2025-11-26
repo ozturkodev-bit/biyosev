@@ -1981,18 +1981,7 @@ window.downloadSimplePDF = function() {
         doc.text(`Odak Kaybı Sayısı: ${stats.focusLoss} kez`, 20, y);
         y += 10;
         
-        // ROZETLER
-        if (stats.badges && stats.badges.length > 0) {
-            y += 5;
-            doc.setFontSize(14);
-            doc.setTextColor(79, 70, 229);
-            doc.text('Kazanılan Rozetler:', 20, y);
-            y += 7;
-            doc.setFontSize(12);
-            doc.setTextColor(40, 40, 40);
-            doc.text(stats.badges.join(' • '), 25, y);
-            y += 10;
-        }
+       
 
         // SINIFLAR ARASI KARŞILAŞTIRMA TABLOSU
         if (stats.classAverages && stats.classAverages.length > 0) {
