@@ -34,6 +34,8 @@
             border-color: #4f46e5;
         }
     </style>
+    <!-- PDF oluşturma kütüphanesi -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -1539,7 +1541,7 @@ window.forceClosePreview = function() {
         // --- YENİ GELİŞMİŞ ÖĞRENCİ İSTATİSTİK PANELİ ---
 async function showStudentDashboard(studentResult) {
     document.getElementById('connectionStatus').classList.add('hidden');
-    document.getElementById('app').className = 'app-card max-w-6xl w-full'; // Geniş ekran
+    document.getElementById('app').className = 'app-card max-w-6xl w-full';
     document.getElementById('loginHeader').innerHTML = `
         <div class="flex justify-between items-center px-4">
             <div>
@@ -1557,29 +1559,29 @@ async function showStudentDashboard(studentResult) {
     `;
 
     try {
-        // 1. BU SINAVA AİT TÜM SONUÇLARI ÇEK (Sıralama ve Ortalamalar için)
+        // 1. BU SINAVA AİT TÜM SONUÇLARI ÇEK
         const allResultsQuery = query(collection(db, "quiz_submissions"), where("examCode", "==", studentResult.examCode));
         const allSnap = await getDocs(allResultsQuery);
         const allData = allSnap.docs.map(d => d.data());
 
-       // 2. ÖĞRENCİNİN GEÇMİŞ SINAVLARI (Gelişim Grafiği için)
-const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", studentResult.number));
-const historySnap = await getDocs(historyQuery);
-const historyData = historySnap.docs
-    .map(doc => {
-        const data = doc.data();
-        return { 
-            code: data.examCode, 
-            score: parseFloat(data.score), 
-            date: data.timestamp 
-        };
-    })
-    .sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
+        // 2. ÖĞRENCİNİN GEÇMİŞ SINAVLARI
+        const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", studentResult.number));
+        const historySnap = await getDocs(historyQuery);
+        const historyData = historySnap.docs
+            .map(doc => {
+                const data = doc.data();
+                return { 
+                    code: data.examCode, 
+                    score: parseFloat(data.score), 
+                    date: data.timestamp 
+                };
+            })
+            .sort((a, b) => (a.date?.seconds || 0) - (b.date?.seconds || 0));
 
         // --- İSTATİSTİK HESAPLAMALARI ---
         
         // A. Sıralama
-        allData.sort((a, b) => parseFloat(b.score) - parseFloat(a.score)); // Puana göre azalan sırala
+        allData.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
         const myRank = allData.findIndex(d => d.number === studentResult.number) + 1;
         const totalStudents = allData.length;
         
@@ -1598,14 +1600,71 @@ const historyData = historySnap.docs
                 avg: (classStats[cls].totalScore / classStats[cls].count).toFixed(2),
                 count: classStats[cls].count
             };
-        }).sort((a, b) => parseFloat(b.avg) - parseFloat(a.avg)); // Ortalamaya göre sırala
+        }).sort((a, b) => parseFloat(b.avg) - parseFloat(a.avg));
 
         // C. Katılan Sınıflar Listesi
         const participatingClasses = classAverages.map(c => c.className).join(", ");
 
+        // D. Rozetleri Hesapla
+        const badges = calculateBadges(studentResult, myRank, totalStudents, historyData);
+
         // --- ARAYÜZ OLUŞTURMA ---
         
         let htmlContent = `
+            <!-- PAYLAŞIM BUTONLARI -->
+            <div class="flex justify-center gap-3 mb-6 flex-wrap">
+                <button onclick="downloadPDFReport(
+                    '${escapeQuote(studentResult.name)}',
+                    '${studentResult.score}',
+                    '${studentResult.correct}',
+                    '${studentResult.incorrect}',
+                    '${studentResult.empty}',
+                    '${studentResult.className}',
+                    '${studentResult.examCode}',
+                    ${myRank},
+                    ${totalStudents},
+                    '${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}',
+                    '${new Date(studentResult.timestamp.seconds * 1000).toLocaleDateString('tr-TR')}',
+                    ${JSON.stringify(classAverages).replace(/'/g, "\\'")},
+                    ${JSON.stringify(historyData).replace(/'/g, "\\'")}
+                )" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
+                    📄 PDF İndir
+                </button>
+                <button onclick="shareOnWhatsApp(
+                    '${escapeQuote(studentResult.name)}',
+                    '${studentResult.score}',
+                    '${studentResult.correct}',
+                    '${studentResult.incorrect}',
+                    '${studentResult.empty}',
+                    '${studentResult.className}',
+                    ${myRank},
+                    ${totalStudents},
+                    '${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}'
+                )" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
+                    📱 WhatsApp'ta Paylaş
+                </button>
+            </div>
+
+            <!-- ROZETLER -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
+                <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                    <span>🏆 Kazanılan Rozetler</span>
+                    <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">${badges.length}</span>
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    ${badges.length > 0 ? 
+                        badges.map(badge => `
+                            <span class="${badge.color} px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm">
+                                ${badge.icon} ${badge.name}
+                            </span>
+                        `).join('') 
+                        : 
+                        '<div class="text-center text-gray-500 py-4"><span class="text-2xl">🎯</span><p class="mt-2">Henüz rozet kazanılmadı<br><span class="text-xs">Daha iyi performans için çalışmaya devam edin!</span></p></div>'
+                    }
+                </div>
+            </div>
+
+            <!-- TEMEL İSTATİSTİKLER -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col items-center justify-center">
                     <span class="text-sm text-indigo-600 font-bold mb-1">PUANINIZ</span>
@@ -1730,6 +1789,215 @@ const historyData = historySnap.docs
             </div>
         `;
     }
+}
+
+// --- YARDIMCI FONKSİYONLAR ---
+
+// Tırnak işareti kaçış fonksiyonu
+function escapeQuote(str) {
+    return str.replace(/'/g, "\\'");
+}
+
+// --- PDF RAPOR FONKSİYONU ---
+function downloadPDFReport(name, score, correct, incorrect, empty, className, examCode, rank, totalStudents, schoolAverage, examDate, classAverages, historyData) {
+    try {
+        // jsPDF kütüphanesi yüklü mü kontrol et
+        if (typeof jsPDF === 'undefined') {
+            alert('PDF oluşturma özelliği şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.');
+            return;
+        }
+
+        const doc = new jsPDF();
+        
+        // Başlık
+        doc.setFontSize(20);
+        doc.setTextColor(40, 40, 40);
+        doc.text('📊 Sınav Sonuç Raporu', 105, 25, { align: 'center' });
+        
+        // Öğrenci Bilgileri
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Öğrenci: ${name}`, 20, 45);
+        doc.text(`Sınıf: ${className}`, 20, 55);
+        doc.text(`Sınav Kodu: ${examCode}`, 20, 65);
+        doc.text(`Tarih: ${examDate}`, 20, 75);
+        
+        // Temel İstatistikler
+        doc.setFontSize(14);
+        doc.setTextColor(79, 70, 229);
+        doc.text('Temel İstatistikler', 20, 95);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        doc.text(`Puan: ${score}`, 30, 110);
+        doc.text(`Genel Sıralama: ${rank}/${totalStudents}`, 30, 120);
+        doc.text(`Okul Ortalaması: ${schoolAverage}`, 30, 130);
+        doc.text(`Doğru: ${correct} | Yanlış: ${incorrect} | Boş: ${empty}`, 30, 140);
+        
+        // Sınıf Ortalamaları
+        doc.setFontSize(14);
+        doc.setTextColor(79, 70, 229);
+        doc.text('Sınıf Ortalamaları', 20, 160);
+        
+        let yPos = 175;
+        JSON.parse(classAverages).forEach((classAvg, index) => {
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(9);
+            doc.setTextColor(60, 60, 60);
+            doc.text(`${classAvg.className}: ${classAvg.avg} puan (${classAvg.count} öğrenci)`, 30, yPos);
+            yPos += 8;
+        });
+        
+        // Gelişim Geçmişi
+        doc.addPage();
+        doc.setFontSize(14);
+        doc.setTextColor(79, 70, 229);
+        doc.text('Gelişim Geçmişi', 20, 20);
+        
+        yPos = 35;
+        JSON.parse(historyData).forEach((exam, index) => {
+            if (yPos > 270) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(9);
+            doc.setTextColor(60, 60, 60);
+            doc.text(`${exam.code}: ${exam.score} puan`, 30, yPos);
+            yPos += 8;
+        });
+        
+        // Alt bilgi
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 285, { align: 'center' });
+        
+        // PDF'i indir
+        doc.save(`${name}_${examCode}_rapor.pdf`);
+        
+    } catch (error) {
+        console.error('PDF oluşturma hatası:', error);
+        alert('PDF oluşturulurken hata oluştu. Lütfen tekrar deneyin.');
+    }
+}
+
+// --- WHATSAPP PAYLAŞIM FONKSİYONU ---
+function shareOnWhatsApp(name, score, correct, incorrect, empty, className, rank, totalStudents, schoolAverage) {
+    const message = `📊 *${name} Sınav Sonucu*\n\n` +
+                   `🏆 *Puan:* ${score}\n` +
+                   `📈 *Sıralama:* ${rank}/${totalStudents}\n` +
+                   `🎯 *Okul Ortalaması:* ${schoolAverage}\n\n` +
+                   `✅ *Doğru:* ${correct} | ❌ *Yanlış:* ${incorrect} | ⏭️ *Boş:* ${empty}\n` +
+                   `🏫 *Sınıf:* ${className}\n\n` +
+                   `📊 *Detaylı rapor için uygulamayı ziyaret edin!*\n\n` +
+                   `#SınavSonucu #BaşarıRaporu`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Mobil ve masaüstü kontrolü
+    if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.open(`whatsapp://send?text=${encodedMessage}`, '_blank');
+    } else {
+        window.open(`https://web.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+    }
+}
+
+// --- ROZET HESAPLAMA FONKSİYONU ---
+function calculateBadges(studentResult, rank, totalStudents, historyData) {
+    const badges = [];
+    
+    // Puan bazlı rozetler
+    if (parseFloat(studentResult.score) >= 90) {
+        badges.push({ 
+            name: "Sınav Şampiyonu", 
+            icon: "🏆", 
+            color: "bg-yellow-100 text-yellow-800 border border-yellow-200" 
+        });
+    } else if (parseFloat(studentResult.score) >= 80) {
+        badges.push({ 
+            name: "Mükemmel Başarı", 
+            icon: "⭐", 
+            color: "bg-purple-100 text-purple-800 border border-purple-200" 
+        });
+    } else if (parseFloat(studentResult.score) >= 70) {
+        badges.push({ 
+            name: "Başarılı Öğrenci", 
+            icon: "👍", 
+            color: "bg-blue-100 text-blue-800 border border-blue-200" 
+        });
+    }
+    
+    // Sıralama bazlı rozetler
+    if (rank <= 3) {
+        badges.push({ 
+            name: "Top 3", 
+            icon: "👑", 
+            color: "bg-red-100 text-red-800 border border-red-200" 
+        });
+    } else if (rank <= 10) {
+        badges.push({ 
+            name: "İlk 10", 
+            icon: "💎", 
+            color: "bg-green-100 text-green-800 border border-green-200" 
+        });
+    }
+    
+    // Doğru cevap rozetleri
+    if (studentResult.correct >= 18) {
+        badges.push({ 
+            name: "Doğru Canavarı", 
+            icon: "✅", 
+            color: "bg-emerald-100 text-emerald-800 border border-emerald-200" 
+        });
+    } else if (studentResult.correct >= 15) {
+        badges.push({ 
+            name: "Doğru Avcısı", 
+            icon: "🎯", 
+            color: "bg-teal-100 text-teal-800 border border-teal-200" 
+        });
+    }
+    
+    // Yanlış sayısı rozetleri
+    if (studentResult.incorrect <= 2) {
+        badges.push({ 
+            name: "İsabet Ustası", 
+            icon: "🎯", 
+            color: "bg-indigo-100 text-indigo-800 border border-indigo-200" 
+        });
+    }
+    
+    // Gelişim rozetleri (geçmiş sınavlara göre)
+    if (historyData.length >= 2) {
+        const lastScore = historyData[historyData.length - 2].score;
+        const currentScore = parseFloat(studentResult.score);
+        
+        if (currentScore > lastScore + 10) {
+            badges.push({ 
+                name: "Hızlı Gelişim", 
+                icon: "🚀", 
+                color: "bg-orange-100 text-orange-800 border border-orange-200" 
+            });
+        } else if (currentScore > lastScore) {
+            badges.push({ 
+                name: "Gelişim Gösterdi", 
+                icon: "📈", 
+                color: "bg-cyan-100 text-cyan-800 border border-cyan-200" 
+            });
+        }
+    }
+    
+    // İlk sınav rozeti
+    if (historyData.length === 1) {
+        badges.push({ 
+            name: "İlk Sınav", 
+            icon: "🎪", 
+            color: "bg-pink-100 text-pink-800 border border-pink-200" 
+        });
+    }
+    
+    return badges;
 }
     </script>
 </body>
