@@ -601,32 +601,7 @@ async function handleStudentLogin() {
             return;
         }
 
-        // 2. AKTİF OTURUM KONTROLÜ
-        const sesQ = query(collection(db, "active_sessions"), where("studentKey", "==", studentKey));
-        const sesSnap = await getDocs(sesQ);
-        if (!sesSnap.empty) {
-            const session = sesSnap.docs[0].data();
-            // Kaldığı yerden devam ederken de şifre kontrolü (Opsiyonel ama güvenli)
-            if (session.password && session.password !== password) {
-                 loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
-                 return showCustomAlert("Hata", "Yarım kalan oturuma devam etmek için doğru şifreyi girmelisiniz.");
-            }
-            
-            showCustomAlert("Devam Ediliyor", "Önceki oturumunuz bulundu.").then(() => {
-                restoreSession({ id: sesSnap.docs[0].id, ...session });
-                startQuiz();
-            });
-        } else {
-            // YENİ SINAV BAŞLATIYORUZ (Şifre studentData içinde zaten var)
-            startNewSession(number);
-            startQuiz();
-        }
-
-    } catch(e) {
-        showCustomAlert("Hata", "Giriş yapılırken hata oluştu: " + e.message);
-        loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
-    }
-} // <-- Bu kapanış parantezi önemli!
+       
         // 2. AKTİF OTURUM KONTROLÜ
         const sesQ = query(collection(db, "active_sessions"), where("studentKey", "==", studentKey));
         const sesSnap = await getDocs(sesQ);
