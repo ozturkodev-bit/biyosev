@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sınav Sistemi V16 (Ö.Sevinç Özel Sürüm)</title>
+     <!-- PDF oluşturma kütüphanesi -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -34,8 +36,7 @@
             border-color: #4f46e5;
         }
     </style>
-    <!-- PDF oluşturma kütüphanesi -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+   
 </head>
 <body>
 
@@ -1611,40 +1612,39 @@ async function showStudentDashboard(studentResult) {
         // --- ARAYÜZ OLUŞTURMA ---
         
         let htmlContent = `
-            <!-- PAYLAŞIM BUTONLARI -->
-            <div class="flex justify-center gap-3 mb-6 flex-wrap">
-                <button onclick="downloadPDFReport(
-                    '${escapeQuote(studentResult.name)}',
-                    '${studentResult.score}',
-                    '${studentResult.correct}',
-                    '${studentResult.incorrect}',
-                    '${studentResult.empty}',
-                    '${studentResult.className}',
-                    '${studentResult.examCode}',
-                    ${myRank},
-                    ${totalStudents},
-                    '${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}',
-                    '${new Date(studentResult.timestamp.seconds * 1000).toLocaleDateString('tr-TR')}',
-                    ${JSON.stringify(classAverages).replace(/'/g, "\\'")},
-                    ${JSON.stringify(historyData).replace(/'/g, "\\'")}
-                )" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
-                    📄 PDF İndir
-                </button>
-                <button onclick="shareOnWhatsApp(
-                    '${escapeQuote(studentResult.name)}',
-                    '${studentResult.score}',
-                    '${studentResult.correct}',
-                    '${studentResult.incorrect}',
-                    '${studentResult.empty}',
-                    '${studentResult.className}',
-                    ${myRank},
-                    ${totalStudents},
-                    '${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}'
-                )" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
-                    📱 WhatsApp'ta Paylaş
-                </button>
-            </div>
+           let htmlContent = `
+    <!-- PAYLAŞIM BUTONLARI (YENİ) -->
+    <div class="flex justify-center gap-3 mb-6 flex-wrap">
+        <button onclick="downloadSimplePDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
+            📄 PDF İndir
+        </button>
+        <button onclick="shareSimpleWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
+            📱 WhatsApp'ta Paylaş
+        </button>
+    </div>
 
+    <!-- ROZETLER -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
+        <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <span>🏆 Kazanılan Rozetler</span>
+            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">${badges.length}</span>
+        </h3>
+        <div class="flex flex-wrap gap-2">
+            ${badges.length > 0 ? 
+                badges.map(badge => `
+                    <span class="${badge.color} px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm">
+                        ${badge.icon} ${badge.name}
+                    </span>
+                `).join('') 
+                : 
+                '<div class="text-center text-gray-500 py-4"><span class="text-2xl">🎯</span><p class="mt-2">Henüz rozet kazanılmadı<br><span class="text-xs">Daha iyi performans için çalışmaya devam edin!</span></p></div>'
+            }
+        </div>
+    </div>
+
+    <!-- TEMEL İSTATİSTİKLER -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    
             <!-- ROZETLER -->
             <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
                 <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
@@ -1790,7 +1790,82 @@ async function showStudentDashboard(studentResult) {
         `;
     }
 }
+ <-- showStudentDashboard bitişi (BURADAN SONRA EKLE)
 
+// === PDF ve WHATSAPP FONKSİYONLARI ===
+
+// PDF İndirme
+window.downloadSimplePDF = function() {
+    try {
+        // Öğrenci bilgilerini sayfadan al
+        const studentName = document.querySelector('h1.text-xl').textContent;
+        const scoreElement = document.querySelector('.text-indigo-800');
+        const score = scoreElement ? scoreElement.textContent : '0';
+        
+        // Net durumunu al
+        const netElement = document.querySelector('.text-gray-700');
+        const netText = netElement ? netElement.textContent : '0 D - 0 Y - 0 B';
+        
+        console.log("PDF oluşturuluyor:", studentName, score);
+
+        // PDF oluştur
+        const doc = new jsPDF();
+        
+        // Başlık
+        doc.setFontSize(20);
+        doc.setTextColor(40, 40, 40);
+        doc.text('📊 Sınav Sonuç Raporu', 105, 25, { align: 'center' });
+        
+        // Öğrenci bilgileri
+        doc.setFontSize(12);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Öğrenci: ${studentName}`, 20, 50);
+        doc.text(`Puan: ${score}`, 20, 65);
+        doc.text(`Net Durumu: ${netText}`, 20, 80);
+        doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 20, 95);
+        
+        // Başarı mesajı
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 280, { align: 'center' );
+        
+        // İndir
+        doc.save(`${studentName}_sınav_raporu.pdf`);
+        
+    } catch (error) {
+        console.error('PDF hatası:', error);
+        alert('PDF oluşturulamadı. Lütfen tekrar deneyin.');
+    }
+}
+
+// WhatsApp Paylaşım
+window.shareSimpleWhatsApp = function() {
+    try {
+        const studentName = document.querySelector('h1.text-xl').textContent;
+        const score = document.querySelector('.text-indigo-800').textContent;
+        const netElement = document.querySelector('.text-gray-700');
+        const netText = netElement ? netElement.textContent : '0 D - 0 Y - 0 B';
+        
+        const message = `📊 ${studentName} Sınav Sonucu\n\n` +
+                       `🏆 Puan: ${score}\n` +
+                       `📊 Net: ${netText}\n` +
+                       `📅 Tarih: ${new Date().toLocaleDateString('tr-TR')}\n\n` +
+                       `Detaylı rapor için uygulamayı ziyaret edin!`;
+        
+        const encodedMessage = encodeURIComponent(message);
+        
+        // Mobil kontrol
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.open(`whatsapp://send?text=${encodedMessage}`, '_blank');
+        } else {
+            window.open(`https://web.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+        }
+        
+    } catch (error) {
+        console.error('WhatsApp hatası:', error);
+        alert('Paylaşım sırasında hata oluştu.');
+    }
+}
 // --- YARDIMCI FONKSİYONLAR ---
 
 // Tırnak işareti kaçış fonksiyonu
