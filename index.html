@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sınav Sistemi V16 (Ö.Sevinç Özel Sürüm)</title>
      <!-- PDF oluşturma kütüphanesi -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1846,59 +1846,62 @@ window.shareSimpleWhatsApp = function() {
 // Gelişmiş PDF rapor fonksiyonu (daha dayanıklı)
 function downloadPDFReport(name, score, correct, incorrect, empty, className, examCode, rank, totalStudents, schoolAverage, examDate, classAverages, historyData) {
     try {
-        if (typeof jsPDF === 'undefined') {
+        if (typeof window.jspdf === 'undefined') {
             alert('PDF oluşturma özelliği şu anda kullanılamıyor. Lütfen jsPDF\'yi sayfaya ekleyin.');
             return;
         }
-
-        const doc = new jsPDF();
-
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF(); // ← İKİNCİ SATIR SİLİNDİ
+        
         // Başlık
         doc.setFontSize(20);
         doc.setTextColor(40, 40, 40);
         doc.text('📊 Sınav Sonuç Raporu', 105, 25, { align: 'center' });
-
+        
         // Öğrenci Bilgileri
         doc.setFontSize(12);
         doc.setTextColor(100, 100, 100);
-        doc.text(`Öğrenci: ${name || '—'}`, 20, 45);
+        doc.text(`Öğrenci: ${name || '—'}`, 20, 45); // ← BACKTICK DÜZELTİLDİ
         doc.text(`Sınıf: ${className || '—'}`, 20, 55);
         doc.text(`Sınav Kodu: ${examCode || '—'}`, 20, 65);
         doc.text(`Tarih: ${examDate || new Date().toLocaleDateString('tr-TR')}`, 20, 75);
-
+        
         // Temel İstatistikler
         doc.setFontSize(14);
         doc.setTextColor(79, 70, 229);
         doc.text('Temel İstatistikler', 20, 95);
-
+        
         doc.setFontSize(10);
         doc.setTextColor(60, 60, 60);
         doc.text(`Puan: ${score}`, 30, 110);
         doc.text(`Genel Sıralama: ${rank || '—'}/${totalStudents || '—'}`, 30, 120);
         doc.text(`Okul Ortalaması: ${schoolAverage || '—'}`, 30, 130);
         doc.text(`Doğru: ${correct} | Yanlış: ${incorrect} | Boş: ${empty}`, 30, 140);
-
+        
         // classAverages ve historyData hem string hem array olabilir:
         let classAvgArr = [];
         let historyArr = [];
+        
         try {
             classAvgArr = typeof classAverages === 'string' ? JSON.parse(classAverages) : (Array.isArray(classAverages) ? classAverages : []);
         } catch (e) {
             console.warn('classAverages parse hatası, boş dizi kullanılıyor.', e);
             classAvgArr = [];
         }
+        
         try {
             historyArr = typeof historyData === 'string' ? JSON.parse(historyData) : (Array.isArray(historyData) ? historyData : []);
         } catch (e) {
             console.warn('historyData parse hatası, boş dizi kullanılıyor.', e);
             historyArr = [];
         }
-
+        
         // Sınıf Ortalamaları
         doc.setFontSize(14);
         doc.setTextColor(79, 70, 229);
         doc.text('Sınıf Ortalamaları', 20, 160);
-
+        
         let yPos = 175;
         classAvgArr.forEach((classAvg) => {
             if (yPos > 250) {
@@ -1910,13 +1913,13 @@ function downloadPDFReport(name, score, correct, incorrect, empty, className, ex
             doc.text(`${classAvg.className || '—'}: ${classAvg.avg || '—'} puan (${classAvg.count || 0} öğrenci)`, 30, yPos);
             yPos += 8;
         });
-
+        
         // Gelişim Geçmişi
         doc.addPage();
         doc.setFontSize(14);
         doc.setTextColor(79, 70, 229);
         doc.text('Gelişim Geçmişi', 20, 20);
-
+        
         yPos = 35;
         historyArr.forEach((exam) => {
             if (yPos > 270) {
@@ -1928,20 +1931,20 @@ function downloadPDFReport(name, score, correct, incorrect, empty, className, ex
             doc.text(`${exam.code || '—'}: ${exam.score || '—'} puan`, 30, yPos);
             yPos += 8;
         });
-
+        
         // Alt bilgi
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
         doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 285, { align: 'center' });
-
+        
         const safeFileName = `${(name || 'rapor').replace(/\s+/g, '_').replace(/[^\w\-\.ÇÖĞÜİçöğüışŞ]/g, '')}_${examCode || ''}`;
-        doc.save(`${safeFileName}_rapor.pdf`);
+        doc.save(`${safeFileName}_rapor.pdf`); // ← BACKTICK DÜZELTİLDİ
+        
     } catch (error) {
         console.error('PDF oluşturma hatası (downloadPDFReport):', error);
         alert('PDF oluşturulurken hata oluştu. Konsoldan detay kontrol edin.');
     }
 }
-
 // WhatsApp paylaşım (gelişmiş)
 function shareOnWhatsApp(name, score, correct, incorrect, empty, className, rank, totalStudents, schoolAverage) {
     try {
