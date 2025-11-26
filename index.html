@@ -1611,9 +1611,10 @@ async function showStudentDashboard(studentResult) {
 
         // --- ARAYÜZ OLUŞTURMA ---
         
-         let htmlContent = `<div class='flex justify-center gap-3 mb-6 flex-wrap'>
-<button onclick="downloadSimplePDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📄 PDF İndir</button>
-<button onclick="shareSimpleWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📱 WhatsApp'ta Paylaş</button>
+        let htmlContent = `
+<div class='flex justify-center gap-3 mb-6 flex-wrap'>
+    <button onclick="downloadSimplePDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📄 PDF İndir</button>
+    <button onclick="shareSimpleWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">📱 WhatsApp'ta Paylaş</button>
 </div>
 
 <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
@@ -1632,87 +1633,87 @@ async function showStudentDashboard(studentResult) {
             '<div class="text-center text-gray-500 py-4"><span class="text-2xl">🎯</span><p class="mt-2">Henüz rozet kazanılmadı<br><span class="text-xs">Daha iyi performans için çalışmaya devam edin!</span></p></div>'
         }
     </div>
-</div>`;
+</div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col items-center justify-center">
-            <span class="text-sm text-indigo-600 font-bold mb-1">PUANINIZ</span>
-            <span class="text-4xl font-extrabold text-indigo-800">${studentResult.score}</span>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col items-center justify-center">
+        <span class="text-sm text-indigo-600 font-bold mb-1">PUANINIZ</span>
+        <span class="text-4xl font-extrabold text-indigo-800">${studentResult.score}</span>
+    </div>
+    
+    <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 flex flex-col items-center justify-center relative overflow-hidden">
+        <span class="text-sm text-orange-600 font-bold mb-1">GENEL SIRALAMA</span>
+        <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-orange-800">${myRank}</span>
+            <span class="text-sm text-gray-500 font-bold">/ ${totalStudents}</span>
         </div>
-        
-        <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 flex flex-col items-center justify-center relative overflow-hidden">
-            <span class="text-sm text-orange-600 font-bold mb-1">GENEL SIRALAMA</span>
-            <div class="flex items-baseline gap-1">
-                <span class="text-4xl font-extrabold text-orange-800">${myRank}</span>
-                <span class="text-sm text-gray-500 font-bold">/ ${totalStudents}</span>
-            </div>
-            <div class="text-[10px] text-orange-400 mt-1">Anlık veriye göre</div>
-        </div>
+        <div class="text-[10px] text-orange-400 mt-1">Anlık veriye göre</div>
+    </div>
 
-        <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col items-center justify-center">
-            <span class="text-sm text-green-600 font-bold mb-1">NET DURUMU</span>
-            <div class="text-sm font-bold text-gray-700">
-                <span class="text-green-600">${studentResult.correct} D</span> - 
-                <span class="text-red-600">${studentResult.incorrect} Y</span> - 
-                <span class="text-gray-500">${studentResult.empty} B</span>
-            </div>
-        </div>
-
-         <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col items-center justify-center">
-            <span class="text-sm text-blue-600 font-bold mb-1">OKUL ORTALAMASI</span>
-            <span class="text-4xl font-extrabold text-blue-800">
-                ${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}
-            </span>
+    <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex flex-col items-center justify-center">
+        <span class="text-sm text-green-600 font-bold mb-1">NET DURUMU</span>
+        <div class="text-sm font-bold text-gray-700">
+            <span class="text-green-600">${studentResult.correct} D</span> - 
+            <span class="text-red-600">${studentResult.incorrect} Y</span> - 
+            <span class="text-gray-500">${studentResult.empty} B</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <div class="bg-white p-4 rounded-xl shadow-sm border">
-            <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <span>🏆 Sınıf Başarı Ortalamaları</span>
-            </h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-2 text-left">Sınıf</th>
-                            <th class="p-2 text-center">Öğrenci Sayısı</th>
-                            <th class="p-2 text-right">Ortalama Puan</th>
+    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col items-center justify-center">
+        <span class="text-sm text-blue-600 font-bold mb-1">OKUL ORTALAMASI</span>
+        <span class="text-4xl font-extrabold text-blue-800">
+            ${(allData.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / totalStudents).toFixed(2)}
+        </span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <div class="bg-white p-4 rounded-xl shadow-sm border">
+        <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span>🏆 Sınıf Başarı Ortalamaları</span>
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-2 text-left">Sınıf</th>
+                        <th class="p-2 text-center">Öğrenci Sayısı</th>
+                        <th class="p-2 text-right">Ortalama Puan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    ${classAverages.map(c => `
+                        <tr class="${c.className === studentResult.className ? 'bg-indigo-50' : ''}">
+                            <td class="p-2 font-bold text-gray-700">${c.className} ${c.className === studentResult.className ? '(Sınıfın)' : ''}</td>
+                            <td class="p-2 text-center text-gray-600">${c.count}</td>
+                            <td class="p-2 text-right font-mono font-bold text-indigo-600">${c.avg}</td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y">
-                        ${classAverages.map(c => `
-                            <tr class="${c.className === studentResult.className ? 'bg-indigo-50' : ''}">
-                                <td class="p-2 font-bold text-gray-700">${c.className} ${c.className === studentResult.className ? '(Sınıfın)' : ''}</td>
-                                <td class="p-2 text-center text-gray-600">${c.count}</td>
-                                <td class="p-2 text-right font-mono font-bold text-indigo-600">${c.avg}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col">
-            <h3 class="font-bold text-gray-700 mb-4">📈 Gelişim Grafiğin (Tüm Sınavlar)</h3>
-            <div class="flex-grow min-h-[250px]">
-                <canvas id="studentProgressChart"></canvas>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="mt-6 bg-white p-5 rounded-xl shadow-sm border">
-        <h3 class="font-bold text-gray-700 mb-2">📊 Sınav Künyesi</h3>
-        <div class="text-sm text-gray-600 space-y-1">
-            <p><span class="font-bold">Sınava Katılan Sınıflar:</span> ${participatingClasses}</p>
-            <p><span class="font-bold">Toplam Katılım:</span> ${totalStudents} Öğrenci</p>
-            <p><span class="font-bold">Sizin Sınıfınız:</span> ${studentResult.className}</p>
-            <p><span class="font-bold">Sınav Tarihi:</span> ${new Date(studentResult.timestamp.seconds * 1000).toLocaleDateString('tr-TR')}</p>
+                    `).join('')}
+                </tbody>
+            </table>
         </div>
     </div>
-`;  // <-- BU BACKTICK KESİNLİKLE OLMALI!
+
+    <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col">
+        <h3 class="font-bold text-gray-700 mb-4">📈 Gelişim Grafiğin (Tüm Sınavlar)</h3>
+        <div class="flex-grow min-h-[250px]">
+            <canvas id="studentProgressChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-6 bg-white p-5 rounded-xl shadow-sm border">
+    <h3 class="font-bold text-gray-700 mb-2">📊 Sınav Künyesi</h3>
+    <div class="text-sm text-gray-600 space-y-1">
+        <p><span class="font-bold">Sınava Katılan Sınıflar:</span> ${participatingClasses}</p>
+        <p><span class="font-bold">Toplam Katılım:</span> ${totalStudents} Öğrenci</p>
+        <p><span class="font-bold">Sizin Sınıfınız:</span> ${studentResult.className}</p>
+        <p><span class="font-bold">Sınav Tarihi:</span> ${new Date(studentResult.timestamp.seconds * 1000).toLocaleDateString('tr-TR')}</p>
+    </div>
+</div>
+`;
 
         document.getElementById('mainContentArea').innerHTML = htmlContent;
 
