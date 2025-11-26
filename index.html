@@ -1794,14 +1794,16 @@ window.downloadSimplePDF = function() {
         doc.text(`Net Durumu: ${netText}`, 20, 80);
         doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 20, 95);
         
-        // Başarı mesajı
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 280, { align: 'center' );
-        
-        // İndir
-        doc.save(`${studentName}_sınav_raporu.pdf`);
-        
+    
+// Başarı mesajı
+doc.setFontSize(10);
+doc.setTextColor(100, 100, 100);
+doc.text('Bu rapor otomatik olarak oluşturulmuştur.', 105, 280, { align: 'center' });
+//                                                                                  ↑ } ile kapatılmalı
+
+// İndir
+doc.save(`${studentName}_sınav_raporu.pdf`);
+//       ↑ Normal parantez kullanımı
     } catch (error) {
         console.error('PDF hatası:', error);
         alert('PDF oluşturulamadı. Lütfen tekrar deneyin.');
