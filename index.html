@@ -772,13 +772,13 @@
             document.getElementById('logoutBtn').onclick = resetApp;
 
             const dashboardHtml = `
-               <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
+              <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
     <button onclick="window.changeTab('results')" class="flex-1 min-w-[120px] px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow text-sm font-semibold">📊 Sonuçlar</button>
     <button onclick="window.changeTab('settings')" class="flex-1 min-w-[120px] px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded shadow text-sm font-semibold">⚙️ Sınav Oluştur</button>
     <button onclick="window.changeTab('questions')" class="flex-1 min-w-[120px] px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded shadow text-sm font-semibold">📝 Sorular</button>
     <button onclick="window.changeTab('lists')" class="flex-1 min-w-[120px] px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded shadow text-sm font-semibold">👥 Öğrenciler</button>
     <button onclick="window.changeTab('myexams')" class="flex-1 min-w-[120px] px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-sm font-semibold">📂 Sınavlarım</button>
-    <!-- YENİ BUTON EKLENDİ -->
+    <!-- █████ BURAYA YENİ BUTON EKLE █████ -->
     <button onclick="window.changeTab('online')" class="flex-1 min-w-[120px] px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow text-sm font-semibold">👁️ Online Öğrenciler</button>
 </div>
                 <div id="tab-results" class="tab-content">
@@ -803,7 +803,6 @@
                         </table>
                     </div>
                 </div>
-!-- █████ BURAYA YENİ KODU EKLE █████ -->
 <div id="tab-online" class="tab-content hidden">
     <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-lg text-gray-700">🟢 Online Öğrenciler</h2>
@@ -869,7 +868,6 @@
         </div>
     </div>
 </div>
-<!-- █████ YENİ KOD BURADA BİTTİ █████ -->
 
                 <div id="tab-questions" class="tab-content hidden">
                      <div class="max-w-2xl mx-auto">
@@ -948,16 +946,15 @@
                 });
             };
 
-           window.changeTab = (t) => {
+          window.changeTab = (t) => {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById('tab-' + t).classList.remove('hidden');
     if(t === 'results') loadResults();
     if(t === 'myexams') loadMyExams();
     if(t === 'questions' || t === 'lists') window.populateExamSelects();
-    // YENİ KOD EKLENDİ
+    // █████ BURAYA YENİ SATIR EKLE █████
     if(t === 'online') window.loadOnlineStudents();
 };
-
             document.getElementById('btnSaveSettings').onclick = async () => {
                 const code = sanitizeExamCode(document.getElementById('setExamCode').value);
                 const teacher = sanitizeInput(document.getElementById('setTeacherName').value);
@@ -1670,7 +1667,7 @@
             if (Array.isArray(historyData) && historyData.length === 1) badges.push({ name: "İlk Sınav", icon: "🎪", color: "bg-pink-100 text-pink-800 border border-pink-200" });
             return badges;
         }
-// YENİ FONKSİYONLAR - ONLINE ÖĞRENCİLER
+// ONLINE ÖĞRENCİ FONKSİYONLARI
 window.loadOnlineStudents = async function() {
     const tableBody = document.getElementById('onlineStudentsTable');
     const totalOnline = document.getElementById('totalOnlineCount');
@@ -1694,35 +1691,37 @@ window.loadOnlineStudents = async function() {
                 currentQuestionIndex: data.currentQuestionIndex || 0,
                 timeLeft: data.timeLeft || 0,
                 lastUpdated: data.lastUpdated,
-                focusLossCount: data.focusLossCount || 0
+                focusLossCount: data.focusLossCount || 0,
+                lastUpdatedTime: data.lastUpdated?.toDate ? data.lastUpdated.toDate().getTime() : Date.now()
             };
         });
 
-        // İstatistikleri hesapla
-        const totalCount = onlineStudents.length;
-        const uniqueExams = [...new Set(onlineStudents.map(s => s.examCode))].filter(code => code !== 'Bilinmiyor');
-        const uniqueClasses = [...new Set(onlineStudents.map(s => s.className))].filter(cls => cls !== 'Belirsiz');
+        const now = Date.now();
+        const FIVE_MINUTES = 5 * 60 * 1000;
+        const activeOnlineStudents = onlineStudents.filter(student => 
+            (now - student.lastUpdatedTime) < FIVE_MINUTES
+        );
 
-        // Sınıf dağılımı
+        const totalCount = activeOnlineStudents.length;
+        const uniqueExams = [...new Set(activeOnlineStudents.map(s => s.examCode))].filter(code => code !== 'Bilinmiyor');
+        const uniqueClasses = [...new Set(activeOnlineStudents.map(s => s.className))].filter(cls => cls !== 'Belirsiz');
+
         const classStats = {};
-        onlineStudents.forEach(student => {
+        activeOnlineStudents.forEach(student => {
             const cls = student.className;
             classStats[cls] = (classStats[cls] || 0) + 1;
         });
 
-        // Sınav dağılımı
         const examStats = {};
-        onlineStudents.forEach(student => {
+        activeOnlineStudents.forEach(student => {
             const exam = student.examCode;
             examStats[exam] = (examStats[exam] || 0) + 1;
         });
 
-        // UI güncelleme
         totalOnline.textContent = totalCount;
         activeExams.textContent = uniqueExams.length;
         totalClasses.textContent = uniqueClasses.length;
 
-        // Sınıf dağılımını göster
         classDist.innerHTML = Object.entries(classStats)
             .sort((a, b) => b[1] - a[1])
             .map(([className, count]) => `
@@ -1732,7 +1731,6 @@ window.loadOnlineStudents = async function() {
                 </div>
             `).join('') || '<div class="text-center text-gray-500 py-4">Sınıf bilgisi bulunmuyor</div>';
 
-        // Sınav dağılımını göster
         examDist.innerHTML = Object.entries(examStats)
             .sort((a, b) => b[1] - a[1])
             .map(([examCode, count]) => `
@@ -1742,24 +1740,29 @@ window.loadOnlineStudents = async function() {
                 </div>
             `).join('') || '<div class="text-center text-gray-500 py-4">Sınav bilgisi bulunmuyor</div>';
 
-        // Tabloyu güncelle
-        if (onlineStudents.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500">Şu anda online öğrenci bulunmuyor</td></tr>';
+        if (activeOnlineStudents.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500">🟡 Şu anda aktif online öğrenci bulunmuyor</td></tr>';
         } else {
-            tableBody.innerHTML = onlineStudents.map(student => {
-                const now = Date.now();
-                const lastUpdate = student.lastUpdated?.toDate ? student.lastUpdated.toDate().getTime() : now;
-                const connectionTime = Math.floor((now - lastUpdate) / 60000); // dakika cinsinden
+            tableBody.innerHTML = activeOnlineStudents.map(student => {
+                const connectionTime = Math.floor((now - student.lastUpdatedTime) / 60000);
                 
                 const minutesLeft = Math.floor(student.timeLeft / 60);
                 const secondsLeft = student.timeLeft % 60;
                 const timeLeftStr = `${minutesLeft}:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`;
+
+                let connectionStatus = "🟢 Aktif";
+                let timeColor = "text-green-600";
+                if (connectionTime > 3) {
+                    connectionStatus = "🟡 Beklemede";
+                    timeColor = "text-orange-600";
+                }
 
                 return `
                     <tr class="hover:bg-green-50 transition-colors">
                         <td class="p-3">
                             <div class="font-bold text-gray-800">${student.name}</div>
                             <div class="text-xs text-gray-500">${student.number}</div>
+                            <div class="text-xs ${timeColor}">${connectionStatus}</div>
                         </td>
                         <td class="p-3 font-medium">${student.className}</td>
                         <td class="p-3 font-mono text-blue-600 font-bold">${student.examCode}</td>
@@ -1803,16 +1806,19 @@ window.exportOnlineStudents = async function() {
                 'Kalan Süre (sn)': data.timeLeft || 0,
                 'Bağlantı Süresi (dk)': connectionTime,
                 'Odak Kaybı': data.focusLossCount || 0,
-                'Son Güncelleme': lastUpdate.toLocaleString('tr-TR')
+                'Son Güncelleme': lastUpdate.toLocaleString('tr-TR'),
+                'Durum': (new Date() - lastUpdate < 300000) ? 'Aktif' : 'Pasif'
             };
         });
 
-        if (onlineStudents.length === 0) {
-            alert('İndirilecek online öğrenci verisi bulunmuyor.');
+        const activeStudents = onlineStudents.filter(student => student.Durum === 'Aktif');
+
+        if (activeStudents.length === 0) {
+            alert('İndirilecek aktif online öğrenci verisi bulunmuyor.');
             return;
         }
 
-        const ws = XLSX.utils.json_to_sheet(onlineStudents);
+        const ws = XLSX.utils.json_to_sheet(activeStudents);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Online_Ogrenciler");
         XLSX.writeFile(wb, "online_ogrenciler.xlsx");
