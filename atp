@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATP ve Enerji Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2ecc71;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #2ecc71;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #2ecc71;
+        }
+
+        .option.selected {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        .chemical-formula {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+            margin: 10px 0;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> ATP ve Enerji Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile ATP ve enerji konusunu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile ATP ve enerji konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">ATP ve enerji dönüşümlerinin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk detaylı test ile ATP ve enerji bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">ATP ve enerji konusunun tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> ATP ve Enerji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> ATP ve Enerji Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Enerjinin Tanımı ve Önemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Enerji:</strong> İş yapabilme yeteneği veya bir değişikliğe neden olma kapasitesi</li>
+                        <li>Canlılar yaşamsal faaliyetlerini devam ettirebilmek için enerjiye ihtiyaç duyar</li>
+                        <li>Kış uykusundaki canlılar depoladıkları besinlerden enerji elde eder</li>
+                        <li>Enerji yok olmaz, bir formdan başka bir forma dönüşebilir</li>
+                        <li>Doğada enerji: ısı, ışık, elektrik, ses, hareket, potansiyel, kimyasal ve nükleer enerji formlarında bulunur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Güneş Enerjisinin Önemi</div>
+                    <ul class="mindmap-content">
+                        <li>Besinlerdeki enerjinin kaynağı güneştir</li>
+                        <li>Fotosentez yapan canlılar güneş enerjisini kimyasal enerjiye dönüştürür</li>
+                        <li>Güneş olmasaydı canlılık da olmazdı</li>
+                        <li>Fotosentez tüm canlıları etkileyen temel bir süreçtir</li>
+                        <li>Güneş enerjisi → Besinlerdeki kimyasal bağ enerjisi → ATP → Yaşamsal faaliyetler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">ATP'nin Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Adenozin trifosfat (ATP):</strong> Tüm canlılarda ortak enerji molekülü</li>
+                        <li><strong>Yapısı:</strong> Adenin bazı + Riboz şekeri + 3 fosfat grubu</li>
+                        <li>Fosfat grupları arasında fosfat bağları bulunur</li>
+                        <li>RNA'daki adenin nükleotidinden farkı: 3 fosfat grubu</li>
+                        <li>Hücre zarından geçemez, bir hücreden diğerine aktarılamaz</li>
+                        <li>Her hücre kendi ATP'sini üretir ve tüketir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">ATP Molekülleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>AMP (Adenozin monofosfat):</strong> Adenozin + 1 fosfat</li>
+                        <li><strong>ADP (Adenozin difosfat):</strong> Adenozin + 2 fosfat</li>
+                        <li><strong>ATP (Adenozin trifosfat):</strong> Adenozin + 3 fosfat</li>
+                        <li>Adenin ve riboz arasında glikozit bağı</li>
+                        <li>Riboz ve fosfat arasında ester bağı</li>
+                        <li>Fosfatlar arasında fosfat bağları</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">ATP Döngüsü</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Fosforilasyon:</strong> ADP + P<sub>i</sub> + Enerji → ATP + H<sub>2</sub>O</li>
+                        <li><strong>Defosforilasyon:</strong> ATP + H<sub>2</sub>O → ADP + P<sub>i</sub> + Enerji</li>
+                        <li>ATP depolanmaz, anlık üretilir ve tüketilir</li>
+                        <li>Yenilenebilir bir enerji molekülüdür</li>
+                        <li>Hücrede sürekli ATP döngüsü gerçekleşir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Enerji Tepkimeleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ekzergonik tepkimeler:</strong> Enerji açığa çıkaran tepkimeler</li>
+                        <li><strong>Endergonik tepkimeler:</strong> Enerji gerektiren tepkimeler</li>
+                        <li>Yıkım tepkimeleri genellikle ekzergoniktir</li>
+                        <li>Yapım tepkimeleri genellikle endergoniktir</li>
+                        <li>ATP hidrolizi ekzergonik bir tepkimedir</li>
+                        <li>ATP sentezi endergonik bir tepkimedir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">ATP'nin Kullanım Alanları</div>
+                    <ul class="mindmap-content">
+                        <li>Sinir iletimi</li>
+                        <li>Kas kasılması</li>
+                        <li>Aktif taşıma</li>
+                        <li>Biyosentetik tepkimeler</li>
+                        <li>Vücut ısısının korunması</li>
+                        <li>Büyüme ve onarım</li>
+                        <li>Hücre bölünmesi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> ATP ve Enerji Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #2ecc71; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> ATP ve Enerji Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> ENERJİNİN TANIMI VE ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Enerji:</strong> İş yapabilme yeteneği ya da bir değişikliğe neden olma kapasitesi olarak tanımlanır.</li>
+                        <li>Canlılar yaşamsal faaliyetlerini devam ettirebilmek için enerjiye ihtiyaç duyar ve bu enerjiyi besinlerden karşılar.</li>
+                        <li>Kış uykusundaki canlılar (ayı, yarasa, sincap, kirpi vb.) depoladıkları besinlerden elde ettikleri enerjiyle vücut sıcaklıklarını dengede tutar ve hayatta kalır.</li>
+                        <li>Doğada enerji; ısı, ışık, elektrik, ses, hareket, potansiyel, kimyasal ve nükleer enerji gibi çeşitli formlarda bulunur.</li>
+                        <li>Enerji yok olmaz, bir formdan başka bir forma aktarılabilir veya dönüştürülebilir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sun"></i> GÜNEŞTEN BESİNLERE ENERJİ AKIŞI</div>
+                    <ul class="summary-list">
+                        <li><strong>Besinlerdeki enerjinin kaynağı güneştir.</strong></li>
+                        <li>Fotosentez yapan canlılar (bitkiler, algler, bazı bakteriler) güneş enerjisini kullanarak organik besin üretir.</li>
+                        <li>Bu süreçte güneş enerjisi, besinlerin yapısındaki kimyasal bağ enerjisine dönüştürülür.</li>
+                        <li>Tüketici canlılar bu besinlerde depolanan kimyasal enerjiyi besin zinciri aracılığıyla birbirine aktarır.</li>
+                        <li>Sonuç olarak tüm canlılar organik besinlerde depolanan kimyasal enerjiyi ATP (adenozin trifosfat) molekülüne dönüştürerek yaşamsal faaliyetlerinde kullanır.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Güneş olmasaydı fotosentez gerçekleşemezdi, bu da organik besin üretimini ve dolayısıyla canlılığı imkansız hale getirirdi.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-atom"></i> ATP'NİN YAPISI</div>
+                    <ul class="summary-list">
+                        <li>ATP (adenozin trifosfat), tüm canlılarda yaşamsal faaliyetlerin gerçekleştirilmesi için kullanılan ortak enerji molekülüdür.</li>
+                        <li>Nükleotit yapıda olan ATP molekülü üç bileşenden oluşur:
+                            <ol style="margin-left: 30px; margin-top: 10px;">
+                                <li><strong>Adenin:</strong> Azotlu organik baz</li>
+                                <li><strong>Riboz:</strong> 5 karbonlu şeker</li>
+                                <li><strong>3 fosfat grubu</strong></li>
+                            </ol>
+                        </li>
+                        <li class="chemical-formula">ATP Yapısı: Adenin - Riboz - P ~ P ~ P</li>
+                        <li>Adenin bazı ve riboz şekeri arasında <strong>glikozit bağı</strong>, riboz şekeri ve fosfat grubu arasında <strong>ester bağı</strong>, fosfatlar arasında ise <strong>fosfat bağları</strong> bulunur.</li>
+                        <li>ATP, RNA molekülündeki adenin nükleotidinden farklı olarak yapısında <span class="highlight">bir yerine üç tane fosfat grubu</span> bulundurur.</li>
+                        <li>ATP hücre zarından geçemez, bu nedenle bir hücreden diğerine aktarılamaz. Her hücre kendi ATP'sini sentezler.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-recycle"></i> ATP DÖNGÜSÜ VE ENERJİ DÖNÜŞÜMLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>ATP döngüsü:</strong> ATP'nin sürekli yıkılıp yeniden sentezlenmesi sürecidir.</li>
+                        <li><strong>Fosforilasyon:</strong> ADP molekülüne enerji ve inorganik fosfat (P<sub>i</sub>) eklenmesiyle ATP sentezlenmesi.
+                            <div class="chemical-formula">ADP + P<sub>i</sub> + Enerji → ATP + H<sub>2</sub>O</div>
+                        </li>
+                        <li><strong>Defosforilasyon:</strong> ATP'nin hidrolizi sonucunda yapısından bir fosfat molekülünün koparılması ve enerji açığa çıkması.
+                            <div class="chemical-formula">ATP + H<sub>2</sub>O → ADP + P<sub>i</sub> + Enerji</div>
+                        </li>
+                        <li>ATP molekülü depolanamaz, anlık olarak üretilir ve tüketilir.</li>
+                        <li>ATP'nin fosfat grupları arasındaki bağlar hidroliz edildiğinde kopar ve enerji açığa çıkar.</li>
+                        <li>Açığa çıkan bu enerji çeşitli metabolik faaliyetlerde kullanılır.</li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> ATP, yenilenebilir bir enerji molekülüdür. Bir hücre günde binlerce kez ATP molekülünü yıkar ve yeniden sentezler.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> ATP'NİN CANLILAR İÇİN ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li>Canlılar besinlerden elde ettikleri ATP enerjisi sayesinde pek çok yaşamsal faaliyeti gerçekleştirir:</li>
+                        <li><strong>Hareket:</strong> Kas kasılması, hücre hareketi</li>
+                        <li><strong>Sinir iletimi:</strong> Sinir hücrelerinde impuls iletimi</li>
+                        <li><strong>Aktif taşıma:</strong> Hücre zarından madde taşınması</li>
+                        <li><strong>Biyosentez:</strong> Protein, nükleik asit, lipit sentezi</li>
+                        <li><strong>Büyüme ve onarım:</strong> Yıpranan doku ve organların onarılması</li>
+                        <li><strong>Vücut ısısının korunması:</strong> Homeoterm (sıcakkanlı) canlılarda</li>
+                        <li><strong>Hücre bölünmesi:</strong> Mitoz ve mayoz bölünme</li>
+                        <li><strong>Işık üretimi:</strong> Ateş böceği gibi biyolüminesans canlılarda</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> ENERJİ TEPKİMELERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Ekzergonik (enerji veren) tepkimeler:</strong> Enerjinin açığa çıktığı tepkimelerdir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>ATP hidrolizi (defosforilasyon)</li>
+                                <li>Hücresel solunum</li>
+                                <li>Besinlerin yıkım tepkimeleri</li>
+                            </ul>
+                        </li>
+                        <li><strong>Endergonik (enerji alan) tepkimeler:</strong> Gerçekleşmesi için enerjiye ihtiyaç duyulan tepkimelerdir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>ATP sentezi (fosforilasyon)</li>
+                                <li>Fotosentez</li>
+                                <li>Protein sentezi</li>
+                                <li>DNA replikasyonu</li>
+                            </ul>
+                        </li>
+                        <li>Hücrede gerçekleşen çoğu yıkım tepkimeleri ekzergonik, yapım tepkimeleri ise endergonik tepkimelere örnektir.</li>
+                        <li>Metabolik olayların gerçekleşmesinde enerji açığa çıkaran ve enerjiyi kullanan tepkimeler birlikte yürütülür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-check"></i> KONTROL NOKTASI - ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>ATP (Adenozin trifosfat):</strong> Tüm canlılarda ortak enerji molekülü</li>
+                        <li><strong>ADP (Adenozin difosfat):</strong> ATP'den bir fosfat kopmasıyla oluşan molekül</li>
+                        <li><strong>AMP (Adenozin monofosfat):</strong> ADP'den bir fosfat kopmasıyla oluşan molekül</li>
+                        <li><strong>Fosforilasyon:</strong> ADP'ye fosfat eklenerek ATP oluşması</li>
+                        <li><strong>Defosforilasyon:</strong> ATP'den fosfat kopmasıyla enerji açığa çıkması</li>
+                        <li><strong>Ekzergonik tepkime:</strong> Enerji veren (açığa çıkaran) tepkime</li>
+                        <li><strong>Endergonik tepkime:</strong> Enerji alan (gerektiren) tepkime</li>
+                        <li><strong>ATP döngüsü:</strong> ATP'nin sürekli yıkılıp yeniden sentezlenmesi</li>
+                        <li><strong>Homeostasi:</strong> Vücudun iç dengede kalması, ATP üretimi ve tüketimi bu dengeyi sağlamada önemli rol oynar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 30 ATP ve Enerji Sorusu
+        const csvData = `Enerji nedir?,"İş yapabilme yeteneği ya da bir değişikliğe neden olma kapasitesidir."
+Canlılar neden enerjiye ihtiyaç duyar?,"Yaşamsal faaliyetlerini devam ettirebilmek için"
+Kış uykusundaki canlılar enerji ihtiyacını nasıl karşılar?,"Depoladıkları besinlerden elde ettikleri enerjiyle"
+Güneş enerjisi canlılar için neden önemlidir?,"Besinlerdeki enerjinin kaynağı güneştir, fotosentez için gereklidir"
+Fotosentezin enerji dönüşümündeki rolü nedir?,"Güneş enerjisini besinlerdeki kimyasal bağ enerjisine dönüştürür"
+ATP nedir?,"Adenozin trifosfat, tüm canlılarda ortak enerji molekülü"
+ATP'nin yapısında neler bulunur?,"Adenin bazı, riboz şekeri ve üç fosfat grubu"
+ATP'nin RNA'daki adenin nükleotidinden farkı nedir?,"Bir yerine üç fosfat grubu içermesi"
+ATP hücreler arası aktarılabilir mi?,"Hayır, hücre zarından geçemez, her hücre kendi ATP'sini üretir"
+ATP depolanabilir mi?,"Hayır, anlık olarak üretilir ve tüketilir"
+AMP nedir?,"Adenozin monofosfat, adenozin + 1 fosfat"
+ADP nedir?,"Adenozin difosfat, adenozin + 2 fosfat"
+ATP nasıl oluşur?,"Adenozin molekülüne üç fosfat bağlanmasıyla"
+Fosforilasyon nedir?,"ADP'ye enerji ve inorganik fosfat eklenerek ATP sentezlenmesi"
+Defosforilasyon nedir?,"ATP'nin hidrolizi sonucu fosfat kopması ve enerji açığa çıkması"
+ATP döngüsü nedir?,"ATP'nin sürekli yıkılıp yeniden sentezlenmesi süreci"
+ATP hidrolizi denklemi nedir?,"ATP + H₂O → ADP + Pᵢ + Enerji"
+ATP sentezi denklemi nedir?,"ADP + Pᵢ + Enerji → ATP + H₂O"
+Ekzergonik tepkime nedir?,"Enerji açığa çıkaran tepkime"
+Endergonik tepkime nedir?,"Enerji gerektiren tepkime"
+Hangi tepkimeler ekzergoniktir?,"ATP hidrolizi, hücresel solunum, besin yıkımı"
+Hangi tepkimeler endergoniktir?,"ATP sentezi, fotosentez, protein sentezi"
+ATP hangi yaşamsal faaliyetlerde kullanılır?,"Sinir iletimi, kas kasılması, aktif taşıma, biyosentez"
+ATP'nin kas kasılmasındaki rolü nedir?,"Kas liflerinin kasılması için gerekli enerjiyi sağlar"
+ATP'nin sinir iletimindeki rolü nedir?,"Sinir hücrelerinde impuls iletimi için gerekli enerjiyi sağlar"
+ATP'nin aktif taşımadaki rolü nedir?,"Hücre zarından madde taşınması için gerekli enerjiyi sağlar"
+Canlılar günde kaç kez ATP döngüsü gerçekleştirir?,"Bir hücre günde binlerce kez ATP döngüsü gerçekleştirir"
+Enerjinin korunumu yasası nedir?,"Enerji yok olmaz, bir formdan başka bir forma dönüşür"
+Kış uykusuna yatan hayvanlara örnek veriniz?,"Ayı, yarasa, sincap, kirpi, yer sincabı"
+İnsan beslenmeden kaç gün yaşayabilir?,"Ortalama 30-40 gün (su içmeden ise 3-5 gün)"`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Enerji nedir?",
+                options: [
+                    "Maddenin temel yapı taşı",
+                    "İş yapabilme yeteneği ya da bir değişikliğe neden olma kapasitesi",
+                    "Canlıların üreme yeteneği",
+                    "Sadece hareket ile ilgili bir kavram",
+                    "Besinlerde bulunan vitaminler"
+                ],
+                correct: 1,
+                explanation: "Enerji, iş yapabilme yeteneği ya da bir değişikliğe neden olma kapasitesi olarak tanımlanır."
+            },
+            {
+                question: "Canlılar neden enerjiye ihtiyaç duyar?",
+                options: [
+                    "Sadece hareket edebilmek için",
+                    "Sadece üreyebilmek için",
+                    "Yaşamsal faaliyetlerini devam ettirebilmek için",
+                    "Sadece büyüyebilmek için",
+                    "Sadece beslenebilmek için"
+                ],
+                correct: 2,
+                explanation: "Canlılar yaşamsal faaliyetlerini devam ettirebilmek için enerjiye ihtiyaç duyar ve bu enerjiyi besinlerden karşılar."
+            },
+            {
+                question: "Kış uykusundaki canlılar enerji ihtiyacını nasıl karşılar?",
+                options: [
+                    "Güneş enerjisinden direkt yararlanırlar",
+                    "Diğer canlılardan enerji çalarlar",
+                    "Depoladıkları besinlerden elde ettikleri enerjiyle",
+                    "Havadan enerji alırlar",
+                    "Topraktan mineral alarak"
+                ],
+                correct: 2,
+                explanation: "Kış uykusundaki canlılar önce uyku sürecinde harcanacak besini vücutlarında depolar. Kış uykusu sürecinde ise depoladıkları besinlerden elde ettikleri enerjiyle vücut sıcaklıklarını dengede tutar."
+            },
+            {
+                question: "Besinlerdeki enerjinin kaynağı nedir?",
+                options: [
+                    "Ay",
+                    "Güneş",
+                    "Yer çekimi",
+                    "Manyetik alan",
+                    "Radyoaktif elementler"
+                ],
+                correct: 1,
+                explanation: "Besinlerdeki enerjinin kaynağı güneştir. Fotosentez yapan canlılar güneş enerjisini besinlerdeki kimyasal bağ enerjisine dönüştürür."
+            },
+            {
+                question: "ATP nedir?",
+                options: [
+                    "Bir çeşit protein",
+                    "Bir çeşit yağ",
+                    "Tüm canlılarda ortak enerji molekülü",
+                    "Sadece bitkilerde bulunan enerji molekülü",
+                    "Sadece hayvanlarda bulunan enerji molekülü"
+                ],
+                correct: 2,
+                explanation: "ATP (adenozin trifosfat), tüm canlılarda yaşamsal faaliyetlerin gerçekleştirilmesi için kullanılan ortak enerji molekülüdür."
+            },
+            {
+                question: "ATP'nin yapısında aşağıdakilerden hangisi bulunmaz?",
+                options: [
+                    "Adenin bazı",
+                    "Riboz şekeri",
+                    "Üç fosfat grubu",
+                    "Glikoz molekülü",
+                    "Fosfat bağları"
+                ],
+                correct: 3,
+                explanation: "ATP'nin yapısında adenin bazı, riboz şekeri ve üç fosfat grubu bulunur. Glikoz ATP'nin yapısında bulunmaz, glikoz enerji kaynağıdır."
+            },
+            {
+                question: "ATP'nin RNA'daki adenin nükleotidinden farkı nedir?",
+                options: [
+                    "Adenin bazı yoktur",
+                    "Riboz şekeri yoktur",
+                    "Bir yerine üç fosfat grubu içermesi",
+                    "Sadece iki fosfat grubu içermesi",
+                    "Hiçbir farkı yoktur"
+                ],
+                correct: 2,
+                explanation: "ATP, yapı olarak RNA molekülündeki adenin nükleotidinden benzerdir. Farkı, yapısında bir yerine üç tane fosfat grubu bulundurmasıdır."
+            },
+            {
+                question: "ATP hücreler arası aktarılabilir mi?",
+                options: [
+                    "Evet, kolayca aktarılabilir",
+                    "Evet, ancak özel taşıyıcılarla",
+                    "Hayır, hücre zarından geçemez",
+                    "Evet, sadece bitki hücreleri arasında",
+                    "Evet, sadece hayvan hücreleri arasında"
+                ],
+                correct: 2,
+                explanation: "ATP hücre zarından geçemez, bu nedenle bir hücreden diğerine aktarılamaz. Her hücre kendi ATP'sini sentezler."
+            },
+            {
+                question: "ATP depolanabilir mi?",
+                options: [
+                    "Evet, uzun süre depolanabilir",
+                    "Evet, ancak sınırlı miktarda",
+                    "Hayır, anlık olarak üretilir ve tüketilir",
+                    "Sadece karaciğerde depolanır",
+                    "Sadece kas hücrelerinde depolanır"
+                ],
+                correct: 2,
+                explanation: "ATP depolanmaz, anlık olarak üretilir ve tüketilir. ATP döngüsü sürekli devam eder."
+            },
+            {
+                question: "Fosforilasyon nedir?",
+                options: [
+                    "ATP'nin yıkılması",
+                    "ADP'ye fosfat eklenerek ATP oluşması",
+                    "Protein sentezi",
+                    "DNA replikasyonu",
+                    "Glikozun parçalanması"
+                ],
+                correct: 1,
+                explanation: "Fosforilasyon, ADP molekülüne enerji ve inorganik fosfat (Pᵢ) eklenmesiyle ATP sentezlenmesidir."
+            },
+            {
+                question: "Defosforilasyon nedir?",
+                options: [
+                    "ATP sentezi",
+                    "ATP'nin hidrolizi sonucu enerji açığa çıkması",
+                    "Protein yıkımı",
+                    "DNA sentezi",
+                    "Glikoz sentezi"
+                ],
+                correct: 1,
+                explanation: "Defosforilasyon, ATP'nin hidrolizi sonucunda yapısından bir fosfat molekülünün koparılması ve enerji açığa çıkmasıdır."
+            },
+            {
+                question: "ATP döngüsü nedir?",
+                options: [
+                    "ATP'nin bir hücreden diğerine taşınması",
+                    "ATP'nin depolanması süreci",
+                    "ATP'nin sürekli yıkılıp yeniden sentezlenmesi",
+                    "ATP'nin yağa dönüştürülmesi",
+                    "ATP'nin proteine dönüştürülmesi"
+                ],
+                correct: 2,
+                explanation: "ATP döngüsü, ATP molekülünün hücrede metabolik faaliyetlerde kullanılmak üzere yıkılıp yeniden sentezlenmesidir."
+            },
+            {
+                question: "ATP hidrolizi denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "ATP + H₂O → ADP + Pᵢ + Enerji",
+                    "ADP + Pᵢ + Enerji → ATP + H₂O",
+                    "ATP → ADP + Pᵢ",
+                    "ADP → ATP + Pᵢ",
+                    "ATP + O₂ → CO₂ + H₂O + Enerji"
+                ],
+                correct: 0,
+                explanation: "ATP hidrolizi (defosforilasyon) denklemi: ATP + H₂O → ADP + Pᵢ + Enerji"
+            },
+            {
+                question: "Ekzergonik tepkime nedir?",
+                options: [
+                    "Enerji gerektiren tepkime",
+                    "Enerji açığa çıkaran tepkime",
+                    "Isı alan tepkime",
+                    "Işık gerektiren tepkime",
+                    "Enzim gerektirmeyen tepkime"
+                ],
+                correct: 1,
+                explanation: "Ekzergonik (enerji veren) tepkimeler, enerjinin açığa çıktığı tepkimelerdir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi ekzergonik bir tepkimedir?",
+                options: [
+                    "ATP sentezi",
+                    "Fotosentez",
+                    "Protein sentezi",
+                    "ATP hidrolizi",
+                    "DNA replikasyonu"
+                ],
+                correct: 3,
+                explanation: "ATP hidrolizi ekzergonik bir tepkimedir çünkü enerji açığa çıkar. ATP sentezi, fotosentez, protein sentezi ve DNA replikasyonu ise endergonik tepkimelerdir."
+            },
+            {
+                question: "Endergonik tepkime nedir?",
+                options: [
+                    "Enerji açığa çıkaran tepkime",
+                    "Enerji gerektiren tepkime",
+                    "Isı veren tepkime",
+                    "Işık veren tepkime",
+                    "Enzim gerektirmeyen tepkime"
+                ],
+                correct: 1,
+                explanation: "Endergonik (enerji alan) tepkimeler, gerçekleşmesi için enerjiye ihtiyaç duyulan tepkimelerdir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi endergonik bir tepkimedir?",
+                options: [
+                    "ATP hidrolizi",
+                    "Hücresel solunum",
+                    "Glikozun parçalanması",
+                    "ATP sentezi",
+                    "Yağların yıkımı"
+                ],
+                correct: 3,
+                explanation: "ATP sentezi endergonik bir tepkimedir çünkü enerji gerektirir. Diğer seçenekler ekzergonik tepkimelerdir."
+            },
+            {
+                question: "ATP aşağıdaki yaşamsal faaliyetlerden hangisinde kullanılmaz?",
+                options: [
+                    "Sinir iletimi",
+                    "Kas kasılması",
+                    "Aktif taşıma",
+                    "Pasif difüzyon",
+                    "Biyosentetik tepkimeler"
+                ],
+                correct: 3,
+                explanation: "Pasif difüzyon ATP gerektirmez çünkü enerji kullanılmadan gerçekleşir. Sinir iletimi, kas kasılması, aktif taşıma ve biyosentetik tepkimeler ATP gerektirir."
+            },
+            {
+                question: "ATP'nin kas kasılmasındaki rolü nedir?",
+                options: [
+                    "Kas hücrelerinin bölünmesini sağlar",
+                    "Kas liflerinin kasılması için gerekli enerjiyi sağlar",
+                    "Kas hücrelerinin beslenmesini sağlar",
+                    "Kas hücrelerinin büyümesini sağlar",
+                    "Kas hücrelerinin dinlenmesini sağlar"
+                ],
+                correct: 1,
+                explanation: "ATP, kas liflerinin kasılması için gerekli enerjiyi sağlar. Kas kasılması endergonik bir süreçtir ve ATP hidrolizi ile sağlanan enerjiyi kullanır."
+            },
+            {
+                question: "ATP'nin sinir iletimindeki rolü nedir?",
+                options: [
+                    "Sinir hücrelerinin bölünmesini sağlar",
+                    "Sinir hücrelerinde impuls iletimi için gerekli enerjiyi sağlar",
+                    "Sinir hücrelerinin beslenmesini sağlar",
+                    "Sinir hücrelerinin büyümesini sağlar",
+                    "Sinir hücrelerinin dinlenmesini sağlar"
+                ],
+                correct: 1,
+                explanation: "ATP, sinir hücrelerinde impuls iletimi için gerekli enerjiyi sağlar. Sinir iletimi sırasında iyon pompaları ATP kullanır."
+            },
+            {
+                question: "Enerjinin korunumu yasası nedir?",
+                options: [
+                    "Enerjinin tamamen yok olabileceği",
+                    "Enerjinin yok olmayıp form değiştirebileceği",
+                    "Enerjinin sadece artabileceği",
+                    "Enerjinin sadece azalabileceği",
+                    "Enerjinin sabit kaldığı"
+                ],
+                correct: 1,
+                explanation: "Enerjinin korunumu yasasına göre enerji yok olmaz, bir formdan başka bir forma aktarılabilir veya dönüştürülebilir."
+            },
+            {
+                question: "Kış uykusuna yatan hayvanlara örnek olarak aşağıdakilerden hangisi verilemez?",
+                options: [
+                    "Ayı",
+                    "Yarasa",
+                    "Sincap",
+                    "Kirpi",
+                    "Aslan"
+                ],
+                correct: 4,
+                explanation: "Ayı, yarasa, sincap, kirpi, yer sincabı, dağ sıçanı, fındık faresi kış uykusuna yatan hayvanlara örnektir. Aslan kış uykusuna yatmaz."
+            },
+            {
+                question: "Bir insan beslenmeden kaç gün yaşayabilir?",
+                options: [
+                    "1-3 gün",
+                    "5-7 gün",
+                    "10-15 gün",
+                    "30-40 gün",
+                    "60-90 gün"
+                ],
+                correct: 3,
+                explanation: "Bir insan ortalama 30-40 gün beslenmeden yaşayabilir (su içerek). Su içmeden ise 3-5 gün yaşayabilir."
+            },
+            {
+                question: "ATP sentezi denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "ATP + H₂O → ADP + Pᵢ + Enerji",
+                    "ADP + Pᵢ + Enerji → ATP + H₂O",
+                    "ATP → AMP + 2Pᵢ + Enerji",
+                    "AMP + 2Pᵢ + Enerji → ATP",
+                    "ADP → ATP + H₂O"
+                ],
+                correct: 1,
+                explanation: "ATP sentezi (fosforilasyon) denklemi: ADP + Pᵢ + Enerji → ATP + H₂O"
+            },
+            {
+                question: "Canlılar günde kaç kez ATP döngüsü gerçekleştirir?",
+                options: [
+                    "10-20 kez",
+                    "50-100 kez",
+                    "200-500 kez",
+                    "1000-2000 kez",
+                    "Binlerce kez"
+                ],
+                correct: 4,
+                explanation: "Bir hücre günde binlerce kez ATP döngüsü gerçekleştirir. ATP sürekli yıkılır ve yeniden sentezlenir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! ATP ve enerji konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! ATP ve enerji konusunu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! ATP ve enerjinin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
