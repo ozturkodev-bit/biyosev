@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biyolojide Dönüm Noktaları ve Bilimsel Yöntem</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2ecc71;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #2ecc71;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: #3498db;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+        }
+
+        .timeline-year {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dna"></i> Biyolojide Dönüm Noktaları ve Bilimsel Yöntem</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile biyolojinin tarihini ve bilimsel süreçleri keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">Biyolojideki dönüm noktaları ve bilimsel yöntem konularını soru-cevap kartları ile öğrenin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Biyolojinin tarihsel gelişimini ve bilimsel süreçleri görsel olarak keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">Biyolojideki dönüm noktaları ve bilimsel yöntem bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Biyolojinin tarihsel gelişimi ve bilimsel yöntem konularını kapsamlı şekilde öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Biyolojideki Dönüm Noktaları - Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Biyolojideki Dönüm Noktaları Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Erken Dönem Keşifler (1389-1665)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Akşemseddin (1389-1459):</strong> Mikroorganizmaların hastalık yapabileceğini ilk öne süren bilim insanı</li>
+                        <li><strong>Robert Hooke (1665):</strong> İlk bileşik mikroskop ve hücreyi keşfetmesi</li>
+                        <li><strong>Francesco Redi (1668):</strong> Kendiliğinden oluşum teorisini çürüten deneyler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücre Teorisi ve Genetik (1838-1865)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Matthias Schleiden & Theodor Schwann (1838):</strong> Hücre teorisinin kurucuları</li>
+                        <li><strong>Rudolf Virchow:</strong> "Her hücre başka bir hücreden gelir" prensibi</li>
+                        <li><strong>Gregor Mendel (1865):</strong> Kalıtım kanunlarını keşfi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Mikrobiyoloji ve Tıp (1800'ler-1928)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Louis Pasteur (1850'ler):</strong> Pastörizasyon, aşılar, mikroorganizmalar</li>
+                        <li><strong>Robert Koch:</strong> Bakteriyolojinin kurucusu</li>
+                        <li><strong>Alexander Fleming (1928):</strong> Penisilinin keşfi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Moleküler Biyoloji Çağı (1953-1973)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Rosalind Franklin, Watson & Crick (1953):</strong> DNA'nın çift sarmal yapısı</li>
+                        <li><strong>Cohen & Boyer (1973):</strong> Rekombinant DNA teknolojisi</li>
+                        <li><strong>Kary Mullis (1985):</strong> Polimeraz zincir reaksiyonu (PCR)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Modern Biyoteknoloji (1990-2021)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ian Wilmut & Keith Campbell (1996):</strong> Dolly koyununun klonlanması</li>
+                        <li><strong>İnsan Genom Projesi (1990-2003):</strong> İnsan genomunun dizilenmesi</li>
+                        <li><strong>CRISPR-Cas9 (2012):</strong> Gen düzenleme teknolojisi</li>
+                        <li><strong>mRNA Aşıları (2021):</strong> COVID-19 pandemisi için yeni nesil aşılar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilimsel Yöntem Basamakları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>1. Gözlem Yapma:</strong> Olayları sistematik şekilde inceleme</li>
+                        <li><strong>2. Problemi Belirleme:</strong> "Neden?" ve "Nasıl?" soruları</li>
+                        <li><strong>3. Veri Toplama:</strong> Güvenilir kaynaklardan bilgi edinme</li>
+                        <li><strong>4. Hipotez Oluşturma:</strong> Test edilebilir önerme</li>
+                        <li><strong>5. Tahminler Yapma:</strong> Hipoteze dayalı çıkarımlar</li>
+                        <li><strong>6. Deney Tasarlama:</strong> Kontrollü deneyler yapma</li>
+                        <li><strong>7. Analiz ve Sonuç Çıkarma:</strong> Verileri yorumlama</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilimin Doğası</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Değişebilirlik:</strong> Bilimsel bilgiler kesin değildir</li>
+                        <li><strong>Sosyal-Kültürel Yapı:</strong> Toplumdan bağımsız değildir</li>
+                        <li><strong>Öznellik:</strong> Bilim insanlarının bakış açıları etkilidir</li>
+                        <li><strong>Teori ve Kanunlar:</strong> Farklı kavramlardır</li>
+                        <li><strong>Gözlem ve Çıkarım:</strong> Sistematik süreç gerektirir</li>
+                        <li><strong>Çeşitlilik:</strong> Tek bir bilimsel yöntem yoktur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilim Etiği</div>
+                    <ul class="mindmap-content">
+                        <li><strong>İntihal:</strong> Başkalarının çalışmalarını kaynak göstermeden kullanma</li>
+                        <li><strong>Veri Manipülasyonu:</strong> Sonuçları taraflı şekilde sunma</li>
+                        <li><strong>Sahte Veri:</strong> Araştırmaya dayanmayan bilgi üretme</li>
+                        <li><strong>Seçici Raporlama:</strong> Hipotezi desteklemeyen verileri gizleme</li>
+                        <li><strong>Çoklu Yayın:</strong> Aynı araştırmayı birden fazla yerde yayımlama</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Biyolojide Dönüm Noktaları ve Bilimsel Yöntem Testi
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #2ecc71; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 20</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Biyolojideki Dönüm Noktaları ve Bilimsel Yöntem Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-history"></i> BİYOLOJİNİN TARİHSEL GELİŞİMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Biyolojinin Önemi:</strong> Canlıların yapı ve işlevlerini inceleyerek yaşamın doğasını anlamaya çalışan bilim dalıdır. Sağlık, çevre, ekonomi ve tarım gibi alanlarda kritik katkılar sağlar.</li>
+                        <li><strong>Uzay Biyolojisi:</strong> Astronotların uzaydaki zorlayıcı koşullara adaptasyonu üzerine araştırmalar yapar. MOXIE cihazı, Mars'ta karbondioksidi oksijene dönüştürmek için bitkilerden esinlenmiştir.</li>
+                        <li><strong>Penisilinin Keşfi (1928):</strong> Alexander Fleming tarafından keşfedilen penisilin, ölümcül bakteriyel hastalıkların tedavisinde devrim yaratmıştır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-timeline"></i> BİYOLOJİDEKİ ÖNEMLİ DÖNÜM NOKTALARI</div>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1389-1459</div>
+                                <p><strong>Akşemseddin:</strong> Mikroorganizmaların hastalık yapabileceğini ve bulaşma yollarını ilk öne süren bilim insanı.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1665</div>
+                                <p><strong>Robert Hooke:</strong> İlk bileşik mikroskobu geliştirdi ve "Micrographia" adlı eserinde hücreyi tanımladı.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1838</div>
+                                <p><strong>Schleiden & Schwann:</strong> Hücre teorisini ortaya attılar: "Tüm canlılar hücrelerden oluşur."</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1865</div>
+                                <p><strong>Gregor Mendel:</strong> Bezelyeler üzerinde yaptığı çalışmalarla kalıtım kanunlarını keşfetti.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1928</div>
+                                <p><strong>Alexander Fleming:</strong> Penisilini keşfederek antibiyotik çağını başlattı.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1953</div>
+                                <p><strong>Watson, Crick & Franklin:</strong> DNA'nın çift sarmal yapısını keşfettiler.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1973</div>
+                                <p><strong>Cohen & Boyer:</strong> Rekombinant DNA teknolojisini geliştirdiler.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 1996</div>
+                                <p><strong>Ian Wilmut & Keith Campbell:</strong> Dolly adlı koyunu klonladılar.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 2003</div>
+                                <p><strong>İnsan Genom Projesi:</strong> İnsan DNA'sının tam dizilimi tamamlandı.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 2012</div>
+                                <p><strong>CRISPR-Cas9:</strong> Gen düzenleme teknolojisi keşfedildi.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-year"><i class="fas fa-calendar"></i> 2021</div>
+                                <p><strong>mRNA Aşıları:</strong> COVID-19 pandemisi için yeni nesil aşılar geliştirildi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> BİLİMİN DOĞASI VE BİLİMSEL YÖNTEM</div>
+                    <ul class="summary-list">
+                        <li><strong>Bilimin Doğası:</strong> Bilimsel bilgi değişebilir, sosyal-kültürel yapıdan etkilenir, öznellik içerir ve tek bir yönteme sahip değildir.</li>
+                        <li><strong>Bilimsel Yöntem Basamakları:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li>Gözlem Yapma</li>
+                                <li>Problemi Belirleme</li>
+                                <li>Veri Toplama</li>
+                                <li>Hipotez Oluşturma</li>
+                                <li>Tahminler Yapma</li>
+                                <li>Deney Tasarlama</li>
+                                <li>Analiz ve Sonuç Çıkarma</li>
+                            </ol>
+                        </li>
+                        <li><strong>Kontrollü Deney:</strong> Bağımsız değişkenin etkisini ölçmek için tasarlanan deneydir. Francesco Redi ve Louis Pasteur'ün deneyleri klasik örneklerdir.</li>
+                        <li><strong>Hipotez:</strong> Test edilebilir, doğruluğu veya yanlışlığı ispatlanabilir önermedir.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Bilimsel bilgiler kesin ve değişmez değildir. Yeni bulgular ve teknolojiler ışığında bilimsel bilgiler değişebilir. Örneğin, DNA'nın yapısı keşfedilmeden önce genetik bilginin proteinlerde taşındığı düşünülüyordu.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> BİLİMSEL ARAŞTIRMALAR VE ETİK</div>
+                    <ul class="summary-list">
+                        <li><strong>Bilim Etiği:</strong> Araştırmacıların ahlaki ilkelerini, davranış biçimlerini ve sorumluluklarını belirleyen kurallardır.</li>
+                        <li><strong>Etik İhlalleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İntihal:</strong> Başkalarının çalışmalarını kaynak göstermeden kullanma</li>
+                                <li><strong>Veri Manipülasyonu:</strong> Sonuçları taraflı şekilde sunma</li>
+                                <li><strong>Sahte Veri Üretme:</strong> Araştırmaya dayanmayan bilgi üretme</li>
+                                <li><strong>Seçici Raporlama:</strong> Hipotezi desteklemeyen verileri gizleme</li>
+                                <li><strong>Çoklu Yayın:</strong> Aynı araştırmayı birden fazla yerde yayımlama</li>
+                            </ul>
+                        </li>
+                        <li><strong>Etik Kuralların Önemi:</strong> Bilimde güvenilirliği sağlar, kamuoyunun bilime olan güvenini korur, bireylerin ve hayvanların haklarını güvence altına alır.</li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> Bilimsel bir çalışmada kullanılan tüm kaynaklar doğru şekilde gösterilmeli, çalışmaya katkısı olmayan kişilerin isimleri yayında yer almamalıdır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-lightbulb"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Kendiliğinden Oluşum Teorisi:</strong> Canlıların cansız maddelerden oluşabileceği düşüncesi. Redi ve Pasteur'ün deneyleriyle çürütülmüştür.</li>
+                        <li><strong>Hücre Teorisi:</strong> Tüm canlılar hücrelerden oluşur, hücre yaşamın temel birimidir, her hücre başka bir hücreden gelir.</li>
+                        <li><strong>Kalıtım Kanunları:</strong> Mendel'in bezelyeler üzerinde yaptığı çalışmalarla ortaya koyduğu, özelliklerin nesiller arasında aktarılma kuralları.</li>
+                        <li><strong>Rekombinant DNA Teknolojisi:</strong> Farklı organizmalardan alınan DNA parçalarının birleştirilmesi.</li>
+                        <li><strong>PCR (Polimeraz Zincir Reaksiyonu):</strong> Belirli bir DNA dizisinin milyonlarca kopyasını üretmek için kullanılan teknik.</li>
+                        <li><strong>CRISPR-Cas9:</strong> İstenilen gen bölgesinde kontrollü düzenleme yapmayı sağlayan gen düzenleme teknolojisi.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - Biyolojideki Dönüm Noktaları
+        const csvData = `Biyolojinin tanımı nedir?,"Canlıların yapı ve işlevlerini inceleyerek yaşamın doğasını anlamaya çalışan bilim dalıdır."
+Biyolojinin önemi nedir?,"Sağlık, çevre, ekonomi ve tarım gibi birçok alanda kritik katkılar sağlar."
+Uzay biyolojisi nedir?,"Astronotların uzaydaki zorlayıcı koşullara adaptasyonu üzerine araştırmalar yapar."
+MOXIE cihazı nedir?,"Mars'ta karbondioksidi oksijene dönüştürmek için bitkilerden esinlenerek geliştirilmiş bir cihazdır."
+Akşemseddin'in biyolojiye katkısı nedir?,"Mikroorganizmaların hastalık yapabileceğini ve bulaşma yollarını ilk öne süren bilim insanıdır."
+Robert Hooke'un keşfi nedir?,"1665'te ilk bileşik mikroskobu geliştirdi ve hücreyi tanımladı."
+Francesco Redi'nin deneyi neyi kanıtladı?,"Canlıların cansız maddelerden oluşamayacağını (kendiliğinden oluşum teorisini çürüttü)."
+Hücre teorisini kimler ortaya attı?,"Matthias Schleiden ve Theodor Schwann (1838)"
+Rudolf Virchow'un hücre teorisine katkısı nedir?,"Her hücrenin başka bir hücreden geldiği prensibini ekledi."
+Gregor Mendel'in keşfi nedir?,"Bezelyeler üzerinde yaptığı çalışmalarla kalıtım kanunlarını keşfetti (1865)."
+Louis Pasteur'ün katkıları nelerdir?,"Pastörizasyonu buldu, aşıları geliştirdi, mikroorganizmaların hastalık yapabileceğini kanıtladı."
+Alexander Fleming'in keşfi nedir?,"1928'de penisilini keşfederek antibiyotik çağını başlattı."
+DNA'nın çift sarmal yapısını kimler keşfetti?,"James Watson, Francis Crick ve Rosalind Franklin (1953)"
+Rosalind Franklin'in katkısı nedir?,"DNA'nın yapısını belirlemede kritik öneme sahip X-ışını kırınım görüntülerini elde etti."
+Rekombinant DNA teknolojisi nedir?,"Farklı organizmalardan alınan DNA parçalarının birleştirilmesi teknolojisi (Cohen & Boyer, 1973)."
+PCR (Polimeraz Zincir Reaksiyonu) nedir?,"Belirli bir DNA dizisinin milyonlarca kopyasını üretmek için kullanılan teknik (Kary Mullis, 1985)."
+İlk klonlanan memeli hayvan nedir?,"Dolly adlı koyun (Ian Wilmut ve Keith Campbell, 1996)"
+İnsan Genom Projesi nedir?,"İnsan DNA'sının tam diziliminin belirlenmesi projesi (1990-2003)."
+CRISPR-Cas9 teknolojisi nedir?,"İstenilen gen bölgesinde kontrollü düzenleme yapmayı sağlayan gen düzenleme teknolojisi (2012)."
+mRNA aşıları ne zaman geliştirildi?,"COVID-19 pandemisi sırasında 2021 yılında."
+Bilimin doğası nedir?,"Bilimsel araştırmaların nasıl yapıldığını, bilimsel bilginin nasıl elde edildiğini açıklayan kavramdır."
+Bilimsel bilginin özellikleri nelerdir?,"Değişebilir, sosyal-kültürel yapıdan etkilenir, öznellik içerir, tek bir yönteme sahip değildir."
+Bilimsel yöntem basamakları nelerdir?,"Gözlem, problem belirleme, veri toplama, hipotez oluşturma, tahmin, deney tasarlama, analiz ve sonuç çıkarma."
+Hipotez nedir?,"Test edilebilir, doğruluğu veya yanlışlığı ispatlanabilir bilimsel önermedir."
+Kontrollü deney nedir?,"Bağımsız değişkenin etkisini ölçmek için tasarlanan, diğer değişkenlerin sabit tutulduğu deneydir."
+Bağımsız değişken nedir?,"Araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkendir."
+Bağımlı değişken nedir?,"Bağımsız değişkene bağlı olarak değişen değişkendir."
+Bilim etiği nedir?,"Araştırmacıların ahlaki ilkelerini, davranış biçimlerini ve sorumluluklarını belirleyen kurallardır."
+İntihal nedir?,"Başkalarının çalışmalarını kaynak göstermeden kullanmaktır."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 20 Questions
+        const testQuestions = [
+            {
+                question: "Biyolojinin tanımı aşağıdakilerden hangisidir?",
+                options: [
+                    "Yalnızca insan vücudunu inceleyen bilim dalı",
+                    "Canlıların yapı ve işlevlerini inceleyerek yaşamın doğasını anlamaya çalışan bilim dalı",
+                    "Sadece bitkileri inceleyen bilim dalı",
+                    "Yalnızca hayvanları inceleyen bilim dalı",
+                    "Sadece mikroorganizmaları inceleyen bilim dalı"
+                ],
+                correct: 1,
+                explanation: "Biyoloji, canlıların yapı ve işlevlerini inceleyerek yaşamın doğasını anlamaya çalışan bilim dalıdır."
+            },
+            {
+                question: "MOXIE cihazı hangi canlılardan esinlenerek geliştirilmiştir?",
+                options: [
+                    "Hayvanlardan",
+                    "Mikroorganizmalardan",
+                    "Bitkilerden",
+                    "Mantarlardan",
+                    "Bakterilerden"
+                ],
+                correct: 2,
+                explanation: "MOXIE cihazı, Mars'ta karbondioksidi oksijene dönüştürmek için bitkilerden esinlenerek geliştirilmiştir."
+            },
+            {
+                question: "Mikroorganizmaların hastalık yapabileceğini ilk öne süren bilim insanı kimdir?",
+                options: ["Robert Hooke", "Akşemseddin", "Louis Pasteur", "Alexander Fleming", "Gregor Mendel"],
+                correct: 1,
+                explanation: "Akşemseddin (1389-1459), mikroorganizmaların hastalık yapabileceğini ve bulaşma yollarını ilk öne süren bilim insanıdır."
+            },
+            {
+                question: "Hücre teorisini ortaya atan bilim insanları hangi seçenekte doğru verilmiştir?",
+                options: [
+                    "Watson ve Crick",
+                    "Schleiden ve Schwann",
+                    "Mendel ve Darwin",
+                    "Fleming ve Pasteur",
+                    "Hooke ve Redi"
+                ],
+                correct: 1,
+                explanation: "Hücre teorisi Matthias Schleiden ve Theodor Schwann tarafından 1838 yılında ortaya atılmıştır."
+            },
+            {
+                question: "Kalıtım kanunlarını keşfeden bilim insanı kimdir?",
+                options: [
+                    "Gregor Mendel",
+                    "Charles Darwin",
+                    "Louis Pasteur",
+                    "Alexander Fleming",
+                    "Robert Hooke"
+                ],
+                correct: 0,
+                explanation: "Gregor Mendel, bezelyeler üzerinde yaptığı çalışmalarla kalıtım kanunlarını keşfetmiştir (1865)."
+            },
+            {
+                question: "Penisilini keşfederek antibiyotik çağını başlatan bilim insanı kimdir?",
+                options: [
+                    "Louis Pasteur",
+                    "Alexander Fleming",
+                    "Robert Koch",
+                    "Joseph Lister",
+                    "Edward Jenner"
+                ],
+                correct: 1,
+                explanation: "Alexander Fleming 1928 yılında penisilini keşfederek antibiyotik çağını başlatmıştır."
+            },
+            {
+                question: "DNA'nın çift sarmal yapısını keşfeden bilim insanları arasında yer almayan kişi kimdir?",
+                options: [
+                    "James Watson",
+                    "Francis Crick",
+                    "Rosalind Franklin",
+                    "Gregor Mendel",
+                    "Maurice Wilkins"
+                ],
+                correct: 3,
+                explanation: "DNA'nın çift sarmal yapısı James Watson, Francis Crick ve Rosalind Franklin'in katkılarıyla keşfedilmiştir. Gregor Mendel kalıtım kanunlarını keşfeden kişidir."
+            },
+            {
+                question: "Rekombinant DNA teknolojisini geliştiren bilim insanları kimlerdir?",
+                options: [
+                    "Watson ve Crick",
+                    "Cohen ve Boyer",
+                    "Wilmut ve Campbell",
+                    "Mullis ve Smith",
+                    "Fleming ve Pasteur"
+                ],
+                correct: 1,
+                explanation: "Rekombinant DNA teknolojisi Stanley Norman Cohen ve Herbert Wayne Boyer tarafından 1973 yılında geliştirilmiştir."
+            },
+            {
+                question: "PCR (Polimeraz Zincir Reaksiyonu) tekniğini kim geliştirmiştir?",
+                options: [
+                    "Kary Mullis",
+                    "James Watson",
+                    "Francis Collins",
+                    "Craig Venter",
+                    "Frederick Sanger"
+                ],
+                correct: 0,
+                explanation: "PCR tekniği Kary Mullis tarafından 1985 yılında geliştirilmiştir."
+            },
+            {
+                question: "İlk klonlanan memeli hayvan hangisidir?",
+                options: [
+                    "Fare",
+                    "Koyun (Dolly)",
+                    "Köpek",
+                    "Kedi",
+                    "İnek"
+                ],
+                correct: 1,
+                explanation: "İlk klonlanan memeli hayvan, 1996 yılında Ian Wilmut ve Keith Campbell tarafından klonlanan Dolly adlı koyundur."
+            },
+            {
+                question: "İnsan Genom Projesi hangi yıllar arasında gerçekleştirilmiştir?",
+                options: [
+                    "1980-1990",
+                    "1990-2003",
+                    "2000-2010",
+                    "1970-1980",
+                    "2010-2020"
+                ],
+                correct: 1,
+                explanation: "İnsan Genom Projesi 1990 yılında başlamış ve 2003 yılında tamamlanmıştır."
+            },
+            {
+                question: "CRISPR-Cas9 gen düzenleme teknolojisi hangi yılda keşfedilmiştir?",
+                options: ["2005", "2008", "2012", "2015", "2018"],
+                correct: 2,
+                explanation: "CRISPR-Cas9 gen düzenleme teknolojisi 2012 yılında keşfedilmiştir."
+            },
+            {
+                question: "Bilimsel yöntem basamaklarının doğru sıralaması hangi seçenekte verilmiştir?",
+                options: [
+                    "Hipotez - Gözlem - Deney - Sonuç",
+                    "Gözlem - Hipotez - Deney - Sonuç",
+                    "Deney - Gözlem - Hipotez - Sonuç",
+                    "Sonuç - Gözlem - Hipotez - Deney",
+                    "Hipotez - Deney - Gözlem - Sonuç"
+                ],
+                correct: 1,
+                explanation: "Bilimsel yöntem basamakları genellikle şu sırayı izler: Gözlem yapma, problemi belirleme, veri toplama, hipotez oluşturma, tahminler yapma, deney tasarlama, analiz ve sonuç çıkarma."
+            },
+            {
+                question: "Aşağıdakilerden hangisi bilimin doğası özelliklerinden biri değildir?",
+                options: [
+                    "Bilimsel bilgi değişebilir",
+                    "Bilimsel bilgi kesin ve değişmezdir",
+                    "Bilim sosyal-kültürel yapıdan etkilenir",
+                    "Bilimde öznellik bulunur",
+                    "Tek bir bilimsel yöntem yoktur"
+                ],
+                correct: 1,
+                explanation: "Bilimsel bilgiler kesin ve değişmez değildir. Yeni bulgular ve teknolojiler ışığında bilimsel bilgiler değişebilir."
+            },
+            {
+                question: "Kontrollü bir deneyde araştırmacı tarafından değiştirilen değişkene ne ad verilir?",
+                options: [
+                    "Bağımlı değişken",
+                    "Bağımsız değişken",
+                    "Kontrol değişkeni",
+                    "Sabit değişken",
+                    "Ara değişken"
+                ],
+                correct: 1,
+                explanation: "Kontrollü deneyde araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkene bağımsız değişken denir."
+            },
+            {
+                question: "Test edilebilir, doğruluğu veya yanlışlığı ispatlanabilir bilimsel önermeye ne ad verilir?",
+                options: ["Teori", "Kanun", "Hipotez", "Gözlem", "Sonuç"],
+                correct: 2,
+                explanation: "Test edilebilir, doğruluğu veya yanlışlığı ispatlanabilir bilimsel önermeye hipotez denir."
+            },
+            {
+                question: "Francesco Redi'nin deneyi aşağıdaki hangi teoriyi çürütmüştür?",
+                options: [
+                    "Evrim teorisi",
+                    "Hücre teorisi",
+                    "Kendiliğinden oluşum teorisi",
+                    "Genetik teori",
+                    "Doğal seleksiyon teorisi"
+                ],
+                correct: 2,
+                explanation: "Francesco Redi'nin deneyi, canlıların cansız maddelerden oluşabileceğini savunan kendiliğinden oluşum teorisini çürütmüştür."
+            },
+            {
+                question: "Başkalarının çalışmalarını kaynak göstermeden kullanmaya ne ad verilir?",
+                options: [
+                    "Etik",
+                    "İntihal",
+                    "Manipülasyon",
+                    "Çoğaltma",
+                    "Adaptasyon"
+                ],
+                correct: 1,
+                explanation: "Başkalarının çalışmalarını kaynak göstermeden kullanmaya intihal denir ve ciddi bir bilimsel etik ihlalidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi bilimsel etik ihlallerinden biri değildir?",
+                options: [
+                    "İntihal yapmak",
+                    "Verileri manipüle etmek",
+                    "Sahte veri üretmek",
+                    "Kaynakları doğru göstermek",
+                    "Aynı araştırmayı birden fazla yerde yayımlamak"
+                ],
+                correct: 3,
+                explanation: "Kaynakları doğru göstermek bilimsel etiğin gereğidir, etik ihlali değildir. Diğer seçenekler etik ihlalleridir."
+            },
+            {
+                question: "mRNA aşıları hangi yılda COVID-19 pandemisi için geliştirilmiştir?",
+                options: ["2019", "2020", "2021", "2022", "2023"],
+                correct: 2,
+                explanation: "mRNA aşıları COVID-19 pandemisi sırasında 2021 yılında geliştirilmiş ve kullanıma sunulmuştur."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Biyolojideki dönüm noktalarını ve bilimsel yöntemi tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Biyolojinin tarihsel gelişimini ve bilimsel süreçleri çok iyi anlamışsınız.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temel bilgileri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
