@@ -1,1 +1,1209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetik Mühendisliği ve Biyoteknoloji Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dna"></i> Genetik Mühendisliği ve Biyoteknoloji Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile modern biyoteknolojiyi keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">50 adet soru-cevap kartı ile genetik mühendisliği ve biyoteknoloji konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Genetik mühendisliği ve biyoteknolojinin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">40 soruluk detaylı test ile genetik mühendisliği ve biyoteknoloji bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Genetik mühendisliği ve biyoteknolojinin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Genetik Mühendisliği ve Biyoteknoloji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">50</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Genetik Mühendisliği ve Biyoteknoloji Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Temel Kavramlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Genetik Mühendisliği:</strong> İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılması</li>
+                        <li><strong>Biyoteknoloji:</strong> DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak</li>
+                        <li><strong>Rekombinant DNA:</strong> Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülü</li>
+                        <li><strong>Transgenik Canlı (GDO):</strong> Rekombinant DNA'ya sahip canlı</li>
+                        <li><strong>İnsan Genom Projesi:</strong> İnsanın tüm genetik şifresinin çözülmesi projesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Gen Teknolojileri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Gen Klonlaması:</strong> Bir genin kopyasını oluşturmak için kullanılan yöntem ve teknikler</li>
+                        <li><strong>Restriksiyon Enzimleri:</strong> DNA'yı belirli bölgelerden kesen enzimler</li>
+                        <li><strong>DNA Ligaz:</strong> Kesilmiş DNA parçalarını birleştiren enzim</li>
+                        <li><strong>Plazmid:</strong> Bakterilerde bulunan küçük, halkasal DNA molekülleri</li>
+                        <li><strong>Vektör:</strong> Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleri</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">DNA Parmak İzi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Her bireye özgü DNA diziliminin belirlenmesi</li>
+                        <li><strong>Keşif:</strong> 1984 yılında Sir Alec Jeffreys tarafından</li>
+                        <li><strong>PCR (Polimeraz Zincir Reaksiyonu):</strong> DNA'nın laboratuvarda çoğaltılması</li>
+                        <li><strong>Elektroforez:</strong> DNA parçalarının boyutlarına göre ayrılması</li>
+                        <li><strong>Kullanım Alanları:</strong> Suçluların tespiti, babalık testleri, safkan ırk belirlenmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kök Hücre Teknolojisi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kök Hücre:</strong> Farklılaşmamış, kendini yenileyebilen ve farklı hücre tiplerine dönüşebilen hücreler</li>
+                        <li><strong>Embriyonik Kök Hücre:</strong> Tek başına organizma oluşturabilme gücüne sahip</li>
+                        <li><strong>Kordon Kanı Kök Hücresi:</strong> Yenidoğan göbek kordonundan elde edilir</li>
+                        <li><strong>Yetişkin Kök Hücresi:</strong> Bulunduğu dokudaki hücre tiplerine dönüşebilir</li>
+                        <li><strong>Klonlama:</strong> Bir canlının genetik ikizinin oluşturulması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Model Organizmalar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Biyolojik olayları anlamak için üzerinde çalışılan canlılar</li>
+                        <li><strong>Genetik Model Organizmalar:</strong> Saccharomyces cerevisiae (maya), Drosophila melanogaster (meyve sineği)</li>
+                        <li><strong>Deneysel Model Organizmalar:</strong> Gallus gallus (tavuk), Xenopus laevis (kurbağa)</li>
+                        <li><strong>Genomik Model Organizmalar:</strong> Fugu rubripes (balon balığı)</li>
+                        <li><strong>Seçim Kriterleri:</strong> Kısa yaşam döngüsü, laboratuvarda yetiştirilebilme, küçük genom</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Geleneksel vs Modern Biyoteknoloji</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Geleneksel:</strong> Mayalanma teknolojisi (ekmek, yoğurt, peynir)</li>
+                        <li><strong>Modern:</strong> Genetik yapıya müdahale (1970'lerden itibaren)</li>
+                        <li><strong>Uygulama Alanları:</strong> Aşı üretimi, ilaç üretimi, enzim teknolojisi</li>
+                        <li><strong>Örnekler:</strong> İnsülin, büyüme hormonu, interferon üretimi</li>
+                        <li><strong>Gen Terapisi:</strong> Genetik bozuklukların gen aktarımıyla düzeltilmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Biyogüvenlik ve Biyoetik</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Biyogüvenlik:</strong> GDO'ların risklerini değerlendirmek ve kontrol altına almak</li>
+                        <li><strong>Biyoetik:</strong> Biyoteknolojik gelişmelerin etik sonuçlarını inceleyen bilim dalı</li>
+                        <li><strong>Cartagena Protokolü:</strong> GDO'ların sınır ötesi hareketlerini düzenleyen uluslararası anlaşma</li>
+                        <li><strong>Etik Sorunlar:</strong> İnsan sağlığı riskleri, çevresel etkiler, dini yaklaşımlar</li>
+                        <li><strong>Etiketleme:</strong> Tüketicinin bilgilendirilmesi için GDO'lu ürünlerin etiketlenmesi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Genetik Mühendisliği ve Biyoteknoloji Testi (40 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 40</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Genetik Mühendisliği ve Biyoteknoloji Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> TEMEL KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Genetik Mühendisliği:</strong> İstenen özellikte bir genin çeşitli tekniklerle izolasyonu, çoğaltılması, nükleotit dizilişlerinin belirlenmesi ya da bir canlıdan alınarak başka bir canlıya aktarılmasıyla uğraşır. Böylece aktarılan genlerle yeni gen kombinasyonları üretilerek <span class="highlight">rekombinant DNA</span> elde edilir.</li>
+                        <li><strong>Biyoteknoloji:</strong> Doğa bilimleri ve çeşitli mühendislik dallarından yararlanılarak DNA teknolojisiyle yeni bir organizma elde etmek veya mevcut organizmanın yapısında istenilen yönde değişiklikler oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır.</li>
+                        <li><strong>Transgenik Canlı (GDO):</strong> Rekombinant DNA'ya sahip canlılar genetiği değiştirilmiş organizma (GDO) veya transgenik canlı olarak adlandırılır.</li>
+                        <li><strong>İnsan Genom Projesi:</strong> İnsanın genetik yapısına ilişkin tüm bilgilerin elde edilmesi projesidir. Bu projeyle hastalıkların tanı ve tedavisi için bireylerin genetik yapısına uygun ilaçlar geliştirilecek, adli tıpta suçluların saptanması kolaylaşacaktır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> GEN TEKNOLOJİLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Gen Klonlaması:</strong> Bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamına denir. Gen klonlaması ile insan DNA'larından izole edilen genler bazı bakterilere aktarılarak insülin ve büyüme hormonu gibi ürünler daha kolay ve ucuz bir şekilde üretilir.</li>
+                        <li><strong>Rekombinant DNA Oluşturma Aşamaları:</strong>
+                            <ol style="margin-left: 30px; margin-top: 10px;">
+                                <li>Geni kullanılacak canlıya ait DNA ve vektör olarak kullanılacak bakteri plazmidi saf olarak izole edilir.</li>
+                                <li>İzole edilen DNA'daki istenilen gen ve bakteri plazmidi aynı restriksiyon enzimleri ile kesilir.</li>
+                                <li>Bakteri plazmidi ve istenilen geni taşıyan DNA parçası DNA ligaz enzimi ile birleştirilir.</li>
+                                <li>Rekombinant DNA bakteri hücresine aktarılır.</li>
+                                <li>Rekombinant DNA içeren bakteriler kültür ortamında çoğaltılır.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Uygulama Alanları:</strong> Gen teknolojisi tıp, tarım, hayvancılık, gıda, kimya, enerji ve çevre endüstrilerinde yoğun bir şekilde kullanılmaktadır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-fingerprint"></i> DNA PARMAK İZİ YÖNTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Her insanın DNA'yı oluşturan baz sırasının diğer insanlarınkinden farklı olması (tek yumurta ikizleri hariç) prensibine dayanır. Bu dizilimin belirli tekniklerle izinin çıkarılması işlemine DNA parmak izi yöntemi denir.</li>
+                        <li><strong>Keşif:</strong> 1984 yılında Sir Alec Jeffreys tarafından keşfedilmiştir.</li>
+                        <li><strong>PCR (Polimeraz Zincir Reaksiyonu):</strong> DNA'nın bölümlerinin laboratuvar koşullarında çoğaltılması işlemidir. Bu yöntemde yüksek sıcaklıkta yapısı bozulmayan DNA polimeraz enzimi kullanılır.</li>
+                        <li><strong>Elektroforez:</strong> Farklı uzunluktaki DNA parçalarının birbirinden ayrılması işlemidir. Kısa DNA parçaları uzun olanlara göre daha hızlı hareket eder.</li>
+                        <li><strong>Kullanım Alanları:</strong> Suçluların tespiti, babalık davaları, safkan ırkların belirlenmesi, bitki ve hayvan türlerinin korunması.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> KÖK HÜCRE TEKNOLOJİSİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Kök Hücre:</strong> Vücudumuzdaki bütün doku ve organları oluşturan ana hücrelerdir. Henüz farklılaşmamış bu hücreler, sınırsız bölünebilme ve kendini yenileme, organ ve dokulara dönüşebilme yeteneğine sahiptir.</li>
+                        <li><strong>Kök Hücre Türleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Embriyonik Kök Hücreleri:</strong> Tek başına bir organizmayı oluşturacak güce sahip kök hücreleridir.</li>
+                                <li><strong>Kordon Kanından Elde Edilen Kök Hücreleri:</strong> En kolay elde edilebilen hücreler olup bilinen tüm hücre tiplerine dönüşebilen ancak bir organizmayı oluşturamayan özellikteki kök hücreleridir.</li>
+                                <li><strong>Yetişkin Kök Hücreleri:</strong> Bulunduğu doku ve organdaki hücre tiplerine dönüşebilmesine karşın diğer hücre tiplerine dönüşemeyen kök hücreleridir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Klonlama:</strong> Dışarıdan müdahale ile bir canlının DNA'sının kopyalanarak genetik ikizinin oluşturulmasıdır. En çok kullanılan yöntem çekirdek transferidir. Dr. Wilmut tarafından klonlanan koyun Dolly, ilk klon örneğidir.</li>
+                        <li><strong>Kordon Kanı Saklama:</strong> Yenidoğan bebeğin göbek kordonundan elde edilen kordon kanı dondurularak saklanır. İleride kök hücre tedavisi gerektirecek durumlarla karşılaşıldığında kullanılır.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Ülkemizde ilk klonlama 2007 yılında İstanbul Üniversitesi Veterinerlik Fakültesindeki uzman ekipler tarafından gerçekleştirildi. Koyun üzerinde yapılan çalışma sonucu dünyaya gelen kuzuya "Oyalı" adı verildi.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-microscope"></i> MODEL ORGANİZMALAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Deney ve araştırmalarda kullanılmaya uygun olan ve çeşitli biyolojik olayları anlamak için üzerinde çalışılan canlılara model organizma denir.</li>
+                        <li><strong>Model Organizma Seçim Kriterleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yaşam döngüsü kısa olmalı</li>
+                                <li>Genetik uygulamalar için elverişli olmalı</li>
+                                <li>Laboratuvar ortamında yetiştirilebilmeli</li>
+                                <li>Genom büyüklüğü elverişli olmalı</li>
+                                <li>Genom haritası çıkarılmalı</li>
+                            </ul>
+                        </li>
+                        <li><strong>Model Organizma Türleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Genetik Model Organizmalar:</strong> Saccharomyces cerevisiae (tomurcuklanan maya), Drosophila melanogaster (meyve sineği), Caenorhabditis elegans (nematod)</li>
+                                <li><strong>Deneysel Model Organizmalar:</strong> Gallus gallus (tavuk), Xenopus laevis (kurbağa)</li>
+                                <li><strong>Genomik Model Organizmalar:</strong> Fugu rubripes (balon balığı)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-history"></i> GELENEKSEL VE MODERN BİYOTEKNOLOJİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Geleneksel Biyoteknoloji:</strong> 1940'lı yıllara kadar mayalanma teknolojisi ağırlıklıdır. Ekmek, peynir, alkol, sirke, yoğurt ve yerel fermente ürünlerin üretiminde kullanılmıştır.</li>
+                        <li><strong>Modern Biyoteknoloji:</strong> 1970'li yılların başından itibaren genetik yapıya müdahale edilerek canlılara yeni genetik özellikler kazandırılmaya başlanmıştır.</li>
+                        <li><strong>Modern Biyoteknolojinin Uygulama Alanları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Aşı üretimi</li>
+                                <li>Memeli hücre kültürü üretimi</li>
+                                <li>Yeni ürünlerin (polisakkaritler gibi) üretimi</li>
+                                <li>İlaç üretimi (antibiyotik)</li>
+                                <li>Organik çözücü üretimi (aseton, bütanol vb.)</li>
+                                <li>Protein bakımından zenginleştirilmiş gıdaların üretimi</li>
+                            </ul>
+                        </li>
+                        <li><strong>Rekombinant DNA Teknolojisi Ürünleri:</strong> İnsülin, büyüme hormonu, interferon, eritropoietin gibi protein yapılı hormonların büyük miktarlarda üretimi mümkün hale gelmiştir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shield-alt"></i> BİYOGÜVENLİK VE BİYOETİK</div>
+                    <ul class="summary-list">
+                        <li><strong>Biyogüvenlik:</strong> Canlıların sağlığını, çeşitliliğini ve çevreyi korumak için GDO'lu ürünlerin doğurabileceği riskleri değerlendirmek ve kontrol altına almak şeklinde tanımlanır.</li>
+                        <li><strong>Cartagena Biyogüvenlik Protokolü:</strong> Birleşmiş Milletler Biyolojik Çeşitlilik Sözleşmesi'nin ek bir protokolü olarak hazırlanan ve 2003 yılında yürürlüğe giren, genetik olarak değiştirilmiş organizmaların sınır ötesi hareketleriyle ilgili evrensel düzeyde bağlayıcı ilk hukuk belgesidir.</li>
+                        <li><strong>Biyoetik:</strong> Biyoteknolojide yaşanan gelişmeler, canlı yaşamları, insanın özgürlük ve onuru açısından meydana getirdiği sorunlara çözüm geliştirmesiyle ilgili bir kavramdır.</li>
+                        <li><strong>Etik Sorunlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Aktarılan genin tüketici tercihleri dışında olması</li>
+                                <li>Dini yaklaşımlar</li>
+                                <li>İnsan sağlığına zarar verme olasılığı</li>
+                                <li>Çevreye verilecek olası zararlar</li>
+                                <li>Besinlerin doğal özelliğinin kaybolması</li>
+                                <li>Tüketicinin seçim özgürlüğünün sınırlanması</li>
+                            </ul>
+                        </li>
+                        <li><strong>Etiketleme Zorunluluğu:</strong> Tüketicinin bilgilendirilmesi için marketlerde tüketime sunulan ürünlerin üzerine "GDO'lu" ya da "GDO'suz" etiketi konulmalıdır.</li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> Biyogüvenlik Kanunu'nun amacı; modern biyoteknoloji kullanılarak elde edilen genetik yapısı değiştirilmiş organizmalar ve ürünlerinden kaynaklanabilecek riskleri engellemek, insan, hayvan ve bitki sağlığı ile biyolojik çeşitliliğin korunmasıdır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Plazmid:</strong> Bakterilerde bulunan, kromozom dışındaki küçük halkasal DNA molekülleri.</li>
+                        <li><strong>Restriksiyon Enzimleri:</strong> DNA'yı belirli bölgelerden kesen enzimler.</li>
+                        <li><strong>DNA Ligaz:</strong> Kesilmiş DNA parçalarını birleştiren enzim.</li>
+                        <li><strong>Vektör:</strong> Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleri.</li>
+                        <li><strong>PCR (Polimeraz Zincir Reaksiyonu):</strong> DNA'nın laboratuvar koşullarında çoğaltılması.</li>
+                        <li><strong>Elektroforez:</strong> DNA parçalarının boyutlarına göre ayrılması.</li>
+                        <li><strong>Transgenik Organizma:</strong> Başka bir canlıdan gen aktarılmış organizma.</li>
+                        <li><strong>Gen Terapisi:</strong> Genetik bozuklukların gen aktarımı yoluyla düzeltilmesi.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 50 Genetik Mühendisliği ve Biyoteknoloji Sorusu
+        const csvData = `Genetik mühendisliği nedir?,"İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalıdır."
+Biyoteknoloji nedir?,"DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır."
+Rekombinant DNA nedir?,"Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülüdür."
+Transgenik canlı (GDO) nedir?,"Rekombinant DNA'ya sahip canlılara verilen addır."
+İnsan Genom Projesi nedir?,"İnsanın tüm genetik şifresinin çözülmesi projesidir."
+Gen klonlaması nedir?,"Bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamıdır."
+Restriksiyon enzimleri nedir?,"DNA'yı belirli bölgelerden kesen enzimlerdir."
+DNA ligaz nedir?,"Kesilmiş DNA parçalarını birleştiren enzimdir."
+Plazmid nedir?,"Bakterilerde bulunan küçük, halkasal DNA molekülleridir."
+Vektör nedir?,"Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleridir."
+DNA parmak izi nedir?,"Her bireye özgü DNA diziliminin belirlenmesi işlemidir."
+DNA parmak izi kim tarafından keşfedilmiştir?,"1984 yılında Sir Alec Jeffreys tarafından keşfedilmiştir."
+PCR (Polimeraz Zincir Reaksiyonu) nedir?,"DNA'nın laboratuvarda çoğaltılması işlemidir."
+Elektroforez nedir?,"DNA parçalarının boyutlarına göre ayrılması işlemidir."
+Kök hücre nedir?,"Farklılaşmamış, kendini yenileyebilen ve farklı hücre tiplerine dönüşebilen hücrelerdir."
+Embriyonik kök hücre nedir?,"Tek başına organizma oluşturabilme gücüne sahip kök hücrelerdir."
+Kordon kanı kök hücresi nedir?,"Yenidoğan göbek kordonundan elde edilen kök hücrelerdir."
+Yetişkin kök hücresi nedir?,"Bulunduğu dokudaki hücre tiplerine dönüşebilen kök hücrelerdir."
+Klonlama nedir?,"Bir canlının genetik ikizinin oluşturulması işlemidir."
+İlk klonlanan memeli hayvan nedir?,"1997 yılında Dr. Ian Wilmut ve ekibi tarafından klonlanan Dolly adlı koyundur."
+Model organizma nedir?,"Biyolojik olayları anlamak için üzerinde çalışılan canlılardır."
+Genetik model organizmalara örnek veriniz.,"Saccharomyces cerevisiae (maya), Drosophila melanogaster (meyve sineği)"
+Deneysel model organizmalara örnek veriniz.,"Gallus gallus (tavuk), Xenopus laevis (kurbağa)"
+Genomik model organizmalara örnek veriniz.,"Fugu rubripes (balon balığı)"
+Geleneksel biyoteknoloji nedir?,"Mayalanma teknolojisi ağırlıklı biyoteknolojidir (ekmek, yoğurt, peynir)."
+Modern biyoteknoloji ne zaman başlamıştır?,"1970'li yılların başından itibaren genetik yapıya müdahale edilerek başlamıştır."
+Modern biyoteknolojinin uygulama alanları nelerdir?,"Aşı üretimi, ilaç üretimi, enzim teknolojisi, gen terapisi"
+Rekombinant DNA teknolojisiyle üretilen ürünlere örnek veriniz.,"İnsülin, büyüme hormonu, interferon, eritropoietin"
+Gen terapisi nedir?,"Genetik bozuklukların gen aktarımı yoluyla düzeltilmesidir."
+Biyogüvenlik nedir?,"GDO'lu ürünlerin risklerini değerlendirmek ve kontrol altına almak şeklinde tanımlanır."
+Biyoetik nedir?,"Biyoteknolojik gelişmelerin etik sonuçlarını inceleyen bilim dalıdır."
+Cartagena Biyogüvenlik Protokolü nedir?,"GDO'ların sınır ötesi hareketlerini düzenleyen uluslararası anlaşmadır."
+Biyogüvenlik Kanunu'nun amacı nedir?,"GDO'lardan kaynaklanabilecek riskleri engellemek, insan, hayvan ve bitki sağlığı ile biyolojik çeşitliliği korumaktır."
+DNA parmak izinin kullanım alanları nelerdir?,"Suçluların tespiti, babalık davaları, safkan ırkların belirlenmesi"
+Rekombinant DNA oluşturma aşamaları nelerdir?,"1. DNA ve plazmid izolasyonu, 2. Kesme, 3. Birleştirme, 4. Bakteriye aktarma, 5. Çoğaltma"
+Klon Dolly nasıl klonlanmıştır?,"Yetişkin bir koyunun meme hücresi çekirdeği, başka bir koyunun çekirdeği çıkarılmış yumurta hücresine aktarılarak."
+Kök hücre tedavisinde kullanılan hastalıklar nelerdir?,"Kanser, bağışıklık yetersizlikleri, kalıtsal kan hastalıkları, kemik iliği hastalıkları"
+Model organizma seçim kriterleri nelerdir?,"Kısa yaşam döngüsü, laboratuvarda yetiştirilebilme, küçük genom, genom haritasının çıkarılmış olması"
+GDO'lu ürünlerle ilgili etik sorunlar nelerdir?,"İnsan sağlığı riskleri, çevresel etkiler, dini yaklaşımlar, tüketici tercihleri"
+GDO'lu ürünlerde etiketleme neden önemlidir?,"Tüketicinin bilgilendirilmesi ve seçim özgürlüğünün korunması için"
+Türkiye'de ilk klonlama ne zaman yapılmıştır?,"2007 yılında İstanbul Üniversitesi Veterinerlik Fakültesinde, Oyalı adlı kuzu klonlanmıştır."
+DNA parmak izinde bantlaşma nedir?,"DNA parçalarının jel üzerinde büyüklüklerine göre belirli uzaklıklarda oluşturduğu bantlardır."
+Kök hücrelerin özellikleri nelerdir?,"Farklılaşmamış olmaları, kendini yenilemeleri, farklı hücre tiplerine dönüşebilmeleri"
+Gen aktarımında kullanılan yöntemler nelerdir?,"Mikroenjeksiyon, elektroporasyon, biyolistik yöntem, viral vektörler"
+GDO'lu bitkilerin avantajları nelerdir?,"Zararlılara direnç, herbisitlere direnç, besin değerinde artış, verimlilik artışı"
+GDO'lu ürünlerin riskleri nelerdir?,"Alerjik reaksiyonlar, antibiyotik direnci genlerinin yayılması, biyolojik çeşitliliğe etki"
+Biyoteknolojik ürünlerin denetimi neden önemlidir?,"İnsan sağlığını ve çevreyi korumak için"
+Genetik mühendisliği ve biyoteknoloji arasındaki fark nedir?,"Gen aktarımı genetik mühendisliğinin, bu canlıdan ürün elde edilmesi biyoteknolojinin alanıdır."
+İnsülin hangi yöntemle üretilmektedir?,"Rekombinant DNA teknolojisiyle bakterilere insan insülin geni aktarılarak"
+Kök hücre araştırmalarındaki etik sorunlar nelerdir?,"Embriyonun ahlaki statüsü, kök hücre kaynakları, tedavi amaçlı kullanım sınırları"`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 40 Questions based on PDF content
+        const testQuestions = [
+            {
+                question: "Genetik mühendisliği nedir?",
+                options: [
+                    "Doğal seleksiyon süreçlerini inceleyen bilim dalı",
+                    "İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalı",
+                    "Canlıların evrimsel süreçlerini araştıran bilim dalı",
+                    "Bitki ve hayvan yetiştiriciliğini geliştiren teknikler bütünü",
+                    "Mikroorganizmaların endüstriyel kullanımını araştıran bilim dalı"
+                ],
+                correct: 1,
+                explanation: "Genetik mühendisliği, istenen özellikte bir genin çeşitli tekniklerle izolasyonu, çoğaltılması, nükleotit dizilişlerinin belirlenmesi ya da bir canlıdan alınarak başka bir canlıya aktarılmasıyla uğraşır."
+            },
+            {
+                question: "Biyoteknoloji nedir?",
+                options: [
+                    "Sadece tarım ürünlerinin geliştirilmesi",
+                    "DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak",
+                    "Geleneksel fermantasyon yöntemlerinin tümü",
+                    "Sadece tıbbi ilaç üretimi",
+                    "Çevre kirliliğini önleme teknikleri"
+                ],
+                correct: 1,
+                explanation: "Biyoteknoloji, doğa bilimleri ve çeşitli mühendislik dallarından yararlanılarak DNA teknolojisiyle yeni bir organizma elde etmek veya mevcut organizmanın yapısında istenilen yönde değişiklikler oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır."
+            },
+            {
+                question: "Rekombinant DNA nedir?",
+                options: [
+                    "Sadece bir canlıya ait DNA",
+                    "Doğal mutasyon sonucu oluşan DNA",
+                    "Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülü",
+                    "Kromozomların normal yapısı",
+                    "RNA'dan sentezlenen DNA"
+                ],
+                correct: 2,
+                explanation: "Rekombinant DNA, farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülüdür. Genetik mühendisliği ile elde edilir."
+            },
+            {
+                question: "Transgenik canlı (GDO) nedir?",
+                options: [
+                    "Doğal yollarla mutasyona uğramış canlı",
+                    "Rekombinant DNA'ya sahip canlı",
+                    "Sadece bitkiler için kullanılan bir terim",
+                    "Klonal olarak çoğaltılmış canlı",
+                    "Gen haritası çıkarılmış canlı"
+                ],
+                correct: 1,
+                explanation: "Transgenik canlı veya Genetiği Değiştirilmiş Organizma (GDO), rekombinant DNA'ya sahip canlılara verilen addır."
+            },
+            {
+                question: "İnsan Genom Projesi'nin amacı nedir?",
+                options: [
+                    "İnsan klonlamak",
+                    "İnsanın tüm genetik şifresini çözmek",
+                    "Sadece hastalık genlerini belirlemek",
+                    "İnsan evrimini araştırmak",
+                    "Genetik tedavileri test etmek"
+                ],
+                correct: 1,
+                explanation: "İnsan Genom Projesi, insanın tüm genetik şifresinin çözülmesi projesidir. Bu projeyle hastalıkların tanı ve tedavisi için bireylerin genetik yapısına uygun ilaçlar geliştirilecektir."
+            },
+            {
+                question: "Gen klonlaması nedir?",
+                options: [
+                    "Bir canlının tamamen kopyalanması",
+                    "Bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamı",
+                    "Sadece bakterilerde yapılan bir işlem",
+                    "DNA parmak izi çıkarma işlemi",
+                    "Gen haritası çıkarma işlemi"
+                ],
+                correct: 1,
+                explanation: "Gen klonlaması, bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamıdır."
+            },
+            {
+                question: "Restriksiyon enzimlerinin görevi nedir?",
+                options: [
+                    "DNA'yı birleştirmek",
+                    "DNA'yı belirli bölgelerden kesmek",
+                    "RNA sentezlemek",
+                    "Protein sentezlemek",
+                    "DNA'yı çoğaltmak"
+                ],
+                correct: 1,
+                explanation: "Restriksiyon enzimleri, DNA'yı belirli bölgelerden kesen enzimlerdir. Genetik mühendisliğinde önemli araçlardır."
+            },
+            {
+                question: "DNA ligaz enziminin görevi nedir?",
+                options: [
+                    "DNA'yı kesmek",
+                    "Kesilmiş DNA parçalarını birleştirmek",
+                    "DNA'yı çoğaltmak",
+                    "RNA sentezlemek",
+                    "Protein sentezlemek"
+                ],
+                correct: 1,
+                explanation: "DNA ligaz enzimi, kesilmiş DNA parçalarını birleştiren enzimdir. Rekombinant DNA oluşturulmasında kullanılır."
+            },
+            {
+                question: "Plazmid nedir?",
+                options: [
+                    "Bakterilerde bulunan küçük, halkasal DNA molekülleri",
+                    "Hayvan hücrelerindeki organel",
+                    "Bitki hücre duvarının yapı taşı",
+                    "Virüslerin genetik materyali",
+                    "Kromozomların uç kısımları"
+                ],
+                correct: 0,
+                explanation: "Plazmid, bakterilerde bulunan küçük, halkasal DNA molekülleridir. Genetik mühendisliğinde vektör olarak kullanılır."
+            },
+            {
+                question: "Vektör nedir?",
+                options: [
+                    "Hastalık taşıyan canlı",
+                    "Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleri",
+                    "Sadece virüsler için kullanılan terim",
+                    "Genetik hastalıkların taşıyıcısı",
+                    "Klonlama işleminde kullanılan alet"
+                ],
+                correct: 1,
+                explanation: "Vektör, gen aktarımında taşıyıcı olarak kullanılan DNA
