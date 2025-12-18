@@ -1,1 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biyoloji Çalışma Sayfası</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #1abc9c, #3498db);
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .class-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .class-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .class-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .class-header {
+            padding: 25px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .class-9 .class-header { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .class-10 .class-header { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        .class-11 .class-header { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .class-12 .class-header { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        
+        .class-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .class-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .class-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .class-content {
+            padding: 25px 20px;
+            flex-grow: 1;
+        }
+        
+        .topic-list {
+            list-style-type: none;
+        }
+        
+        .topic-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .class-9 .topic-list li { border-left-color: #3498db; }
+        .class-10 .topic-list li { border-left-color: #2ecc71; }
+        .class-11 .topic-list li { border-left-color: #e74c3c; }
+        .class-12 .topic-list li { border-left-color: #9b59b6; }
+        
+        .topic-list li:hover {
+            background-color: #edf2f7;
+            transform: translateX(5px);
+        }
+        
+        .topic-list i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .class-9 .topic-list i { color: #3498db; }
+        .class-10 .topic-list i { color: #2ecc71; }
+        .class-11 .topic-list i { color: #e74c3c; }
+        .class-12 .topic-list i { color: #9b59b6; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo i {
+            color: #1abc9c;
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .class-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-dna"></i> ADI BİYOLOJİ
+        </div>
+        
+        <header>
+            <h1>BİYOLOJİ ÇALIŞMA SAYFASI</h1>
+            <p class="subtitle">9. sınıftan 12. sınıfa kadar tüm biyoloji konularına ulaşın. Çalışmak istediğiniz sınıf düzeyini seçin ve konulara tıklayarak detaylı kaynaklara ulaşın.</p>
+        </header>
+        
+        <div class="class-container">
+            <!-- 9. Sınıf Kartı -->
+            <div class="class-card class-9">
+                <div class="class-header">
+                    <div class="class-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h2 class="class-title">9. SINIF</h2>
+                    <p class="class-subtitle">Temel Biyoloji Konuları</p>
+                </div>
+                <div class="class-content">
+                    <ul class="topic-list">
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/intro-to-biology/what-is-biology/a/what-is-life')">
+                            <i class="fas fa-leaf"></i> Canlıların Ortak Özellikleri
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/structure-of-a-cell')">
+                            <i class="fas fa-microscope"></i> Hücre ve Yapısı
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/cellular-respiration-and-fermentation')">
+                            <i class="fas fa-atom"></i> Canlıların Temel Bileşenleri
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/intro-to-ecosystems/a/what-is-an-ecosystem')">
+                            <i class="fas fa-tree"></i> Canlılar Dünyası
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/gene-expression-central-dogma/central-dogma-transcription/a/intro-to-gene-expression-central-dogma')">
+                            <i class="fas fa-dna"></i> Genetik ve Kalıtım
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 10. Sınıf Kartı -->
+            <div class="class-card class-10">
+                <div class="class-header">
+                    <div class="class-icon">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                    <h2 class="class-title">10. SINIF</h2>
+                    <p class="class-subtitle">İleri Biyoloji Konuları</p>
+                </div>
+                <div class="class-content">
+                    <ul class="topic-list">
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/cellular-respiration-and-fermentation')">
+                            <i class="fas fa-lungs"></i> Hücre Bölünmeleri
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/intro-to-ecosystems/a/what-is-an-ecosystem')">
+                            <i class="fas fa-recycle"></i> Kalıtımın Genel İlkeleri
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/biogeochemistry/a/biogeochemical-cycles')">
+                            <i class="fas fa-water"></i> Ekosistem Ekolojisi
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/cellular-molecular-biology')">
+                            <i class="fas fa-vial"></i> Biyoteknoloji ve Genetik Mühendisliği
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/behavioral-biology')">
+                            <i class="fas fa-brain"></i> Canlılarda Davranış
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 11. Sınıf Kartı -->
+            <div class="class-card class-11">
+                <div class="class-header">
+                    <div class="class-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h2 class="class-title">11. SINIF</h2>
+                    <p class="class-subtitle">Üniversite Hazırlık Konuları</p>
+                </div>
+                <div class="class-content">
+                    <ul class="topic-list">
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/human-biology')">
+                            <i class="fas fa-heartbeat"></i> İnsan Fizyolojisi
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/cellular-molecular-biology')">
+                            <i class="fas fa-microscope"></i> Komünite ve Popülasyon Ekolojisi
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/gene-expression-central-dogma')">
+                            <i class="fas fa-dna"></i> DNA ve Genetik Kod
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/developmental-biology')">
+                            <i class="fas fa-baby"></i> Gelişim Biyolojisi
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/intro-to-ecosystems/a/what-is-an-ecosystem')">
+                            <i class="fas fa-seedling"></i> Bitki Biyolojisi
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 12. Sınıf Kartı -->
+            <div class="class-card class-12">
+                <div class="class-header">
+                    <div class="class-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="class-title">12. SINIF</h2>
+                    <p class="class-subtitle">Üniversite Sınavına Hazırlık</p>
+                </div>
+                <div class="class-content">
+                    <ul class="topic-list">
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/cellular-molecular-biology')">
+                            <i class="fas fa-atom"></i> Genden Proteine
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/biogeochemistry/a/biogeochemical-cycles')">
+                            <i class="fas fa-recycle"></i> Canlılarda Enerji Dönüşümleri
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/ecology/conservation-biology/a/biodiversity-and-ecosystem-health')">
+                            <i class="fas fa-globe-americas"></i> Biyolojik Çeşitlilik ve Çevre
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/test-prep/mcat')">
+                            <i class="fas fa-book-medical"></i> Üniversite Sınavına Hazırlık
+                        </li>
+                        <li onclick="openTopic('https://www.khanacademy.org/science/biology/human-biology')">
+                            <i class="fas fa-user-md"></i> İnsan Sağlığı ve Hastalıklar
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>ADI Biyoloji Çalışma Sayfası &copy; 2023 - Tüm hakları saklıdır.</p>
+            <p>Biyoloji öğrenmek hiç bu kadar kolay olmamıştı!</p>
+        </div>
+    </div>
+
+    <script>
+        // Konu linklerini yeni sekmede açma fonksiyonu
+        function openTopic(url) {
+            window.open(url, '_blank');
+        }
+        
+        // Kartlara tıklanınca da çalışabilmesi için
+        document.querySelectorAll('.topic-list li').forEach(item => {
+            item.style.cursor = 'pointer';
+        });
+        
+        // Sayfa yüklendiğinde hoşgeldiniz efekti
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.class-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
 
