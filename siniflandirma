@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlıların Sınıflandırılması Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Taksonomi Tree Styles */
+        .taxonomy-tree {
+            width: 100%;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .taxonomy-level {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .taxonomy-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .taxonomy-item:hover {
+            transform: scale(1.05);
+            border-color: #3498db;
+        }
+
+        .taxonomy-item.kingdom { background: #e8f4fc; border-color: #3498db; }
+        .taxonomy-item.phylum { background: #e8f7ee; border-color: #2ecc71; }
+        .taxonomy-item.class { background: #fef9e7; border-color: #f39c12; }
+        .taxonomy-item.order { background: #fdedec; border-color: #e74c3c; }
+        .taxonomy-item.family { background: #f4ecf7; border-color: #9b59b6; }
+        .taxonomy-item.genus { background: #eafaf1; border-color: #1abc9c; }
+        .taxonomy-item.species { background: #fdebd0; border-color: #e67e22; }
+
+        .taxonomy-connector {
+            width: 2px;
+            height: 30px;
+            background: #3498db;
+            margin: 0 auto;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .domain-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .domain-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid;
+        }
+
+        .domain-card.bacteria { border-color: #e74c3c; }
+        .domain-card.archaea { border-color: #9b59b6; }
+        .domain-card.eukarya { border-color: #2ecc71; }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+            
+            .taxonomy-item {
+                min-width: 120px;
+            }
+            
+            .domain-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tree"></i> Canlıların Sınıflandırılması Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile sınıflandırmayı keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">50 adet soru-cevap kartı ile sınıflandırma konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Sınıflandırma Ağacı</div>
+                <div class="card-description">Taksonomik kategorileri ve canlı gruplarını görsel olarak öğrenin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">40 soruluk detaylı test ile sınıflandırma bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Canlıların sınıflandırılmasının tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Sınıflandırma Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">50</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Canlıların Sınıflandırılması Taksonomik Ağacı
+            </h2>
+            
+            <div class="taxonomy-tree">
+                <h3 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Kaplan (Panthera tigris) Taksonomik Sınıflandırması</h3>
+                
+                <!-- Âlem Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item kingdom">
+                        <strong>Âlem (Kingdom)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #3498db;">Hayvanlar (Animalia)</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Ökaryot, çok hücreli, heterotrof canlılar</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Şube Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item phylum">
+                        <strong>Şube (Phylum)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #2ecc71;">Omurgalılar (Chordata)</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Sırt ipi (notokord), sinir şeridi, solungaç yarıkları</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Sınıf Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item class">
+                        <strong>Sınıf (Class)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #f39c12;">Memeliler (Mammalia)</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Süt bezleri, kıllar, iç döllenme, sabit vücut sıcaklığı</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Takım Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item order">
+                        <strong>Takım (Order)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #e74c3c;">Etçiller (Carnivora)</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Et ile beslenen, kesici ve köpek dişleri gelişmiş</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Aile Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item family">
+                        <strong>Aile (Family)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #9b59b6;">Kedigiller (Felidae)</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Kedi benzeri, pençelerini içeri çekebilen</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Cins Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item genus">
+                        <strong>Cins (Genus)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #1abc9c;">Panthera</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Büyük kediler, kükreyebilme yeteneği</div>
+                    </div>
+                </div>
+                
+                <div class="taxonomy-connector"></div>
+                
+                <!-- Tür Seviyesi -->
+                <div class="taxonomy-level">
+                    <div class="taxonomy-item species">
+                        <strong>Tür (Species)</strong>
+                        <div style="margin-top: 10px; font-size: 1.2rem; color: #e67e22;">Panthera tigris</div>
+                        <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">Kaplan - çizgili desen, en büyük kedi türü</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h4 style="color: #2c3e50; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Taksonomik Kategorilerdeki Değişimler</h4>
+                <div class="mindmap">
+                    <div class="mindmap-node">
+                        <div class="mindmap-title">Âlemden Tür'e Doğru Gidildikçe:</div>
+                        <ul class="mindmap-content">
+                            <li><strong>Birey sayısı azalır</strong> (daha az ortak özellik)</li>
+                            <li><strong>Çeşitlilik azalır</strong> (daha homojen grup)</li>
+                            <li><strong>Farklı gen sayısı azalır</strong></li>
+                            <li><strong>Protein benzerliği artar</strong></li>
+                            <li><strong>Gen benzerliği artar</strong></li>
+                            <li><strong>Akrabalık derecesi artar</strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mindmap-node">
+                        <div class="mindmap-title">Türden Âlem'e Doğru Gidildikçe:</div>
+                        <ul class="mindmap-content">
+                            <li><strong>Birey sayısı artar</strong></li>
+                            <li><strong>Çeşitlilik artar</strong></li>
+                            <li><strong>Ortak özellikler azalır</strong></li>
+                            <li><strong>Farklı gen sayısı artar</strong></li>
+                            <li><strong>Protein benzerliği azalır</strong></li>
+                            <li><strong>Gen benzerliği azalır</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Sınıflandırma Testi (40 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 40</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2ecc71; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Canlıların Sınıflandırılması Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> SINIFLANDIRMANIN ÖNEMİ VE TARİHÇESİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Sınıflandırma (Taksonomi):</strong> Canlıların benzerliklerine, farklılıklarına ve akrabalık derecelerine göre belirli gruplara ayrılmasıdır.</li>
+                        <li><strong>Takson:</strong> Her bir sınıflandırma kategorisinde yer alan belirli ortak özelliklere sahip canlı grubu.</li>
+                        <li><strong>Taksonomi:</strong> Canlıları sınıflandırmak için gerekli olan tüm ilke ve ölçütleri belirleyen bilim dalı.</li>
+                        <li><strong>Carl Linnaeus (Carl Linne):</strong> İkili adlandırma (binominal nomenklatür) sistemini geliştiren İsveçli doğa bilimci.</li>
+                        <li><strong>İkili Adlandırma:</strong> Tür adı iki kelimeden oluşur: Cins adı (büyük harf) + Tamamlayıcı ad (küçük harf), italik yazılır. Örnek: <em>Homo sapiens</em></li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sitemap"></i> TAKSONOMİK KATEGORİLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Tür (Species):</strong> Ortak özelliklere ve genetik mirasa sahip, birbirleriyle çiftleşip verimli döl verebilen canlılar grubu. En temel kategori.</li>
+                        <li><strong>Cins (Genus):</strong> Birbirine yakın türlerin bir araya gelmesiyle oluşur.</li>
+                        <li><strong>Aile (Family):</strong> Benzer cinslerin birleşmesiyle oluşur.</li>
+                        <li><strong>Takım (Order):</strong> Benzer ailelerin birleşmesiyle oluşur.</li>
+                        <li><strong>Sınıf (Class):</strong> Benzer takımların birleşmesiyle oluşur.</li>
+                        <li><strong>Şube (Phylum):</strong> Benzer sınıfların birleşmesiyle oluşur.</li>
+                        <li><strong>Âlem (Kingdom):</strong> En üst sınıflandırma kategorilerinden biri.</li>
+                        <li><strong>Domain (Üst Âlem):</strong> En üst sınıflandırma kategorisi. Canlılar 3 domainde sınıflandırılır: Bakteri, Arke, Ökaryot.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-globe-americas"></i> ÜÇ DOMAİN (ÜST ÂLEM) SİSTEMİ</div>
+                    
+                    <div class="domain-comparison">
+                        <div class="domain-card bacteria">
+                            <h4 style="color: #e74c3c; margin-bottom: 15px;"><i class="fas fa-bacterium"></i> BAKTERİLER</h4>
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li><strong>Hücre tipi:</strong> Prokaryot</li>
+                                <li><strong>Hücre duvarı:</strong> Peptidoglikan</li>
+                                <li><strong>Çekirdek:</strong> Yok</li>
+                                <li><strong>Zarlı organel:</strong> Yok</li>
+                                <li><strong>Kromozom:</strong> Halkasal, histonsuz</li>
+                                <li><strong>Örnekler:</strong> Escherichia coli, Salmonella</li>
+                                <li><strong>Ekstrem koşullar:</strong> Bazı türleri dayanıklı</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="domain-card archaea">
+                            <h4 style="color: #9b59b6; margin-bottom: 15px;"><i class="fas fa-temperature-high"></i> ARKELER</h4>
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li><strong>Hücre tipi:</strong> Prokaryot</li>
+                                <li><strong>Hücre duvarı:</strong> Pseudopeptidoglikan</li>
+                                <li><strong>Çekirdek:</strong> Yok</li>
+                                <li><strong>Zarlı organel:</strong> Yok</li>
+                                <li><strong>Kromozom:</strong> Halkasal, histonlu</li>
+                                <li><strong>Örnekler:</strong> Methanobrevibacter</li>
+                                <li><strong>Ekstrem koşullar:</strong> Çok dayanıklı (aşırı sıcak, tuzlu, asidik)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="domain-card eukarya">
+                            <h4 style="color: #2ecc71; margin-bottom: 15px;"><i class="fas fa-seedling"></i> ÖKARYOTLAR</h4>
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li><strong>Hücre tipi:</strong> Ökaryot</li>
+                                <li><strong>Hücre duvarı:</strong> Bazılarında var (bitki, mantar)</li>
+                                <li><strong>Çekirdek:</strong> Var</li>
+                                <li><strong>Zarlı organel:</strong> Var</li>
+                                <li><strong>Kromozom:</strong> Doğrusal, histonlu</li>
+                                <li><strong>Âlemler:</strong> Protista, Mantar, Bitki, Hayvan</li>
+                                <li><strong>Ekstrem koşullar:</strong> Genelde dayanıksız</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-microscope"></i> ÖKARYOTLARIN ÂLEMLERİ</div>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Ökaryotlar domaini 4 âleme ayrılır: Protista, Mantarlar, Bitkiler, Hayvanlar.
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">1. PROTİSTA ÂLEMİ</h5>
+                        <ul class="summary-list">
+                            <li><strong>Genel özellikler:</strong> Ökaryot hücreli, tek hücreli veya basit çok hücreli</li>
+                            <li><strong>Beslenme:</strong> Ototrof (algler), heterotrof (amipler), parazit (plazmodyum)</li>
+                            <li><strong>Hareket:</strong> Kamçı, sil, yalancı ayak ile</li>
+                            <li><strong>Üreme:</strong> Eşeysiz (bölünme) veya eşeyli</li>
+                            <li><strong>Örnekler:</strong> Amip, öglena, paramesyum, algler, plazmodyum (sıtma etkeni)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">2. MANTARLAR ÂLEMİ</h5>
+                        <ul class="summary-list">
+                            <li><strong>Genel özellikler:</strong> Ökaryot, çoğu çok hücreli, hücre duvarı (kitin)</li>
+                            <li><strong>Beslenme:</strong> Heterotrof, saprofit (çürükçül) veya parazit</li>
+                            <li><strong>Vücut yapısı:</strong> Hif → Miselyum (ipliksi yapı)</li>
+                            <li><strong>Üreme:</strong> Sporla, tomurcuklanma, eşeyli</li>
+                            <li><strong>Örnekler:</strong> Maya mantarı, küf mantarı, şapkalı mantar, maya</li>
+                            <li><strong>Önem:</strong> Antibiyotik üretimi (penisilin), ekmek mayası, parazit mantarlar</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">3. BİTKİLER ÂLEMİ</h5>
+                        <ul class="summary-list">
+                            <li><strong>Genel özellikler:</strong> Ökaryot, çok hücreli, ototrof (fotosentez)</li>
+                            <li><strong>Hücre duvarı:</strong> Selüloz</li>
+                            <li><strong>Gruplar:</strong> Tohumsuz bitkiler (çiçeksiz) ve Tohumlu bitkiler (çiçekli)</li>
+                            <li><strong>Tohumsuz bitkiler:</strong> Kara yosunları, eğrelti otları, atkuyruğu, iletim demeti yok veya basit</li>
+                            <li><strong>Tohumlu bitkiler:</strong> Açık tohumlular (kozalaklılar) ve Kapalı tohumlular (çiçekli bitkiler)</li>
+                            <li><strong>Önem:</strong> Oksijen üretimi, besin kaynağı, ilaç ham maddesi</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">4. HAYVANLAR ÂLEMİ</h5>
+                        <ul class="summary-list">
+                            <li><strong>Genel özellikler:</strong> Ökaryot, çok hücreli, heterotrof, aktif hareket</li>
+                            <li><strong>Hücre duvarı:</strong> Yok</li>
+                            <li><strong>Sınıflandırma:</strong> Omurgasızlar ve Omurgalılar</li>
+                            <li><strong>Omurgasızlar:</strong> Süngerler, sölenterler, solucanlar, yumuşakçalar, eklembacaklılar, derisi dikenliler</li>
+                            <li><strong>Omurgalılar:</strong> Balıklar, amfibiler, sürüngenler, kuşlar, memeliler</li>
+                            <li><strong>Önem:</strong> Ekosistemde tüketici rol, besin kaynağı, biyolojik çeşitlilik</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-fish"></i> HAYVANLARIN SINIFLANDIRILMASI (DETAY)</div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">OMURGASIZ HAYVANLAR</h5>
+                        <ul class="summary-list">
+                            <li><strong>Süngerler:</strong> En basit hayvanlar, doku ve organ yok, suyu süzerek beslenme</li>
+                            <li><strong>Sölenterler:</strong> İlk sinir sistemi, ağız ve sindirim boşluğu, yakıcı hücreler. Örnek: Hidra, denizanası, mercan</li>
+                            <li><strong>Solucanlar:</strong> Yassı, yuvarlak, halkalı solucanlar. Parazit veya serbest yaşayan</li>
+                            <li><strong>Yumuşakçalar:</strong> Yumuşak vücut, çoğunda kabuk. Örnek: Salyangoz, midye, ahtapot, mürekkepbalığı</li>
+                            <li><strong>Eklembacaklılar:</strong> En kalabalık grup, eklemli bacaklar, dış iskelet. Örnek: Böcekler, örümcekler, akrepler, yengeçler</li>
+                            <li><strong>Derisi Dikenliler:</strong> Deri dikenleri, tüp ayaklar. Örnek: Denizyıldızı, denizkestanesi, denizhıyarı</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px;">OMURGALI HAYVANLAR</h5>
+                        <ul class="summary-list">
+                            <li><strong>Balıklar:</strong> Solungaç solunumu, pullu deri, yüzgeçler, değişken vücut sıcaklığı</li>
+                            <li><strong>Amfibiler (İki Yaşamlılar):</strong> Larva solungaç, ergin akciğer/deri solunumu, metamorfoz, nemli deri</li>
+                            <li><strong>Sürüngenler:</strong> Pullu deri, akciğer solunumu, yumurta ile üreme, değişken vücut sıcaklığı</li>
+                            <li><strong>Kuşlar:</strong> Tüylü, dişsiz (gaga), akciğer solunumu, sabit vücut sıcaklığı, yumurta ile üreme</li>
+                            <li><strong>Memeliler:</strong> Süt bezleri, kıllar, iç döllenme, doğurarak üreme, sabit vücut sıcaklığı</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-check"></i> SINIFLANDIRMANIN BİYOLOJİK VE EKONOMİK ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Hastalıkların teşhisi:</strong> Patojen mikroorganizmaların tanımlanması</li>
+                        <li><strong>İlaç üretimi:</strong> Antibiyotiklerin mantarlardan elde edilmesi</li>
+                        <li><strong>Biyoteknoloji:</strong> Enzim ve hormon üretiminde mikroorganizmaların kullanımı</li>
+                        <li><strong>Çevre koruma:</strong> Nesli tükenmekte olan türlerin korunması</li>
+                        <li><strong>Tarım:</strong> Zararlı ve yararlı canlıların ayırt edilmesi</li>
+                        <li><strong>Biyoçeşitlilik:</strong> Canlı çeşitliliğinin korunması ve sürdürülebilirliği</li>
+                        <li><strong>Evrim çalışmaları:</strong> Canlılar arasındaki akrabalık ilişkilerinin belirlenmesi</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>💡 Önemli Hatırlatma:</strong> Modern (filogenetik) sınıflandırma, canlılar arasındaki akrabalık ilişkilerini temel alır ve morfolojik, anatomik, fizyolojik, genetik özellikleri dikkate alır.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 50 Sınıflandırma Sorusu
+        const csvData = `Sınıflandırma (Taksonomi) nedir?,"Canlıların benzerliklerine, farklılıklarına ve akrabalık derecelerine göre gruplara ayrılmasıdır."
+Takson nedir?,"Sınıflandırma kategorilerinde yer alan belirli ortak özelliklere sahip canlı grubudur."
+İkili adlandırma (Binominal nomenklatür) sistemi kime aittir?,"Carl Linnaeus (Carl Linne)"
+İkili adlandırma sisteminde tür adı nasıl yazılır?,"İki kelime: Cins adı (büyük harf) + Tamamlayıcı ad (küçük harf), italik"
+Panthera tigris örneğinde Panthera nedir?,"Cins adı"
+Panthera tigris örneğinde tigris nedir?,"Tamamlayıcı ad (tür epiteti)"
+Tür nedir?,"Ortak özelliklere sahip, birbirleriyle çiftleşip verimli döl verebilen canlılar grubu."
+Taksonomik kategoriler en genişten en dara doğru sıralanışı nasıldır?,"Domain → Âlem → Şube → Sınıf → Takım → Aile → Cins → Tür"
+Modern (filogenetik) sınıflandırma nedir?,"Canlılar arasındaki akrabalık ilişkilerini temel alan sınıflandırma sistemi."
+Âlemden türe doğru gidildikçe ne olur?,"Birey sayısı azalır, çeşitlilik azalır, benzerlik artar, akrabalık artar."
+Domain (Üst Âlem) nedir?,"En üst sınıflandırma kategorisi, canlılar 3 domainde sınıflandırılır."
+Üç domain sistemi hangileridir?,"Bakteriler, Arkeler, Ökaryotlar"
+Prokaryot domainler hangileridir?,"Bakteriler ve Arkeler"
+Ökaryot domaininde kaç âlem vardır?,"4 âlem: Protista, Mantarlar, Bitkiler, Hayvanlar"
+Bakterilerin hücre tipi nedir?,"Prokaryot hücre"
+Bakterilerde çekirdek var mıdır?,"Hayır, belirgin çekirdek yoktur"
+Bakterilerin hücre duvarı yapısı nedir?,"Peptidoglikan"
+Bakterilerde kromozom yapısı nasıldır?,"Halkasal, histon proteinleri yok"
+Arkeler nerelerde yaşayabilir?,"Ekstrem koşullarda (aşırı sıcak, tuzlu, asidik, bazik)"
+Arkelerin bakterilerden temel farkı nedir?,"Hücre duvarı yapısı (pseudopeptidoglikan), RNA dizileri, histon proteinleri"
+Ökaryotların hücre tipi nedir?,"Ökaryot hücre"
+Ökaryotlarda çekirdek var mıdır?,"Evet, belirgin çekirdek ve zarlı organeller var"
+Ökaryotlarda kromozom yapısı nasıldır?,"Doğrusal, histon proteinleri ile paketlenmiş"
+Protista âleminin genel özellikleri nelerdir?,"Ökaryot, tek hücreli veya basit çok hücreli, çeşitli beslenme şekilleri"
+Protista âlemine örnek veriniz.,"Amip, öglena, paramesyum, algler, plazmodyum"
+Mantarların beslenme şekli nedir?,"Heterotrof, saprofit (çürükçül) veya parazit"
+Mantarların hücre duvarı yapısı nedir?,"Kitin"
+Mantarların vücut yapısı nasıldır?,"Hifler → Miselyum (ipliksi yapı)"
+Mantarlar âlemine örnek veriniz.,"Maya mantarı, küf mantarı, şapkalı mantar, ekmek küfü"
+Bitkilerin beslenme şekli nedir?,"Ototrof (fotosentez)"
+Bitkilerin hücre duvarı yapısı nedir?,"Selüloz"
+Tohumsuz bitkiler nelerdir?,"Çiçeksiz bitkiler: Kara yosunları, eğrelti otları, atkuyruğu"
+Tohumlu bitkiler kaça ayrılır?,"Açık tohumlular (kozalaklılar) ve Kapalı tohumlular (çiçekli bitkiler)"
+Hayvanların beslenme şekli nedir?,"Heterotrof"
+Hayvanların hücre duvarı var mıdır?,"Hayır, hücre duvarı yok"
+Hayvanlar kaça ayrılır?,"Omurgasızlar ve Omurgalılar"
+Omurgasız hayvan grupları nelerdir?,"Süngerler, sölenterler, solucanlar, yumuşakçalar, eklembacaklılar, derisi dikenliler"
+Omurgalı hayvan sınıfları nelerdir?,"Balıklar, amfibiler, sürüngenler, kuşlar, memeliler"
+Süngerlerin en belirgin özelliği nedir?,"Doku ve organ yok, suyu süzerek beslenir"
+Sölenterlere örnek veriniz.,"Hidra, denizanası, mercan"
+Eklembacaklılara örnek veriniz.,"Böcekler, örümcekler, akrepler, yengeçler"
+Balıkların solunum organı nedir?,"Solungaç"
+Amfibiler neden iki yaşamlı denir?,"Larva suda, ergin hem suda hem karada yaşar"
+Sürüngenlerin derisi nasıldır?,"Pullu ve kuru"
+Kuşların vücut sıcaklığı nasıldır?,"Sabit vücut sıcaklığı (homeoterm)"
+Memelilerin en belirgin özelliği nedir?,"Süt bezleri, yavrularını sütle besler"
+Endemik tür nedir?,"Sadece belirli bir bölgede yaşayan tür"
+Doğal sınıflandırmanın amacı nedir?,"Canlılar arasındaki akrabalık ilişkilerini ortaya koymak"
+Moleküler sınıflandırma nedir?,"DNA, RNA ve protein dizilerine dayalı sınıflandırma"
+Sınıflandırmanın biyolojik önemi nedir?,"Canlı çeşitliliğini anlama, hastalık tanıma, koruma çalışmaları"`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 40 Questions
+        const testQuestions = [
+            {
+                question: "Sınıflandırma (Taksonomi) nedir?",
+                options: [
+                    "Canlıların renklerine göre gruplandırılması",
+                    "Canlıların benzerliklerine, farklılıklarına ve akrabalık derecelerine göre gruplara ayrılması",
+                    "Sadece hayvanların gruplandırılması",
+                    "Sadece bitkilerin gruplandırılması",
+                    "Canlıların boyutlarına göre sıralanması"
+                ],
+                correct: 1,
+                explanation: "Taksonomi, canlıların benzerliklerine, farklılıklarına ve akrabalık derecelerine göre belirli gruplara ayrılmasıdır."
+            },
+            {
+                question: "İkili adlandırma (Binominal nomenklatür) sistemini geliştiren bilim insanı kimdir?",
+                options: [
+                    "Charles Darwin",
+                    "Gregor Mendel",
+                    "Carl Linnaeus (Carl Linne)",
+                    "Louis Pasteur",
+                    "Robert Hooke"
+                ],
+                correct: 2,
+                explanation: "İkili adlandırma sistemi, İsveçli doğa bilimci Carl Linnaeus tarafından geliştirilmiştir."
+            },
+            {
+                question: "Panthera tigris örneğinde 'Panthera' nedir?",
+                options: ["Tamamlayıcı ad", "Cins adı", "Aile adı", "Tür adı", "Takım adı"],
+                correct: 1,
+                explanation: "İkili adlandırmada ilk kelime cins adıdır ve ilk harfi büyük yazılır. Panthera cins adıdır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi taksonomik kategorilerin en genişten en dara doğru sıralanışıdır?",
+                options: [
+                    "Tür → Cins → Aile → Takım → Sınıf → Şube → Âlem",
+                    "Âlem → Şube → Sınıf → Takım → Aile → Cins → Tür",
+                    "Cins → Tür → Aile → Takım → Sınıf → Şube → Âlem",
+                    "Şube → Âlem → Sınıf → Takım → Aile → Cins → Tür",
+                    "Tür → Aile → Cins → Takım → Sınıf → Şube → Âlem"
+                ],
+                correct: 1,
+                explanation: "Taksonomik kategoriler en genişten en dara doğru: Domain → Âlem → Şube → Sınıf → Takım → Aile → Cins → Tür şeklindedir."
+            },
+            {
+                question: "Modern (filogenetik) sınıflandırma neyi temel alır?",
+                options: [
+                    "Sadece dış görünüş benzerliklerini",
+                    "Sadece yaşam alanlarını",
+                    "Canlılar arasındaki akrabalık ilişkilerini",
+                    "Sadece beslenme şekillerini",
+                    "Sadece üreme şekillerini"
+                ],
+                correct: 2,
+                explanation: "Modern sınıflandırma, canlılar arasındaki akrabalık ilişkilerini (filogeni) temel alır ve morfolojik, anatomik, genetik özellikleri dikkate alır."
+            },
+            {
+                question: "Üç domain (üst âlem) sistemi hangileridir?",
+                options: [
+                    "Bitkiler, Hayvanlar, Mantarlar",
+                    "Prokaryotlar, Ökaryotlar, Protistler",
+                    "Bakteriler, Arkeler, Ökaryotlar",
+                    "Omurgalılar, Omurgasızlar, Bitkiler",
+                    "Tek hücreliler, Çok hücreliler, Mantarlar"
+                ],
+                correct: 2,
+                explanation: "Günümüzde canlılar üç domainde sınıflandırılır: Bakteriler, Arkeler ve Ökaryotlar."
+            },
+            {
+                question: "Prokaryot domainler hangileridir?",
+                options: [
+                    "Bakteriler ve Ökaryotlar",
+                    "Arkeler ve Protistler",
+                    "Bakteriler ve Arkeler",
+                    "Ökaryotlar ve Mantarlar",
+                    "Bakteriler ve Bitkiler"
+                ],
+                correct: 2,
+                explanation: "Prokaryot hücre yapısına sahip domainler Bakteriler ve Arkeler'dir. Ökaryotlar ise ökaryot hücre yapısına sahiptir."
+            },
+            {
+                question: "Bakterilerin hücre duvarı yapısı nedir?",
+                options: ["Selüloz", "Kitin", "Peptidoglikan", "Pseudopeptidoglikan", "Kitin ve selüloz"],
+                correct: 2,
+                explanation: "Bakterilerin hücre duvarı peptidoglikan yapılıdır. Arkelerin hücre duvarı ise pseudopeptidoglikan yapılıdır."
+            },
+            {
+                question: "Arkelerin en belirgin özelliği nedir?",
+                options: [
+                    "Sadece insan vücudunda yaşarlar",
+                    "Sadece bitkilerde parazittirler",
+                    "Ekstrem koşullarda yaşayabilirler",
+                    "Sadece suda yaşarlar",
+                    "Sadece havada bulunurlar"
+                ],
+                correct: 2,
+                explanation: "Arkeler, ekstrem koşullarda (aşırı sıcak, tuzlu, asidik, bazik) yaşayabilen prokaryot canlılardır."
+            },
+            {
+                question: "Ökaryotlar domaini kaç âleme ayrılır?",
+                options: ["2 âlem", "3 âlem", "4 âlem", "5 âlem", "6 âlem"],
+                correct: 2,
+                explanation: "Ökaryotlar domaini 4 âleme ayrılır: Protista, Mantarlar, Bitkiler ve Hayvanlar."
+            },
+            {
+                question: "Protista âleminin genel özellikleri arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Ökaryot hücre yapısı",
+                    "Tek hücreli veya basit çok hücreli olma",
+                    "Çeşitli beslenme şekilleri",
+                    "Hücre duvarında kitin bulunması",
+                    "Kamçı, sil veya yalancı ayak ile hareket"
+                ],
+                correct: 3,
+                explanation: "Protistlerde hücre duvarı kitin değildir. Bazılarında hücre duvarı yoktur, bazılarında selüloz veya başka maddeler bulunur. Kitin mantarların hücre duvarında bulunur."
+            },
+            {
+                question: "Mantarların beslenme şekli nedir?",
+                options: [
+                    "Ototrof (fotosentez)",
+                    "Heterotrof, saprofit (çürükçül)",
+                    "Sadece parazit",
+                    "Sadece etçil",
+                    "Sadece otçul"
+                ],
+                correct: 1,
+                explanation: "Mantarlar heterotrof canlılardır ve çoğu saprofittir (çürükçül). Bazı mantarlar parazit olabilir."
+            },
+            {
+                question: "Bitkilerin hücre duvarı yapısı nedir?",
+                options: ["Kitin", "Peptidoglikan", "Selüloz", "Pseudopeptidoglikan", "Kitin ve selüloz"],
+                correct: 2,
+                explanation: "Bitkilerin hücre duvarı selüloz yapılıdır. Mantarların hücre duvarı kitin, bakterilerin peptidoglikan, arkelerin pseudopeptidoglikan yapılıdır."
+            },
+            {
+                question: "Tohumsuz bitkilere örnek veriniz.",
+                options: [
+                    "Gül, lale, menekşe",
+                    "Çam, ladin, köknar",
+                    "Kara yosunu, eğrelti otu, atkuyruğu",
+                    "Buğday, arpa, mısır",
+                    "Elma, armut, şeftali"
+                ],
+                correct: 2,
+                explanation: "Tohumsuz bitkiler (çiçeksiz bitkiler): Kara yosunları, eğrelti otları, atkuyruğu, kibrit otlarıdır."
+            },
+            {
+                question: "Hayvanların beslenme şekli nedir?",
+                options: ["Ototrof", "Heterotrof", "Hem ototrof hem heterotrof", "Saprofit", "Parazit"],
+                correct: 1,
+                explanation: "Hayvanlar heterotrof canlılardır, besinlerini dışarıdan hazır alırlar."
+            },
+            {
+                question: "Omurgasız hayvan grupları arasında aşağıdakilerden hangisi yer almaz?",
+                options: ["Süngerler", "Sölenterler", "Eklembacaklılar", "Yumuşakçalar", "Kuşlar"],
+                correct: 4,
+                explanation: "Kuşlar omurgalı hayvanlardır. Süngerler, sölenterler, eklembacaklılar ve yumuşakçalar omurgasızdır."
+            },
+            {
+                question: "Omurgalı hayvan sınıfları arasında aşağıdakilerden hangisi yer almaz?",
+                options: ["Balıklar", "Amfibiler", "Sürüngenler", "Eklembacaklılar", "Memeliler"],
+                correct: 3,
+                explanation: "Eklembacaklılar omurgasızdır. Balıklar, amfibiler, sürüngenler, kuşlar ve memeliler omurgalıdır."
+            },
+            {
+                question: "Süngerlerin en belirgin özelliği nedir?",
+                options: [
+                    "Gelişmiş sinir sistemi",
+                    "Doku ve organ yok, suyu süzerek beslenme",
+                    "İç iskelet",
+                    "Akciğer solunumu",
+                    "Kapalı dolaşım sistemi"
+                ],
+                correct: 1,
+                explanation: "Süngerler, hayvanlar âleminin en basit yapılı üyeleridir. Doku ve organları yoktur, suyu süzerek beslenirler."
+            },
+            {
+                question: "Balıkların solunum organı nedir?",
+                options: ["Akciğer", "Solungaç", "Deri", "Trake", "Hava keseleri"],
+                correct: 1,
+                explanation: "Balıklar solungaç solunumu yapar. Amfibiler larva dönemde solungaç, ergin dönemde akciğer ve deri solunumu yapar."
+            },
+            {
+                question: "Amfibiler neden 'iki yaşamlılar' olarak adlandırılır?",
+                options: [
+                    "Hem karada hem suda ürerler",
+                    "Larva suda, ergin hem suda hem karada yaşar",
+                    "Hem etçil hem otçuldurlar",
+                    "Hem gündüz hem gece aktiftirler",
+                    "Hem yumurta hem doğurarak ürerler"
+                ],
+                correct: 1,
+                explanation: "Amfibiler (kurbağalar, semenderler) yaşamlarına suda başlar (larva solungaç solunumu), erginleşince hem suda hem karada yaşayabilir (akciğer ve deri solunumu)."
+            },
+            {
+                question: "Sürüngenlerin derisi nasıldır?",
+                options: [
+                    "Nemli ve yumuşak",
+                    "Tüylü",
+                    "Pullu ve kuru",
+                    "Dikenli",
+                    "Salgı bezleriyle kaplı"
+                ],
+                correct: 2,
+                explanation: "Sürüngenlerin derisi pullu ve kurudur, su kaybını önler. Amfibilerin derisi nemli ve yumuşaktır."
+            },
+            {
+                question: "Kuşların vücut sıcaklığı nasıldır?",
+                options: [
+                    "Değişken (soğukkanlı)",
+                    "Sabit (sıcakkanlı)",
+                    "Sadece gündüz sabit",
+                    "Sadece gece sabit",
+                    "Mevsimlere göre değişir"
+                ],
+                correct: 1,
+                explanation: "Kuşlar ve memeliler sabit vücut sıcaklığına sahiptir (homeoterm). Balıklar, amfibiler ve sürüngenler değişken vücut sıcaklığına sahiptir (poikiloterm)."
+            },
+            {
+                question: "Memelilerin en belirgin özelliği nedir?",
+                options: [
+                    "Yumurta ile üreme",
+                    "Süt bezleri, yavrularını sütle besleme",
+                    "Tüylü vücut",
+                      "Gaga",
+                    "Solungaç solunumu"
+                ],
+                correct: 1,
+                explanation: "Memelilerin en belirgin özelliği süt bezlerine sahip olmaları ve yavrularını sütle beslemeleridir."
+            },
+            {
+                question: "Endemik tür nedir?",
+                options: [
+                    "Dünyanın her yerinde bulunan tür",
+                    "Sadece belirli bir bölgede yaşayan tür",
+                    "Nesli tükenmiş tür",
+                    "Evcilleştirilmiş tür",
+                    "Yabancı ülkeden getirilmiş tür"
+                ],
+                correct: 1,
+                explanation: "Endemik tür, sadece belirli bir bölgede yaşayan ve dünyanın başka yerinde doğal olarak bulunmayan türdür."
+            },
+            {
+                question: "Âlemden türe doğru gidildikçe aşağıdakilerden hangisi olmaz?",
+                options: [
+                    "Birey sayısı azalır",
+                    "Çeşitlilik azalır",
+                    "Benzerlik artar",
+                    "Akrabalık artar",
+                    "Farklı gen sayısı artar"
+                ],
+                correct: 4,
+                explanation: "Âlemden türe doğru gidildikçe: Birey sayısı azalır, çeşitlilik azalır, benzerlik artar, akrabalık artar, farklı gen sayısı AZALIR."
+            },
+            {
+                question: "Aşağıdakilerden hangisi prokaryot ve ökaryot hücreler arasındaki temel farklardan değildir?",
+                options: [
+                    "Çekirdek varlığı",
+                    "Zarlı organel varlığı",
+                    "Hücre duvarı varlığı",
+                    "Kromozom yapısı",
+                    "Ribozom varlığı"
+                ],
+                correct: 4,
+                explanation: "Hem prokaryot hem ökaryot hücrelerde ribozom bulunur. Çekirdek, zarlı organeller, kromozom yapısı ve hücre duvarı yapısı farklılık gösterir."
+            },
+            {
+                question: "Sınıflandırmanın biyolojik önemi arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Canlı çeşitliliğini anlama",
+                    "Hastalık etkenlerini tanıma",
+                    "Nesli tükenen türleri koruma",
+                    "Canlıların ekonomik değerini artırma",
+                    "Akrabalık ilişkilerini belirleme"
+                ],
+                correct: 3,
+                explanation: "Sınıflandırmanın biyolojik önemi: Canlı çeşitliliğini anlama, hastalık etkenlerini tanıma, nesli tükenen türleri koruma, akrabalık ilişkilerini belirleme. Ekonomik değeri artırma doğrudan amaç değildir."
+            },
+            {
+                question: "Moleküler sınıflandırma neye dayanır?",
+                options: [
+                    "Sadece dış görünüşe",
+                    "Sadece fosil kayıtlarına",
+                    "DNA, RNA ve protein dizilerine",
+                    "Sadece yaşam alanlarına",
+                    "Sadece beslenme şekillerine"
+                ],
+                correct: 2,
+                explanation: "Moleküler sınıflandırma, DNA, RNA ve protein dizilerinin karşılaştırılmasına dayanır ve akrabalık ilişkilerini daha kesin ortaya koyar."
+            },
+            {
+                question: "Aşağıdaki canlılardan hangisi Protista âleminde yer alır?",
+                options: [
+                    "Maya mantarı",
+                    "Kara yosunu",
+                    "Amip",
+                    "İnsan",
+                    "Köpek"
+                ],
+                correct: 2,
+                explanation: "Amip Protista âlemindedir. Maya mantarı Mantarlar âleminde, kara yosunu Bitkiler âleminde, insan ve köpek Hayvanlar âlemindedir."
+            },
+            {
+                question: "Aşağıdaki canlılardan hangisi Mantarlar âleminde yer alır?",
+                options: [
+                    "Öglena",
+                    "Ekmek küfü",
+                    "Eğrelti otu",
+                    "Bal arısı",
+                    "Denizanası"
+                ],
+                correct: 1,
+                explanation: "Ekmek küfü Mantarlar âlemindedir. Öglena Protista âleminde, eğrelti otu Bitkiler âleminde, bal arısı ve denizanası Hayvanlar âlemindedir."
+            },
+            {
+                question: "Aşağıdaki canlılardan hangisi omurgasız hayvan değildir?",
+                options: [
+                    "Denizanası",
+                    "Toprak solucanı",
+                    "İstakoz",
+                    "Kurbağa",
+                    "Ahtapot"
+                ],
+                correct: 3,
+                explanation: "Kurbağa omurgalı hayvandır (amfibi). Denizanası (sölenter), toprak solucanı, istakoz (eklembacaklı) ve ahtapot (yumuşakça) omurgasızdır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi kuşların özelliklerinden değildir?",
+                options: [
+                    "Tüylü vücut",
+                    "Akciğer solunumu",
+                    "Sabit vücut sıcaklığı",
+                    "İç döllenme",
+                    "Solungaç solunumu"
+                ],
+                correct: 4,
+                explanation: "Kuşlar akciğer solunumu yapar. Solungaç solunumu balıklara özgüdür."
+            },
+            {
+                question: "Aşağıdakilerden hangisi memelilerin özelliklerinden değildir?",
+                options: [
+                    "Süt bezleri",
+                    "Doğurarak üreme",
+                    "Sabit vücut sıcaklığı",
+                    "Tüylü vücut",
+                    "Yumurta ile üreme"
+                ],
+                correct: 4,
+                explanation: "Memelilerin çoğu doğurarak ürer. Yalnızca platipus ve ekidna gibi ilkel memeliler yumurta ile ürer."
+            },
+            {
+                question: "Carl Linnaeus'un geliştirdiği ikili adlandırma sistemine göre, insanın bilimsel adı aşağıdakilerden hangisidir?",
+                options: [
+                    "Homo Sapiens",
+                    "Homo sapiens",
+                    "homo sapiens",
+                    "Homo Sapiens",
+                    "homo Sapiens"
+                ],
+                correct: 1,
+                explanation: "İkili adlandırmada: Cins adı büyük harfle başlar, tür epiteti küçük harfle yazılır, italik veya altı çizili yazılır. Doğrusu: Homo sapiens"
+            },
+            {
+                question: "Aşağıdakilerden hangisi sürüngenlerin özelliklerinden değildir?",
+                options: [
+                    "Pullu deri",
+                    "Akciğer solunumu",
+                    "Değişken vücut sıcaklığı",
+                    "İç döllenme",
+                    "Larva dönemi"
+                ],
+                correct: 4,
+                explanation: "Sürüngenlerde larva dönemi yoktur. Amfibilerde larva dönemi vardır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi bitkilerin özelliklerinden değildir?",
+                options: [
+                    "Ototrof beslenme",
+                    "Hücre duvarı (selüloz)",
+                    "Kloroplast",
+                    "Aktif hareket",
+                    "Fotosentez"
+                ],
+                correct: 3,
+                explanation: "Bitkiler aktif hareket edemez (yer değiştiremez). Aktif hareket hayvanların özelliğidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi bakterilerin insan yaşamındaki yararlı etkilerindendir?",
+                options: [
+                    "Hastalık yapma",
+                    "Antibiyotik üretimi",
+                    "Gıda bozulmasına neden olma",
+                    "Çürük oluşturma",
+                    "Tat değişikliğine neden olma"
+                ],
+                correct: 1,
+                explanation: "Bazı bakteriler antibiyotik üretiminde, bazıları bağırsak florasında, bazıları gıda endüstrisinde (yoğurt, peynir) kullanılır. Diğer seçenekler zararlı etkilerdir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Canlıların sınıflandırılmasını tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Canlıların sınıflandırılmasını çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Sınıflandırmanın temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
