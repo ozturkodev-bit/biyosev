@@ -1,1 +1,1476 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nükleik Asitler ve DNA Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #3498db;
+        }
+
+        .timeline-item {
+            margin: 40px 0;
+            position: relative;
+            width: 50%;
+            padding: 20px;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+            padding-right: 40px;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 40px;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            top: 20px;
+        }
+
+        .timeline-item:nth-child(odd)::after {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .timeline-year {
+            font-weight: bold;
+            color: #3498db;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .timeline-scientist {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* DNA Structure Styles */
+        .dna-structure {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .dna-diagram {
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto;
+            display: block;
+        }
+
+        .base-pair {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .base-pair:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .base-pair .base {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .base-pair .bond {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .comparison-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        /* Replication Diagram */
+        .replication-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .replication-step {
+            flex: 1;
+            min-width: 250px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 5px solid #3498db;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #1565c0;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding: 20px 20px 20px 50px !important;
+                text-align: left !important;
+            }
+            
+            .timeline-item::after {
+                left: 10px !important;
+                right: auto !important;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dna"></i> Nükleik Asitler ve DNA Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile nükleik asitleri keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="timeline-btn">
+                <i class="fas fa-history"></i>
+                <div class="card-title">Keşif Tarihçesi</div>
+                <div class="card-description">Nükleik asitlerin keşfi ve DNA yapısının çözülmesine kadar geçen süreci tarihsel olarak öğrenin.</div>
+            </div>
+            
+            <div class="card" id="structure-btn">
+                <i class="fas fa-atom"></i>
+                <div class="card-title">DNA/RNA Yapısı</div>
+                <div class="card-description">DNA ve RNA'nın yapısal özelliklerini, nükleotit yapısını ve baz eşleşmelerini görsel olarak öğrenin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile nükleik asitler bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Nükleik asitlerin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="content-section" id="timeline-section">
+            <button class="back-btn" id="back-from-timeline">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-history"></i> Nükleik Asitlerin Keşif Tarihçesi
+            </h2>
+            
+            <div class="timeline-container">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1869</div>
+                            <div class="timeline-scientist">Friedrich Miescher</div>
+                            <p>Balık spermleri ve akyuvarların çekirdeklerinden "nüklein" adını verdiği asidik maddeleri izole etti. Nükleik asitlerin C, H, O, N ve P elementlerinden oluştuğunu belirtti.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1928</div>
+                            <div class="timeline-scientist">Frederick Griffith</div>
+                            <p><em>Streptococcus pneumoniae</em> bakterileriyle yaptığı deneylerde "transformasyon" olayını keşfetti. Ölü kapsüllü bakterilerden canlı kapsülsüz bakterilere geçen ve onları hastalık yapıcı hale getiren bir madde olduğunu gösterdi.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1944</div>
+                            <div class="timeline-scientist">Oswald Avery, Colin MacLeod, Maclyn McCarty</div>
+                            <p>Griffith'in deneylerini tekrarlayarak transformasyona neden olan maddenin DNA olduğunu kanıtladılar. DNA'nın kalıtımsal madde olduğunu öne sürdüler.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1947</div>
+                            <div class="timeline-scientist">Erwin Chargaff</div>
+                            <p>DNA'daki baz dizisinin türden türe farklı olduğunu, aynı türdeki canlıların DNA'larının aynı baz bileşimine sahip olduğunu açıkladı. A=T ve G=C eşitliğini keşfetti (Chargaff Kuralları).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1951</div>
+                            <div class="timeline-scientist">Rosalind Franklin ve Maurice Wilkins</div>
+                            <p>DNA'nın X-ışını kırınım fotoğraflarını çekerek DNA'nın ikili sarmal yapıda olabileceğini gösterdiler.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1953</div>
+                            <div class="timeline-scientist">James Watson ve Francis Crick</div>
+                            <p>DNA'nın ikili sarmal yapısını ortaya koydular. Adenin-timin, guanin-sitozin baz eşleşmelerini açıkladılar.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1958</div>
+                            <div class="timeline-scientist">Matthew Meselson ve Franklin Stahl</div>
+                            <p>Azot izotopları kullanarak DNA'nın yarı korunumlu (semikonservatif) eşlendiğini kanıtladılar.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1968</div>
+                            <div class="timeline-scientist">Reiji ve Tsuneko Okazaki</div>
+                            <p>DNA eşlenmesinin kesintili zincirde parçalar halinde gerçekleştiğini keşfettiler (Okazaki parçaları).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">2015</div>
+                            <div class="timeline-scientist">Aziz Sancar</div>
+                            <p>DNA onarım mekanizmaları üzerine yaptığı çalışmalarla Nobel Kimya Ödülü'nü kazandı.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structure Section -->
+        <div class="content-section" id="structure-section">
+            <button class="back-btn" id="back-from-structure">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-atom"></i> DNA ve RNA Yapısı
+            </h2>
+            
+            <div class="dna-structure">
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">DNA'nın İkili Sarmal Yapısı</h3>
+                <p style="margin-bottom: 20px; line-height: 1.6;">DNA, deoksiribonükleotit birimlerinden oluşan çift zincirli bir sarmal yapıdır. İki zincir birbirine antiparaleldir ve hidrojen bağları ile bir arada tutulur.</p>
+                
+                <div style="margin: 30px 0;">
+                    <div class="base-pair">
+                        <div class="base">A = T</div>
+                        <div class="bond">2 Hidrojen Bağı</div>
+                        <div>Adenin - Timin</div>
+                    </div>
+                    <div class="base-pair">
+                        <div class="base">G ≡ C</div>
+                        <div class="bond">3 Hidrojen Bağı</div>
+                        <div>Guanin - Sitozin</div>
+                    </div>
+                </div>
+                
+                <h4 style="color: #2c3e50; margin: 30px 0 15px;">Nükleotit Yapısı</h4>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                    <p><strong>Nükleotit = Azotlu Organik Baz + 5C'lu Şeker + Fosfat Grubu</strong></p>
+                    <p>DNA'da şeker: <span class="highlight">Deoksiriboz</span> (C₅H₁₀O₄)</p>
+                    <p>RNA'da şeker: <span class="highlight">Riboz</span> (C₅H₁₀O₅)</p>
+                </div>
+                
+                <h4 style="color: #2c3e50; margin: 30px 0 15px;">DNA ve RNA Karşılaştırması</h4>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>DNA</th>
+                            <th>RNA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Zincir Sayısı</td>
+                            <td>Çift zincirli</td>
+                            <td>Tek zincirli</td>
+                        </tr>
+                        <tr>
+                            <td>Şeker Türü</td>
+                            <td>Deoksiriboz</td>
+                            <td>Riboz</td>
+                        </tr>
+                        <tr>
+                            <td>Organik Bazlar</td>
+                            <td>A, G, C, T</td>
+                            <td>A, G, C, U</td>
+                        </tr>
+                        <tr>
+                            <td>Kendini Eşleme</td>
+                            <td>Eşleyebilir</td>
+                            <td>Eşleyemez</td>
+                        </tr>
+                        <tr>
+                            <td>Görev</td>
+                            <td>Genetik bilgiyi taşır</td>
+                            <td>Protein sentezinde görev alır</td>
+                        </tr>
+                        <tr>
+                            <td>Bulunduğu Yer</td>
+                            <td>Çekirdek, mitokondri, kloroplast</td>
+                            <td>Çekirdek, sitoplazma, ribozom</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="color: #2c3e50; margin: 30px 0 15px;">RNA Çeşitleri</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+                        <h5 style="color: #1565c0; margin-bottom: 10px;">mRNA (Mesajcı RNA)</h5>
+                        <p>DNA'daki genetik bilgiyi ribozoma taşır. Toplam RNA'nın %5'ini oluşturur.</p>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                        <h5 style="color: #2e7d32; margin-bottom: 10px;">tRNA (Taşıyıcı RNA)</h5>
+                        <p>Amino asitleri ribozoma taşır. Toplam RNA'nın %15'ini oluşturur.</p>
+                    </div>
+                    <div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">
+                        <h5 style="color: #7b1fa2; margin-bottom: 10px;">rRNA (Ribozomal RNA)</h5>
+                        <p>Ribozomun yapısına katılır. Toplam RNA'nın %80'ini oluşturur.</p>
+                    </div>
+                </div>
+                
+                <h4 style="color: #2c3e50; margin: 30px 0 15px;">DNA Replikasyonu (Eşlenme)</h4>
+                <div class="replication-diagram">
+                    <div class="replication-step">
+                        <div class="step-number">1</div>
+                        <h5>Helikaz Etkisi</h5>
+                        <p>Helikaz enzimi, DNA zincirlerini bir arada tutan hidrojen bağlarını yıkar.</p>
+                    </div>
+                    <div class="replication-step">
+                        <div class="step-number">2</div>
+                        <h5>Kalıp Oluşumu</h5>
+                        <p>Ayrılan zincirler yeni zincir sentezi için kalıp görevi görür.</p>
+                    </div>
+                    <div class="replication-step">
+                        <div class="step-number">3</div>
+                        <h5>DNA Polimeraz</h5>
+                        <p>DNA polimeraz enzimi kalıp zincire uygun nükleotitleri ekler.</p>
+                    </div>
+                    <div class="replication-step">
+                        <div class="step-number">4</div>
+                        <h5>Birleştirme</h5>
+                        <p>DNA ligaz enzimi Okazaki parçalarını birleştirir.</p>
+                    </div>
+                </div>
+                <div class="important-note">
+                    <strong>📌 Önemli Not:</strong> DNA yarı korunumlu (semikonservatif) olarak eşlenir. Yeni oluşan DNA moleküllerinin her biri eski zincirden birini taşır.
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Nükleik Asitler Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="back-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="back-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Nükleik Asitler Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> NÜKLEİK ASİTLERİN KEŞFİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Friedrich Miescher (1869):</strong> Balık spermleri ve akyuvarların çekirdeklerinden "nüklein" adını verdiği asidik maddeleri izole etti.</li>
+                        <li><strong>Frederick Griffith (1928):</strong> <em>Streptococcus pneumoniae</em> bakterileriyle yaptığı deneylerde "transformasyon" olayını keşfetti.</li>
+                        <li><strong>Avery, MacLeod, McCarty (1944):</strong> Transformasyona neden olan maddenin DNA olduğunu kanıtladılar.</li>
+                        <li><strong>Erwin Chargaff (1947):</strong> DNA'daki baz bileşiminin türden türe farklı olduğunu, A=T ve G=C eşitliğini keşfetti.</li>
+                        <li><strong>Watson ve Crick (1953):</strong> DNA'nın ikili sarmal yapısını ortaya koydular.</li>
+                        <li><strong>Meselson ve Stahl (1958):</strong> DNA'nın yarı korunumlu eşlendiğini kanıtladılar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> DNA'NIN YAPISI</div>
+                    <ul class="summary-list">
+                        <li>DNA, <span class="highlight">deoksiribonükleotit</span> birimlerinden oluşur.</li>
+                        <li><strong>Nükleotit = Azotlu organik baz + Deoksiriboz şekeri + Fosfat grubu</strong></li>
+                        <li>DNA çift zincirli ve sarmal yapıdadır. Zincirler birbirine <span class="highlight">antiparalel</span> uzanır.</li>
+                        <li>Zincirler arasında <span class="highlight">hidrojen bağları</span> bulunur: A-T arasında 2, G-C arasında 3 hidrojen bağı.</li>
+                        <li>DNA'da Chargaff kuralları geçerlidir: A=T, G=C, A+G=T+C.</li>
+                        <li>Pürinler (A, G): Çift halkalı. Pirimidinler (C, T): Tek halkalı.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-rna"></i> RNA'NIN YAPISI VE ÇEŞİTLERİ</div>
+                    <ul class="summary-list">
+                        <li>RNA, <span class="highlight">ribonükleotit</span> birimlerinden oluşur.</li>
+                        <li>DNA'dan farkları: Tek zincirli, riboz şekeri içerir, timin yerine urasil (U) bulundurur.</li>
+                        <li><strong>mRNA (Mesajcı RNA):</strong> DNA'daki genetik bilgiyi ribozoma taşır. Protein sentezinde kalıp görevi görür.</li>
+                        <li><strong>tRNA (Taşıyıcı RNA):</strong> Amino asitleri ribozoma taşır. Her tRNA bir çeşit amino asit taşır.</li>
+                        <li><strong>rRNA (Ribozomal RNA):</strong> Ribozomun yapısına katılır. Ribozomun %65'ini oluşturur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sync-alt"></i> DNA REPLİKASYONU (EŞLENME)</div>
+                    <ul class="summary-list">
+                        <li><strong>Helikaz:</strong> DNA zincirlerini açar, hidrojen bağlarını yıkar.</li>
+                        <li><strong>DNA polimeraz:</strong> Kalıp zincire uygun nükleotitleri ekler. 5'→3' yönünde sentez yapar.</li>
+                        <li><strong>DNA ligaz:</strong> Okazaki parçalarını birleştirir.</li>
+                        <li><strong>Kesintisiz zincir:</strong> 5'→3' yönünde sürekli sentezlenir.</li>
+                        <li><strong>Kesintili zincir:</strong> Okazaki parçaları halinde sentezlenir.</li>
+                        <li>DNA <span class="highlight">yarı korunumlu (semikonservatif)</span> olarak eşlenir.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Prokaryotlarda DNA halkasal, ökaryotlarda doğrusaldır. Ökaryotlarda çok sayıda replikasyon orijini vardır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-microscope"></i> GENETİK MATERYALİN ORGANİZASYONU</div>
+                    <ul class="summary-list">
+                        <li>DNA, histon proteinlerine sarılarak <span class="highlight">kromatin</span> ipliği oluşturur.</li>
+                        <li>Hücre bölünmesinde kromatin kısalıp kalınlaşarak <span class="highlight">kromozom</span> halini alır.</li>
+                        <li><span class="highlight">Gen:</span> Belirli bir özelliği ifade eden, proteinleri kodlayan DNA parçasıdır.</li>
+                        <li>İnsanda 46, tavukta 78, eğrelti otunda 500 kromozom bulunur.</li>
+                        <li>Kromozom sayısı canlının gelişmişliğini göstermez.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-award"></i> AZİZ SANCAR'IN KATKILARI</div>
+                    <ul class="summary-list">
+                        <li>DNA onarım mekanizmaları üzerine çalıştı.</li>
+                        <li>2015 yılında Nobel Kimya Ödülü'nü kazandı.</li>
+                        <li>Maxicell yöntemini geliştirdi.</li>
+                        <li>Fotoliyaz enzimini kodlayan geni klonlamayı başardı.</li>
+                        <li>Transkripsiyona bağlı DNA onarımını açıkladı.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Transformasyon:</strong> Bir bakteri türünün başka bir bakteri türünün DNA'sını alarak kalıtsal değişikliğe uğraması.</li>
+                        <li><strong>Pürinler:</strong> Çift halkalı organik bazlar (Adenin, Guanin).</li>
+                        <li><strong>Primidinler:</strong> Tek halkalı organik bazlar (Sitozin, Timin, Urasil).</li>
+                        <li><strong>Antiparalel:</strong> DNA zincirlerinin birinin 5'→3', diğerinin 3'→5' yönünde uzanması.</li>
+                        <li><strong>Okazaki parçaları:</strong> DNA replikasyonunda kesintili zincirde oluşan kısa DNA parçaları.</li>
+                        <li><strong>Kodon:</strong> mRNA üzerinde üç nükleotitten oluşan ve bir amino asidi şifreleyen birim.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('timeline-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('timeline-section').classList.add('active');
+            updateProgress('timeline');
+        });
+
+        document.getElementById('structure-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('structure-section').classList.add('active');
+            updateProgress('structure');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-timeline').addEventListener('click', () => {
+            document.getElementById('timeline-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-structure').addEventListener('click', () => {
+            document.getElementById('structure-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions
+        const testQuestions = [
+            {
+                question: "Nükleik asitleri ilk kez kim keşfetmiştir?",
+                options: [
+                    "Friedrich Miescher",
+                    "James Watson",
+                    "Francis Crick",
+                    "Oswald Avery",
+                    "Erwin Chargaff"
+                ],
+                correct: 0,
+                explanation: "Friedrich Miescher 1869 yılında balık spermleri ve akyuvarların çekirdeklerinden 'nüklein' adını verdiği asidik maddeleri izole ederek nükleik asitleri keşfetmiştir."
+            },
+            {
+                question: "DNA'nın kalıtımsal madde olduğunu kanıtlayan bilim insanları kimlerdir?",
+                options: [
+                    "Watson ve Crick",
+                    "Meselson ve Stahl",
+                    "Avery, MacLeod ve McCarty",
+                    "Griffith",
+                    "Franklin ve Wilkins"
+                ],
+                correct: 2,
+                explanation: "Oswald Avery, Colin MacLeod ve Maclyn McCarty 1944 yılında yaptıkları deneylerle DNA'nın kalıtımsal madde olduğunu kanıtlamışlardır."
+            },
+            {
+                question: "DNA'nın ikili sarmal yapısını kimler keşfetmiştir?",
+                options: [
+                    "Miescher ve Chargaff",
+                    "Griffith ve Avery",
+                    "Watson ve Crick",
+                    "Meselson ve Stahl",
+                    "Franklin ve Wilkins"
+                ],
+                correct: 2,
+                explanation: "James Watson ve Francis Crick 1953 yılında DNA'nın ikili sarmal yapısını keşfetmişlerdir."
+            },
+            {
+                question: "Bir nükleotidin yapısında aşağıdakilerden hangisi bulunmaz?",
+                options: [
+                    "Azotlu organik baz",
+                    "Beş karbonlu şeker",
+                    "Fosfat grubu",
+                    "Amino asit",
+                    "Hidrojen bağı"
+                ],
+                correct: 3,
+                explanation: "Nükleotid; azotlu organik baz, beş karbonlu şeker (deoksiriboz veya riboz) ve fosfat grubundan oluşur. Amino asit proteinlerin yapı birimidir."
+            },
+            {
+                question: "DNA'da bulunup RNA'da bulunmayan baz hangisidir?",
+                options: [
+                    "Adenin",
+                    "Guanin",
+                    "Sitozin",
+                    "Timin",
+                    "Urasil"
+                ],
+                correct: 3,
+                explanation: "DNA'da timin (T) bulunurken, RNA'da timin yerine urasil (U) bulunur. Adenin, guanin ve sitozin her ikisinde de bulunur."
+            },
+            {
+                question: "RNA'da bulunup DNA'da bulunmayan şeker hangisidir?",
+                options: [
+                    "Deoksiriboz",
+                    "Riboz",
+                    "Glikoz",
+                    "Fruktoz",
+                    "Galaktoz"
+                ],
+                correct: 1,
+                explanation: "DNA'da deoksiriboz şekeri, RNA'da ise riboz şekeri bulunur. Riboz, deoksiribozdan bir oksijen atomu fazla olmasıyla ayrılır."
+            },
+            {
+                question: "DNA'da adenin ile timin arasında kaç hidrojen bağı bulunur?",
+                options: ["1", "2", "3", "4", "5"],
+                correct: 1,
+                explanation: "DNA'da adenin ile timin arasında 2, guanin ile sitozin arasında 3 hidrojen bağı bulunur."
+            },
+            {
+                question: "Chargaff kurallarına göre aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "A = G",
+                    "T = C",
+                    "A = T",
+                    "A + T = G + C",
+                    "A + G = 1"
+                ],
+                correct: 2,
+                explanation: "Chargaff kurallarına göre DNA'da adenin sayısı timin sayısına (A = T), guanin sayısı sitozin sayısına (G = C) eşittir."
+            },
+            {
+                question: "Aşağıdaki RNA çeşitlerinden hangisi ribozomun yapısına katılır?",
+                options: ["mRNA", "tRNA", "rRNA", "siRNA", "miRNA"],
+                correct: 2,
+                explanation: "rRNA (ribozomal RNA) ribozomun yapısına katılır ve ribozomun yaklaşık %65'ini oluşturur."
+            },
+            {
+                question: "Protein sentezinde amino asitleri ribozoma taşıyan RNA çeşidi hangisidir?",
+                options: ["mRNA", "tRNA", "rRNA", "snRNA", "hnRNA"],
+                correct: 1,
+                explanation: "tRNA (taşıyıcı RNA) protein sentezinde amino asitleri sitoplazmadan ribozoma taşır. Her tRNA bir çeşit amino asit taşır."
+            },
+            {
+                question: "DNA replikasyonunda zincirleri açan enzim hangisidir?",
+                options: [
+                    "DNA polimeraz",
+                    "Helikaz",
+                    "DNA ligaz",
+                    "Primaz",
+                    "Topoizomeraz"
+                ],
+                correct: 1,
+                explanation: "Helikaz enzimi, DNA replikasyonunda zincirleri bir arada tutan hidrojen bağlarını yıkarak zincirleri açar."
+            },
+            {
+                question: "DNA replikasyonunda nükleotitleri ekleyen enzim hangisidir?",
+                options: [
+                    "Helikaz",
+                    "DNA polimeraz",
+                    "DNA ligaz",
+                    "RNA polimeraz",
+                    "Restriksiyon enzimi"
+                ],
+                correct: 1,
+                explanation: "DNA polimeraz enzimi, DNA replikasyonunda kalıp zincire uygun nükleotitleri ekler."
+            },
+            {
+                question: "DNA replikasyonunda Okazaki parçalarını birleştiren enzim hangisidir?",
+                options: [
+                    "Helikaz",
+                    "DNA polimeraz",
+                    "DNA ligaz",
+                    "Primaz",
+                    "Ekzonükleaz"
+                ],
+                correct: 2,
+                explanation: "DNA ligaz enzimi, DNA replikasyonunda kesintili zincirde oluşan Okazaki parçalarını birleştirir."
+            },
+            {
+                question: "DNA'nın yarı korunumlu eşlendiğini kanıtlayan bilim insanları kimlerdir?",
+                options: [
+                    "Watson ve Crick",
+                    "Meselson ve Stahl",
+                    "Avery ve arkadaşları",
+                    "Griffith",
+                    "Chargaff"
+                ],
+                correct: 1,
+                explanation: "Matthew Meselson ve Franklin Stahl 1958 yılında azot izotopları kullanarak DNA'nın yarı korunumlu eşlendiğini kanıtlamışlardır."
+            },
+            {
+                question: "DNA onarım mekanizmaları üzerine çalışarak Nobel Ödülü alan Türk bilim insanı kimdir?",
+                options: [
+                    "Cahit Arf",
+                    "Aziz Sancar",
+                    "Fuat Sezgin",
+                    "Behram Kurşunoğlu",
+                    "Gazi Yaşargil"
+                ],
+                correct: 1,
+                explanation: "Aziz Sancar, DNA onarım mekanizmaları üzerine yaptığı çalışmalarla 2015 yılında Nobel Kimya Ödülü'nü kazanmıştır."
+            },
+            {
+                question: "Bir DNA molekülünde 1000 adenin nükleotiti varsa, timin nükleotiti sayısı kaçtır?",
+                options: ["500", "1000", "1500", "2000", "2500"],
+                correct: 1,
+                explanation: "Chargaff kuralına göre A = T olduğundan, adenin sayısı kadar timin vardır. 1000 adenin için 1000 timin bulunur."
+            },
+            {
+                question: "Bir DNA molekülünde toplam 2000 nükleotit varsa ve bunun 600'ü guanin ise, sitozin sayısı kaçtır?",
+                options: ["200", "400", "600", "800", "1000"],
+                correct: 2,
+                explanation: "Chargaff kuralına göre G = C olduğundan, guanin sayısı kadar sitozin vardır. 600 guanin için 600 sitozin bulunur."
+            },
+            {
+                question: "DNA'nın kesintisiz zinciri hangi yönde sentezlenir?",
+                options: [
+                    "5' → 3' yönünde",
+                    "3' → 5' yönünde",
+                    "Hem 5'→3' hem 3'→5'",
+                    "Rastgele yönde",
+                    "Hiçbiri"
+                ],
+                correct: 0,
+                explanation: "DNA polimeraz enzimi sadece 5' → 3' yönünde nükleotit ekleyebilir. Bu nedenle kesintisiz zincir 5' → 3' yönünde sentezlenir."
+            },
+            {
+                question: "Prokaryot hücrelerde DNA nasıl bir yapıdadır?",
+                options: [
+                    "Doğrusal",
+                    "Halkasal",
+                    "Üçlü sarmal",
+                    "Dörtlü sarmal",
+                    "Dallanmış"
+                ],
+                correct: 1,
+                explanation: "Prokaryot hücrelerde DNA halkasal yapıdadır. Ökaryot hücrelerde ise doğrusal yapıdadır."
+            },
+            {
+                question: "Ökaryot hücrelerde DNA nerede bulunmaz?",
+                options: [
+                    "Çekirdek",
+                    "Mitokondri",
+                    "Kloroplast",
+                    "Ribozom",
+                    "Hepsi"
+                ],
+                correct: 3,
+                explanation: "Ökaryot hücrelerde DNA çekirdekte, mitokondride ve kloroplastta bulunur. Ribozomda DNA bulunmaz, ribozom protein ve rRNA'dan oluşur."
+            },
+            {
+                question: "DNA'nın histon proteinlerine sarılmasıyla oluşan yapıya ne ad verilir?",
+                options: [
+                    "Kromozom",
+                    "Kromatin",
+                    "Kromatit",
+                    "Sentromer",
+                    "Telomer"
+                ],
+                correct: 1,
+                explanation: "DNA'nın histon proteinlerine sarılmasıyla oluşan yapıya kromatin adı verilir. Hücre bölünmesi sırasında kromatin kısalıp kalınlaşarak kromozom halini alır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi pürin bazıdır?",
+                options: [
+                    "Adenin",
+                    "Sitozin",
+                    "Timin",
+                    "Urasil",
+                    "Hiçbiri"
+                ],
+                correct: 0,
+                explanation: "Pürinler çift halkalı bazlardır: Adenin ve Guanin. Pirimidinler ise tek halkalı bazlardır: Sitozin, Timin, Urasil."
+            },
+            {
+                question: "Bir DNA molekülünde toplam hidrojen bağı sayısını hesaplamak için aşağıdakilerden hangisi bilinmelidir?",
+                options: [
+                    "Sadece adenin sayısı",
+                    "Sadece guanin sayısı",
+                    "Sadece fosfat sayısı",
+                    "Adenin ve guanin sayıları",
+                    "Timin ve sitozin sayıları"
+                ],
+                correct: 3,
+                explanation: "Hidrojen bağı sayısı = (A sayısı × 2) + (G sayısı × 3) şeklinde hesaplanır. Çünkü A-T arasında 2, G-C arasında 3 hidrojen bağı vardır."
+            },
+            {
+                question: "DNA replikasyonu hangi evrede gerçekleşir?",
+                options: [
+                    "Profaz",
+                    "Metafaz",
+                    "Anafaz",
+                    "Telofaz",
+                    "Interfaz (S evresi)"
+                ],
+                correct: 4,
+                explanation: "DNA replikasyonu hücre döngüsünün interfaz evresinde, özellikle S (sentez) evresinde gerçekleşir."
+            },
+            {
+                question: "RNA'ların sentezi hangi enzimle gerçekleşir?",
+                options: [
+                    "DNA polimeraz",
+                    "RNA polimeraz",
+                    "DNA ligaz",
+                    "Helikaz",
+                    "Reverse transkriptaz"
+                ],
+                correct: 1,
+                explanation: "RNA'lar DNA üzerinden RNA polimeraz enzimi ile sentezlenir. Bu işleme transkripsiyon adı verilir."
+            },
+            {
+                question: "DNA'daki genetik bilginin proteine dönüşmesi sürecine ne ad verilir?",
+                options: [
+                    "Replikasyon",
+                    "Transkripsiyon",
+                    "Translasyon",
+                    "Transformasyon",
+                    "Transdüksiyon"
+                ],
+                correct: 2,
+                explanation: "DNA'daki genetik bilginin proteine dönüşmesi sürecine translasyon (protein sentezi) adı verilir. Transkripsiyon ise DNA'dan RNA sentezidir."
+            },
+            {
+                question: "Bir DNA zincirinde nükleotitler arasında hangi bağ bulunur?",
+                options: [
+                    "Glikozit bağı",
+                    "Fosfodiester bağı",
+                    "Peptit bağı",
+                    "Hidrojen bağı",
+                    "Disülfür bağı"
+                ],
+                correct: 1,
+                explanation: "DNA zincirinde nükleotitler fosfodiester bağı ile birbirine bağlanır. Hidrojen bağı ise iki zincir arasında bulunur."
+            },
+            {
+                question: "DNA'nın kendini eşlemesi sırasında oluşan Y şeklindeki bölgeye ne ad verilir?",
+                options: [
+                    "Replikasyon orijini",
+                    "Replikasyon çatalı",
+                    "Okazaki parçası",
+                    "Primer",
+                    "Telomer"
+                ],
+                correct: 1,
+                explanation: "DNA replikasyonu sırasında helikaz enzimi tarafından zincirlerin ayrılmasıyla oluşan Y şeklindeki bölgeye replikasyon çatalı adı verilir."
+            },
+            {
+                question: "Griffith'in transformasyon deneyinde kullandığı bakteri türü hangisidir?",
+                options: [
+                    "Escherichia coli",
+                    "Bacillus subtilis",
+                    "Streptococcus pneumoniae",
+                    "Staphylococcus aureus",
+                    "Salmonella typhi"
+                ],
+                correct: 2,
+                explanation: "Frederick Griffith, Streptococcus pneumoniae bakterileriyle yaptığı deneylerde transformasyon olayını keşfetmiştir."
+            },
+            {
+                question: "DNA'nın yapısını çözmek için X-ışını kırınım fotoğraflarını çeken bilim insanı kimdir?",
+                options: [
+                    "James Watson",
+                    "Francis Crick",
+                    "Rosalind Franklin",
+                    "Erwin Chargaff",
+                    "Matthew Meselson"
+                ],
+                correct: 2,
+                explanation: "Rosalind Franklin DNA'nın X-ışını kırınım fotoğraflarını çekmiştir. Bu fotoğraflar DNA'nın ikili sarmal yapıda olduğunu göstermiştir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Nükleik asitleri tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Nükleik asitleri çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Nükleik asitlerin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Keşif tarihçesi ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+    </script>
+</body>
+</html>
