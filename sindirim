@@ -3,1275 +3,1655 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sınav Sistemi V16 (Ö.Sevinç Özel Sürüm)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Sindirim Sistemi Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;}
-        .app-card { background-color:white;padding:2.5rem;border-radius:1.5rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);max-width:450px;width:90%;transition:all .3s;position:relative; display: flex; flex-direction: column;}
-        .header-bg { background: linear-gradient(135deg,#4f46e5 0%,#818cf8 100%); color:white;padding:1rem 0;border-radius:1rem 1rem 0 0;margin:-2.5rem -2.5rem 1.5rem -2.5rem;text-align:center;}
-        .button{transition:all .2s;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
-        .button:hover{transform:translateY(-1px);box-shadow:0 6px 10px rgba(0,0,0,0.15)}
-        .teacher-mode { max-width: 1400px !important; width: 98% !important; } 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .paste-area { 
-            border: 2px dashed #cbd5e0; 
-            border-radius: 0.5rem; 
-            padding: 1rem; 
-            background-color: #f9fafb; 
-            cursor: text;
-            min-height: 120px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .paste-area:focus {
-            outline: none;
-            border-color: #4f46e5;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #2ecc71;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2ecc71;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-stomach"></i> Sindirim Sistemi Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile sindirim sistemini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
 
-    <div id="app" class="app-card">
-        <div id="loginHeader" class="header-bg">
-            <h1 class="text-2xl font-extrabold">Öğrenci Girişi</h1>
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">50 adet soru-cevap kartı ile sindirim sistemi konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Sindirim sisteminin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">40 soruluk detaylı test ile sindirim sistemi bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Sindirim sisteminin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
         </div>
-        
-        <div id="connectionStatus" class="hidden mb-4 text-xs font-bold text-center p-2 rounded border"></div>
-        
-        <div id="mainContentArea" class="flex-grow flex flex-col">
-            <div id="loadingIndicator" class="text-center py-10">
-                <div class="loader"></div>
-                <p id="loadingText" class="text-sm text-gray-500 mt-4 font-bold">Sistem Başlatılıyor...</p>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Sindirim Sistemi Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">50</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Sindirim Sistemi Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sindirim Sistemi Temel Kavramlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sindirim:</strong> Büyük moleküllü besinlerin yapı taşlarına parçalanması</li>
+                        <li><strong>Mekanik Sindirim:</strong> Besinlerin fiziksel olarak küçük parçalara ayrılması</li>
+                        <li><strong>Kimyasal Sindirim:</strong> Enzimler yardımıyla besinlerin yapı taşlarına ayrılması</li>
+                        <li><strong>Emilim:</strong> Sindirilmiş besinlerin kana geçişi</li>
+                        <li><strong>Hücre İçi Sindirim:</strong> Besinlerin hücre içinde sindirilmesi</li>
+                        <li><strong>Hücre Dışı Sindirim:</strong> Besinlerin hücre dışında sindirilmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">İnsanda Sindirim Organları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ağız:</strong> Mekanik ve kimyasal sindirimin başladığı yer</li>
+                        <li><strong>Yutak:</strong> Besinlerin yemek borusuna iletilmesi</li>
+                        <li><strong>Yemek Borusu:</strong> Besinlerin mideye iletilmesi</li>
+                        <li><strong>Mide:</strong> Besinlerin depolanması ve protein sindirimi</li>
+                        <li><strong>İnce Bağırsak:</strong> Kimyasal sindirimin ve emilimin çoğunun gerçekleştiği yer</li>
+                        <li><strong>Kalın Bağırsak:</strong> Su ve mineral emilimi, atıkların depolanması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sindirim Yardımcı Organları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Karaciğer:</strong> Safra sıvısı üretimi, toksinlerin parçalanması</li>
+                        <li><strong>Safra Kesesi:</strong> Safranın depolanması ve yoğunlaştırılması</li>
+                        <li><strong>Pankreas:</strong> Sindirim enzimleri ve bikarbonat salgılanması</li>
+                        <li><strong>Tükürük Bezleri:</strong> Tükürük salgılanması, karbonhidrat sindirimi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Besinlerin Sindirimi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Karbonhidratlar:</strong> Ağızda başlar, ince bağırsakta tamamlanır</li>
+                        <li><strong>Proteinler:</strong> Midede başlar, ince bağırsakta tamamlanır</li>
+                        <li><strong>Yağlar:</strong> İnce bağırsakta sindirilir</li>
+                        <li><strong>Su ve Mineraller:</strong> Emilir ancak sindirilmezler</li>
+                        <li><strong>Vitaminler:</strong> Yağda ve suda eriyenler olarak emilirler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hayvanlarda Sindirim Adaptasyonları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Etçiller:</strong> Kesici dişler, kısa bağırsak, tek bölmeli mide</li>
+                        <li><strong>Otçullar:</strong> Öğütücü dişler, uzun bağırsak, selüloz sindirimi</li>
+                        <li><strong>Geviş Getirenler:</strong> Dört bölmeli mide (işkembe, börkenek, kırkbayır, şirden)</li>
+                        <li><strong>Kuşlar:</strong> Diş yok, kursak ve taşlık bulunur</li>
+                        <li><strong>İnsan (Hepçil):</strong> Karma diş yapısı, tek bölmeli mide</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Emilim ve Taşıma</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Villus ve Mikrovillus:</strong> Emilim yüzey alanını artırır</li>
+                        <li><strong>Karbonhidrat Emilimi:</strong> Glikoz şeklinde kana geçer</li>
+                        <li><strong>Protein Emilimi:</strong> Amino asit şeklinde kana geçer</li>
+                        <li><strong>Yağ Emilimi:</strong> Yağ asidi ve gliserol şeklinde lenfe geçer</li>
+                        <li><strong>Şilomikron:</strong> Yağların taşınma şekli</li>
+                        <li><strong>Karaciğer:</strong> Emilmiş besinlerin işlendiği organ</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sindirim Sistemi Sağlığı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Lifli Gıdalar:</strong> Bağırsak hareketlerini düzenler</li>
+                        <li><strong>Probiyotikler:</strong> Bağırsak florasını destekler</li>
+                        <li><strong>Yeterli Su:</strong> Sindirim ve emilim için gereklidir</li>
+                        <li><strong>Dengeli Beslenme:</strong> Tüm besin gruplarını içermelidir</li>
+                        <li><strong>Düzenli Öğünler:</strong> Sindirim sistemi ritmini korur</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Sindirim Sistemi Testi (40 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 40</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2ecc71; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Sindirim Sistemi Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> SİNDİRİM SİSTEMİNE GİRİŞ</div>
+                    <ul class="summary-list">
+                        <li><strong>Sindirim:</strong> Karbonhidrat, yağ, protein gibi büyük moleküllü besin maddelerinin kendilerini oluşturan yapı taşlarına parçalanarak hücre zarından geçebilecek hale gelmesidir.</li>
+                        <li><strong>Beslenme:</strong> Canlının dış ortamdan besinleri alma ve kullanma sürecidir.</li>
+                        <li><strong>Ototrof Canlılar:</strong> Kendi besinlerini üretme yeteneğine sahiptir (fotosentez veya kemosentez).</li>
+                        <li><strong>Heterotrof Canlılar:</strong> Kendi besinlerini üretemezler, dışarıdan organik maddeler alırlar.</li>
+                        <li>Hayvanlar enerji üretimi ve biyosentez süreçlerini sürdürebilmek için beslenmek zorundadır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-utensils"></i> SİNDİRİM ÇEŞİTLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Mekanik (Fiziksel) Sindirim:</strong> Besinlerin fiziksel olarak küçük parçalara ayrılmasıdır. Örnek: Dişlerle çiğneme, mide kasılmaları, safra ile yağların küçük damlacıklara ayrılması.</li>
+                        <li><strong>Kimyasal Sindirim:</strong> Büyük moleküllü besinlerin enzimler ve su yardımıyla yapı taşlarına ayrışmasıdır (hidroliz).</li>
+                        <li><strong>Hücre İçi Sindirim:</strong> Besinlerin hücre içinde koful içinde sindirilmesidir. Örnek: Amip, öglena, insanda akyuvarların mikropları sindirmesi.</li>
+                        <li><strong>Hücre Dışı Sindirim:</strong> Besinlerin hücre dışında enzimlerle sindirilip daha sonra hücre içine alınmasıdır. Örnek: İnsan, kuş, kurt, inek gibi çoğu hayvan.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tooth"></i> HAYVANLARDA SİNDİRİM ADAPTASYONLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Etçil (Karnivor) Hayvanlar:</strong> Kesici ve köpek dişleri gelişmiştir. Mide genişleyebilir yapıdadır. Bağırsaklar kısadır. Örnek: Kurt, kedi, köpek.</li>
+                        <li><strong>Otçul (Herbivor) Hayvanlar:</strong> Öğütücü azı dişleri gelişmiştir. Bağırsaklar uzundur. Geviş getirenlerde (inek, koyun) mide dört bölmelidir.</li>
+                        <li><strong>Hepçil (Omnivor) Hayvanlar:</strong> Hem etçil hem otçul beslenir. Diş yapısı karma özellik gösterir. Örnek: İnsan, ayı, fare.</li>
+                        <li><strong>Kuşlar:</strong> Dişleri yoktur, gaga ile beslenir. Kursak ve taşlık bulunur. Sindirim kanalları kısadır.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> İnek gibi geviş getiren hayvanlarda mide dört bölmelidir: İşkembe, börkenek, kırkbayır, şirden. Selüloz sindirimi işkembedeki mikroorganizmalar tarafından gerçekleştirilir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-user-md"></i> İNSANDA SİNDİRİM SİSTEMİ ORGANLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Ağız:</strong> Mekanik (çiğneme) ve kimyasal (tükürük enzimleri) sindirimin başladığı yerdir. Karbonhidratların sindirimi burada başlar.</li>
+                        <li><strong>Yutak:</strong> Ağız ile yemek borusu arasında bulunur, besinlerin yemek borusuna geçişini sağlar.</li>
+                        <li><strong>Yemek Borusu:</strong> Besinleri mideye ileten kaslı bir tüptür. Peristaltik hareketlerle çalışır.</li>
+                        <li><strong>Mide:</strong> Besinlerin geçici depolandığı, mekanik (kas hareketleri) ve kimyasal (mide öz suyu) sindirimin devam ettiği organdır. Protein sindirimi burada başlar.</li>
+                        <li><strong>İnce Bağırsak:</strong> Kimyasal sindirimin büyük kısmının gerçekleştiği ve besinlerin emildiği organdır. Villus ve mikrovilluslarla emilim yüzeyi artırılmıştır.</li>
+                        <li><strong>Kalın Bağırsak:</strong> Su ve mineral emilimi gerçekleşir. B ve K vitaminleri burada bakteriler tarafından sentezlenir ve emilir. Atıklar depolanır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heartbeat"></i> SİNDİRİM YARDIMCI ORGANLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Karaciğer:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Safra sıvısı üretir (yağların mekanik sindirimi)</li>
+                                <li>Toksinleri parçalar</li>
+                                <li>Kan şekerini düzenler</li>
+                                <li>Vitamin ve mineral depolar</li>
+                                <li>Protein sentezi yapar</li>
+                            </ul>
+                        </li>
+                        <li><strong>Safra Kesesi:</strong> Karaciğerin ürettiği safrayı depolar ve yoğunlaştırır, yemeklerden sonra ince bağırsağa salgılar.</li>
+                        <li><strong>Pankreas:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Sindirim enzimleri salgılar (karbonhidrat, protein, yağ sindirimi için)</li>
+                                <li>Bikarbonat iyonları salgılayarak mideden gelen asidi nötralize eder</li>
+                                <li>İnsülin ve glukagon hormonlarını üreterek kan şekerini düzenler</li>
+                            </ul>
+                        </li>
+                        <li><strong>Tükürük Bezleri:</strong> Tükürük salgılayarak ağızda karbonhidrat sindirimini başlatır, besinleri yumuşatır ve kayganlaştırır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-apple-alt"></i> BESİNLERİN SİNDİRİMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Karbonhidratlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Ağızda tükürük amilazı ile sindirim başlar</li>
+                                <li>Midede durur (asidik ortam enzimi etkisizleştirir)</li>
+                                <li>İnce bağırsakta pankreas amilazı ve bağırsak enzimleri ile monosakkaritlere parçalanır</li>
+                                <li>Son ürün: Glikoz, fruktoz, galaktoz</li>
+                            </ul>
+                        </li>
+                        <li><strong>Proteinler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Midede pepsin enzimi ile sindirim başlar</li>
+                                <li>İnce bağırsakta tripsin, kimotripsin ve peptidaz enzimleri ile amino asitlere parçalanır</li>
+                                <li>Son ürün: Amino asitler</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yağlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Sadece ince bağırsakta sindirilir</li>
+                                <li>Safra tuzları yağları küçük damlacıklara ayırır (mekanik sindirim)</li>
+                                <li>Lipaz enzimi yağ asidi ve gliserole parçalar</li>
+                                <li>Son ürün: Yağ asitleri ve gliserol</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> Su, vitaminler ve mineraller sindirime uğramaz, doğrudan emilirler.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-arrow-down"></i> EMİLİM VE TAŞINMA</div>
+                    <ul class="summary-list">
+                        <li><strong>Villus ve Mikrovillus:</strong> İnce bağırsak yüzey alanını ~200-300 m²'ye çıkararak emilimi maksimize eder.</li>
+                        <li><strong>Karbonhidrat ve Protein Emilimi:</strong> Glikoz ve amino asitler aktif taşıma ile kılcal damarlara geçer, portal ven yoluyla karaciğere taşınır.</li>
+                        <li><strong>Yağ Emilimi:</strong> Yağ asitleri ve gliserol epitel hücrelerinde trigliserite dönüştürülür, protein ve kolesterolle kaplanarak şilomikron oluşturulur. Şilomikronlar lenf sistemine, oradan da kana geçer.</li>
+                        <li><strong>Su ve Mineraller:</strong> Kalın bağırsakta emilir. Su ozmoz ile, mineraller aktif veya pasif taşıma ile emilir.</li>
+                        <li><strong>Vitaminler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yağda eriyen vitaminler (A, D, E, K): Yağlarla birlikte emilir</li>
+                                <li>Suda eriyen vitaminler (B, C): Doğrudan kana geçer</li>
+                            </ul>
+                        </li>
+                        <li><strong>Karaciğer:</strong> Tüm emilmiş besinler önce karaciğere gider, burada işlenir, depolanır veya vücuda dağıtılır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> SİNDİRİM SİSTEMİ SAĞLIĞI</div>
+                    <ul class="summary-list">
+                        <li><strong>Lifli (Posalı) Gıdalar:</strong> Bağırsak hareketlerini düzenler, kabızlığı önler, bağırsak sağlığını korur.</li>
+                        <li><strong>Probiyotikler:</strong> Yoğurt, kefir gibi fermente gıdalar bağırsak florasını destekler.</li>
+                        <li><strong>Yeterli Su Tüketimi:</strong> Sindirim enzimlerinin çalışması, besinlerin emilimi ve atıkların atılması için gereklidir.</li>
+                        <li><strong>Dengeli Beslenme:</strong> Tüm besin gruplarından yeterli miktarda almak sindirim sistemi sağlığı için önemlidir.</li>
+                        <li><strong>Düzenli Öğünler:</strong> Sindirim sisteminin ritmini korur, hazımsızlık ve reflüyü önler.</li>
+                        <li><strong>İyi Çiğneme:</strong> Mekanik sindirimi kolaylaştırır, enzimlerin etkinliğini artırır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Peristaltizm:</strong> Sindirim kanalındaki kasların ritmik kasılmaları ile besinlerin ilerlemesi.</li>
+                        <li><strong>Geviş Getirme:</strong> Geviş getiren hayvanlarda besinlerin işkembeden ağıza geri getirilip tekrar çiğnenmesi.</li>
+                        <li><strong>Selüloz:</strong> Bitki hücre duvarının ana bileşeni, insanlar tarafından sindirilemez ancak lif olarak sağlık için gereklidir.</li>
+                        <li><strong>Kloak:</strong> Kuş ve sürüngen gibi bazı hayvanlarda sindirim, üreme ve boşaltım sistemlerinin açıldığı ortak açıklık.</li>
+                        <li><strong>Homeostasi:</strong> Vücudun iç dengede kalması, sindirim sistemi bu dengeyi besin alımı ve atılımı ile sağlar.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 hidden items-center justify-center p-4 z-50">
-        <div id="modalContent" class="bg-white rounded-xl p-6 max-w-3xl w-full text-center shadow-2xl overflow-y-auto max-h-[90vh]"></div>
-    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getFirestore, 
-            doc, 
-            collection, 
-            onSnapshot, 
-            serverTimestamp, 
-            query, 
-            where, 
-            getDocs, 
-            deleteDoc, 
-            getDoc, 
-            addDoc, 
-            updateDoc, 
-            setDoc, 
-            orderBy,
-            limit
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { 
-            getAuth, 
-            signInAnonymously, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCHhFAHbWnclad6yFuI-Pw9gX6F_Dx1B2c",
-            authDomain: "online-sinav-b3644.firebaseapp.com",
-            projectId: "online-sinav-b3644",
-            storageBucket: "online-sinav-b3644.firebasestorage.app",
-            messagingSenderId: "965507531268",
-            appId: "1:965507531268:web:94cfd13774a40b6cf16b51"
-        };
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
 
-        // --- Global Değişkenler ---
-        let db, auth;
-        let isAuthReady = false, isDbConnected = false;
-        let adminMasterCode = null;
-        let systemPreparerName = "Sistem Yöneticisi";
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
 
-        let currentExamConfig = {
-            exam_code: "DEFAULT",
-            teacher_name: "Yükleniyor...",
-            time_limit: 600,
-            exam_description: "Sınav bilgisi bekleniyor..."
-        };
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
         
-        let quizQuestions = [];
-        let studentList = [];
-        
-        // Sınav Oturum Değişkenleri
-        let studentData = {};
-        let selectedAnswers = [];
-        let questionOrder = [];
-        let currentQuestionIndex = 0;
-        let focusLossCount = 0;
-        let currentSessionDocId = null;
-        
-        // Timer Değişkenleri
-        let timerInterval = null;
-        let examendTimeStamp = null;
-        let autoSaveInterval = null;
-        
-        // Admin ve Tablo Verileri
-        let allSubmissions = [];
-        let isTeacherMode = false;
-        let isPreviewMode = false; // <-- YENİ EKLENECEK SATIR BU
-
-        // --- INPUT VALIDATION FONKSİYONLARI ---
-        function sanitizeInput(input) {
-            if (typeof input !== 'string') return '';
-            return input
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/'/g, '&#x27;')
-                .replace(/"/g, '&quot;')
-                .substring(0, 500);
-        }
-
-        function sanitizeExamCode(code) {
-            if (typeof code !== 'string') return '';
-            return code.replace(/[^a-zA-Z0-9_]/g, '').toUpperCase().substring(0, 20);
-        }
-
-        function validateStudentData(student) {
-            if (!student || typeof student !== 'object') return false;
-            
-            return (
-                typeof student.name === 'string' && student.name.trim().length > 0 &&
-                typeof student.number === 'string' && student.number.trim().length > 0 &&
-                typeof student.className === 'string' && student.className.trim().length > 0
-            );
-        }
-
-        // Helper: Firebase Referansları
-        const getConfigRef = (code) => doc(db, "exam_settings", sanitizeExamCode(code));
-        const getQuestionsRef = (code) => doc(db, "questions_pool", sanitizeExamCode(code));
-
-        // --- SİSTEM BAŞLATMA ---
-        async function initializeFirebase() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                await signInAnonymously(auth);
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) { 
-                        isAuthReady = true; 
-                        await checkConnectivity(); 
-                    }
-                });
-            } catch (error) { 
-                showCustomAlert("Kritik Hata", "Firebase başlatılamadı: " + error.message);
-            }
-        }
-
-        // --- GÜVENLİ BAĞLANTI KONTROLÜ ---
-        async function checkConnectivity() {
-            const statusDiv = document.getElementById('connectionStatus');
-            try {
-                // Admin config çekmeyi dene
-                const adminSnap = await getDoc(doc(db, "exam_settings", "admin_config"));
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
                 
-                if (adminSnap.exists()) {
-                    const data = adminSnap.data();
-                    adminMasterCode = data.master_code;
-                    systemPreparerName = data.preparer_name || "Sistem Yöneticisi";
-                    
-                    isDbConnected = true;
-                    statusDiv.innerHTML = "🟢 Sistem Çevrimiçi";
-                    statusDiv.className = "mb-4 text-xs font-bold text-center p-2 rounded border bg-green-100 text-green-800 border-green-300";
-                } else {
-                    throw new Error("Admin konfigürasyonu eksik.");
-                }
-            } catch(e) {
-                isDbConnected = false;
-                adminMasterCode = null;
-                statusDiv.innerHTML = `🔴 BAĞLANTI/VERİ HATASI<br><span class='text-[10px] font-normal'>${e.message}</span>`;
-                statusDiv.className = "mb-4 text-xs font-bold text-center p-2 rounded border bg-red-100 text-red-800 border-red-300";
-            }
-            
-            statusDiv.classList.remove('hidden');
-            document.getElementById('loadingIndicator').classList.add('hidden');
-            showLoginForm();
-        }
-
-        // --- RESET FONKSİYONU ---
-        function resetApp() {
-            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-            if (autoSaveInterval) { clearInterval(autoSaveInterval); autoSaveInterval = null; }
-            
-            window.onblur = null;
-            document.oncontextmenu = null;
-            
-            currentExamConfig = { exam_code: "DEFAULT", teacher_name: systemPreparerName, time_limit: 600, exam_description: "..." };
-            quizQuestions = [];
-            studentList = [];
-            studentData = {};
-            selectedAnswers = [];
-            questionOrder = [];
-            currentQuestionIndex = 0;
-            focusLossCount = 0;
-            currentSessionDocId = null;
-            examendTimeStamp = null;
-            isTeacherMode = false;
-
-            document.getElementById('app').className = 'app-card max-w-md';
-            document.getElementById('connectionStatus').classList.remove('hidden');
-            showLoginForm();
-        }
-
-        // --- SINAV VERİSİ ÇEKME ---
-        async function fetchExamData(code) {
-            if (!isDbConnected) return false;
-            
-            try {
-                const configSnap = await getDoc(getConfigRef(code));
-                if (configSnap.exists()) {
-                    const data = configSnap.data();
-                    currentExamConfig = { 
-                        exam_code: sanitizeExamCode(code), 
-                        teacher_name: data.teacher_name || "Öğretmen Bilgisi Yok", // Sınava özel öğretmen ismi
-                        time_limit: data.time_limit || 600,
-                        exam_description: data.exam_description || "Sınav açıklaması yok",
-                        is_active: data.is_active
-                    };
-                } else {
-                    currentExamConfig = { 
-                        exam_code: sanitizeExamCode(code), 
-                        teacher_name: "Bulunamadı", 
-                        time_limit: 600, 
-                        exam_description: "Sınav ayarları bulunamadı." 
-                    };
-                }
-
-                const questionsSnap = await getDoc(getQuestionsRef(code));
-                quizQuestions = questionsSnap.exists() ? (questionsSnap.data().questions_list || []) : [];
-                
-                const listSnap = await getDoc(doc(db, "student_lists", sanitizeExamCode(code)));
-                studentList = listSnap.exists() ? (listSnap.data().students || []) : [];
-
-                return true;
-            } catch(e) {
-                console.error(e);
-                return false;
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
             }
         }
 
-        // --- GİRİŞ EKRANI (İSTENİLEN DEĞİŞİKLİKLERLE) ---
-        function showLoginForm() {
-            document.getElementById('loginHeader').innerHTML = '<h1 class="text-2xl font-extrabold">Öğrenci Girişi</h1>';
+        // FLASHCARD SYSTEM - 50 Sindirim Sistemi Sorusu
+        const csvData = `Sindirim nedir?,"Büyük moleküllü besinlerin enzimler yardımıyla yapı taşlarına parçalanmasıdır."
+Mekanik sindirim nedir?,"Besinlerin fiziksel olarak küçük parçalara ayrılmasıdır (örnek: çiğneme)."
+Kimyasal sindirim nedir?,"Besinlerin enzimler ve su yardımıyla yapı taşlarına ayrılmasıdır (hidroliz)."
+Hücre içi sindirim nedir?,"Besinlerin hücre içinde koful içinde sindirilmesidir."
+Hücre dışı sindirim nedir?,"Besinlerin hücre dışında enzimlerle sindirilip daha sonra hücre içine alınmasıdır."
+İnsanda sindirim sistemi hangi organdan başlar?,"Ağız"
+Ağızda hangi besin grubunun sindirimi başlar?,"Karbonhidratlar"
+Tükürükte hangi enzim bulunur?,"Amilaz (pityalin)"
+Yutak (farinks) nedir?,"Ağız ile yemek borusu arasında bulunan, besinlerin yemek borusuna geçişini sağlayan organdır."
+Yemek borusunun görevi nedir?,"Besinleri mideye iletmek"
+Midenin görevleri nelerdir?,"Besinleri depolamak, mekanik ve kimyasal sindirim yapmak, protein sindirimini başlatmak"
+Mide öz suyunda hangi asit bulunur?,"Hidroklorik asit (HCl)"
+Midede protein sindirimini başlatan enzim nedir?,"Pepsin"
+İnce bağırsağın sindirimdeki rolü nedir?,"Kimyasal sindirimin büyük kısmının gerçekleştiği ve besinlerin emildiği organdır."
+Kalın bağırsağın görevleri nelerdir?,"Su ve mineral emilimi, B ve K vitamini sentezi, atıkların depolanması"
+Karaciğerin sindirimdeki görevi nedir?,"Safra sıvısı üretmek, toksinleri parçalamak, kan şekerini düzenlemek"
+Safra kesesinin görevi nedir?,"Karaciğerin ürettiği safrayı depolamak ve yoğunlaştırmak"
+Pankreasın sindirimdeki görevi nedir?,"Sindirim enzimleri ve bikarbonat salgılamak"
+Safranın sindirimdeki rolü nedir?,"Yağların mekanik sindirimini sağlamak (küçük damlacıklara ayırmak)"
+Villus nedir?,"İnce bağırsak iç yüzeyindeki parmak şeklindeki çıkıntılar, emilim yüzeyini artırır."
+Mikrovillus nedir?,"Villusları oluşturan hücrelerin bağırsak boşluğuna bakan yüzeyindeki sitoplazmik uzantılar."
+Karbonhidratların sindirimi nerede tamamlanır?,"İnce bağırsakta"
+Proteinlerin sindirimi nerede başlar?,"Midede"
+Yağların sindirimi nerede gerçekleşir?,"İnce bağırsakta"
+Karbonhidratların sindirim son ürünü nedir?,"Monosakkaritler (glikoz, fruktoz, galaktoz)"
+Proteinlerin sindirim son ürünü nedir?,"Amino asitler"
+Yağların sindirim son ürünü nedir?,"Yağ asitleri ve gliserol"
+Emilim nedir?,"Sindirilmiş besinlerin sindirim kanalından kana geçişidir."
+Şilomikron nedir?,"Yağ asidi ve gliserolün bağırsak epitel hücrelerinde trigliserite dönüştürülüp protein ve kolesterolle kaplanmasıyla oluşan yapı."
+Etçil hayvanların sindirim sistemi özellikleri nelerdir?,"Kesici dişler gelişmiştir, mide genişleyebilir, bağırsaklar kısadır."
+Otçul hayvanların sindirim sistemi özellikleri nelerdir?,"Öğütücü dişler gelişmiştir, bağırsaklar uzundur, selülozu sindiremezler (mikroorganizmalar sindirir)."
+Geviş getiren hayvanlarda mide kaç bölmelidir?,"4 bölmeli (işkembe, börkenek, kırkbayır, şirden)"
+İşkembenin görevi nedir?,"Selüloz sindirimi (mikroorganizmalar aracılığıyla)"
+Börkeneğin görevi nedir?,"Besinlerin geçici depolanması ve ağıza geri getirilmesi"
+Kırkbayırın görevi nedir?,"Besinlerdeki suyun emilimi"
+Şirdenin görevi nedir?,"İneğin kendi enzimleri ile sindirimin devam ettiği bölüm"
+Kuşlarda diş bulunur mu?,"Hayır, kuşlarda diş yoktur, gaga ile beslenirler."
+Kuşlarda kursak nedir?,"Besinlerin depolandığı yemek borusu genişlemesi"
+Kuşlarda taşlık nedir?,"Mekanik sindirimin gerçekleştiği kaslı mide bölümü"
+Selüloz nedir?,"Bitki hücre duvarının ana bileşeni, insanlar tarafından sindirilemez."
+Lifli gıdaların sağlığa faydaları nelerdir?,"Bağırsak hareketlerini düzenler, kabızlığı önler, bağırsak sağlığını korur."
+Peristaltizm nedir?,"Sindirim kanalındaki kasların ritmik kasılmaları ile besinlerin ilerlemesi."
+Kloak nedir?,"Bazı hayvanlarda sindirim, üreme ve boşaltım sistemlerinin açıldığı ortak açıklık."
+Homeostasi nedir?,"Vücudun iç dengede kalması."
+Probiyotikler nedir?,"Bağırsak florasını destekleyen yararlı mikroorganizmalar."
+Karaciğere portal ven ile hangi organlardan kan gelir?,"Sindirim organlarından (mide, bağırsaklar, pankreas, dalak)"
+Yağda eriyen vitaminler hangileridir?,"A, D, E, K vitaminleri"
+Suda eriyen vitaminler hangileridir?,"B ve C vitaminleri"
+Kalın bağırsakta hangi vitaminler sentezlenir?,"B ve K vitaminleri (bakteriler tarafından)"
+Midenin iç yüzeyini kaplayan ve kendini sindirimden koruyan madde nedir?,"Mukus"
+İnsan sindirim kanalının uzunluğu ne kadardır?,"Yaklaşık 9 metre"
+Günlük ne kadar tükürük salgılanır?,"1-1.5 litre"`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
             
-            document.getElementById('mainContentArea').innerHTML = `
-                <div class="space-y-4 min-h-[400px] flex flex-col">
-                    <div id="teacherDisplayArea" class="text-center p-2 bg-indigo-50 rounded-lg border border-indigo-100 opacity-0 transition-opacity duration-500">
-                        <p class="text-xs text-gray-500">Uygulayıcı Öğretmen</p>
-                        <p id="teacherNameDisplay" class="font-bold text-indigo-700 text-lg"></p>
-                    </div>
-                    
-                    <div id="examInfoArea" class="hidden bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-sm text-yellow-800"></div>
-                    
-                    <input id="examCodeInput" type="text" placeholder="SINAV KODU (Örn: 9A_MAT)" class="w-full p-3 border rounded-lg uppercase font-bold text-center tracking-widest focus:ring-2 focus:ring-indigo-400 outline-none transition-shadow">
-                    
-                    <div id="studentLoginFields" class="space-y-4 flex-grow">
-                        <p class="text-sm text-center text-gray-400 italic mt-2">Sınav kodunu girince liste açılacaktır.</p>
-                    </div>
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
 
-                    <button id="startQuizButton" class="button w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg opacity-50 cursor-not-allowed" disabled>Sınava Başla</button>
-                    
-                    <div class="border-t pt-4 mt-4">
-                        <button id="teacherLoginButton" class="text-gray-400 hover:text-gray-600 text-xs w-full text-center">Yönetici Girişi</button>
-                    </div>
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
 
-                    <div class="mt-auto pt-6 text-center">
-                        <p class="text-[10px] text-gray-400 font-medium tracking-wide border-t border-gray-200 pt-2 inline-block px-4">
-                            Site tasarımı <span class="text-indigo-400 font-bold">Ö.Sevinç</span> tarafından yapılmıştır.
-                        </p>
-                    </div>
-                </div>
-            `;
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
 
-            // Event Listeners
-            document.getElementById('teacherLoginButton').onclick = showTeacherLogin;
-            document.getElementById('examCodeInput').oninput = handleCodeEntry;
-            document.getElementById('startQuizButton').onclick = handleStudentLogin;
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
         }
 
-        // Kod Girildikçe Çalışan Fonksiyon
-        let typingTimer;
-        async function handleCodeEntry() {
-            clearTimeout(typingTimer);
-            const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
-            const infoArea = document.getElementById('examInfoArea');
-            const loginFields = document.getElementById('studentLoginFields');
-            const btn = document.getElementById('startQuizButton');
-
-            if (code.length < 3) {
-                infoArea.classList.add('hidden');
-                document.getElementById('teacherDisplayArea').classList.add('opacity-0');
-                return;
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
             }
+        });
 
-            typingTimer = setTimeout(async () => {
-                const success = await fetchExamData(code);
-                const isExamActive = currentExamConfig.is_active !== false; 
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
 
-                // Öğretmen ismini güncelle ve görünür yap (Eğer başarılıysa)
-                if (success) {
-                    const tDisp = document.getElementById('teacherNameDisplay');
-                    const tArea = document.getElementById('teacherDisplayArea');
-                    tDisp.innerText = currentExamConfig.teacher_name || "Sistem Yöneticisi";
-                    tArea.classList.remove('opacity-0');
-                } else {
-                    document.getElementById('teacherDisplayArea').classList.add('opacity-0');
-                }
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
 
-                if (success && !isExamActive) {
-                    infoArea.innerHTML = `
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md" role="alert">
-                            <p class="font-bold text-lg">⛔ Sınav Erişimi Kapalı</p>
-                            <p>Bu sınav şu anda oturuma kapalıdır.</p>
-                        </div>
-                    `;
-                    infoArea.classList.remove('hidden');
-                    loginFields.innerHTML = ''; 
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                    return; 
-                }
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
 
-                const mins = Math.floor(currentExamConfig.time_limit / 60);
-                infoArea.innerHTML = `
-                    <p class="font-bold">Sınav: ${code}</p>
-                    <p>${sanitizeInput(currentExamConfig.exam_description)}</p>
-                    <p class="text-xs mt-1">⏱️ Süre: ${mins} Dakika | 📝 Soru: ${quizQuestions.length}</p>
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 40 Questions
+        const testQuestions = [
+            {
+                question: "Sindirim nedir?",
+                options: [
+                    "Besinlerin fiziksel olarak küçük parçalara ayrılması",
+                    "Büyük moleküllü besinlerin enzimler yardımıyla yapı taşlarına parçalanması",
+                    "Besinlerin hücre içine alınması",
+                    "Besinlerin kana geçişi",
+                    "Atıkların vücuttan atılması"
+                ],
+                correct: 1,
+                explanation: "Sindirim, karbonhidrat, yağ, protein gibi büyük moleküllü besin maddelerinin enzimler yardımıyla kendilerini oluşturan yapı taşlarına parçalanmasıdır."
+            },
+            {
+                question: "Mekanik sindirim nedir?",
+                options: [
+                    "Besinlerin enzimlerle parçalanması",
+                    "Besinlerin fiziksel olarak küçük parçalara ayrılması",
+                    "Besinlerin kana geçmesi",
+                    "Besinlerin hücre içinde sindirilmesi",
+                    "Besinlerin depolanması"
+                ],
+                correct: 1,
+                explanation: "Mekanik sindirim, besinlerin fiziksel olarak küçük parçalara ayrılmasıdır. Örnek: Dişlerle çiğneme, mide kasılmaları, safra ile yağların küçük damlacıklara ayrılması."
+            },
+            {
+                question: "İnsanda sindirim sistemi hangi organdan başlar?",
+                options: ["Ağız", "Yutak", "Yemek borusu", "Mide", "İnce bağırsak"],
+                correct: 0,
+                explanation: "İnsanda sindirim sistemi ağızda başlar. Ağızda mekanik (çiğneme) ve kimyasal (tükürük enzimleri) sindirim başlar."
+            },
+            {
+                question: "Ağızda hangi besin grubunun sindirimi başlar?",
+                options: ["Proteinler", "Yağlar", "Karbonhidratlar", "Vitaminler", "Mineraller"],
+                correct: 2,
+                explanation: "Ağızda karbonhidratların sindirimi başlar. Tükürükte bulunan amilaz enzimi nişastayı parçalar."
+            },
+            {
+                question: "Midenin görevleri arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Besinleri depolamak",
+                    "Mekanik sindirim yapmak",
+                    "Protein sindirimini başlatmak",
+                    "Yağ sindirimini başlatmak",
+                    "Kimyasal sindirim yapmak"
+                ],
+                correct: 3,
+                explanation: "Mide besinleri depolar, mekanik sindirim yapar (kas hareketleri), protein sindirimini başlatır (pepsin enzimi) ve kimyasal sindirim yapar. Yağ sindirimi midede başlamaz, ince bağırsakta başlar."
+            },
+            {
+                question: "İnce bağırsağın sindirimdeki rolü nedir?",
+                options: [
+                    "Sadece mekanik sindirim yapar",
+                    "Sadece su emilimi yapar",
+                    "Kimyasal sindirimin büyük kısmının gerçekleştiği ve besinlerin emildiği organdır",
+                    "Sadece atıkların depolandığı organdır",
+                    "Sadece protein sindirimi yapar"
+                ],
+                correct: 2,
+                explanation: "İnce bağırsak, kimyasal sindirimin büyük kısmının gerçekleştiği ve besinlerin emildiği organdır. Villus ve mikrovilluslarla emilim yüzeyi artırılmıştır."
+            },
+            {
+                question: "Karaciğerin sindirimdeki görevi nedir?",
+                options: [
+                    "Sindirim enzimleri salgılamak",
+                    "Safra sıvısı üretmek",
+                    "Besinleri depolamak",
+                    "Protein sindirimini başlatmak",
+                    "Karbonhidrat sindirimini başlatmak"
+                ],
+                correct: 1,
+                explanation: "Karaciğerin sindirimdeki temel görevi safra sıvısı üretmektir. Safra, yağların mekanik sindirimini sağlar. Karaciğer ayrıca toksinleri parçalar ve kan şekerini düzenler."
+            },
+            {
+                question: "Pankreasın sindirimdeki görevi nedir?",
+                options: [
+                    "Sadece hormon salgılamak",
+                    "Sadece insülin salgılamak",
+                    "Sindirim enzimleri ve bikarbonat salgılamak",
+                    "Sadece safra üretmek",
+                    "Sadece su emilimi yapmak"
+                ],
+                correct: 2,
+                explanation: "Pankreas, sindirim enzimleri (amilaz, tripsin, lipaz) ve bikarbonat salgılar. Bikarbonat, mideden gelen asidi nötralize eder."
+            },
+            {
+                question: "Karbonhidratların sindirimi nerede tamamlanır?",
+                options: ["Ağızda", "Midede", "İnce bağırsakta", "Kalın bağırsakta", "Karaciğerde"],
+                correct: 2,
+                explanation: "Karbonhidratların sindirimi ağızda başlar, midede durur (asidik ortam enzimi etkisizleştirir), ince bağırsakta tamamlanır."
+            },
+            {
+                question: "Proteinlerin sindirimi nerede başlar?",
+                options: ["Ağızda", "Midede", "İnce bağırsakta", "Kalın bağırsakta", "Karaciğerde"],
+                correct: 1,
+                explanation: "Proteinlerin sindirimi midede başlar. Mide öz suyundaki pepsin enzimi proteinleri polipeptitlere parçalar."
+            },
+            {
+                question: "Yağların sindirimi nerede gerçekleşir?",
+                options: ["Ağızda", "Midede", "İnce bağırsakta", "Kalın bağırsakta", "Karaciğerde"],
+                correct: 2,
+                explanation: "Yağların sindirimi sadece ince bağırsakta gerçekleşir. Safra yağları küçük damlacıklara ayırır, lipaz enzimi yağ asidi ve gliserole parçalar."
+            },
+            {
+                question: "Karbonhidratların sindirim son ürünü nedir?",
+                options: [
+                    "Amino asitler",
+                    "Yağ asitleri ve gliserol",
+                    "Monosakkaritler",
+                    "Vitaminler",
+                    "Nükleotidler"
+                ],
+                correct: 2,
+                explanation: "Karbonhidratların sindirim son ürünü monosakkaritlerdir (glikoz, fruktoz, galaktoz)."
+            },
+            {
+                question: "Proteinlerin sindirim son ürünü nedir?",
+                options: [
+                    "Monosakkaritler",
+                    "Yağ asitleri ve gliserol",
+                    "Amino asitler",
+                    "Vitaminler",
+                    "Nükleotidler"
+                ],
+                correct: 2,
+                explanation: "Proteinlerin sindirim son ürünü amino asitlerdir."
+            },
+            {
+                question: "Emilim nedir?",
+                options: [
+                    "Besinlerin fiziksel olarak parçalanması",
+                    "Besinlerin enzimlerle parçalanması",
+                    "Sindirilmiş besinlerin sindirim kanalından kana geçişi",
+                    "Atıkların vücuttan atılması",
+                    "Besinlerin depolanması"
+                ],
+                correct: 2,
+                explanation: "Emilim, sindirilmiş besinlerin sindirim kanalından kana geçişidir. İnce bağırsakta villus ve mikrovilluslarla gerçekleşir."
+            },
+            {
+                question: "Etçil hayvanların sindirim sistemi özellikleri arasında aşağıdakilerden hangisi yer alır?",
+                options: [
+                    "Öğütücü dişler gelişmiştir",
+                    "Bağırsaklar uzundur",
+                    "Kesici dişler gelişmiştir, mide genişleyebilir, bağırsaklar kısadır",
+                    "Dört bölmeli mide vardır",
+                    "Selülozu sindirebilirler"
+                ],
+                correct: 2,
+                explanation: "Etçil hayvanların kesici ve köpek dişleri gelişmiştir, mide genişleyebilir yapıdadır (çok miktarda et depolayabilir), bağırsaklar kısadır."
+            },
+            {
+                question: "Geviş getiren hayvanlarda mide kaç bölmelidir?",
+                options: ["1 bölmeli", "2 bölmeli", "3 bölmeli", "4 bölmeli", "5 bölmeli"],
+                correct: 3,
+                explanation: "Geviş getiren hayvanlarda (inek, koyun, keçi) mide 4 bölmelidir: işkembe, börkenek, kırkbayır, şirden."
+            },
+            {
+                question: "Kuşlarda diş bulunur mu?",
+                options: [
+                    "Evet, kesici dişler bulunur",
+                    "Evet, köpek dişleri bulunur",
+                    "Evet, azı dişleri bulunur",
+                    "Hayır, kuşlarda diş yoktur",
+                    "Sadece yavru kuşlarda bulunur"
+                ],
+                correct: 3,
+                explanation: "Kuşlarda diş yoktur. Besinleri gagalarıyla alırlar. Sindirim sistemlerinde kursak ve taşlık bulunur."
+            },
+            {
+                question: "Selüloz nedir?",
+                options: [
+                    "Hayvansal depo polisakkariti",
+                    "Bitki hücre duvarının ana bileşeni",
+                    "Bir çeşit protein",
+                    "Bir çeşit yağ",
+                    "Suya eriyen bir vitamin"
+                ],
+                correct: 1,
+                explanation: "Selüloz, bitki hücre duvarının ana bileşenidir. İnsanlar selülozu sindiremez ancak lif olarak sağlık için gereklidir."
+            },
+            {
+                question: "Villus nedir?",
+                options: [
+                    "Midenin iç yüzeyindeki kıvrımlar",
+                    "İnce bağırsak iç yüzeyindeki parmak şeklindeki çıkıntılar",
+                    "Karaciğerdeki hücre kümeleri",
+                    "Pankreastaki enzim üreten hücreler",
+                    "Kalın bağırsaktaki bakteri kolonileri"
+                ],
+                correct: 1,
+                explanation: "Villus, ince bağırsak iç yüzeyindeki parmak şeklindeki çıkıntılardır. Emilim yüzeyini büyük ölçüde artırır."
+            },
+            {
+                question: "Şilomikron nedir?",
+                options: [
+                    "Karbonhidratların emilim şekli",
+                    "Proteinlerin emilim şekli",
+                    "Yağ asidi ve gliserolün bağırsak epitel hücrelerinde trigliserite dönüştürülüp protein ve kolesterolle kaplanmasıyla oluşan yapı",
+                    "Vitaminlerin emilim şekli",
+                    "Suyun emilim şekli"
+                ],
+                correct: 2,
+                explanation: "Şilomikron, yağ asidi ve gliserolün bağırsak epitel hücrelerinde trigliserite dönüştürülüp protein ve kolesterolle kaplanmasıyla oluşan yapıdır. Lenf sistemine, oradan da kana geçer."
+            },
+            {
+                question: "Kalın bağırsakta hangi vitaminler sentezlenir?",
+                options: [
+                    "A ve D vitaminleri",
+                    "B ve K vitaminleri",
+                    "C ve E vitaminleri",
+                    "Sadece B vitaminleri",
+                    "Sadece K vitamini"
+                ],
+                correct: 1,
+                explanation: "Kalın bağırsakta bulunan bakteriler B ve K vitaminlerini sentezler. Bu vitaminler kalın bağırsaktan emilir."
+            },
+            {
+                question: "Peristaltizm nedir?",
+                options: [
+                    "Besinlerin enzimlerle parçalanması",
+                    "Besinlerin kana geçişi",
+                    "Sindirim kanalındaki kasların ritmik kasılmaları ile besinlerin ilerlemesi",
+                    "Besinlerin depolanması",
+                    "Atıkların atılması"
+                ],
+                correct: 2,
+                explanation: "Peristaltizm, sindirim kanalındaki düz kasların ritmik kasılmaları ile besinlerin ağızdan anüse doğru ilerlemesini sağlayan hareketlerdir."
+            },
+            {
+                question: "Kloak nedir?",
+                options: [
+                    "Kuşların kursağı",
+                    "Kuşların taşlığı",
+                    "Bazı hayvanlarda sindirim, üreme ve boşaltım sistemlerinin açıldığı ortak açıklık",
+                    "İnsanın kalın bağırsağı",
+                    "Midenin bir bölümü"
+                ],
+                correct: 2,
+                explanation: "Kloak, kuşlar, sürüngenler ve bazı memelilerde sindirim, üreme ve boşaltım sistemlerinin dışarıya açıldığı ortak açıklıktır."
+            },
+            {
+                question: "Hücre içi sindirim nedir?",
+                options: [
+                    "Besinlerin hücre dışında sindirilmesi",
+                    "Besinlerin hücre içinde koful içinde sindirilmesi",
+                    "Sadece bitkilerde görülen sindirim",
+                    "Sadece insanlarda görülen sindirim",
+                    "Sadece proteinlerin sindirimi"
+                ],
+                correct: 1,
+                explanation: "Hücre içi sindirim, besinlerin hücre içinde koful içinde sindirilmesidir. Örnek: Amip, öglena, insanda akyuvarların mikropları sindirmesi."
+            },
+            {
+                question: "İşkembenin görevi nedir?",
+                options: [
+                    "Besinlerin depolanması",
+                    "Su emilimi",
+                    "Selüloz sindirimi (mikroorganizmalar aracılığıyla)",
+                    "Protein sindirimi",
+                    "Yağ sindirimi"
+                ],
+                correct: 2,
+                explanation: "İşkembenin görevi selüloz sindirimidir. İşkembede bulunan mikroorganizmalar selülozu sindirir. Geviş getiren hayvanlar selülozu kendi enzimleriyle sindiremez."
+            },
+            {
+                question: "Midenin iç yüzeyini kaplayan ve kendini sindirimden koruyan madde nedir?",
+                options: ["Safra", "Enzim", "Mukus", "HCl", "Bikarbonat"],
+                correct: 2,
+                explanation: "Midenin iç yüzeyini kaplayan ve kendini sindirimden koruyan madde mukustur. Mukus, mide duvarını HCl ve enzimlerden korur."
+            },
+            {
+                question: "Yağda eriyen vitaminler hangileridir?",
+                options: [
+                    "A, D, E, K vitaminleri",
+                    "B ve C vitaminleri",
+                    "Sadece A vitamini",
+                    "Sadece D vitamini",
+                    "Sadece E ve K vitaminleri"
+                ],
+                correct: 0,
+                explanation: "Yağda eriyen vitaminler A, D, E, K vitaminleridir. Bu vitaminler yağlarla birlikte emilir ve depolanır."
+            },
+            {
+                question: "Karaciğere portal ven ile hangi organlardan kan gelir?",
+                options: [
+                    "Sadece mideden",
+                    "Sadece bağırsaklardan",
+                    "Sindirim organlarından (mide, bağırsaklar, pankreas, dalak)",
+                    "Sadece pankreastan",
+                    "Sadece dalağından"
+                ],
+                correct: 2,
+                explanation: "Karaciğere portal ven ile sindirim organlarından (mide, ince ve kalın bağırsaklar, pankreas, dalak) kan gelir. Böylece emilmiş besinler önce karaciğere gider."
+            },
+            {
+                question: "Probiyotikler nedir?",
+                options: [
+                    "Zararlı bakteriler",
+                    "Bağırsak florasını destekleyen yararlı mikroorganizmalar",
+                    "Sindirim enzimleri",
+                    "Vitaminler",
+                    "Mineraller"
+                ],
+                correct: 1,
+                explanation: "Probiyotikler, bağırsak florasını destekleyen yararlı mikroorganizmalardır. Yoğurt, kefir gibi fermente gıdalarda bulunur."
+            },
+            {
+                question: "Lifli gıdaların sağlığa faydaları arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Bağırsak hareketlerini düzenler",
+                    "Kabızlığı önler",
+                    "Bağırsak sağlığını korur",
+                    "Kolesterolü düşürür",
+                    "Protein sindirimini hızlandırır"
+                ],
+                correct: 4,
+                explanation: "Lifli gıdalar bağırsak hareketlerini düzenler, kabızlığı önler, bağırsak sağlığını korur, kolesterolü düşürebilir. Protein sindirimini hızlandırmaz."
+            },
+            {
+                question: "İnsan sindirim kanalının uzunluğu ne kadardır?",
+                options: [
+                    "Yaklaşık 3 metre",
+                    "Yaklaşık 5 metre",
+                    "Yaklaşık 7 metre",
+                    "Yaklaşık 9 metre",
+                    "Yaklaşık 12 metre"
+                ],
+                correct: 3,
+                explanation: "İnsan sindirim kanalının uzunluğu yaklaşık 9 metredir. Bu uzunluk besinlerin yeterince sindirilmesi ve emilmesi için gereklidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi otçul hayvanların sindirim sistemi özelliklerinden değildir?",
+                options: [
+                    "Öğütücü dişler gelişmiştir",
+                    "Bağırsaklar uzundur",
+                    "Selülozu sindiremezler (mikroorganizmalar sindirir)",
+                    "Kesici dişler gelişmiştir",
+                    "Geviş getirenlerde mide dört bölmelidir"
+                ],
+                correct: 3,
+                correct: 3,
+                explanation: "Otçul hayvanlarda öğütücü dişler gelişmiştir, bağırsaklar uzundur, selülozu kendi enzimleriyle sindiremezler (mikroorganizmalar sindirir). Kesici dişler gelişmiş olması etçil hayvanların özelliğidir."
+            },
+            {
+                question: "Günlük ne kadar tükürük salgılanır?",
+                options: [
+                    "100-200 ml",
+                    "500-600 ml",
+                    "1-1.5 litre",
+                    "2-2.5 litre",
+                    "3 litre ve üzeri"
+                ],
+                correct: 2,
+                explanation: "Günlük 1-1.5 litre tükürük salgılanır. Tükürük, besinleri yumuşatır, kayganlaştırır ve karbonhidrat sindirimini başlatır."
+            },
+            {
+                question: "Hangi besin grubu sindirime uğramaz?",
+                options: [
+                    "Karbonhidratlar",
+                    "Proteinler",
+                    "Yağlar",
+                    "Su, vitaminler ve mineraller",
+                    "Hiçbiri, hepsi sindirilir"
+                ],
+                correct: 3,
+                explanation: "Su, vitaminler ve mineraller sindirime uğramaz, doğrudan emilirler. Karbonhidratlar, proteinler ve yağlar sindirime uğrar."
+            },
+            {
+                question: "Aşağıdakilerden hangisi safranın görevi değildir?",
+                options: [
+                    "Yağları küçük damlacıklara ayırmak",
+                    "Yağların mekanik sindirimini sağlamak",
+                    "Yağda eriyen vitaminlerin emilimini kolaylaştırmak",
+                    "Asidik ortamı nötralize etmek",
+                    "Kolesterol atılımını sağlamak"
+                ],
+                correct: 3,
+                explanation: "Safranın görevleri: Yağları küçük damlacıklara ayırmak (mekanik sindirim), yağda eriyen vitaminlerin emilimini kolaylaştırmak, kolesterol atılımını sağlamak. Asidik ortamı nötralize etmek pankreasın görevidir (bikarbonat salgılar)."
+            },
+            {
+                question: "İnce bağırsakta emilimi artıran yapılar hangileridir?",
+                options: [
+                    "Sadece villuslar",
+                    "Sadece mikrovilluslar",
+                    "Villuslar ve mikrovilluslar",
+                    "Sadece bağırsak kıvrımları",
+                    "Hiçbiri"
+                ],
+                correct: 2,
+                explanation: "İnce bağırsakta emilimi artıran yapılar villuslar ve mikrovilluslardır. Bu yapılar emilim yüzey alanını yaklaşık 200-300 m²'ye çıkarır."
+            },
+            {
+                question: "Homeostasi nedir?",
+                options: [
+                    "Besinlerin sindirilmesi",
+                    "Vücudun iç dengede kalması",
+                    "Besinlerin emilmesi",
+                    "Atıkların atılması",
+                    "Enerji üretimi"
+                ],
+                correct: 1,
+                explanation: "Homeostasi, vücudun iç dengede kalmasıdır. Sindirim sistemi bu dengeyi besin alımı, sindirimi, emilimi ve atılımı ile sağlar."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
                 `;
-                infoArea.classList.remove('hidden');
+                container.appendChild(questionDiv);
+            });
 
-                if (!success || studentList.length === 0) {
-                    // Manuel Giriş Modu
-                    loginFields.innerHTML = `
-                        <div class="bg-red-50 p-2 rounded text-xs text-red-700 mb-2">⚠️ Liste bulunamadı. Manuel giriş yapınız.</div>
-                        <input id="nameInput" type="text" placeholder="Ad Soyad" class="w-full p-3 border rounded-lg">
-                        <input id="numberInput" type="number" placeholder="Okul No" class="w-full p-3 border rounded-lg">
-                        <input id="classInput" type="text" placeholder="Sınıf (Örn: 10A)" class="w-full p-3 border rounded-lg">
-                    `;
-                    const checkManual = () => {
-                         const valid = document.getElementById('nameInput').value && document.getElementById('numberInput').value && document.getElementById('classInput').value;
-                         btn.disabled = !valid;
-                         btn.classList.toggle('opacity-50', !valid);
-                         btn.classList.toggle('cursor-not-allowed', !valid);
-                    };
-                    document.getElementById('nameInput').oninput = checkManual;
-                    document.getElementById('numberInput').oninput = checkManual;
-                    document.getElementById('classInput').oninput = checkManual;
-
-                } else {
-                    // Liste Modu
-                    const students = studentList.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
-                    const classes = [...new Set(students.map(s => s.className))].sort();
-
-                    loginFields.innerHTML = `
-                        <select id="classSelector" class="w-full p-3 border rounded-lg font-bold text-indigo-700 bg-white">
-                            <option value="">-- Sınıfınızı Seçin --</option>
-                            ${classes.map(c => `<option value="${sanitizeInput(c)}">${sanitizeInput(c)}</option>`).join('')}
-                        </select>
-                        <select id="studentSelector" class="w-full p-3 border rounded-lg bg-gray-100" disabled>
-                            <option value="">-- Önce Sınıf Seçin --</option>
-                        </select>
-                        <div id="verificationArea" class="hidden mt-2">
-                            <input id="numberVerify" type="number" placeholder="Doğrulama için Okul Numaranız" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-indigo-500">
-                        </div>
-                    `;
-
-                    document.getElementById('classSelector').onchange = (e) => {
-                        const cls = e.target.value;
-                        const stuSel = document.getElementById('studentSelector');
-                        stuSel.innerHTML = '<option value="">-- Adınızı Seçin --</option>';
-                        stuSel.disabled = !cls;
-                        stuSel.classList.toggle('bg-gray-100', !cls);
-                        document.getElementById('verificationArea').classList.add('hidden');
-                        btn.disabled = true;
-                        
-                        if (cls) {
-                            const filtered = students.filter(s => s.className === cls);
-                            stuSel.innerHTML += filtered.map(s => `<option value="${s.number}_${s.name}">${sanitizeInput(s.name)}</option>`).join('');
-                        }
-                    };
-
-                    document.getElementById('studentSelector').onchange = (e) => {
-                         const verifArea = document.getElementById('verificationArea');
-                         if(e.target.value) {
-                             verifArea.classList.remove('hidden');
-                             document.getElementById('numberVerify').focus();
-                         } else {
-                             verifArea.classList.add('hidden');
-                         }
-                    };
-
-                    document.getElementById('numberVerify').oninput = (e) => {
-                        const val = e.target.value;
-                        btn.disabled = !val;
-                        btn.classList.toggle('opacity-50', !val);
-                        btn.classList.toggle('cursor-not-allowed', !val);
-                    };
-                }
-            }, 500);
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
         }
 
-        // Öğrenci Giriş İşlemi
-        async function handleStudentLogin() {
-            const code = sanitizeExamCode(document.getElementById('examCodeInput').value.trim());
-            if (!code) { showCustomAlert("Hata", "Geçersiz sınav kodu."); return; }
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
 
-            let name, number, className;
-            if (document.getElementById('studentSelector')) {
-               const selVal = document.getElementById('studentSelector').value;
-const inputNum = document.getElementById('numberVerify').value;
-if (!selVal || !inputNum) { showCustomAlert("Hata", "Eksik bilgi."); return }
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
 
-const parts = selVal.split('_');
-if (parts.length < 2) {
-    // Veri hatası oluşursa (Numara_Ad formatı bozulmuşsa)
-    return showCustomAlert("Hata", "Öğrenci veri formatı hatası. Lütfen Yöneticiye başvurun.");
-}
-
-const realNum = parts[0];
-// Geriye kalan tüm parçaları birleştir (Ad Soyad'ın ortasında '_' olsa bile)
-let rawName = parts.slice(1).join('_');
-// İsimdeki baştaki ve sondaki tırnakları temizle
-let realName = rawName.replace(/^"|"$/g, '').trim(); 
-
-if (realNum !== inputNum) { return showCustomAlert("Hatalı Doğrulama", "Numara eşleşmiyor.") }
-
-name = sanitizeInput(realName);
-number = realNum;
-                className = sanitizeInput(document.getElementById('classSelector').value);
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Sindirim sistemini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Sindirim sistemini çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Sindirim sisteminin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
             } else {
-                name = sanitizeInput(document.getElementById('nameInput').value);
-                number = document.getElementById('numberInput').value;
-                className = sanitizeInput(document.getElementById('classInput').value);
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
             }
-
-            if (!name || !number || !className) { showCustomAlert("Hata", "Tüm alanları doldurun."); return; }
-            if (quizQuestions.length === 0) return showCustomAlert("Hata", "Bu sınavda hiç soru yok.");
-
-            studentData = { name, number, className, examCode: code };
-            const studentKey = `${code}_${number}`;
-            const loadBtn = document.getElementById('startQuizButton');
-            loadBtn.innerText = "Kontrol Ediliyor..."; loadBtn.disabled = true;
-
-            try {
-                const subQ = query(collection(db, "quiz_submissions"), where("studentKey", "==", studentKey));
-                const subSnap = await getDocs(subQ);
-                if (!subSnap.empty) {
-                    loadBtn.innerText = "Giriş"; loadBtn.disabled = false;
-                    return showCustomAlert("Sınav Tamamlandı", "Bu sınavı zaten tamamladınız.");
-                }
-
-                const sesQ = query(collection(db, "active_sessions"), where("studentKey", "==", studentKey));
-                const sesSnap = await getDocs(sesQ);
-                if (!sesSnap.empty) {
-                    const session = sesSnap.docs[0].data();
-                    showCustomAlert("Devam Ediliyor", "Önceki oturumunuz bulundu.").then(() => {
-                        restoreSession({ id: sesSnap.docs[0].id, ...session });
-                        startQuiz();
-                    });
-                } else {
-                    startNewSession(number);
-                    startQuiz();
-                }
-
-            } catch(e) {
-                showCustomAlert("Hata", "Giriş yapılırken hata oluştu: " + e.message);
-                loadBtn.innerText = "Sınava Başla"; loadBtn.disabled = false;
-            }
-        }
-
-        // --- OTURUM YÖNETİMİ ---
-        function seededShuffle(array, seed) {
-            let hash = 0;
-            for (let i = 0; i < seed.length; i++) hash = ((hash << 5) - hash) + seed.charCodeAt(i) | 0;
-            const shuffled = [...array];
-            let n = shuffled.length;
-            while (n > 1) {
-                hash = (hash * 9301 + 49297) % 233280;
-                let random = (hash < 0 ? hash + 233280 : hash) / 233280.0;
-                let k = Math.floor(random * n--);
-                [shuffled[n], shuffled[k]] = [shuffled[k], shuffled[n]];
-            }
-            return shuffled;
-        }
-
-        function startNewSession(seed) {
-            questionOrder = seededShuffle(Array.from({length: quizQuestions.length}, (_, i) => i), seed);
-            selectedAnswers = Array(quizQuestions.length).fill(null);
-            currentQuestionIndex = 0;
-            focusLossCount = 0;
-            examendTimeStamp = Date.now() + (currentExamConfig.time_limit * 1000);
-        }
-
-        function restoreSession(session) {
-            questionOrder = session.questionOrder || [];
-            selectedAnswers = session.selectedAnswers || [];
-            currentQuestionIndex = session.currentQuestionIndex || 0;
-            focusLossCount = session.focusLossCount || 0;
-            currentSessionDocId = session.id;
-            const remaining = session.timeLeft || currentExamConfig.time_limit;
-            examendTimeStamp = Date.now() + (remaining * 1000);
-        }
-
-        // --- SINAV ARAYÜZÜ ---
-        function startQuiz() {
-            document.getElementById('connectionStatus').classList.add('hidden');
-            document.getElementById('app').className = 'app-card max-w-3xl w-full';
-            document.getElementById('loginHeader').innerHTML = `<div class="flex justify-between px-4"><span class="text-sm opacity-80">${studentData.name}</span><span>${studentData.examCode}</span></div>`;
-
-            document.getElementById('mainContentArea').innerHTML = `
-                <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <span class="font-bold text-indigo-600">Soru: <span id="qCount">1</span> / ${quizQuestions.length}</span>
-                    <div id="timerDisplay" class="text-xl font-mono font-bold text-white bg-indigo-600 p-1 px-3 rounded shadow">--:--</div>
-                </div>
-                <div id="questionArea" class="min-h-[250px]"></div>
-                <div id="focusWarn" class="hidden mt-4 p-2 bg-red-100 text-red-800 text-sm font-bold text-center rounded border border-red-300"></div>
-                <div class="mt-6 flex justify-between">
-                    <button id="prevBtn" class="button bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded opacity-50" disabled>Önceki</button>
-                    <button id="nextBtn" class="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded font-bold">Sonraki</button>
-                </div>
-            `;
-            renderQuestion(currentQuestionIndex);
-            startTimer();
-            setupSecurityListeners();
-            startAutoSave();
-            document.getElementById('prevBtn').onclick = () => { if(currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(currentQuestionIndex); saveProgress(); } };
-            document.getElementById('nextBtn').onclick = () => { if(currentQuestionIndex < quizQuestions.length - 1) { currentQuestionIndex++; renderQuestion(currentQuestionIndex); saveProgress(); } else { finishQuiz(false); } };
-        }
-
-        function renderQuestion(idx) {
-            const realIdx = questionOrder[idx];
-            const q = quizQuestions[realIdx];
-            const seed = studentData.number + '_q' + realIdx;
-            const shuffledOpts = seededShuffle(q.options, seed);
-            const currAns = selectedAnswers[realIdx];
-            const imageHtml = q.image ? `<div class="mb-4 flex justify-center"><img src="${q.image}" class="max-h-64 rounded-lg shadow border object-contain"></div>` : '';
-
-            document.getElementById('questionArea').innerHTML = `
-                <div class="font-semibold text-lg text-gray-800 mb-4 select-none">Soru ${idx + 1}: ${sanitizeInput(q.question)}</div>
-                ${imageHtml}
-                <div class="space-y-3">
-                    ${shuffledOpts.map(opt => `
-                        <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${currAns === opt ? 'bg-indigo-50 border-indigo-500 shadow-md' : 'border-gray-200 hover:bg-gray-50'}">
-                            <input type="radio" name="opt" value="${sanitizeInput(opt)}" class="w-5 h-5 text-indigo-600" ${currAns === opt ? 'checked' : ''}>
-                            <span class="ml-3 text-gray-700 font-medium select-none">${sanitizeInput(opt)}</span>
-                        </label>
-                    `).join('')}
-                </div>
-            `;
-            document.getElementById('qCount').innerText = idx + 1;
-            document.querySelectorAll('input[name="opt"]').forEach(el => {
-                el.onchange = (e) => { 
-                    selectedAnswers[realIdx] = e.target.value; 
-                    document.querySelectorAll('label').forEach(l => l.className = "flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all border-gray-200 hover:bg-gray-50");
-                    e.target.closest('label').className = "flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all bg-indigo-50 border-indigo-500 shadow-md";
-                };
-            });
-            document.getElementById('prevBtn').disabled = idx === 0;
-            document.getElementById('prevBtn').classList.toggle('opacity-50', idx === 0);
-            const nextBtn = document.getElementById('nextBtn');
-            if (idx === quizQuestions.length - 1) { nextBtn.innerText = "SINAVI BİTİR"; nextBtn.className = "button bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded font-bold shadow-lg transform hover:scale-105"; } 
-            else { nextBtn.innerText = "Sonraki"; nextBtn.className = "button bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded font-bold"; }
-        }
-
-        // --- TIMER & SECURITY ---
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            const updateTimerUI = () => {
-                const now = Date.now();
-                let diff = Math.ceil((examendTimeStamp - now) / 1000);
-                if (diff <= 0) { diff = 0; clearInterval(timerInterval); timerInterval = null; finishQuiz(true); return; }
-                const timerDisplay = document.getElementById('timerDisplay');
-                if (diff < 60) timerDisplay.className = "text-xl font-mono font-bold text-white bg-red-600 p-1 px-3 rounded shadow animate-pulse";
-                const m = Math.floor(diff / 60);
-                const s = diff % 60;
-                timerDisplay.innerText = `${m}:${s < 10 ? '0'+s : s}`;
-            };
-            updateTimerUI();
-            timerInterval = setInterval(updateTimerUI, 1000);
-        }
-
-        function setupSecurityListeners() {
-            window.onblur = () => { if (isTeacherMode) return; focusLossCount++; const w = document.getElementById('focusWarn'); if(w) { w.classList.remove('hidden'); w.innerText = `⚠️ DİKKAT: Sınav ekranından ${focusLossCount} kez ayrıldınız!`; } saveProgress(); };
-            document.addEventListener('contextmenu', event => event.preventDefault());
-        }
-
-        function startAutoSave() { autoSaveInterval = setInterval(() => saveProgress(), 15000); }
-
-        async function saveProgress() {
-    if (isTeacherMode && isPreviewMode) return; // <--- YENİ EKLENDİ
-    if (isTeacherMode || !isDbConnected) return;
-            try {
-                const now = Date.now();
-                const remainingSeconds = Math.floor((examendTimeStamp - now) / 1000);
-                if (!validateStudentData(studentData)) return;
-                const data = { ...studentData, studentKey: `${sanitizeExamCode(studentData.examCode)}_${studentData.number}`, questionOrder, selectedAnswers, currentQuestionIndex, timeLeft: remainingSeconds > 0 ? remainingSeconds : 0, focusLossCount, lastUpdated: serverTimestamp() };
-                if (currentSessionDocId) { await updateDoc(doc(db, "active_sessions", currentSessionDocId), data); } 
-                else { const ref = await addDoc(collection(db, "active_sessions"), data); currentSessionDocId = ref.id; }
-            } catch(e) { console.warn("Autosave failed:", e.message); }
-        }
-
-        // --- SINAV BİTİRME ---
-       async function finishQuiz(force = false) {
-    // --- ÖNİZLEME MODU KONTROLÜ (YENİ) ---
-    if (isPreviewMode) {
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        if (autoSaveInterval) { clearInterval(autoSaveInterval); autoSaveInterval = null; }
-        window.onblur = null; document.oncontextmenu = null;
-        
-        alert("Önizleme modu tamamlandı. Panele dönülüyor.");
-        document.getElementById('app').className = 'app-card teacher-mode'; 
-        isPreviewMode = false; 
-        showDashboard(); 
-        window.changeTab('myexams'); 
-        return; 
-    }
-    // -------------------------------------
-
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-            if (autoSaveInterval) { clearInterval(autoSaveInterval); autoSaveInterval = null; }
-            window.onblur = null; document.oncontextmenu = null;
-
-            if (!force && !confirm("Sınavı bitirmek istediğinize emin misiniz?")) { startTimer(); setupSecurityListeners(); return; }
-
-            document.getElementById('mainContentArea').innerHTML = `<div class="text-center py-10"><div class="loader mb-4"></div><p class="font-bold text-gray-600">Gönderiliyor...</p></div>`;
             
-            let currentQuestions = [];
-            try { const qSnap = await getDoc(getQuestionsRef(studentData.examCode)); currentQuestions = qSnap.exists() ? qSnap.data().questions_list : []; } catch(e) { currentQuestions = quizQuestions; }
-
-            let c=0, i=0, e=0;
-            for (let idx = 0; idx < questionOrder.length; idx++) {
-                const realQIdx = questionOrder[idx];
-                const correctQ = currentQuestions[realQIdx];
-                if(!correctQ) continue;
-                const sAns = String(selectedAnswers[realQIdx] || '').trim();
-                const cAns = String(correctQ.answer || '').trim();
-                if(!sAns) e++; else if (sAns.toLowerCase() === cAns.toLowerCase()) c++; else i++;
-            }
-            const score = (currentQuestions.length > 0) ? (c * 100 / currentQuestions.length).toFixed(2) : 0;
-            let ip = "Gizli"; try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ip = d.ip; } catch(err){}
-
-            const finalData = { ...studentData, studentKey: `${studentData.examCode}_${studentData.number}`, score, correct: c, incorrect: i, empty: e, timeSpent: currentExamConfig.time_limit - Math.floor((examendTimeStamp - Date.now())/1000), timestamp: serverTimestamp(), focusLossCount, ipAddress: ip, questionOrder, allAnswers: selectedAnswers };
-            if(isDbConnected) { try { await addDoc(collection(db, "quiz_submissions"), finalData); if (currentSessionDocId) await deleteDoc(doc(db, "active_sessions", currentSessionDocId)); } catch(e) { alert("Sunucu Hatası: Kaydedilemedi."); } }
-            showResultScreen(finalData);
-        }
-
-        // --- SONUÇ EKRANI ---
-        async function showResultScreen(data) {
-            document.getElementById('app').className = 'app-card max-w-4xl';
-            document.getElementById('loginHeader').innerHTML = '<h1 class="text-2xl font-bold">Sınav Tamamlandı</h1>';
+            document.getElementById('test-message').textContent = message;
             
-            let rankInfo = "Sıralama yükleniyor...";
-            let allStudentResults = [];
-
-            if(isDbConnected) {
-                try {
-                    const currentExamQuery = query(collection(db, "quiz_submissions"), where("examCode", "==", data.examCode));
-                    const currentExamSnap = await getDocs(currentExamQuery);
-                    const scores = currentExamSnap.docs.map(d => parseFloat(d.data().score)).sort((a,b) => b-a);
-                    const rank = scores.indexOf(parseFloat(data.score)) + 1;
-                    rankInfo = `${rank}. sıra (${scores.length} kişi arasında)`;
-
-                    const historyQuery = query(collection(db, "quiz_submissions"), where("number", "==", String(data.number)));
-                    const historySnap = await getDocs(historyQuery);
-                    allStudentResults = historySnap.docs.map(d => { const result = d.data(); return { examCode: result.examCode, score: parseFloat(result.score) || 0, timestamp: result.timestamp }; }).sort((a,b) => (a.timestamp?.seconds||0) - (b.timestamp?.seconds||0));
-                } catch(e) { rankInfo = "Sıralama alınamadı"; }
-            }
-
-            document.getElementById('mainContentArea').innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="text-center">
-                            <div class="inline-block p-4 rounded-full bg-indigo-100 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            </div>
-                            <div class="text-5xl font-extrabold text-gray-800 mb-2">${data.score}</div>
-                            <p class="text-gray-500 font-medium mb-2">Puanınız</p>
-                            <div class="text-sm text-gray-600 bg-gray-100 p-2 rounded">${rankInfo}</div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="bg-green-50 p-3 rounded-lg border border-green-100"><p class="text-2xl font-bold text-green-600">${data.correct}</p><p class="text-xs text-green-800">Doğru</p></div>
-                            <div class="bg-red-50 p-3 rounded-lg border border-red-100"><p class="text-2xl font-bold text-red-600">${data.incorrect}</p><p class="text-xs text-red-800">Yanlış</p></div>
-                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200"><p class="text-2xl font-bold text-gray-600">${data.empty}</p><p class="text-xs text-gray-800">Boş</p></div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg border shadow-sm">
-                            <h3 class="font-bold text-gray-700 mb-3">Sınav Geçmişi</h3>
-                            <div class="max-h-40 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="p-2 text-left text-xs">Sınav Kodu</th><th class="p-2 text-left text-xs">Puan</th></tr></thead><tbody>${allStudentResults.map(exam => `<tr class="${exam.examCode === data.examCode ? 'bg-indigo-50' : 'hover:bg-gray-50'} border-b"><td class="p-2 text-xs font-medium">${exam.examCode}</td><td class="p-2 text-xs font-bold ${exam.score >= 50 ? 'text-green-600' : 'text-red-600'}">${exam.score}</td></tr>`).join('')}</tbody></table></div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border shadow-sm"><h3 class="font-bold text-gray-700 mb-4">Gelişim Grafiği</h3><div class="h-64"><canvas id="progressChart"></canvas></div></div>
-                </div>
-                <div class="mt-6 text-center"><button onclick="location.reload()" class="button bg-gray-800 text-white py-3 px-6 rounded-lg font-bold hover:bg-gray-900">Çıkış Yap</button></div>
-            `;
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
             
-            if (allStudentResults.length > 0) {
-                setTimeout(() => {
-                    const ctx = document.getElementById('progressChart').getContext('2d');
-                    new Chart(ctx, { type: 'bar', data: { labels: allStudentResults.map(r => r.examCode), datasets: [{ label: 'Puan', data: allStudentResults.map(r => r.score), backgroundColor: allStudentResults.map(exam => exam.examCode === data.examCode ? 'rgba(79, 70, 229, 0.8)' : 'rgba(79, 70, 229, 0.4)'), borderColor: 'rgba(79, 70, 229, 1)', borderWidth: 1, borderRadius: 4, }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
-                }, 500);
-            }
-        }
-
-        // --- YÖNETİCİ MODÜLÜ ---
-        function showTeacherLogin() {
-            document.getElementById('mainContentArea').innerHTML = `
-                <div class="space-y-4">
-                    <h3 class="text-center font-bold text-gray-800 text-lg">Yönetici Girişi</h3>
-                    <div class="text-center text-xs p-2 rounded ${isDbConnected ? 'bg-green-100 text-green-800':'bg-red-100 text-red-800'}">${isDbConnected ? 'Veritabanı Bağlantısı Aktif' : 'Veritabanı Bağlantısı YOK'}</div>
-                    <input id="pass" type="password" placeholder="Yönetici Şifresi" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-                    <button id="loginBtn" class="button bg-indigo-600 text-white w-full py-3 rounded-lg font-bold hover:bg-indigo-700">Giriş Yap</button>
-                    <button id="backBtn" class="button bg-gray-200 text-gray-700 w-full py-3 rounded-lg font-semibold hover:bg-gray-300">Geri Dön</button>
-                </div>
-            `;
-            document.getElementById('backBtn').onclick = showLoginForm;
-            document.getElementById('loginBtn').onclick = () => {
-                const inputPass = document.getElementById('pass').value;
-                if (!isDbConnected || adminMasterCode === null) { return showCustomAlert("Hata", "Veritabanına bağlanılamadı."); }
-                if (inputPass === adminMasterCode) { isTeacherMode = true; showDashboard(); } else { showCustomAlert("Hatalı Şifre", "Girdiğiniz şifre yanlış."); }
-            };
-        }
-
-        function showDashboard() {
-            document.getElementById('connectionStatus').classList.add('hidden');
-            document.getElementById('app').className = 'app-card teacher-mode';
-            document.getElementById('loginHeader').innerHTML = '<h1 class="text-2xl font-bold flex justify-between items-center px-4"><span>Yönetim Paneli</span> <button id="logoutBtn" class="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Çıkış</button></h1>';
-            document.getElementById('logoutBtn').onclick = resetApp;
-
-            const dashboardHtml = `
-                <div class="flex flex-wrap gap-2 mb-6 border-b pb-4">
-                    <button onclick="window.changeTab('results')" class="flex-1 min-w-[120px] px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow text-sm font-semibold">📊 Sonuçlar</button>
-                    <button onclick="window.changeTab('settings')" class="flex-1 min-w-[120px] px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded shadow text-sm font-semibold">⚙️ Sınav Oluştur</button>
-                    <button onclick="window.changeTab('questions')" class="flex-1 min-w-[120px] px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded shadow text-sm font-semibold">📝 Sorular</button>
-                    <button onclick="window.changeTab('lists')" class="flex-1 min-w-[120px] px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded shadow text-sm font-semibold">👥 Öğrenciler</button>
-                    <button onclick="window.changeTab('myexams')" class="flex-1 min-w-[120px] px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded shadow text-sm font-semibold">📂 Sınavlarım</button>
-                </div>
-                
-                <div id="tab-results" class="tab-content">
-                    <div class="flex justify-between items-center mb-4">
-                         <h2 class="font-bold text-lg text-gray-700">Sonuç Listesi</h2>
-                         <div class="flex gap-2">
-                             <button onclick="window.exportToExcel()" class="bg-green-600 text-white px-3 py-1 rounded text-sm">Excel İndir</button>
-                             <button onclick="window.exportDetailedResults()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Detaylı Excel</button>
-                         </div>
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
                     </div>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <input id="filterCode" placeholder="Kod Ara" class="p-2 border rounded text-sm w-24">
-                        <input id="filterName" placeholder="İsim Ara" class="p-2 border rounded text-sm flex-1">
-                        <select id="filterClass" class="p-2 border rounded text-sm w-32"><option value="">Tüm Sınıflar</option></select>
-                        <button onclick="window.bulkDeleteFiltered()" class="bg-red-600 text-white px-3 py-1 rounded text-sm">Filtrelenmişleri Sil</button>
-                        <button onclick="window.bulkDeleteAll()" class="bg-red-800 text-white px-3 py-1 rounded text-sm">Tümünü Sil</button>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
                     </div>
-                    <div class="overflow-auto max-h-[500px] border rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-gray-100 sticky top-0"><tr><th class="p-3 text-left">Öğrenci</th><th class="p-3 text-left">Kod</th><th class="p-3 text-left">Puan</th><th class="p-3 text-left">D/Y/B</th><th class="p-3 text-left">Süre</th><th class="p-3 text-left">Odak Kaybı</th><th class="p-3 text-left">IP</th><th class="p-3 text-left">Tarih/Saat</th><th class="p-3 text-left">İşlem</th></tr></thead>
-                            <tbody id="resultsTableBody" class="bg-white divide-y"></tbody>
-                        </table>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
                     </div>
                 </div>
-
-                <div id="tab-questions" class="tab-content hidden">
-                     <div class="max-w-2xl mx-auto">
-                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200 mb-4">
-                            <label class="block font-bold text-orange-800 mb-1">Hangi Sınav İçin?</label>
-                            <select id="uploadQCode" class="w-full p-2 border rounded uppercase font-bold bg-white text-orange-700">
-                                <option value="">-- Sınav Seçiniz --</option>
-                            </select>
-                        </div>
-                        <textarea id="jsonInput" rows="10" class="w-full p-3 font-mono text-xs border rounded bg-gray-900 text-green-400" placeholder='[{"question":"Soru?","options":["A","B"],"answer":"A"}]'></textarea>
-                        <div class="flex justify-between mt-2">
-                            <button onclick="window.loadSampleJson()" class="text-xs text-gray-500 underline">Örnek Format</button>
-                            <button id="btnUploadQ" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded font-bold shadow">SORULARI YÜKLE</button>
-                        </div>
-                     </div>
-                </div>
-
-                <div id="tab-settings" class="tab-content hidden">
-                    <div class="max-w-lg mx-auto space-y-4">
-                         <div class="bg-gray-50 p-4 rounded border">
-                            <h3 class="font-bold mb-2">Sınav Oluştur / Düzenle</h3>
-                            <input id="setExamCode" class="w-full p-2 border rounded mb-2 uppercase" placeholder="Sınav Kodu (Örn: 9A_MAT)">
-                            
-                            <label class="text-xs text-gray-500 font-bold ml-1">Dersi Veren Öğretmen</label>
-                            <input id="setTeacherName" class="w-full p-2 border rounded mb-2" placeholder="Örn: Ö. Sevinç">
-                            
-                            <div class="flex gap-2">
-                                <input id="setTime" type="number" class="w-1/3 p-2 border rounded mb-2" placeholder="Süre (Dk)">
-                                <input id="setDesc" class="flex-1 p-2 border rounded mb-2" placeholder="Açıklama (Örn: 1. Dönem 1. Yazılı)">
-                            </div>
-                            
-                            <button id="btnSaveSettings" class="w-full bg-gray-700 text-white p-2 rounded font-bold hover:bg-gray-800">Sınavı Kaydet / Oluştur</button>
-                         </div>
-                         
-                         <div class="bg-red-50 p-4 rounded border border-red-200">
-                            <h3 class="font-bold text-red-700 mb-2">Yönetici Şifresi Değiştir</h3>
-                            <input id="newAdminPass" type="password" class="w-full p-2 border rounded mb-2" placeholder="Yeni Şifre">
-                            <button id="btnChangePass" class="w-full bg-red-600 text-white p-2 rounded font-bold">Şifreyi Güncelle</button>
-                         </div>
-                    </div>
-                </div>
-
-                <div id="tab-lists" class="tab-content hidden">
-                    <div class="max-w-2xl mx-auto">
-                        <div class="bg-teal-50 p-4 rounded border border-teal-200 mb-4">
-                            <label class="font-bold text-teal-800">Hangi Sınav İçin?</label>
-                            <select id="uploadListCode" class="w-full p-2 border rounded uppercase font-bold bg-white text-teal-700">
-                                <option value="">-- Sınav Seçiniz --</option>
-                            </select>
-                        </div>
-                        <div class="paste-area" id="listInput" contenteditable="true" placeholder="Excel'den Kopyala (No | Sınıf | Ad Soyad)"></div>
-                        <div class="text-xs text-gray-500 mt-1">E.okuldan indirdiğiniz excel dosyanızı buraya sürükleyip bırakın veya verileri kopyalayıp bu alana yapıştırın (Ctrl+V)</div>
-                        <button id="btnUploadList" class="w-full mt-2 bg-teal-600 text-white py-2 rounded font-bold">Listeyi Kaydet</button>
-                    </div>
-                </div>
-
-                 <div id="tab-myexams" class="tab-content hidden">
-                    <div id="myExamsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">Yükleniyor...</div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
                 </div>
             `;
             
-            document.getElementById('mainContentArea').innerHTML = dashboardHtml;
-            
-            // --- DROPDOWN DOLDURMA (YENİ) ---
-            window.populateExamSelects = async () => {
-                const qSelect = document.getElementById('uploadQCode');
-                const lSelect = document.getElementById('uploadListCode');
-                
-                // Mevcut seçenekleri temizle (ilk seçenek hariç)
-                qSelect.innerHTML = '<option value="">-- Sınav Seçiniz --</option>';
-                lSelect.innerHTML = '<option value="">-- Sınav Seçiniz --</option>';
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
 
-                const snap = await getDocs(collection(db, "exam_settings"));
-                snap.forEach(doc => {
-                    if(doc.id !== 'admin_config') {
-                        const opt1 = document.createElement('option');
-                        opt1.value = doc.id;
-                        opt1.text = doc.id;
-                        qSelect.appendChild(opt1);
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
 
-                        const opt2 = document.createElement('option');
-                        opt2.value = doc.id;
-                        opt2.text = doc.id;
-                        lSelect.appendChild(opt2);
-                    }
-                });
-            };
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
 
-            window.changeTab = (t) => {
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-                document.getElementById('tab-' + t).classList.remove('hidden');
-                
-                if(t === 'results') loadResults();
-                if(t === 'myexams') loadMyExams();
-                if(t === 'questions' || t === 'lists') window.populateExamSelects(); // Listeyi güncelle
-            };
-
-            // --- AYARLAR KAYDETME (ÖĞRETMEN ADI DAHİL) ---
-            document.getElementById('btnSaveSettings').onclick = async () => {
-                const code = sanitizeExamCode(document.getElementById('setExamCode').value);
-                const teacher = sanitizeInput(document.getElementById('setTeacherName').value); // Yeni alan
-                
-                if(!code) return alert("Kod gerekli");
-                if(!teacher) return alert("Öğretmen adı gerekli");
-
-                await setDoc(getConfigRef(code), {
-                    teacher_name: teacher, // Sınava özel öğretmen ismi
-                    time_limit: parseInt(document.getElementById('setTime').value) * 60,
-                    exam_description: sanitizeInput(document.getElementById('setDesc').value)
-                }, { merge: true });
-                
-                alert("Sınav ayarları ve öğretmen bilgisi kaydedildi.");
-                window.populateExamSelects(); // Yeni sınav eklenince listeyi yenile
-            };
-
-            window.loadSampleJson = () => { document.getElementById('jsonInput').value = `[\n  {\n    "question": "Türkiye'nin başkenti neresidir?",\n    "options": ["İstanbul", "Ankara", "İzmir", "Bursa"],\n    "answer": "Ankara"\n  }\n]`; };
-
-            // --- SORU YÜKLEME (ONAYLI & SELECT) ---
-            document.getElementById('btnUploadQ').onclick = async () => {
-                const code = document.getElementById('uploadQCode').value; // Select'ten değer al
-                const rawJson = document.getElementById('jsonInput').value;
-                
-                if(!code) return alert("Lütfen listeden bir sınav seçiniz.");
-                
-                // TEYİT ALMA KISMI
-                if(!confirm(`"${code}" kodlu sınava soruları yüklemek istediğinize emin misiniz?`)) return;
-
-                try {
-                    const parsed = JSON.parse(rawJson);
-                    if(!Array.isArray(parsed)) throw new Error("JSON bir liste [...] ile başlamalı.");
-                    await setDoc(getQuestionsRef(code), { questions_list: parsed });
-                    alert(`✅ ${code} için ${parsed.length} soru başarıyla yüklendi.`);
-                    document.getElementById('jsonInput').value = '';
-                } catch(e) {
-                    alert(`❌ JSON Format Hatası:\n${e.message}`);
-                }
-            };
-
-            document.getElementById('btnChangePass').onclick = async () => {
-                const newP = document.getElementById('newAdminPass').value;
-                if(newP.length < 4) return alert("Şifre çok kısa.");
-                if(confirm("Şifreyi değiştirmek istediğinize emin misiniz?")) {
-                    await setDoc(doc(db, "exam_settings", "admin_config"), { master_code: newP }, { merge: true });
-                    adminMasterCode = newP;
-                    alert("Şifre güncellendi.");
-                }
-            };
-
-            // --- LİSTE YÜKLEME (ONAYLI & SELECT) ---
-            document.getElementById('btnUploadList').onclick = async () => {
-                const code = document.getElementById('uploadListCode').value; // Select'ten değer al
-                const txt = document.getElementById('listInput').innerText || document.getElementById('listInput').textContent;
-                
-                if(!code) return alert("Lütfen listeden bir sınav seçiniz.");
-                if(!txt.trim()) return alert("Liste boş.");
-                
-                // TEYİT ALMA KISMI
-                if(!confirm(`"${code}" kodlu sınava öğrenci listesini yüklemek istediğinize emin misiniz?`)) return;
-
-                const students = [];
-                const lines = txt.split('\n');
-                let currentClass = "";
-                const btn = document.getElementById('btnUploadList');
-                btn.innerText = "Ayrıştırılıyor..."; btn.disabled = true;
-
-                try {
-                    for (let i = 0; i < lines.length; i++) {
-                        let line = lines[i].trim();
-                        if (!line) continue;
-
-                        line = line.replace(/"/g, '').trim();  // TIRNAKLARI SİL
-                        
-                        line = line.replace(/(\d{3,}[A-Z]{3,}\d{3,})$/, '').trim();
-                        const classMatch = line.match(/(\d+)\.\s*Sınıf\s*\/\s*([A-Z])/i);
-                        if (classMatch) { currentClass = classMatch[1] + classMatch[2]; continue; }
-                        if (!currentClass) continue;
-                        const studentMatch = line.match(/^\s*\d+\s+(\d+)\s+(.+)\s+(Erkek|Kız)/i);
-                        if (studentMatch) {
-                            const num = studentMatch[1].trim(); 
-                            const rawName = studentMatch[2].trim();
-                            if (rawName.includes("Adı Soyadı Cinsiyeti") || line.includes("Öğrenci Sayısı")) continue;
-                            if (!isNaN(num) && rawName.length > 2) {
-                                students.push({ number: num, className: currentClass, name: rawName });
-                            }
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
                         }
-                    }
-                    if(students.length === 0) throw new Error("Öğrenci bulunamadı.");
-                    await setDoc(doc(db, "student_lists", code), { students });
-                    alert(`✅ BAŞARILI! ${students.length} öğrenci eklendi.`);
-                    document.getElementById('listInput').innerText = '';
-                } catch(e) { alert("Hata: " + e.message); } 
-                finally { btn.innerText = "Listeyi Kaydet"; btn.disabled = false; }
-            };
-            
-            // D&D
-            const listInputArea = document.getElementById('listInput');
-            listInputArea.addEventListener('dragover', (e) => { e.preventDefault(); listInputArea.classList.add('border-indigo-500', 'bg-indigo-50'); });
-            listInputArea.addEventListener('dragleave', (e) => { e.preventDefault(); listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); });
-            listInputArea.addEventListener('drop', (e) => {
-                e.preventDefault(); listInputArea.classList.remove('border-indigo-500', 'bg-indigo-50'); 
-                const files = e.dataTransfer.files;
-                if (files.length > 0) readExcelFile(files[0]);
-            });
-
-           const readExcelFile = (file) => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            const rawText = XLSX.utils.sheet_to_csv(worksheet, { FS: ' ' });
-            
-            // TIRNAKLARI TEMİZLE
-            const cleanedText = rawText.replace(/"/g, '');
-            
-            document.getElementById('listInput').innerText = cleanedText;
-            alert('✅ Excel yüklendi. Tırnaklar temizlendi.');
-        } catch (error) { 
-            alert('Hata: ' + error.message); 
-        }
-    };
-    reader.readAsArrayBuffer(file);
-};
-            loadResults();
-        }
-
-        function loadResults() {
-            const tbody = document.getElementById('resultsTableBody');
-            tbody.innerHTML = '<tr><td colspan="9" class="p-4 text-center">Yükleniyor...</td></tr>';
-            onSnapshot(query(collection(db, "quiz_submissions"), orderBy("timestamp", "desc"), limit(500)), (snap) => {
-                allSubmissions = snap.docs.map(d => {
-                    const data = d.data();
-                    let dateTime = "Bilinmiyor";
-                    if (data.timestamp && data.timestamp.toDate) {
-                        const date = data.timestamp.toDate();
-                        dateTime = `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR')}`;
-                    }
-                    return { id: d.id, ...data, formattedDateTime: dateTime };
-                });
-                renderResultsTable();
-                updateClassFilter();
-            });
-            document.getElementById('filterCode').oninput = renderResultsTable;
-            document.getElementById('filterName').oninput = renderResultsTable;
-            document.getElementById('filterClass').onchange = renderResultsTable;
-        }
-
-        function updateClassFilter() {
-            const classFilter = document.getElementById('filterClass');
-            const classes = [...new Set(allSubmissions.map(s => s.className))].filter(c => c).sort();
-            classFilter.innerHTML = '<option value="">Tüm Sınıflar</option>';
-            classes.forEach(c => { classFilter.innerHTML += `<option value="${c}">${c}</option>`; });
-        }
-
-        function renderResultsTable() {
-            const fCode = document.getElementById('filterCode').value.toLowerCase();
-            const fName = document.getElementById('filterName').value.toLowerCase();
-            const fClass = document.getElementById('filterClass').value;
-            const tbody = document.getElementById('resultsTableBody');
-            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass)).sort((a,b) => b.score - a.score);
-            tbody.innerHTML = filtered.map(s => {
-                const timeSpent = s.timeSpent || 0;
-                const minutes = Math.floor(timeSpent / 60);
-                const seconds = timeSpent % 60;
-                return `<tr class="hover:bg-gray-50"><td class="p-3"><div class="font-bold text-gray-800">${s.name}</div><div class="text-xs text-gray-500">${s.number} - ${s.className}</div></td><td class="p-3 font-mono text-xs">${s.examCode}</td><td class="p-3 font-bold ${s.score >= 50 ? 'text-green-600':'text-red-600'}">${s.score}</td><td class="p-3 text-xs">${s.correct}D / ${s.incorrect}Y / ${s.empty}B</td><td class="p-3 text-xs">${minutes}:${seconds < 10 ? '0' : ''}${seconds}</td><td class="p-3 text-xs">${s.focusLossCount || 0}</td><td class="p-3 text-xs font-mono">${s.ipAddress || 'N/A'}</td><td class="p-3 text-xs">${s.formattedDateTime}</td><td class="p-3"><button onclick="window.deleteSub('${s.id}')" class="text-red-600 hover:underline text-xs">Sil</button></td></tr>`;
-            }).join('');
-        }
-
-        window.deleteSub = async (id) => { if(confirm("Silmek istiyor musunuz?")) await deleteDoc(doc(db, "quiz_submissions", id)); }
-
-        window.bulkDeleteFiltered = async () => {
-            const fCode = document.getElementById('filterCode').value.toLowerCase();
-            const fName = document.getElementById('filterName').value.toLowerCase();
-            const fClass = document.getElementById('filterClass').value;
-            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass));
-            if(filtered.length === 0) return alert("Kayıt yok.");
-            if(confirm(`${filtered.length} kaydı silmek istiyor musunuz?`)) { for(const item of filtered) await deleteDoc(doc(db, "quiz_submissions", item.id)); alert("Silindi."); }
-        }
-
-        window.bulkDeleteAll = async () => {
-            if(allSubmissions.length === 0) return alert("Kayıt yok.");
-            if(confirm(`TÜM kayıtları (${allSubmissions.length} adet) silmek istediğinize emin misiniz?`)) { for(const item of allSubmissions) await deleteDoc(doc(db, "quiz_submissions", item.id)); alert("Tümü silindi."); }
-        }
-        
-        window.exportToExcel = () => {
-            const data = allSubmissions.map(s => {
-                const timeSpent = s.timeSpent || 0;
-                let dateTime = "Bilinmiyor"; if (s.timestamp && s.timestamp.toDate) dateTime = s.timestamp.toDate().toLocaleString('tr-TR');
-                return { 'Ad Soyad': s.name, 'Numara': s.number, 'Sınıf': s.className, 'Sınav Kodu': s.examCode, 'Puan': s.score, 'Doğru': s.correct, 'Yanlış': s.incorrect, 'Boş': s.empty, 'Süre (sn)': timeSpent, 'Odak Kaybı': s.focusLossCount, 'IP': s.ipAddress, 'Tarih': dateTime };
-            });
-            const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Sonuclar"); XLSX.writeFile(wb, "sinav_sonuclari.xlsx");
-        }
-
-        window.exportDetailedResults = () => {
-             const fCode = document.getElementById('filterCode').value.toLowerCase();
-            const fName = document.getElementById('filterName').value.toLowerCase();
-            const fClass = document.getElementById('filterClass').value;
-            const filtered = allSubmissions.filter(s => (s.examCode||'').toLowerCase().includes(fCode) && (s.name||'').toLowerCase().includes(fName) && (!fClass || s.className === fClass));
-            
-            if(filtered.length === 0) return alert("Filtreye uygun kayıt yok.");
-            
-            const data = filtered.map(s => {
-                const timeSpent = s.timeSpent || 0;
-                let dateTime = "Bilinmiyor"; if (s.timestamp && s.timestamp.toDate) dateTime = s.timestamp.toDate().toLocaleString('tr-TR');
-                const result = { 'Ad Soyad': s.name, 'Numara': s.number, 'Sınıf': s.className, 'Sınav Kodu': s.examCode, 'Puan': s.score, 'Doğru': s.correct, 'Yanlış': s.incorrect, 'Boş': s.empty, 'Süre': timeSpent, 'Odak Kaybı': s.focusLossCount, 'IP': s.ipAddress, 'Tarih': dateTime };
-                if(s.allAnswers && s.allAnswers.length > 0) { s.allAnswers.forEach((answer, index) => { result[`Soru ${index + 1}`] = answer || ''; }); }
-                return result;
-            });
-            const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detayli"); XLSX.writeFile(wb, "detayli_sonuclar.xlsx");
-        }
-
-        async function loadMyExams() {
-            const container = document.getElementById('myExamsList');
-            container.innerHTML = `<div class="col-span-full text-center py-10"><div class="loader mb-4"></div><p class="font-bold text-gray-600">Yükleniyor...</p></div>`;
-            try {
-                const [configSnap, questionsSnap, listsSnap, submissionsSnap] = await Promise.all([ getDocs(collection(db, "exam_settings")), getDocs(collection(db, "questions_pool")), getDocs(collection(db, "student_lists")), getDocs(collection(db, "quiz_submissions")) ]);
-                const exams = []; const questionsData = {}; const studentLists = {}; const submissionCounts = {};
-                questionsSnap.forEach(doc => { questionsData[doc.id] = doc.data().questions_list?.length || 0; });
-                listsSnap.forEach(doc => { studentLists[doc.id] = doc.data().students?.length || 0; });
-                submissionsSnap.forEach(doc => { const c = doc.data().examCode; if (c) submissionCounts[c] = (submissionCounts[c] || 0) + 1; });
-                
-                configSnap.forEach(doc => {
-                    if(doc.id !== 'admin_config') {
-                        const data = doc.data();
-                        exams.push({ code: doc.id, teacher_name: data.teacher_name || "Belirtilmemiş", time_limit: data.time_limit || 600, exam_description: data.exam_description || "", custom_name: data.custom_name || "", is_active: data.is_active, question_count: questionsData[doc.id] || 0, student_count: studentLists[doc.id] || 0, submission_count: submissionCounts[doc.id] || 0 });
-                    }
-                });
-                
-                if(exams.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10 font-bold">Sınav yok.</div>'; return; }
-                
-                container.innerHTML = exams.map(exam => {
-                    const isActive = exam.is_active !== false; 
-                    return `
-                   <div class="bg-white p-6 border rounded-xl shadow-sm hover:shadow-md transition-all relative flex flex-col ${isActive ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500 bg-gray-50'}">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-extrabold text-xl text-indigo-700 tracking-tight">${exam.code}</h3>
-                                    ${!isActive ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 border border-red-200">KAPALI</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-600 border border-green-200">AKTİF</span>'}
-                                </div>
-                                <p class="text-sm text-gray-500 italic mt-1">${exam.exam_description}</p>
-                            </div>
-                            <div class="flex flex-col gap-2 items-end">
-                                <button onclick="window.toggleExamStatus('${exam.code}', ${isActive})" class="text-xs font-bold px-3 py-1 rounded-full border w-24 ${isActive ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'}">${isActive ? '⛔ Kapat' : '✅ Aç'}</button>
-                                <button id="btn-preview-${exam.code}" onclick="window.previewExam('${exam.code}')" class="text-xs font-bold px-3 py-1 rounded-full border w-24 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100">👁️ Önizle</button>
-                            </div>
-                        </div>
-                        <div class="space-y-3 text-sm flex-grow ${!isActive ? 'opacity-60 grayscale-[50%]' : ''}">
-                            <div class="flex items-center justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium w-1/3">Özel İsim:</span><input type="text" class="text-xs p-1 border rounded w-32 text-right outline-none" placeholder="Özel ad" value="${exam.custom_name || ''}" onchange="window.updateExamName('${exam.code}', this.value)"></div>
-                            <div class="flex items-center justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium w-1/3">Hazırlayan:</span><div class="flex-1 flex space-x-2"><input id="teacherName-${exam.code}" type="text" value="${exam.teacher_name}" class="p-1 px-2 border rounded text-sm flex-1 outline-none"><button onclick="window.updateExamTeacher('${exam.code}')" class="bg-green-500 text-white px-2 rounded text-xs hover:bg-green-600">💾</button></div></div>
-                            <div class="flex justify-between py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Süre:</span><span class="font-bold text-gray-800">${Math.floor(exam.time_limit/60)} dk</span></div>
-                            <div class="flex justify-between items-center py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Soru Sayısı:</span><button onclick="window.showExamQuestions('${exam.code}')" class="text-blue-600 font-bold hover:underline">${exam.question_count} Soru</button></div>
-                            <div class="flex justify-between items-center py-1 border-b border-gray-50"><span class="text-gray-600 font-medium">Öğrenci Sayısı:</span><button onclick="window.showExamStudents('${exam.code}')" class="text-blue-600 font-bold hover:underline">${exam.student_count} Öğrenci</button></div>
-                             <div class="flex justify-between py-1"><span class="text-gray-600 font-medium">Katılım:</span><span class="font-bold text-lg text-gray-800">${exam.submission_count}</span></div>
-                        </div>
-                        <button onclick="window.deleteExam('${exam.code}')" class="mt-4 w-full bg-white text-gray-400 text-xs py-2 rounded border hover:bg-red-50 hover:text-red-500 transition">Sınavı Tamamen Sil</button>
-                    </div>
-                `}).join('');
-            } catch (error) { container.innerHTML = `<div class="col-span-full text-center text-red-500 py-10">Hata: ${error.message}</div>`; }
-        }
-        
-        window.updateExamName = async (code, name) => { try { await setDoc(getConfigRef(code), { custom_name: sanitizeInput(name) }, { merge: true }); } catch(e) { alert("Hata: " + e.message); } }
-        window.updateExamTeacher = async (code) => {
-            const inputBtn = document.getElementById(`teacherName-${code}`);
-            try { await setDoc(getConfigRef(code), { teacher_name: sanitizeInput(inputBtn.value) }, { merge: true }); inputBtn.classList.add('bg-green-100'); setTimeout(()=>inputBtn.classList.remove('bg-green-100'),1000); } catch(e) { alert("Hata: " + e.message); }
-        }
-
-        // --- POPUP WINDOWS ---
-        window.showExamQuestions = async (code) => {
-            try {
-                const qSnap = await getDoc(getQuestionsRef(code));
-                const questions = qSnap.exists() ? qSnap.data().questions_list : [];
-                let content = `
-                    <div class="sticky top-0 bg-white z-20 pb-4 border-b mb-4">
-                        <div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-indigo-700">${code} - Soru Yönetimi</h3><button onclick="document.getElementById('customModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800 font-bold text-xl">&times;</button></div>
-                        <div class="bg-orange-50 p-3 rounded border border-orange-200 text-sm shadow-inner"><h4 class="font-bold text-orange-800 mb-2 flex items-center"><span id="formTitle">Yeni Soru Ekle</span><button onclick="window.clearQuestionForm()" class="ml-auto text-xs text-gray-500 underline">Temizle</button></h4><input type="hidden" id="editIndex" value="-1"><textarea id="qText" class="w-full p-2 border rounded mb-2 text-sm outline-none" rows="2" placeholder="Soru metni..."></textarea><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2"><div class="flex items-center"><span class="w-6 font-bold text-gray-500">A)</span><input id="optA" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">B)</span><input id="optB" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">C)</span><input id="optC" class="flex-1 p-1 border rounded"></div><div class="flex items-center"><span class="w-6 font-bold text-gray-500">D)</span><input id="optD" class="flex-1 p-1 border rounded"></div><div class="flex items-center col-span-1 sm:col-span-2"><span class="w-6 font-bold text-gray-500">E)</span><input id="optE" class="flex-1 p-1 border rounded bg-gray-50" placeholder="(Opsiyonel)"></div></div><div class="flex gap-2 mb-2"><input id="qImg" class="flex-1 p-1 border rounded text-xs" placeholder="Resim Linki"><select id="qAns" class="p-1 border rounded font-bold text-indigo-700 bg-white"><option value="">Cevap</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select></div><button onclick="window.saveQuestion('${code}')" id="saveBtn" class="w-full bg-orange-600 text-white py-2 rounded font-bold hover:bg-orange-700 transition shadow">Kaydet</button></div>
-                    </div><div class="max-h-[40vh] overflow-y-auto space-y-3 pr-1 pb-2">`;
-                if(questions.length === 0) content += `<p class="text-gray-400 text-center py-4 italic">Soru yok.</p>`;
-                else {
-                    questions.forEach((q, i) => {
-                        content += `<div class="p-3 border rounded bg-white hover:shadow-md transition relative group border-l-4 border-l-indigo-500"><div class="flex justify-between items-start mb-1"><span class="font-bold text-xs text-white bg-indigo-500 px-2 py-0.5 rounded-full">Soru ${i+1}</span><div class="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"><button onclick="window.editQuestion('${code}', ${i})" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Düzenle</button><button onclick="window.deleteQuestion('${code}', ${i})" class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">Sil</button></div></div><p class="text-sm font-bold text-gray-800 mb-2">${sanitizeInput(q.question)}</p></div>`;
-                    });
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
                 }
-                content += `</div>`;
-                showCustomAlert(``, content);
-                document.getElementById('modalContent').classList.remove('max-w-3xl'); document.getElementById('modalContent').classList.add('max-w-4xl');
-            } catch(e) { alert("Hata: " + e.message); }
-        }
-
-        window.saveQuestion = async (code) => {
-            const qText = document.getElementById('qText').value.trim();
-            const optA = document.getElementById('optA').value.trim(); const optB = document.getElementById('optB').value.trim(); const optC = document.getElementById('optC').value.trim(); const optD = document.getElementById('optD').value.trim(); const optE = document.getElementById('optE').value.trim();
-            const ansKey = document.getElementById('qAns').value; const img = document.getElementById('qImg').value.trim(); const editIndex = parseInt(document.getElementById('editIndex').value);
-            if(!qText || !optA || !optB || !optC || !optD || !ansKey) return alert("Eksik bilgi.");
-            let finalOptions = [optA, optB, optC, optD]; if(optE) finalOptions.push(optE);
-            let correctText = ""; if(ansKey === 'A') correctText = optA; else if(ansKey === 'B') correctText = optB; else if(ansKey === 'C') correctText = optC; else if(ansKey === 'D') correctText = optD; else if(ansKey === 'E') correctText = optE;
-            const newQ = { question: qText, options: finalOptions, answer: correctText, image: img || "" };
-            try { const ref = getQuestionsRef(code); const snap = await getDoc(ref); let list = snap.exists() ? snap.data().questions_list : []; if(editIndex > -1) list[editIndex] = newQ; else list.push(newQ); await setDoc(ref, { questions_list: list }, { merge: true }); window.showExamQuestions(code); } catch(e) { alert("Hata: " + e.message); }
-        }
-
-        window.editQuestion = async (code, index) => {
-            const snap = await getDoc(getQuestionsRef(code)); const q = snap.data().questions_list[index];
-            document.getElementById('qText').value = q.question;
-            document.getElementById('optA').value = q.options[0] || ""; document.getElementById('optB').value = q.options[1] || ""; document.getElementById('optC').value = q.options[2] || ""; document.getElementById('optD').value = q.options[3] || ""; document.getElementById('optE').value = q.options[4] || "";
-            document.getElementById('qImg').value = q.image || "";
-            let ansKey = ""; if(q.answer === q.options[0]) ansKey = "A"; else if(q.answer === q.options[1]) ansKey = "B"; else if(q.answer === q.options[2]) ansKey = "C"; else if(q.answer === q.options[3]) ansKey = "D"; else if(q.options[4] && q.answer === q.options[4]) ansKey = "E";
-            document.getElementById('qAns').value = ansKey; document.getElementById('editIndex').value = index;
-            document.getElementById('formTitle').innerText = `Düzenleniyor: Soru ${index+1}`; document.getElementById('saveBtn').innerText = "Değişiklikleri Kaydet";
-            document.querySelector('.bg-orange-50').scrollIntoView({behavior: 'smooth'});
-        }
-
-        window.clearQuestionForm = () => {
-            document.getElementById('qText').value = ""; document.getElementById('optA').value = ""; document.getElementById('optB').value = ""; document.getElementById('optC').value = ""; document.getElementById('optD').value = ""; document.getElementById('optE').value = ""; document.getElementById('qImg').value = ""; document.getElementById('qAns').value = ""; document.getElementById('editIndex').value = "-1";
-            document.getElementById('formTitle').innerText = "Yeni Soru Ekle"; document.getElementById('saveBtn').innerText = "Kaydet";
-        }
-
-        window.deleteQuestion = async (code, index) => { if(!confirm("Silmek istiyor musunuz?")) return; const ref = getQuestionsRef(code); const snap = await getDoc(ref); let list = snap.data().questions_list; list.splice(index, 1); await setDoc(ref, { questions_list: list }, { merge: true }); window.showExamQuestions(code); }
-
-        window.showExamStudents = async (code) => {
-            try {
-                const snap = await getDoc(doc(db, "student_lists", code)); const students = snap.exists() ? snap.data().students : [];
-                students.sort((a,b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
-                let content = `
-                    <div class="sticky top-0 bg-white z-20 pb-4 border-b mb-4"><div class="flex justify-between items-center mb-2"><h3 class="text-xl font-bold text-teal-700">${code} - Öğrenci Yönetimi</h3><button onclick="document.getElementById('customModal').classList.add('hidden')" class="text-gray-500 font-bold text-xl">&times;</button></div><div class="bg-teal-50 p-3 rounded border border-teal-200 text-sm shadow-inner"><h4 class="font-bold text-teal-800 mb-2">Öğrenci Ekle</h4><div class="flex gap-2"><input id="addNum" placeholder="No" class="w-20 p-2 border rounded"><input id="addClass" placeholder="Sınıf" class="w-20 p-2 border rounded"><input id="addName" placeholder="Ad Soyad" class="flex-1 p-2 border rounded"><button onclick="window.addStudent('${code}')" class="bg-teal-600 text-white px-4 py-2 rounded font-bold hover:bg-teal-700 shadow">Ekle</button></div></div></div><div class="max-h-[50vh] overflow-y-auto border rounded-lg shadow-sm"><table class="min-w-full text-sm divide-y divide-gray-200"><thead class="bg-gray-100 sticky top-0"><tr><th class="p-3 text-left">No</th><th class="p-3 text-left">Sınıf</th><th class="p-3 text-left">Ad Soyad</th><th class="p-3 text-right">İşlem</th></tr></thead><tbody class="bg-white divide-y divide-gray-100">`;
-                if(students.length === 0) content += `<tr><td colspan="4" class="p-4 text-center text-gray-400">Liste boş.</td></tr>`;
-                else { students.forEach(s => { content += `<tr class="hover:bg-teal-50 transition"><td class="p-3 font-mono font-bold text-teal-700">${s.number}</td><td class="p-3">${s.className}</td><td class="p-3 font-medium">${s.name}</td><td class="p-3 text-right"><button onclick="window.deleteStudent('${code}', '${s.number}')" class="bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded text-xs font-bold hover:bg-red-600 hover:text-white transition">Sil</button></td></tr>`; }); }
-                content += `</tbody></table></div>`; showCustomAlert(``, content);
-            } catch(e) { alert("Hata: " + e.message); }
-        }
-
-        window.addStudent = async (code) => {
-            const num = document.getElementById('addNum').value.trim(); const cls = document.getElementById('addClass').value.trim(); const name = document.getElementById('addName').value.trim();
-            if(!num || !cls || !name) return alert("Eksik bilgi.");
-            const ref = doc(db, "student_lists", code); const snap = await getDoc(ref); let students = snap.exists() ? snap.data().students : [];
-            if(students.some(s => s.number === num)) return alert("Bu numara kayıtlı!");
-            students.push({ number: num, className: cls, name: name }); await setDoc(ref, { students }, { merge: true }); window.showExamStudents(code);
-        }
-
-        window.deleteStudent = async (code, num) => { if(!confirm("Silmek istiyor musunuz?")) return; const ref = doc(db, "student_lists", code); const snap = await getDoc(ref); let students = snap.data().students.filter(s => s.number !== num); await setDoc(ref, { students }, { merge: true }); window.showExamStudents(code); }
-
-        window.deleteExam = async (code) => {
-            if(confirm(`⚠️ DİKKAT!\n"${code}" tamamen silinecek. Onaylıyor musunuz?`)) {
-                try {
-                    await deleteDoc(doc(db, "exam_settings", code)); await deleteDoc(doc(db, "questions_pool", code)); await deleteDoc(doc(db, "student_lists", code));
-                    const subSnap = await getDocs(query(collection(db, "quiz_submissions"), where("examCode", "==", code)));
-                    subSnap.forEach(d => deleteDoc(d.ref)); alert("Silindi."); loadMyExams();
-                } catch(e) { alert("Hata: " + e.message); }
             }
-        }
-
-        window.toggleExamStatus = async (code, currentStatus) => { try { await setDoc(getConfigRef(code), { is_active: !currentStatus }, { merge: true }); loadMyExams(); } catch (e) { alert("Hata: " + e.message); } }
-// --- YENİ EKLENEN ÖNİZLEME FONKSİYONU ---
-        window.previewExam = async (code) => {
-            const btn = document.getElementById(`btn-preview-${code}`);
-            if(btn) btn.innerText = "Yükleniyor...";
-            
-            await fetchExamData(code);
-            
-            // Modları ayarla
-            isPreviewMode = true;
-            isTeacherMode = true; // Hata almamak için açık kalmalı
-            
-            // Sahte öğrenci verisi
-            studentData = { name: "YÖNETİCİ (ÖNİZLEME)", number: "0000", className: "TEST", examCode: code };
-
-            // Oturumu başlat
-            startNewSession("preview_seed"); 
-            startQuiz();
-            
-            // Header'ı değiştir
-            document.getElementById('loginHeader').innerHTML = `
-                <div class="flex justify-between items-center px-4 py-2 bg-orange-600 text-white rounded-t-lg">
-                    <div class="flex items-center gap-2"><span class="text-xl">👁️</span> <span class="font-bold">ÖNİZLEME MODU</span></div>
-                    <button onclick="finishQuiz(true)" class="bg-white text-orange-800 px-3 py-1 rounded text-xs font-bold hover:bg-gray-100">Önizlemeyi Kapat ✕</button>
-                </div>`;
-            
-            if(btn) btn.innerHTML = '👁️ Önizle';
-        };
-        function showCustomAlert(title, msg) {
-            return new Promise(resolve => {
-                const modal = document.getElementById('customModal'); const content = document.getElementById('modalContent');
-                content.innerHTML = `<h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3><div class="text-left">${msg}</div><button id="modalCloseBtn" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded font-bold hover:bg-indigo-700">Tamam</button>`;
-                modal.classList.remove('hidden'); modal.classList.add('flex');
-                document.getElementById('modalCloseBtn').onclick = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); resolve(); };
-            });
-        }
-
-        initializeFirebase();
+        });
     </script>
 </body>
 </html>
