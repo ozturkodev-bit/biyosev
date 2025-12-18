@@ -1,1 +1,1593 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Sentezi Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Code and Table Styles */
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .genetic-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .genetic-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .genetic-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .genetic-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+            
+            .genetic-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dna"></i> Protein Sentezi Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile protein sentezini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">40 adet soru-cevap kartı ile protein sentezi konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Protein sentezinin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk detaylı test ile protein sentezi bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Protein sentezinin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Protein Sentezi Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🧬</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">40</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Protein Sentezi Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Genetik Şifre Temel Kavramlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kodon:</strong> mRNA'daki üçlü nükleotit grubu, bir amino asidi şifreler</li>
+                        <li><strong>Antikodon:</strong> tRNA'daki üçlü nükleotit dizisi, kodonla eşleşir</li>
+                        <li><strong>Başlatma Kodonu:</strong> AUG (Metiyonin amino asidini şifreler)</li>
+                        <li><strong>Durdurma Kodonları:</strong> UAA, UAG, UGA (amino asit şifrelemez)</li>
+                        <li><strong>Genetik Şifre Evrenselliği:</strong> Tüm canlılarda aynı şifreler kullanılır</li>
+                        <li><strong>64 Kodon:</strong> 20 amino asidi şifreler, bazı amino asitler birden fazla kodonla şifrelenir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Protein Sentezi Aşamaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Transkripsiyon:</strong> DNA'dan mRNA sentezi (çekirdekte gerçekleşir)</li>
+                        <li><strong>Translasyon:</strong> mRNA'dan protein sentezi (ribozomda gerçekleşir)</li>
+                        <li><strong>RNA Polimeraz:</strong> Transkripsiyonda görev yapan enzim</li>
+                        <li><strong>Kalıp Zincir:</strong> DNA'nın mRNA sentezinde kullanılan ipliği</li>
+                        <li><strong>Anlamlı Zincir:</strong> DNA'nın şifre veren ipliği</li>
+                        <li><strong>Polipeptit:</strong> Amino asitlerin peptit bağlarıyla birleşmesiyle oluşan yapı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">RNA Çeşitleri ve Görevleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>mRNA (Mesajcı RNA):</strong> DNA'daki genetik bilgiyi ribozoma taşır</li>
+                        <li><strong>tRNA (Taşıyıcı RNA):</strong> Amino asitleri ribozoma taşır, antikodon taşır</li>
+                        <li><strong>rRNA (Ribozomal RNA):</strong> Ribozomun yapısına katılır</li>
+                        <li><strong>RNA Polimeraz:</strong> DNA'dan mRNA sentezini katalizler</li>
+                        <li><strong>Aminoasil-tRNA Sentetaz:</strong> Amino asitleri tRNA'ya bağlayan enzim</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Santral Dogma</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Replikasyon:</strong> DNA'nın kendini eşlemesi</li>
+                        <li><strong>Transkripsiyon:</strong> DNA → RNA bilgi aktarımı</li>
+                        <li><strong>Translasyon:</strong> RNA → Protein bilgi aktarımı</li>
+                        <li><strong>Tek Yönlü Akış:</strong> Bilgi DNA'dan RNA'ya, RNA'dan proteine akar</li>
+                        <li><strong>Retrovirüsler İstisnası:</strong> RNA'dan DNA'ya ters transkripsiyon</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ribozom ve Protein Sentezi Mekanizması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ribozom Alt Birimleri:</strong> Küçük ve büyük alt birimler</li>
+                        <li><strong>mRNA Bağlanma Bölgesi:</strong> Küçük alt birimde bulunur</li>
+                        <li><strong>Peptidil Transferaz Merkezi:</strong> Büyük alt birimde bulunur, peptit bağı oluşturur</li>
+                        <li><strong>A, P, E Bölgeleri:</strong> tRNA bağlanma bölgeleri</li>
+                        <li><strong>Polizom (Poli ribozom):</strong> Bir mRNA üzerinde birden fazla ribozom</li>
+                        <li><strong>Posttranslasyonel Modifikasyon:</strong> Sentez sonrası protein işlenmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Translasyon Aşamaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Başlama:</strong> mRNA ribozoma bağlanır, başlatma tRNA'sı (Met-tRNA) AUG kodonuna bağlanır</li>
+                        <li><strong>Uzama:</strong> Amino asitler eklenir, peptit zinciri uzar</li>
+                        <li><strong>Terminasyon:</strong> Durdurma kodonuna ulaşıldığında sentez sonlanır</li>
+                        <li><strong>Serbest Bırakma Faktörleri:</strong> Durdurma kodonlarını tanır, proteini serbest bırakır</li>
+                        <li><strong>Protein Katlanması:</strong> Polipeptit zinciri üç boyutlu yapıya katlanır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Tarihsel Gelişim ve Deneyler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Beadle ve Tatum (1930'lar):</strong> Neurospora crassa ile "bir gen-bir enzim" hipotezi</li>
+                        <li><strong>Francis Crick:</strong> Genetik şifrenin üçlü olduğunu öne sürdü</li>
+                        <li><strong>Nirenberg ve Matthaei (1961):</strong> İlk kodonu (UUU = Fenilalanin) çözdü</li>
+                        <li><strong>Khorana:</strong> Sentetik RNA'lar kullanarak kodonları belirledi</li>
+                        <li><strong>Holley:</strong> tRNA'nın yapısını aydınlattı</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Protein Sentezi Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Protein Sentezi Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> GENETİK ŞİFRE VE PROTEİN SENTEZİNE GİRİŞ</div>
+                    <ul class="summary-list">
+                        <li><strong>Genetik Şifre:</strong> DNA'daki nükleotitlerin oluşturduğu, protein sentezinde kullanılan üçlü şifrelerdir. Tüm canlılarda ortaktır (evrenseldir).</li>
+                        <li><strong>Protein Sentezi:</strong> Hücredeki yaşamsal faaliyetlerin devamlılığını sağlayan, DNA'daki genetik bilgiye göre amino asitlerden protein üretilmesidir.</li>
+                        <li><strong>DNA'nın Rolü:</strong> Protein sentezi için gerekli genetik bilgiyi taşır. Bu bilgi genlerde şifrelenmiştir.</li>
+                        <li><strong>Gen:</strong> Bir proteinin sentezlenmesini sağlayan DNA parçasıdır. Proteinin amino asit dizilimini belirler.</li>
+                        <li>Beadle ve Tatum'un Neurospora crassa ile yaptığı deneyler, "bir gen-bir enzim" hipotezinin temelini oluşturmuştur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-code"></i> GENETİK ŞİFRE ÖZELLİKLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Kodon:</strong> mRNA'daki üçlü nükleotit grubudur. Her kodon bir amino asidi şifreler.</li>
+                        <li><strong>64 Kodon:</strong> 4³ = 64 farklı kodon vardır (4 çeşit nükleotit, 3'lü gruplar).</li>
+                        <li><strong>Amino Asit Şifreleme:</strong> 20 çeşit amino asidi şifrelemek için 61 kodon kullanılır.</li>
+                        <li><strong>Başlatma Kodonu:</strong> AUG (Metiyonin amino asidini şifreler, protein sentezini başlatır).</li>
+                        <li><strong>Durdurma (Stop) Kodonları:</strong> UAA, UAG, UGA (amino asit şifrelemez, protein sentezini sonlandırır).</li>
+                        <li><strong>Degenerelik (Yozluk):</strong> Bir amino asidi birden fazla kodon şifreler. Bu, mutasyonlara karşı koruma sağlar.</li>
+                        <li><strong>Evrensellik:</strong> Genetik şifre tüm canlılarda aynıdır (bazı mitokondriyal kodonlar hariç).</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> DNA'daki TAC şifresi, mRNA'da AUG olarak yazılır. AUG hem metiyonin amino asidini şifreler hem de protein sentezini başlatır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> SANTRAL DOGMA</div>
+                    <ul class="summary-list">
+                        <li><strong>Santral Dogma:</strong> Genetik bilginin akış yönünü açıklayan kavramdır.</li>
+                        <li><strong>Replikasyon:</strong> DNA → DNA (DNA'nın kendini eşlemesi)</li>
+                        <li><strong>Transkripsiyon:</strong> DNA → RNA (DNA'dan mRNA sentezi)</li>
+                        <li><strong>Translasyon:</strong> RNA → Protein (mRNA'dan protein sentezi)</li>
+                        <li><strong>Bilgi Akışı:</strong> DNA → RNA → Protein şeklindedir.</li>
+                        <li><strong>Retrovirüs İstisnası:</strong> Retrovirüslerde ters transkripsiyon (RNA → DNA) görülür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> TRANSKRİPSİYON (YAZILMA)</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> DNA'daki genetik bilginin mRNA'ya aktarılmasıdır. Çekirdekte gerçekleşir.</li>
+                        <li><strong>RNA Polimeraz:</strong> Transkripsiyonu katalizleyen enzimdir. DNA çift zincirini açar.</li>
+                        <li><strong>Kalıp Zincir:</strong> DNA'nın mRNA sentezinde kullanılan ipliğidir.</li>
+                        <li><strong>Anlamlı Zincir:</strong> DNA'nın şifre veren, mRNA ile aynı dizilime sahip ipliğidir (timin yerine urasil).</li>
+                        <li><strong>mRNA Sentezi:</strong> DNA kalıp zincirinden, tamamlayıcı baz eşleşmesiyle sentezlenir (A-U, T-A, G-C, C-G).</li>
+                        <li><strong>Ökaryotlarda İşlenme:</strong> Ökaryot hücrelerde sentezlenen pre-mRNA, işlenerek olgun mRNA oluşur (intronlar çıkarılır, eksonlar birleştirilir, 5' başlık ve 3' poli-A kuyruğu eklenir).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-language"></i> TRANSLASYON (OKUNMA)</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> mRNA'daki genetik şifrenin ribozomda okunarak amino asit dizisine çevrilmesidir. Sitoplazmada gerçekleşir.</li>
+                        <li><strong>Ribozom:</strong> Protein sentezinin gerçekleştiği organeldir. rRNA ve proteinlerden oluşur.</li>
+                        <li><strong>tRNA (Taşıyıcı RNA):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Amino asitleri ribozoma taşır</li>
+                                <li>Antikodon taşır (kodonla eşleşen üçlü nükleotit)</li>
+                                <li>Yonca yaprağı şeklinde üç boyutlu yapısı vardır</li>
+                                <li>Aminoasil-tRNA sentetaz enzimi amino asidi tRNA'ya bağlar</li>
+                            </ul>
+                        </li>
+                        <li><strong>Translasyon Aşamaları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Başlama:</strong> mRNA ribozomun küçük alt birimine bağlanır. Başlatma tRNA'sı (Met-tRNA) AUG kodonuna bağlanır.</li>
+                                <li><strong>Uzama:</strong> Amino asitler eklenir, peptit bağı oluşur, ribozom mRNA boyunca ilerler.</li>
+                                <li><strong>Terminasyon:</strong> Durdurma kodonuna (UAA, UAG, UGA) ulaşıldığında sentez sonlanır. Serbest bırakma faktörleri proteini ribozomdan ayırır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ribozom Bölgeleri:</strong> A (aminoasil), P (peptidil), E (çıkış) bölgeleri.</li>
+                        <li><strong>Polizom (Poli ribozom):</strong> Bir mRNA üzerinde aynı anda çalışan birden fazla ribozom. Aynı proteinden çok miktarda üretilmesini sağlar.</li>
+                    </ul>
+                    
+                    <table class="genetic-table">
+                        <thead>
+                            <tr>
+                                <th>Kodon</th>
+                                <th>Amino Asit</th>
+                                <th>Özellik</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AUG</td>
+                                <td>Metiyonin</td>
+                                <td>Başlatma kodonu</td>
+                            </tr>
+                            <tr>
+                                <td>UUU, UUC</td>
+                                <td>Fenilalanin</td>
+                                <td>İlk çözülen kodon</td>
+                            </tr>
+                            <tr>
+                                <td>UAA, UAG, UGA</td>
+                                <td>-</td>
+                                <td>Durdurma kodonları</td>
+                            </tr>
+                            <tr>
+                                <td>GGU, GGC, GGA, GGG</td>
+                                <td>Glisin</td>
+                                <td>4 farklı kodonla şifrelenir</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-microscope"></i> TARİHSEL DENEYLER VE KEŞİFLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Beadle ve Tatum (1930'lar):</strong> Neurospora crassa mantarı ile yaptıkları deneylerde "bir gen-bir enzim" hipotezini geliştirdiler. Arjinin sentezinde üç farklı enzimin ve her enzim için ayrı bir genin olduğunu gösterdiler.</li>
+                        <li><strong>Francis Crick:</strong> Genetik şifrenin üçlü olduğunu öne sürdü.</li>
+                        <li><strong>Nirenberg ve Matthaei (1961):</strong> İlk kodonu çözdüler. UUU kodonunun fenilalanin amino asidini şifrelediğini buldular.</li>
+                        <li><strong>Khorana:</strong> Sentetik RNA'lar kullanarak tüm kodonları belirledi.</li>
+                        <li><strong>Holley:</strong> tRNA'nın yapısını aydınlattı, Nobel Ödülü aldı.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cogs"></i> PROTEİN SENTEZİNİ ETKİLEYEN FAKTÖRLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Antibiyotikler:</strong> Bazı antibiyotikler protein sentezini inhibe eder (örneğin streptomisin, tetrasiklin).</li>
+                        <li><strong>Sıcaklık:</strong> Yüksek sıcaklık enzimleri denatüre ederek protein sentezini durdurabilir.</li>
+                        <li><strong>pH:</strong> Uygun olmayan pH enzim aktivitesini etkiler.</li>
+                        <li><strong>Besin Maddeleri:</strong> Amino asit, ATP, enzim ve ribozom yapımı için gerekli maddelerin yetersizliği protein sentezini yavaşlatır.</li>
+                        <li><strong>Hormonlar:</strong> Büyüme hormonu, insülin gibi hormonlar protein sentezini uyarır.</li>
+                        <li><strong>Gen İfadesinin Düzenlenmesi:</strong> Hücreler hangi genlerin ifade edileceğini düzenleyerek hangi proteinlerin sentezleneceğini kontrol eder.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exclamation-triangle"></i> MUTASYONLAR VE PROTEİN SENTEZİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Nokta Mutasyonları:</strong> Tek bir nükleotitin değişmesi.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Sessiz Mutasyon:</strong> Aynı amino asidi şifreleyen farklı bir kodona dönüşür, protein değişmez.</li>
+                                <li><strong>Yanlış Anlamlı Mutasyon:</strong> Farklı bir amino asit şifrelenir, protein yapısı değişir.</li>
+                                <li><strong>Anlamsız Mutasyon:</strong> Bir amino asit kodonu, durdurma kodonuna dönüşür, eksik protein sentezlenir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Çerçeve Kayması Mutasyonu:</strong> Bir veya iki nükleotitin eklenmesi veya çıkarılması, okuma çerçevesini kaydırır, tamamen farklı protein sentezlenir.</li>
+                        <li><strong>Genetik Şifrenin Degenereliği:</strong> Bir amino asidin birden fazla kodonla şifrelenmesi, mutasyonlara karşı koruma sağlar.</li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> DNA'da meydana gelen mutasyonlar, eğer protein kodlayan bölgedeyse ve onarılmazsa, sentezlenen proteini etkileyebilir. Bu da genetik hastalıklara neden olabilir.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 40 Protein Sentezi Sorusu (PDF içeriğine uygun)
+        const csvData = `Genetik şifre nedir?,"DNA'daki nükleotitlerin oluşturduğu, protein sentezinde kullanılan üçlü şifrelerdir. Tüm canlılarda ortaktır."
+Kodon nedir?,"mRNA'daki üçlü nükleotit grubudur. Her kodon bir amino asidi şifreler."
+Antikodon nedir?,"tRNA'daki üçlü nükleotit dizisidir. mRNA'daki kodonla eşleşir."
+Başlatma kodonu hangisidir?,"AUG (Metiyonin amino asidini şifreler ve protein sentezini başlatır)"
+Durdurma (stop) kodonları hangileridir?,"UAA, UAG, UGA (Amino asit şifrelemez, protein sentezini sonlandırır)"
+Genetik şifre kaçlı gruplar halindedir?,"Üçlü gruplar halindedir (kodonlar)"
+Toplam kaç kodon vardır?,"64 kodon (4³ = 64)"
+Kaç kodon amino asit şifreler?,"61 kodon amino asit şifreler"
+Kaç çeşit amino asit vardır?,"20 çeşit amino asit"
+Genetik şifrenin evrensel olması ne demektir?,"Tüm canlılarda aynı şifrelerin kullanılmasıdır"
+Bir amino asidin birden fazla kodonla şifrelenmesine ne denir?,"Degenerelik (Yozluk)"
+Degenereliğin faydası nedir?,"Mutasyonlara karşı koruma sağlar. Bir kodon mutasyona uğrasa bile aynı amino asit şifrelenebilir."
+Protein sentezi nedir?,"DNA'daki genetik bilgiye göre amino asitlerden protein üretilmesidir."
+Gen nedir?,"Bir proteinin sentezlenmesini sağlayan DNA parçasıdır."
+Santral dogma nedir?,"Genetik bilginin DNA → RNA → Protein şeklinde aktarılmasıdır."
+Replikasyon nedir?,"DNA'nın kendini eşlemesidir (DNA → DNA)"
+Transkripsiyon nedir?,"DNA'dan mRNA sentezidir (DNA → RNA)"
+Translasyon nedirir?,"mRNA'dan protein sentezidir (RNA → Protein)"
+Transkripsiyon nerede gerçekleşir?,"Ökaryot hücrelerde çekirdekte, prokaryot hücrelerde sitoplazmada"
+Translasyon nerede gerçekleşir?,"Sitoplazmada ribozomda"
+RNA polimeraz ne iş yapar?,"Transkripsiyonu katalizleyen enzimdir. DNA'dan mRNA sentezini sağlar."
+Kalıp zincir nedir?,"DNA'nın mRNA sentezinde kullanılan ipliğidir."
+Anlamlı zincir nedir?,"DNA'nın şifre veren, mRNA ile aynı dizilime sahip ipliğidir (timin yerine urasil)"
+Ökaryotlarda pre-mRNA nasıl olgun mRNA'ya dönüşür?,"İntronlar çıkarılır, eksonlar birleştirilir, 5' başlık ve 3' poli-A kuyruğu eklenir."
+Ribozom nedir?,"Protein sentezinin gerçekleştiği organeldir. rRNA ve proteinlerden oluşur."
+tRNA'nın görevi nedir?,"Amino asitleri ribozoma taşımak"
+tRNA'nın yapısı nasıldır?,"Yonca yaprağı şeklinde üç boyutlu yapıya sahiptir, antikodon taşır."
+Aminoasil-tRNA sentetaz ne iş yapar?,"Amino asitleri tRNA'ya bağlayan enzimdir."
+Translasyonun başlama aşamasında ne olur?,"mRNA ribozomun küçük alt birimine bağlanır. Başlatma tRNA'sı (Met-tRNA) AUG kodonuna bağlanır."
+Translasyonun uzama aşamasında ne olur?,"Amino asitler eklenir, peptit bağı oluşur, ribozom mRNA boyunca ilerler."
+Translasyonun terminasyon aşamasında ne olur?,"Durdurma kodonuna ulaşıldığında sentez sonlanır. Serbest bırakma faktörleri proteini ribozomdan ayırır."
+Ribozomun A, P, E bölgeleri nedir?,"A (aminoasil): Yeni tRNA'nın bağlandığı bölge, P (peptidil): Peptit zincirini taşıyan tRNA'nın bağlı olduğu bölge, E (çıkış): Boş tRNA'nın ayrıldığı bölge"
+Polizom (poliribozom) nedir?,"Bir mRNA üzerinde aynı anda çalışan birden fazla ribozomdur. Aynı proteinden çok miktarda üretilmesini sağlar."
+Beadle ve Tatum'un deneyi neyi gösterdi?,"Neurospora crassa ile yaptıkları deneyde 'bir gen-bir enzim' hipotezini desteklediler. Arjinin sentezinde üç farklı enzimin ve her enzim için ayrı bir genin olduğunu gösterdiler."
+Nirenberg ve Matthaei'nin keşfi nedir?,"İlk kodonu çözdüler (UUU = Fenilalanin)"
+Khorana'nın katkısı nedir?,"Sentetik RNA'lar kullanarak tüm kodonları belirledi."
+Holley'nin katkısı nedir?,"tRNA'nın yapısını aydınlattı."
+Nokta mutasyonu nedir?,"DNA'da tek bir nükleotitin değişmesidir."
+Sessiz mutasyon nedir?,"Aynı amino asidi şifreleyen farklı bir kodona dönüşür, protein değişmez."
+Yanlış anlamlı mutasyon nedir?,"Farklı bir amino asit şifrelenir, protein yapısı değişir."
+Anlamsız mutasyon nedir?,"Bir amino asit kodonu, durdurma kodonuna dönüşür, eksik protein sentezlenir."
+Çerçeve kayması mutasyonu nedir?,"Bir veya iki nükleotitin eklenmesi veya çıkarılması, okuma çerçevesini kaydırır, tamamen farklı protein sentezlenir."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 30 Questions (PDF içeriğine uygun)
+        const testQuestions = [
+            {
+                question: "Genetik şifre nedir?",
+                options: [
+                    "Proteinlerin amino asit dizilimi",
+                    "DNA'daki nükleotitlerin oluşturduğu, protein sentezinde kullanılan üçlü şifreler",
+                    "RNA'nın yapı taşları",
+                    "Hücredeki enzimlerin çalışma prensibi",
+                    "Kromozomların şekli"
+                ],
+                correct: 1,
+                explanation: "Genetik şifre, DNA'daki nükleotitlerin oluşturduğu, protein sentezinde kullanılan üçlü şifrelerdir. Tüm canlılarda ortaktır (evrenseldir)."
+            },
+            {
+                question: "Kodon nedir?",
+                options: [
+                    "DNA'daki üçlü nükleotit grubu",
+                    "tRNA'daki amino asit bağlanma bölgesi",
+                    "mRNA'daki üçlü nükleotit grubu",
+                    "Ribozomun protein sentez bölgesi",
+                    "Genin başlangıç noktası"
+                ],
+                correct: 2,
+                explanation: "Kodon, mRNA'daki üçlü nükleotit grubudur. Her kodon bir amino asidi şifreler."
+            },
+            {
+                question: "Başlatma kodonu hangisidir?",
+                options: ["UUU", "AUG", "UAA", "GUA", "CGA"],
+                correct: 1,
+                explanation: "Başlatma kodonu AUG'dir. Metiyonin amino asidini şifreler ve protein sentezini başlatır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi durdurma (stop) kodonu değildir?",
+                options: ["UAA", "UAG", "UGA", "AUG", "Hepsi durdurma kodonudur"],
+                correct: 3,
+                explanation: "AUG başlatma kodonudur. Durdurma kodonları UAA, UAG ve UGA'dır."
+            },
+            {
+                question: "Toplam kaç kodon vardır?",
+                options: ["16", "20", "61", "64", "128"],
+                correct: 3,
+                explanation: "4 çeşit nükleotit, 3'lü gruplar halinde 4³ = 64 kodon oluşturur."
+            },
+            {
+                question: "Kaç kodon amino asit şifreler?",
+                options: ["20", "61", "64", "16", "32"],
+                correct: 1,
+                explanation: "64 kodondan 3'ü durdurma kodonudur (UAA, UAG, UGA). Geriye kalan 61 kodon amino asit şifreler."
+            },
+            {
+                question: "Bir amino asidin birden fazla kodonla şifrelenmesine ne denir?",
+                options: [
+                    "Evrensellik",
+                    "Degenerelik (Yozluk)",
+                    "Translasyon",
+                    "Transkripsiyon",
+                    "Mutasyon"
+                ],
+                correct: 1,
+                explanation: "Bir amino asidin birden fazla kodonla şifrelenmesine degenerelik (yozluk) denir. Bu durum mutasyonlara karşı koruma sağlar."
+            },
+            {
+                question: "Santral dogma nedir?",
+                options: [
+                    "DNA'nın kendini eşlemesi",
+                    "Protein sentezinin mekanizması",
+                    "Genetik bilginin DNA → RNA → Protein şeklinde aktarılması",
+                    "RNA'nın çeşitleri",
+                    "Gen ifadesinin düzenlenmesi"
+                ],
+                correct: 2,
+                explanation: "Santral dogma, genetik bilginin DNA → RNA → Protein şeklinde aktarılmasıdır."
+            },
+            {
+                question: "Transkripsiyon nedir?",
+                options: [
+                    "DNA'nın kendini eşlemesi",
+                    "DNA'dan mRNA sentezi",
+                    "mRNA'dan protein sentezi",
+                    "Proteinlerin işlenmesi",
+                    "RNA'nın yıkımı"
+                ],
+                correct: 1,
+                explanation: "Transkripsiyon, DNA'dan mRNA sentezidir (DNA → RNA). Çekirdekte gerçekleşir."
+            },
+            {
+                question: "Translasyon nedir?",
+                options: [
+                    "DNA'nın kendini eşlemesi",
+                    "DNA'dan mRNA sentezi",
+                    "mRNA'dan protein sentezi",
+                    "Proteinlerin işlenmesi",
+                    "RNA'nın yıkımı"
+                ],
+                correct: 2,
+                explanation: "Translasyon, mRNA'dan protein sentezidir (RNA → Protein). Sitoplazmada ribozomda gerçekleşir."
+            },
+            {
+                question: "Transkripsiyonu katalizleyen enzim hangisidir?",
+                options: [
+                    "DNA polimeraz",
+                    "RNA polimeraz",
+                    "Helikaz",
+                    "Ligaz",
+                    "Aminoasil-tRNA sentetaz"
+                ],
+                correct: 1,
+                explanation: "Transkripsiyonu katalizleyen enzim RNA polimerazdır. DNA'dan mRNA sentezini sağlar."
+            },
+            {
+                question: "Kalıp zincir nedir?",
+                options: [
+                    "DNA'nın şifre veren ipliği",
+                    "DNA'nın mRNA sentezinde kullanılan ipliği",
+                    "mRNA'nın ribozoma bağlanan kısmı",
+                    "tRNA'nın antikodon taşıyan kısmı",
+                    "Proteinin amino asit dizilimi"
+                ],
+                correct: 1,
+                explanation: "Kalıp zincir, DNA'nın mRNA sentezinde kullanılan ipliğidir."
+            },
+            {
+                question: "tRNA'nın görevi nedir?",
+                options: [
+                    "DNA'yı eşlemek",
+                    "mRNA sentezlemek",
+                    "Amino asitleri ribozoma taşımak",
+                    "Proteinleri parçalamak",
+                    "Ribozomun yapısına katılmak"
+                ],
+                correct: 2,
+                explanation: "tRNA'nın görevi amino asitleri ribozoma taşımaktır. Antikodon taşır ve mRNA'daki kodonla eşleşir."
+            },
+            {
+                question: "Antikodon nedir?",
+                options: [
+                    "mRNA'daki üçlü nükleotit grubu",
+                    "DNA'daki şifre dizisi",
+                    "tRNA'daki üçlü nükleotit dizisi",
+                    "Ribozomun protein sentez bölgesi",
+                    "Genin başlangıç noktası"
+                ],
+                correct: 2,
+                explanation: "Antikodon, tRNA'daki üçlü nükleotit dizisidir. mRNA'daki kodonla eşleşir."
+            },
+            {
+                question: "Ribozomun A, P, E bölgelerinden hangisi yeni tRNA'nın bağlandığı bölgedir?",
+                options: ["A bölgesi", "P bölgesi", "E bölgesi", "Hem A hem P", "Hem P hem E"],
+                correct: 0,
+                explanation: "A (aminoasil) bölgesi: Yeni tRNA'nın bağlandığı bölge, P (peptidil) bölgesi: Peptit zincirini taşıyan tRNA'nın bağlı olduğu bölge, E (çıkış) bölgesi: Boş tRNA'nın ayrıldığı bölge."
+            },
+            {
+                question: "Polizom (poliribozom) nedir?",
+                options: [
+                    "Birden fazla genin aynı anda ifade edilmesi",
+                    "Bir mRNA üzerinde aynı anda çalışan birden fazla ribozom",
+                    "DNA'nın paketlenmiş hali",
+                    "Proteinlerin kompleks yapısı",
+                    "RNA'nın çeşitli formları"
+                ],
+                correct: 1,
+                explanation: "Polizom (poliribozom), bir mRNA üzerinde aynı anda çalışan birden fazla ribozomdur. Aynı proteinden çok miktarda üretilmesini sağlar."
+            },
+            {
+                question: "Beadle ve Tatum hangi organizma ile deney yapmıştır?",
+                options: [
+                    "E. coli bakteri",
+                    "Meyve sineği (Drosophila)",
+                    "Neurospora crassa mantarı",
+                    "Fare",
+                    "İnsan hücreleri"
+                ],
+                correct: 2,
+                explanation: "Beadle ve Tatum, Neurospora crassa mantarı ile deney yapmış ve 'bir gen-bir enzim' hipotezini desteklemiştir."
+            },
+            {
+                question: "Nirenberg ve Matthaei'nin keşfi nedir?",
+                options: [
+                    "DNA'nın yapısı",
+                    "İlk kodonun çözülmesi (UUU = Fenilalanin)",
+                    "Ribozomun yapısı",
+                    "tRNA'nın yapısı",
+                    "Protein sentez mekanizması"
+                ],
+                correct: 1,
+                explanation: "Nirenberg ve Matthaei, 1961'de ilk kodonu çözdüler (UUU = Fenilalanin)."
+            },
+            {
+                question: "Bir amino asit kodonunun, durdurma kodonuna dönüşmesiyle oluşan mutasyon türü nedir?",
+                options: [
+                    "Sessiz mutasyon",
+                    "Yanlış anlamlı mutasyon",
+                    "Anlamsız mutasyon",
+                    "Çerçeve kayması mutasyonu",
+                    "Nokta mutasyonu"
+                ],
+                correct: 2,
+                explanation: "Anlamsız mutasyon: Bir amino asit kodonu, durdurma kodonuna dönüşür, eksik protein sentezlenir."
+            },
+            {
+                question: "Bir veya iki nükleotitin eklenmesi veya çıkarılmasıyla oluşan, okuma çerçevesini kaydıran mutasyon türü nedir?",
+                options: [
+                    "Sessiz mutasyon",
+                    "Yanlış anlamlı mutasyon",
+                    "Anlamsız mutasyon",
+                    "Çerçeve kayması mutasyonu",
+                    "Nokta mutasyonu"
+                ],
+                correct: 3,
+                explanation: "Çerçeve kayması mutasyonu: Bir veya iki nükleotitin eklenmesi veya çıkarılması, okuma çerçevesini kaydırır, tamamen farklı protein sentezlenir."
+            },
+            {
+                question: "DNA'daki TAC şifresi, mRNA'da hangi kodon olarak yazılır?",
+                options: ["AUG", "ATG", "TAC", "UAC", "UAG"],
+                correct: 0,
+                explanation: "DNA'daki TAC şifresi, mRNA'da AUG olarak yazılır. AUG hem metiyonin amino asidini şifreler hem de protein sentezini başlatır."
+            },
+            {
+                question: "Aminoasil-tRNA sentetaz enzimi ne iş yapar?",
+                options: [
+                    "DNA replikasyonunu katalizler",
+                    "Transkripsiyonu katalizler",
+                    "Amino asitleri tRNA'ya bağlar",
+                    "Peptit bağı oluşturur",
+                    "mRNA'yı parçalar"
+                ],
+                correct: 2,
+                explanation: "Aminoasil-tRNA sentetaz enzimi, amino asitleri tRNA'ya bağlar. Her amino asit için özgül bir aminoasil-tRNA sentetaz vardır."
+            },
+            {
+                question: "Translasyonun terminasyon aşamasında ne olur?",
+                options: [
+                    "mRNA ribozoma bağlanır",
+                    "İlk amino asit eklenir",
+                  "Durdurma kodonuna ulaşıldığında sentez sonlanır",
+                    "Ribozom mRNA boyunca ilerler",
+                    "Protein katlanır"
+                ],
+                correct: 2,
+                explanation: "Translasyonun terminasyon aşamasında, durdurma kodonuna (UAA, UAG, UGA) ulaşıldığında sentez sonlanır. Serbest bırakma faktörleri proteini ribozomdan ayırır."
+            },
+            {
+                question: "Ökaryot hücrelerde sentezlenen pre-mRNA nasıl olgun mRNA'ya dönüşür?",
+                options: [
+                    "Hiçbir işlem görmez",
+                    "Sadece 5' başlık eklenir",
+                    "Sadece 3' poli-A kuyruğu eklenir",
+                    "İntronlar çıkarılır, eksonlar birleştirilir, 5' başlık ve 3' poli-A kuyruğu eklenir",
+                    "Sadece intronlar çıkarılır"
+                ],
+                correct: 3,
+                explanation: "Ökaryot hücrelerde sentezlenen pre-mRNA, işlenerek olgun mRNA oluşur: intronlar çıkarılır, eksonlar birleştirilir, 5' başlık ve 3' poli-A kuyruğu eklenir."
+            },
+            {
+                question: "Genetik şifrenin evrensel olması ne anlama gelir?",
+                options: [
+                    "Tüm canlılarda aynı gen sayısının olması",
+                    "Tüm canlılarda aynı proteinlerin sentezlenmesi",
+                    "Tüm canlılarda aynı şifrelerin kullanılması",
+                    "Tüm canlılarda DNA'nın aynı uzunlukta olması",
+                    "Tüm canlılarda aynı sayıda kromozom olması"
+                ],
+                correct: 2,
+                explanation: "Genetik şifrenin evrensel olması, tüm canlılarda aynı şifrelerin kullanılması demektir. Örneğin AUG kodonu tüm canlılarda metiyonini şifreler."
+            },
+            {
+                question: "Aşağıdakilerden hangisi translasyonun aşamalarından biri değildir?",
+                options: ["Başlama", "Uzama", "Terminasyon", "Replikasyon", "Hepsi translasyon aşamasıdır"],
+                correct: 3,
+                explanation: "Translasyonun aşamaları: Başlama, uzama, terminasyon. Replikasyon DNA'nın kendini eşlemesidir, translasyon aşaması değildir."
+            },
+            {
+                question: "Hangi bilim insanı tRNA'nın yapısını aydınlatarak Nobel Ödülü almıştır?",
+                options: ["Beadle ve Tatum", "Nirenberg ve Matthaei", "Khorana", "Holley", "Crick"],
+                correct: 3,
+                explanation: "Holley, tRNA'nın yapısını aydınlatarak Nobel Ödülü almıştır."
+            },
+            {
+                question: "Aşağıdaki mutasyon türlerinden hangisinde protein değişmez?",
+                options: [
+                    "Sessiz mutasyon",
+                    "Yanlış anlamlı mutasyon",
+                    "Anlamsız mutasyon",
+                    "Çerçeve kayması mutasyonu",
+                    "Hiçbirinde"
+                ],
+                correct: 0,
+                explanation: "Sessiz mutasyonda, aynı amino asidi şifreleyen farklı bir kodona dönüşür, bu nedenle protein değişmez."
+            },
+            {
+                question: "Bir gen kaç proteini şifreler?",
+                options: [
+                    "Birden fazla protein",
+                    "Sadece bir protein",
+                    "Hiç protein şifrelemez",
+                    "Bazen bir bazen birden fazla",
+                    "Protein şifrelemez, RNA şifreler"
+                ],
+                correct: 1,
+                explanation: "Klasik 'bir gen-bir enzim' hipotezine göre bir gen bir proteini şifreler. Ancak alternatif ekleme gibi mekanizmalarla bir genden farklı proteinler de üretilebilir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Protein sentezini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Protein sentezini çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Protein sentezinin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
