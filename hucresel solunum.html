@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hücresel Solunum Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2ecc71;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #2ecc71;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #2ecc71;
+        }
+
+        .option.selected {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lungs"></i> Hücresel Solunum Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile hücresel solunumu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">50 adet soru-cevap kartı ile hücresel solunum konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Hücresel solunumun ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">40 soruluk detaylı test ile hücresel solunum bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Hücresel solunumun tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Hücresel Solunum Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">50</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Hücresel Solunum Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücresel Solunum Temel Kavramlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Hücresel Solunum:</strong> Organik besin moleküllerinin hücre içinde parçalanarak enerji (ATP) elde edilmesi</li>
+                        <li><strong>Oksijenli Solunum:</strong> Oksijen varlığında organik moleküllerin CO₂ ve H₂O'ya kadar parçalanarak ATP üretilmesi</li>
+                        <li><strong>Nefes Alıp Verme:</strong> Solunum organlarındaki gaz değişimi (hücresel solunumdan farklıdır)</li>
+                        <li><strong>ATP:</strong> Hücrelerin kullanabileceği enerji birimi (adenozin trifosfat)</li>
+                        <li><strong>Mitokondri:</strong> Hücrenin enerji santrali, oksijenli solunumun merkezi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Oksijenli Solunum Evreleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Glikoliz:</strong> Glikozun sitoplazmada 2 piruvata parçalanması (tüm canlılarda ortak)</li>
+                        <li><strong>Krebs Döngüsü:</strong> Asetil-CoA'nın CO₂, NADH, FADH₂ ve ATP üretmek üzere parçalanması</li>
+                        <li><strong>Elektron Taşıma Sistemi (ETS):</strong> NADH ve FADH₂'den gelen elektronların oksijene taşınması ile ATP üretimi</li>
+                        <li><strong>Piruvat Oksidasyonu:</strong> Glikoliz ile Krebs döngüsü arasındaki bağlantı (piruvat → Asetil-CoA)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Glikoliz Detayları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Sitoplazma (tüm canlılarda)</li>
+                        <li><strong>Girdi:</strong> 1 glikoz, 2 ATP (aktivasyon için)</li>
+                        <li><strong>Çıktı:</strong> 2 piruvat, 2 NADH, 4 ATP (net 2 ATP)</li>
+                        <li><strong>Enzimler:</strong> Tüm canlılarda ortak enzimler</li>
+                        <li><strong>Önem:</strong> Oksijenli solunum, oksijensiz solunum ve fermantasyonda ortak evre</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Krebs Döngüsü Detayları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Mitokondri matriksi</li>
+                        <li><strong>Girdi:</strong> 2 Asetil-CoA (her piruvattan 1 tane)</li>
+                        <li><strong>Çıktı (1 glikoz için):</strong> 4 CO₂, 6 NADH, 2 FADH₂, 2 ATP</li>
+                        <li><strong>Keşif:</strong> Hans Krebs (1937)</li>
+                        <li><strong>Döngü:</strong> Her glikoz için 2 kez gerçekleşir</li>
+                        <li><strong>Diğer Adı:</strong> Sitrik asit döngüsü</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Elektron Taşıma Sistemi (ETS)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Mitokondri krista zarları (ökaryotlarda)</li>
+                        <li><strong>Görev:</strong> NADH ve FADH₂'den gelen elektronları oksijene taşımak</li>
+                        <li><strong>Çıktı:</strong> Su (H₂O) ve çok miktarda ATP (~32-34 ATP)</li>
+                        <li><strong>Son Elektron Alıcısı:</strong> Oksijen (O₂)</li>
+                        <li><strong>ATP Üretimi:</strong> Kemiosmoz ile</li>
+                        <li><strong>Isı:</strong> Enerjinin bir kısmı ısı olarak yayılır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kimyasal Bileşikler ve Koenzimler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>NAD⁺/NADH:</strong> Elektron taşıyıcı koenzim (nikotinamid adenin dinükleotid)</li>
+                        <li><strong>FAD/FADH₂:</strong> Elektron taşıyıcı koenzim (flavin adenin dinükleotid)</li>
+                        <li><strong>Asetil-CoA:</strong> Krebs döngüsüne giren 2 karbonlu bileşik</li>
+                        <li><strong>CO₂:</strong> Karbon dioksit, solunum son ürünü</li>
+                        <li><strong>H₂O:</strong> Su, ETS'de oksijenin indirgenmesiyle oluşur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücresel Solunumun Önemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Enerji Üretimi:</strong> Hücre faaliyetleri için ATP sağlar</li>
+                        <li><strong>Metabolik Denge:</strong> Homeostasiyi destekler</li>
+                        <li><strong>Isı Üretimi:</strong> Vücut sıcaklığının korunmasına yardımcı olur</li>
+                        <li><strong>Yaşam İçin Zorunlu:</strong> Tüm ökaryot ve bazı prokaryot canlılarda gerçekleşir</li>
+                        <li><strong>Sportif Performans:</strong> Kas aktivitesi için gerekli enerjiyi sağlar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Hücresel Solunum Testi (40 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #2ecc71; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 40</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Hücresel Solunum Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> HÜCRESEL SOLUNUMA GİRİŞ</div>
+                    <ul class="summary-list">
+                        <li><strong>Hücresel solunum:</strong> Organik besin moleküllerinin (glikoz, yağ asitleri, amino asitler) hücre içinde parçalanarak enerji (ATP) elde edilmesidir.</li>
+                        <li><strong>Nefes alıp verme ile karıştırılmamalıdır:</strong> Nefes alıp verme solunum organlarındaki gaz değişimini ifade ederken, hücresel solunum hücre içindeki enerji üretim sürecidir.</li>
+                        <li><strong>Oksijenli solunum:</strong> Oksijen varlığında organik moleküllerin karbondioksit (CO₂) ve su (H₂O) moleküllerine kadar parçalanması sonucunda ATP üretilmesidir.</li>
+                        <li><strong>Genel denklem:</strong> C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP + ısı</li>
+                        <li><strong>ATP:</strong> Adenozin trifosfat, hücrelerin kullanabileceği enerji birimidir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> OKSİJENLİ SOLUNUM EVRELERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>1. Glikoliz:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Sitoplazma (tüm canlılarda)</li>
+                                <li>Girdi: 1 glikoz, 2 ATP (aktivasyon için)</li>
+                                <li>Çıktı: 2 piruvat, 2 NADH, 4 ATP (net 2 ATP)</li>
+                                <li>Önem: Oksijenli solunum, oksijensiz solunum ve fermantasyonda ortak evre</li>
+                            </ul>
+                        </li>
+                        <li><strong>2. Piruvat Oksidasyonu (Ara Evre):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Mitokondri matriksi</li>
+                                <li>Süreç: Piruvat → Asetil-CoA + CO₂ + NADH</li>
+                                <li>Her piruvattan: 1 Asetil-CoA, 1 CO₂, 1 NADH oluşur</li>
+                            </ul>
+                        </li>
+                        <li><strong>3. Krebs (Sitrik Asit) Döngüsü:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Mitokondri matriksi</li>
+                                <li>Girdi: 2 Asetil-CoA (her glikoz için)</li>
+                                <li>Çıktı (1 glikoz için): 4 CO₂, 6 NADH, 2 FADH₂, 2 ATP</li>
+                                <li>Keşif: Hans Krebs (1937)</li>
+                                <li>Her glikoz için 2 kez gerçekleşir</li>
+                            </ul>
+                        </li>
+                        <li><strong>4. Elektron Taşıma Sistemi (ETS):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Mitokondri krista zarları</li>
+                                <li>Görev: NADH ve FADH₂'den gelen elektronları oksijene taşımak</li>
+                                <li>Çıktı: Su (H₂O) ve çok miktarda ATP (~32-34 ATP)</li>
+                                <li>Son elektron alıcısı: Oksijen (O₂)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Bir glikoz molekülünün oksijenli solunumla parçalanması sonucu toplam ~36-38 ATP üretilir. Enerjinin bir kısmı ısı olarak ortama yayılır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-industry"></i> MİTOKONDRİNİN ROLÜ</div>
+                    <ul class="summary-list">
+                        <li><strong>Enerji Santrali:</strong> Hücresel solunumun merkezi organelidir.</li>
+                        <li><strong>Yapı:</strong> Çift katmanlı zarla çevrilidir (dış zar ve iç zar).</li>
+                        <li><strong>Krista:</strong> İç zarın kıvrımları, ETS'nin gerçekleştiği yer, yüzey alanını artırır.</li>
+                        <li><strong>Matriks:</strong> İç zarın içindeki sıvı, Krebs döngüsünün gerçekleştiği yer.</li>
+                        <li><strong>Ökaryotlarda:</strong> Oksijenli solunum sitoplazmada başlar, mitokondride tamamlanır.</li>
+                        <li><strong>Prokaryotlarda:</strong> Sitoplazmada ve hücre zarındaki kıvrımlarda gerçekleşir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-atom"></i> KİMYASAL BİLEŞİKLER VE KOENZİMLER</div>
+                    <ul class="summary-list">
+                        <li><strong>NAD⁺ (Nikotinamid Adenin Dinükleotid):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Elektron taşıyıcı koenzim</li>
+                                <li>Yükseltgenmiş form: NAD⁺</li>
+                                <li>İndirgenmiş form: NADH (elektron ve proton taşır)</li>
+                                <li>Glikoliz, piruvat oksidasyonu ve Krebs döngüsünde oluşur</li>
+                            </ul>
+                        </li>
+                        <li><strong>FAD (Flavin Adenin Dinükleotid):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Elektron taşıyıcı koenzim</li>
+                                <li>Yükseltgenmiş form: FAD</li>
+                                <li>İndirgenmiş form: FADH₂ (2 elektron ve 2 proton taşır)</li>
+                                <li>Sadece Krebs döngüsünde oluşur</li>
+                            </ul>
+                        </li>
+                        <li><strong>Asetil-CoA (Asetil Koenzim A):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Piruvat oksidasyonu sonucu oluşur</li>
+                                <li>2 karbonlu bileşik</li>
+                                <li>Krebs döngüsüne girer</li>
+                            </ul>
+                        </li>
+                        <li><strong>ATP (Adenozin Trifosfat):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Enerji birimi</li>
+                                <li>Yüksek enerjili fosfat bağları içerir</li>
+                                <li>Hücre faaliyetleri için enerji sağlar</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-chart-line"></i> ENERJİ DENGESİ VE ATP HESABI</div>
+                    <ul class="summary-list">
+                        <li><strong>Glikoliz (net):</strong> 2 ATP + 2 NADH</li>
+                        <li><strong>Piruvat Oksidasyonu (2 piruvat için):</strong> 2 NADH + 2 CO₂</li>
+                        <li><strong>Krebs Döngüsü (1 glikoz için):</strong> 2 ATP + 6 NADH + 2 FADH₂ + 4 CO₂</li>
+                        <li><strong>Elektron Taşıma Sistemi:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>1 NADH ≈ 3 ATP</li>
+                                <li>1 FADH₂ ≈ 2 ATP</li>
+                                <li>Toplam NADH: 10 (2+2+6) → ~30 ATP</li>
+                                <li>Toplam FADH₂: 2 → ~4 ATP</li>
+                            </ul>
+                        </li>
+                        <li><strong>Toplam ATP (yaklaşık):</strong> 2 (glikoliz) + 2 (Krebs) + 30 (NADH) + 4 (FADH₂) = 38 ATP</li>
+                        <li><strong>Gerçek Değer:</strong> ~36-38 ATP (enerjinin bir kısmı ısı olarak kaybedilir)</li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> ETS'de NADH'lerin her biri yaklaşık 3 ATP, FADH₂'lerin her biri yaklaşık 2 ATP üretimine yol açar. Toplam ATP sayısı organizmaya ve koşullara göre değişebilir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-fire"></i> SOLUNUM VE ENERJİ İLİŞKİSİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Enerji Kaynağı:</strong> Güneş → Fotosentez → Organik besinler → Hücresel solunum → ATP</li>
+                        <li><strong>Isı Üretimi:</strong> Enerjinin bir kısmı ısı olarak açığa çıkar, vücut sıcaklığının korunmasına yardımcı olur.</li>
+                        <li><strong>Metabolik Faaliyetler:</strong> Kas kasılması, sinir impulsu iletimi, aktif taşıma, biyosentez reaksiyonları için ATP gereklidir.</li>
+                        <li><strong>Sportif Performans:</strong> Yüksek enerji gerektiren aktivitelerde oksijenli solunum hızı artar.</li>
+                        <li><strong>Homeostasi:</strong> Hücresel solunum, vücudun iç dengesinin (homeostasi) korunmasına katkı sağlar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-temperature-high"></i> SICAKLIK VE ENZİM ETKİSİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Enzim Kontrolü:</strong> Hücresel solunum enzim kontrolünde gerçekleşir.</li>
+                        <li><strong>Sıcaklık Etkisi:</strong> Enzimler belirli sıcaklık aralıklarında aktif olduğundan, sıcaklık değişimleri solunum hızını etkiler.</li>
+                        <li><strong>Optimum Sıcaklık:</strong> İnsanda vücut sıcaklığı (~37°C) enzimler için optimum sıcaklıktır.</li>
+                        <li><strong>Aşırı Sıcaklık:</strong> Yüksek sıcaklık enzimlerin yapısını bozar (denatürasyon), düşük sıcaklık enzim aktivitesini yavaşlatır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Oksijenli Solunum (Aerobik Solunum):</strong> Oksijen varlığında organik besinlerin CO₂ ve H₂O'ya kadar parçalanarak ATP üretilmesi.</li>
+                        <li><strong>Glikoliz:</strong> Glikozun sitoplazmada piruvata parçalanması.</li>
+                        <li><strong>Krebs Döngüsü:</strong> Asetil-CoA'nın CO₂, NADH, FADH₂ ve ATP üretmek üzere parçalandığı döngüsel reaksiyonlar.</li>
+                        <li><strong>Elektron Taşıma Sistemi (ETS):</strong> NADH ve FADH₂'den gelen elektronların oksijene taşınması ile ATP üretilen sistem.</li>
+                        <li><strong>Kemiosmoz:</strong> Proton gradiyenti kullanılarak ATP sentezlenmesi.</li>
+                        <li><strong>Mitokondri:</strong> Ökaryot hücrelerde oksijenli solunumun gerçekleştiği organel.</li>
+                        <li><strong>Homeostasi:</strong> Organizmanın iç dengede kalması.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 50 Hücresel Solunum Sorusu (PDF'ye dayalı)
+        const csvData = `Hücresel solunum nedir?,"Organik besin moleküllerinin hücre içinde parçalanarak enerji (ATP) elde edilmesidir."
+Oksijenli solunum nedir?,"Oksijen varlığında organik moleküllerin CO₂ ve H₂O'ya kadar parçalanarak ATP üretilmesidir."
+Nefes alıp verme ile hücresel solunum arasındaki fark nedir?,"Nefes alıp verme solunum organlarındaki gaz değişimini ifade ederken, hücresel solunum hücre içindeki enerji üretim sürecidir."
+Oksijenli solunumun genel denklemi nedir?,"C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP + ısı"
+ATP nedir?,"Adenozin trifosfat, hücrelerin kullanabileceği enerji birimidir."
+Mitokondrinin görevi nedir?,"Hücrenin enerji santralidir, oksijenli solunumun merkezidir."
+Glikoliz nedir?,"Glikozun sitoplazmada çeşitli enzimlerin kontrolünde 2 piruvata parçalandığı tepkime dizisidir."
+Glikoliz nerede gerçekleşir?,"Sitoplazmada (tüm canlılarda)"
+Glikolizin girdileri nelerdir?,"1 glikoz, 2 ATP (aktivasyon için)"
+Glikolizin çıktıları nelerdir?,"2 piruvat, 2 NADH, 4 ATP (net 2 ATP)"
+Glikoliz hangi solunum türlerinde ortaktır?,"Oksijenli solunum, oksijensiz solunum ve fermantasyonda ortaktır."
+NAD⁺ nedir?,"Nikotinamid adenin dinükleotid, solunum metabolizmasında elektron taşıyan bir koenzimdir."
+NADH nasıl oluşur?,"NAD⁺ bir çift hidrojen aldığında NADH olarak indirgenir."
+Krebs döngüsü nedir?,"Asetil-CoA'nın CO₂, NADH, FADH₂ ve ATP üretmek üzere parçalandığı döngüsel reaksiyonlardır."
+Krebs döngüsü nerede gerçekleşir?,"Mitokondri matriksinde"
+Krebs döngüsünü kim açıklamıştır?,"Alman bilim insanı Hans Krebs (1937)"
+Krebs döngüsüne giren molekül nedir?,"Asetil-CoA"
+Bir glikoz için Krebs döngüsü kaç kez gerçekleşir?,"2 kez (her piruvattan 1 Asetil-CoA oluşur)"
+Krebs döngüsünden çıkan ürünler nelerdir? (1 glikoz için), "4 CO₂, 6 NADH, 2 FADH₂, 2 ATP"
+FAD nedir?,"Flavin adenin dinükleotid, oksijenli solunumda görevli elektron taşıyan bir koenzimdir."
+FADH₂ nasıl oluşur?,"FAD, 2 elektron ve 2 proton alarak indirgenir ve FADH₂'ye dönüşür."
+Elektron Taşıma Sistemi (ETS) nedir?,"NADH ve FADH₂'den gelen elektronların oksijene taşınması ile ATP üretilen sistem."
+ETS nerede gerçekleşir?,"Mitokondri krista zarlarında (ökaryotlarda)"
+ETS'nin son elektron alıcısı nedir?,"Oksijen (O₂)"
+ETS'de oksijen neye dönüşür?,"Suya (H₂O) dönüşür (elektron ve proton alarak)"
+Piruvat oksidasyonu nedir?,"Piruvatın mitokondride Asetil-CoA'ya dönüşümüdür."
+Piruvat oksidasyonu nerede gerçekleşir?,"Mitokondri matriksinde"
+Bir piruvat oksidasyonundan çıkan ürünler nelerdir?,"1 Asetil-CoA, 1 CO₂, 1 NADH"
+Oksijenli solunumda toplam kaç ATP üretilir? (yaklaşık), "36-38 ATP"
+Glikolizde net kaç ATP üretilir?,"2 ATP"
+Krebs döngüsünde bir glikoz için kaç ATP üretilir?,"2 ATP"
+ETS'de 1 NADH'dan kaç ATP üretilir?,"Yaklaşık 3 ATP"
+ETS'de 1 FADH₂'dan kaç ATP üretilir?,"Yaklaşık 2 ATP"
+Oksijenli solunum hangi canlılarda gerçekleşir?,"Bazı prokaryotlarda ve tüm ökaryot canlılarda"
+Prokaryotlarda oksijenli solunum nerede gerçekleşir?,"Sitoplazmada ve hücre zarındaki kıvrımlarda"
+Mitokondrinin yapısı nasıldır?,"Çift katmanlı zarla çevrilidir (dış zar ve iç zar)"
+Krista nedir?,"Mitokondrinin iç zarının kıvrımları, ETS'nin gerçekleştiği yer"
+Matriks nedir?,"Mitokondrinin iç zarının içindeki sıvı, Krebs döngüsünün gerçekleştiği yer"
+Oksijenli solunum neden önemlidir?,"Hücre faaliyetleri için ATP sağlar, metabolik dengeyi destekler, vücut sıcaklığının korunmasına yardımcı olur."
+Hücresel solunumda enerjinin bir kısmı ne olur?,"Isı enerjisi olarak ortama yayılır."
+Hücresel solunum enzim kontrolünde midir?,"Evet, tüm evreler enzim kontrolünde gerçekleşir."
+Sıcaklık hücresel solunumu nasıl etkiler?,"Enzimler belirli sıcaklık aralıklarında aktif olduğundan, sıcaklık değişimleri solunum hızını etkiler."
+Homeostasi nedir?,"Organizmanın iç dengede kalmasıdır."
+Hücresel solunum homeostasiye nasıl katkı sağlar?,"Enerji üreterek ve ısı açığa çıkararak vücudun iç dengesini korumaya yardımcı olur."
+Sportif faaliyetlerde hücresel solunum neden önemlidir?,"Yüksek enerji gerektiren aktiviteler için ATP sağlar."
+Glikolizde kullanılan enzimler tüm canlılarda ortak mıdır?,"Evet, glikoliz enzimleri tüm canlılarda ortaktır."
+Krebs döngüsüne neden sitrik asit döngüsü de denir?,"Döngünün ilk ara ürünü sitrik asit (limon asidi) olduğu için."
+Oksijenli solunumda CO₂ nerede oluşur?,"Piruvat oksidasyonunda ve Krebs döngüsünde"
+Oksijenli solunumda H₂O nerede oluşur?,"Elektron Taşıma Sisteminde (ETS)"
+Hücresel solunum reaksiyonları neden şematik olarak modellenir?,"Karmaşık biyokimyasal süreçleri anlamayı ve öğrenmeyi kolaylaştırmak için."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 40 Questions (PDF'ye dayalı)
+        const testQuestions = [
+            {
+                question: "Hücresel solunum nedir?",
+                options: [
+                    "Solunum organlarındaki gaz değişimi",
+                    "Organik besin moleküllerinin hücre içinde parçalanarak enerji (ATP) elde edilmesi",
+                    "Oksijenin hücrelere taşınması",
+                    "Karbondioksitin vücuttan atılması",
+                    "Besinlerin sindirilmesi"
+                ],
+                correct: 1,
+                explanation: "Hücresel solunum, organik besin moleküllerinin (glikoz, yağ asitleri, amino asitler) hücre içinde parçalanarak enerji (ATP) elde edilmesidir."
+            },
+            {
+                question: "Oksijenli solunumun genel denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP + ısı",
+                    "C₆H₁₂O₆ → 2C₃H₄O₃ + 2ATP",
+                    "6CO₂ + 6H₂O + ışık → C₆H₁₂O₆ + 6O₂",
+                    "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP",
+                    "C₆H₁₂O₆ → 2C₃H₆O₃ + 2ATP"
+                ],
+                correct: 0,
+                explanation: "Oksijenli solunumun genel denklemi: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP + ısı"
+            },
+            {
+                question: "Glikoliz nerede gerçekleşir?",
+                options: ["Mitokondride", "Sitoplazmada", "Çekirdekte", "Endoplazmik retikulumda", "Golgi aygıtında"],
+                correct: 1,
+                explanation: "Glikoliz, glikozun sitoplazmada 2 piruvata parçalandığı tepkime dizisidir. Tüm canlılarda ortak olarak gerçekleşir."
+            },
+            {
+                question: "Glikolizin net ATP kazancı kaçtır?",
+                options: ["1 ATP", "2 ATP", "4 ATP", "6 ATP", "8 ATP"],
+                correct: 1,
+                explanation: "Glikolizde toplam 4 ATP sentezlenir, ancak başlangıçta 2 ATP harcandığı için net kazanç 2 ATP'dir."
+            },
+            {
+                question: "Krebs döngüsü nerede gerçekleşir?",
+                options: [
+                    "Sitoplazmada",
+                    "Mitokondri matriksinde",
+                    "Mitokondri kristalarında",
+                    "Çekirdekte",
+                    "Ribozomlarda"
+                ],
+                correct: 1,
+                explanation: "Krebs döngüsü, mitokondrinin matriks adı verilen sıvı kısmında gerçekleşir."
+            },
+            {
+                question: "Krebs döngüsünü açıklayan bilim insanı kimdir?",
+                options: [
+                    "Louis Pasteur",
+                    "Gregor Mendel",
+                    "Hans Krebs",
+                    "Charles Darwin",
+                    "Robert Hooke"
+                ],
+                correct: 2,
+                explanation: "Krebs döngüsü tepkimeleri Alman bilim insanı Hans Krebs tarafından 1937 yılında açıklanmıştır."
+            },
+            {
+                question: "Elektron Taşıma Sistemi (ETS) nerede gerçekleşir?",
+                options: [
+                    "Sitoplazmada",
+                    "Mitokondri matriksinde",
+                    "Mitokondri krista zarlarında",
+                    "Çekirdek zarında",
+                    "Ribozomlarda"
+                ],
+                correct: 2,
+                explanation: "Elektron Taşıma Sistemi (ETS), mitokondrinin krista adı verilen kıvrımlı iç zarlarında gerçekleşir."
+            },
+            {
+                question: "ETS'nin son elektron alıcısı nedir?",
+                options: ["NAD⁺", "FAD", "Oksijen (O₂)", "Karbondioksit (CO₂)", "Su (H₂O)"],
+                correct: 2,
+                explanation: "Elektron Taşıma Sisteminde (ETS) son elektron alıcısı oksijendir (O₂). Oksijen elektronları alarak su (H₂O) oluşturur."
+            },
+            {
+                question: "Bir glikoz molekülünün oksijenli solunumla parçalanması sonucu yaklaşık kaç ATP üretilir?",
+                options: ["2 ATP", "10 ATP", "20 ATP", "36-38 ATP", "50 ATP"],
+                correct: 3,
+                explanation: "Bir glikoz molekülünün oksijenli solunumla parçalanması sonucu yaklaşık 36-38 ATP üretilir."
+            },
+            {
+                question: "NAD⁺ molekülünün görevi nedir?",
+                options: [
+                    "ATP sentezlemek",
+                    "Oksijen taşımak",
+                    "Elektron taşımak",
+                    "Karbondioksit üretmek",
+                    "Glikozu parçalamak"
+                ],
+                correct: 2,
+                explanation: "NAD⁺ (nikotinamid adenin dinükleotid) molekülü, solunum metabolizmasında elektron taşıyan bir koenzimdir."
+            },
+            {
+                question: "Piruvat oksidasyonu nedir?",
+                options: [
+                    "Glikozun piruvata parçalanması",
+                    "Piruvatın mitokondride Asetil-CoA'ya dönüşümü",
+                    "Asetil-CoA'nın Krebs döngüsüne girmesi",
+                    "ETS'de elektronların taşınması",
+                    "ATP'nin sentezlenmesi"
+                ],
+                correct: 1,
+                explanation: "Piruvat oksidasyonu, piruvatın mitokondride Asetil-CoA'ya dönüşümüdür. Bu süreçte CO₂ çıkışı ve NADH oluşumu gerçekleşir."
+            },
+            {
+                question: "Mitokondrinin iç zarının kıvrımlarına ne ad verilir?",
+                options: ["Matriks", "Krista", "Zar", "Membran", "Koful"],
+                correct: 1,
+                explanation: "Mitokondrinin iç zarının kıvrımlarına krista adı verilir. Kristalar, yüzey alanını artırarak ETS'nin daha verimli çalışmasını sağlar."
+            },
+            {
+                question: "Hücresel solunumda enerjinin bir kısmı ne olarak açığa çıkar?",
+                options: ["Işık", "Ses", "Isı", "Elektrik", "Manyetik alan"],
+                correct: 2,
+                explanation: "Hücresel solunumda enerjinin bir kısmı ısı enerjisi olarak ortama yayılır. Bu ısı, vücut sıcaklığının korunmasına yardımcı olur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi glikoliz, Krebs döngüsü ve ETS'nin ortak özelliğidir?",
+                options: [
+                    "Mitokondride gerçekleşmeleri",
+                    "Oksijen kullanmaları",
+                    "Enzim kontrolünde gerçekleşmeleri",
+                    "Aynı miktarda ATP üretmeleri",
+                    "Sadece hayvan hücrelerinde gerçekleşmeleri"
+                ],
+                correct: 2,
+                explanation: "Glikoliz, Krebs döngüsü ve ETS'nin tümü enzim kontrolünde gerçekleşir. Enzimler, bu reaksiyonların hızını ve verimliliğini düzenler."
+            },
+            {
+                question: "FADH₂ molekülü hangi evrede oluşur?",
+                options: ["Glikolizde", "Piruvat oksidasyonunda", "Krebs döngüsünde", "ETS'de", "Tüm evrelerde"],
+                correct: 2,
+                explanation: "FADH₂ molekülü sadece Krebs döngüsünde oluşur. Glikoliz ve piruvat oksidasyonunda NADH oluşur."
+            },
+            {
+                question: "Oksijenli solunum hangi canlılarda gerçekleşir?",
+                options: [
+                    "Sadece hayvanlarda",
+                    "Sadece bitkilerde",
+                    "Sadece prokaryotlarda",
+                    "Bazı prokaryotlarda ve tüm ökaryotlarda",
+                    "Sadece mantarlarda"
+                ],
+                correct: 3,
+                explanation: "Oksijenli solunum, bazı prokaryotlarda ve tüm ökaryot canlılarda (hayvanlar, bitkiler, mantarlar, protistler) gerçekleşir."
+            },
+            {
+                question: "Prokaryotlarda oksijenli solunum nerede gerçekleşir?",
+                options: [
+                    "Sadece sitoplazmada",
+                    "Sitoplazmada ve hücre zarındaki kıvrımlarda",
+                    "Mitokondride",
+                    "Çekirdekte",
+                    "Ribozomlarda"
+                ],
+                correct: 1,
+                explanation: "Prokaryotlarda mitokondri bulunmadığı için oksijenli solunum, sitoplazmada ve hücre zarındaki kıvrımlarda gerçekleşir."
+            },
+            {
+                question: "Glikoliz hangi solunum türlerinde ortak olarak gerçekleşir?",
+                options: [
+                    "Sadece oksijenli solunumda",
+                    "Sadece oksijensiz solunumda",
+                    "Sadece fermantasyonda",
+                    "Oksijenli solunum, oksijensiz solunum ve fermantasyonda",
+                    "Hiçbirinde"
+                ],
+                correct: 3,
+                explanation: "Glikoliz, oksijenli solunum, oksijensiz solunum ve fermantasyonda ortak olarak gerçekleşir. Bu, glikoliz enzimlerinin tüm canlılarda ortak olduğunu gösterir."
+            },
+            {
+                question: "Krebs döngüsüne neden sitrik asit döngüsü de denir?",
+                options: [
+                    "Keşfeden kişinin adından dolayı",
+                    "İlk ara ürünü sitrik asit olduğu için",
+                    "Mitokondride gerçekleştiği için",
+                    "Döngüsel olduğu için",
+                    "Çok sayıda enzim içerdiği için"
+                ],
+                correct: 1,
+                explanation: "Krebs döngüsüne, döngünün ilk ara ürünü sitrik asit (limon asidi) olduğu için sitrik asit döngüsü de denir."
+            },
+            {
+                question: "Oksijenli solunumda CO₂ nerede oluşur?",
+                options: [
+                    "Sadece glikolizde",
+                    "Sadece Krebs döngüsünde",
+                    "Sadece ETS'de",
+                    "Piruvat oksidasyonunda ve Krebs döngüsünde",
+                    "Tüm evrelerde"
+                ],
+                correct: 3,
+                explanation: "Oksijenli solunumda CO₂, piruvat oksidasyonunda (her piruvattan 1 CO₂) ve Krebs döngüsünde (her döngüde 2 CO₂) oluşur."
+            },
+            {
+                question: "Oksijenli solunumda H₂O nerede oluşur?",
+                options: ["Glikolizde", "Piruvat oksidasyonunda", "Krebs döngüsünde", "ETS'de", "Hiçbir yerde"],
+                correct: 3,
+                explanation: "Oksijenli solunumda H₂O, Elektron Taşıma Sisteminde (ETS) oluşur. Oksijen, elektron ve proton alarak suya dönüşür."
+            },
+            {
+                question: "Bir piruvat oksidasyonundan çıkan ürünler nelerdir?",
+                options: [
+                    "1 Asetil-CoA, 1 CO₂, 1 NADH",
+                    "2 Asetil-CoA, 2 CO₂, 2 NADH",
+                    "1 Asetil-CoA, 2 CO₂, 1 NADH",
+                    "2 Asetil-CoA, 1 CO₂, 2 NADH",
+                    "Sadece Asetil-CoA"
+                ],
+                correct: 0,
+                explanation: "Bir piruvat oksidasyonundan çıkan ürünler: 1 Asetil-CoA, 1 CO₂, 1 NADH. Bir glikozdan 2 piruvat oluştuğu için toplam 2 Asetil-CoA, 2 CO₂, 2 NADH oluşur."
+            },
+            {
+                question: "Krebs döngüsünde bir glikoz için kaç ATP üretilir?",
+                options: ["1 ATP", "2 ATP", "4 ATP", "6 ATP", "8 ATP"],
+                correct: 1,
+                explanation: "Krebs döngüsünde bir glikoz için 2 ATP üretilir. Her döngüde 1 ATP üretilir ve bir glikoz için döngü 2 kez gerçekleşir."
+            },
+            {
+                question: "ETS'de 1 NADH'dan yaklaşık kaç ATP üretilir?",
+                options: ["1 ATP", "2 ATP", "3 ATP", "4 ATP", "5 ATP"],
+                correct: 2,
+                explanation: "ETS'de 1 NADH'dan yaklaşık 3 ATP üretilir. 1 FADH₂'dan ise yaklaşık 2 ATP üretilir."
+            },
+            {
+                question: "Mitokondrinin matriksinde hangi solunum evresi gerçekleşir?",
+                options: ["Glikoliz", "Piruvat oksidasyonu ve Krebs döngüsü", "Sadece ETS", "Sadece glikoliz", "Hiçbiri"],
+                correct: 1,
+                explanation: "Mitokondrinin matriksinde piruvat oksidasyonu ve Krebs döngüsü gerçekleşir. ETS ise mitokondrinin krista zarlarında gerçekleşir."
+            },
+            {
+                question: "Hücresel solunum homeostasiye nasıl katkı sağlar?",
+                options: [
+                    "Sadece ATP üreterek",
+                    "Sadece ısı üreterek",
+                    "ATP üreterek ve ısı açığa çıkararak",
+                    "Oksijen tüketerek",
+                    "Karbondioksit üreterek"
+                ],
+                correct: 2,
+                explanation: "Hücresel solunum, ATP üreterek hücre faaliyetleri için enerji sağlar ve açığa çıkan ısı ile vücut sıcaklığının korunmasına yardımcı olur. Bu şekilde homeostasiye (iç denge) katkı sağlar."
+            },
+            {
+                question: "Hücresel solunum reaksiyonları neden şematik olarak modellenir?",
+                options: [
+                    "Karmaşık biyokimyasal süreçleri anlamayı ve öğrenmeyi kolaylaştırmak için",
+                    "Sadece görsel olarak güzel olduğu için",
+                    "Daha az yer kapladığı için",
+                    "Matematiksel hesaplamaları kolaylaştırmak için",
+                    "Hiçbiri"
+                ],
+                correct: 0,
+                explanation: "Hücresel solunum reaksiyonları karmaşık biyokimyasal süreçlerdir. Şematik modeller, bu süreçleri görselleştirerek anlamayı ve öğrenmeyi kolaylaştırır."
+            },
+            {
+                question: "Sportif faaliyetlerde hücresel solunum neden önemlidir?",
+                options: [
+                    "Kaslara oksijen taşır",
+                    "Yüksek enerji gerektiren aktiviteler için ATP sağlar",
+                    "Vücut sıcaklığını düşürür",
+                    "Karbondioksit atılımını hızlandırır",
+                    "Su kaybını önler"
+                ],
+                correct: 1,
+                explanation: "Sportif faaliyetler yüksek enerji gerektirir. Hücresel solunum, kasların ihtiyaç duyduğu ATP'yi sağlayarak performansı destekler."
+            },
+            {
+                question: "Sıcaklık hücresel solunumu nasıl etkiler?",
+                options: [
+                    "Hiç etkilemez",
+                    "Sadece glikolizi etkiler",
+                    "Enzim aktivitesini etkileyerek solunum hızını değiştirir",
+                    "Sadece ETS'yi etkiler",
+                    "ATP üretimini tamamen durdurur"
+                ],
+                correct: 2,
+                explanation: "Hücresel solunum enzim kontrolünde gerçekleşir. Enzimler belirli sıcaklık aralıklarında aktif olduğundan, sıcaklık değişimleri solunum hızını etkiler."
+            },
+            {
+                question: "Aşağıdakilerden hangisi Krebs döngüsünden çıkan ürünlerden değildir?",
+                options: ["CO₂", "ATP", "NADH", "FADH₂", "O₂"],
+                correct: 4,
+                explanation: "Krebs döngüsünden çıkan ürünler: CO₂, ATP, NADH, FADH₂. O₂ (oksijen) Krebs döngüsünde ürün değil, ETS'de son elektron alıcısıdır."
+            },
+            {
+                question: "Glikolizde kullanılan enzimler hangi canlılarda bulunur?",
+                options: [
+                    "Sadece hayvanlarda",
+                    "Sadece bitkilerde",
+                    "Sadece ökaryotlarda",
+                    "Tüm canlılarda",
+                    "Sadece prokaryotlarda"
+                ],
+                correct: 3,
+                explanation: "Glikoliz enzimleri tüm canlılarda ortaktır. Bu nedenle glikoliz, oksijenli solunum, oksijensiz solunum ve fermantasyonda ortak olarak gerçekleşir."
+            },
+            {
+                question: "Mitokondri neden 'hücrenin enerji santrali' olarak adlandırılır?",
+                options: [
+                    "Büyük olduğu için",
+                    "Oksijenli solunumun merkezi olduğu için",
+                    "Çok sayıda enzim içerdiği için",
+                    "Sadece hayvan hücrelerinde bulunduğu için",
+                    "Glikolizi gerçekleştirdiği için"
+                ],
+                correct: 1,
+                explanation: "Mitokondri, oksijenli solunumun Krebs döngüsü ve ETS evrelerinin gerçekleştiği organel olduğu için 'hücrenin enerji santrali' olarak adlandırılır."
+            },
+            {
+                question: "Hücresel solunumda aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Tüm evreler mitokondride gerçekleşir",
+                    "Glikoliz oksijen gerektirir",
+                    "ETS'de oksijen tüketilir ve su oluşur",
+                    "Krebs döngüsü sitoplazmada gerçekleşir",
+                    "Toplam 10 ATP üretilir"
+                ],
+                correct: 2,
+                explanation: "ETS'de oksijen tüketilir ve su oluşur. Glikoliz sitoplazmada gerçekleşir ve oksijen gerektirmez. Toplam ~36-38 ATP üretilir."
+            },
+            {
+                question: "Bir glikoz için Krebs döngüsü kaç kez gerçekleşir?",
+                options: ["1 kez", "2 kez", "3 kez", "4 kez", "6 kez"],
+                correct: 1,
+                explanation: "Bir glikoz molekülü glikolizde 2 piruvata parçalanır. Her piruvat bir Asetil-CoA'ya dönüşür ve her Asetil-CoA için bir Krebs döngüsü gerçekleşir. Bu nedenle bir glikoz için Krebs döngüsü 2 kez gerçekleşir."
+            },
+            {
+                question: "FAD/FADH₂ koenzim çifti ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sadece glikolizde bulunur",
+                    "Sadece Krebs döngüsünde bulunur",
+                    "Sadece ETS'de bulunur",
+                    "Tüm evrelerde bulunur",
+                    "Hiçbir evrede bulunmaz"
+                ],
+                correct: 1,
+                explanation: "FAD/FADH₂ koenzim çifti sadece Krebs döngüsünde bulunur. Glikoliz ve piruvat oksidasyonunda NAD⁺/NADH koenzim çifti görev yapar."
+            },
+            {
+                question: "Hücresel solunumda enerji üretiminin en yüksek olduğu evre hangisidir?",
+                options: ["Glikoliz", "Piruvat oksidasyonu", "Krebs döngüsü", "ETS", "Hepsi eşit"],
+                correct: 3,
+                explanation: "Hücresel solunumda enerji üretiminin en yüksek olduğu evre ETS'dir. Bir glikozdan üretilen ~36-38 ATP'nin ~32-34'ü ETS'de üretilir."
+            },
+            {
+                question: "Oksijenli solunumun ısı üretmesi canlı için ne anlama gelir?",
+                options: [
+                    "Enerji kaybıdır, olumsuzdur",
+                    "Vücut sıcaklığının korunmasına yardımcı olur",
+                    "Sadece kış aylarında faydalıdır",
+                    "Enzimleri etkisiz hale getirir",
+                    "ATP üretimini durdurur"
+                ],
+                correct: 1,
+                explanation: "Oksijenli solunumda açığa çıkan ısı, vücut sıcaklığının korunmasına yardımcı olur. Bu özellikle sıcakkanlı hayvanlar için önemlidir."
+            },
+            {
+                question: "Hücresel solunum reaksiyonlarının modellemesi öğrenmeye nasıl katkı sağlar?",
+                options: [
+                    "Sadece ezberlemeyi kolaylaştırır",
+                    "Karmaşık süreçleri görselleştirerek anlamayı kolaylaştırır",
+                    "Sınavlarda daha yüksek puan almayı garantiler",
+                    "Sadece öğretmenler için faydalıdır",
+                    "Hiçbir katkısı yoktur"
+                ],
+                correct: 1,
+                explanation: "Hücresel solunum gibi karmaşık biyokimyasal süreçlerin modellenmesi, bu süreçleri görselleştirerek anlamayı ve öğrenmeyi kolaylaştırır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Hücresel solunumu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Hücresel solunumu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Hücresel solunumun temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
