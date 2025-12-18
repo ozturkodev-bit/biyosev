@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotosentez Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #2ecc71;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2ecc71;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-leaf"></i> Fotosentez Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile fotosentezi keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">50 adet soru-cevap kartı ile fotosentez konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Fotosentezin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">40 soruluk detaylı test ile fotosentez bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Fotosentezin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Fotosentez Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">50</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Fotosentez Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotosentez Temel Kavramlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Fotosentez:</strong> Işık enerjisi kullanarak karbondioksit ve sudan organik madde sentezlemek</li>
+                        <li><strong>Fotoototrof Canlılar:</strong> Enerjisini ışıktan sağlayarak organik madde sentezleyen canlılar</li>
+                        <li><strong>Ototroflar:</strong> İnorganik maddelerden organik madde sentezleyen canlılar</li>
+                        <li><strong>Heterotroflar:</strong> Besin ihtiyacını ototroflardan veya diğer heterotroflardan karşılayan canlılar</li>
+                        <li><strong>Genel Denklem:</strong> 6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotosentez Yapan Canlılar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Fotosentetik Bakteriler:</strong> Mor kükürt bakterileri, siyanobakteriler</li>
+                        <li><strong>Protistler:</strong> Öglena, algler</li>
+                        <li><strong>Bitkiler:</strong> Tam parazit bitkiler hariç tüm bitkiler</li>
+                        <li><strong>Sucul Canlılar:</strong> Okyanus, deniz, göl ve akarsulardaki algler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Işık ve Pigmentler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Işık:</strong> Foton adı verilen enerji taşıyan temel tanecikler</li>
+                        <li><strong>Görünür Işık:</strong> 380-750 nm dalga boyu aralığı</li>
+                        <li><strong>Klorofil:</strong> Fotosentezin temel pigmenti, mor, mavi ve kırmızı ışığı soğurur</li>
+                        <li><strong>Yardımcı Pigmentler:</strong> Farklı dalga boylarını soğurarak klorofile aktarır</li>
+                        <li><strong>Yaprak Rengi:</strong> Klorofilin yansıttığı yeşil ışık nedeniyle yeşil görünür</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotosentez Evreleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>1. Işığa Bağlı Evre:</strong> Yalnızca ışık varlığında gerçekleşir, granada</li>
+                        <li><strong>2. Işıktan Bağımsız Evre (Calvin Döngüsü):</strong> Işık doğrudan gerekmez, stromada</li>
+                        <li><strong>Fotoliz:</strong> Suyun ışık enerjisiyle parçalanması (H₂O → 2e⁻ + 2H⁺ + ½O₂)</li>
+                        <li><strong>Prokaryotlarda:</strong> Sitoplazmada ve hücre zarı katlanmalarında gerçekleşir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Işığa Bağlı Evre Detayları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Kloroplast granaları</li>
+                        <li><strong>Süreçler:</strong> Işık soğurulması, suyun fotolizi, ATP sentezi</li>
+                        <li><strong>Ürünler:</strong> ATP, NADPH, O₂ (yan ürün)</li>
+                        <li><strong>Elektron Taşıma Sistemi (ETS):</strong> Elektronların taşınması ve ATP üretimi</li>
+                        <li><strong>NADPH:</strong> NADP⁺'nin indirgenmesiyle oluşan enerji taşıyıcı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Işıktan Bağımsız Evre (Calvin Döngüsü)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Kloroplast stroması</li>
+                        <li><strong>Girdiler:</strong> CO₂, ATP, NADPH</li>
+                        <li><strong>Ürünler:</strong> PGAL (fosfogliseraldehit), organik bileşikler</li>
+                        <li><strong>Sentezlenen Maddeler:</strong> Glikoz, amino asitler, yağ asitleri, vitaminler</li>
+                        <li><strong>Enzim Kontrolü:</strong> Tüm reaksiyonlar enzim kontrolünde gerçekleşir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">PGAL'nin Kullanım Alanları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Glikoz Sentezi:</strong> Enerji sağlayıcı temel karbohidrat</li>
+                        <li><strong>Nişasta:</strong> Fazla glikozun depo şekli</li>
+                        <li><strong>Lipitler:</strong> Yağ asidi ve gliserol oluşumu</li>
+                        <li><strong>Proteinler:</strong> Amino asit sentezi</li>
+                        <li><strong>Vitamin ve Hormonlar:</strong> Büyüme ve gelişme düzenleyicileri</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotosentez Hızını Etkileyen Faktörler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Işık Şiddeti:</strong> Arttıkça fotosentez hızlanır, sınırlayıcı faktörler belirleyici olur</li>
+                        <li><strong>Işık Dalga Boyu:</strong> Klorofilin en çok soğurduğu mor, mavi, kırmızı ışıklarda hız yüksek</li>
+                        <li><strong>CO₂ Miktarı:</strong> Minimum kuralına göre en az olan faktör hızı belirler</li>
+                        <li><strong>Sıcaklık:</strong> Enzim aktivitesini etkiler, optimum sıcaklıkta maksimum hız</li>
+                        <li><strong>Su Miktarı:</strong> Fotoliz için gereklidir, yetersizliği fotosentezi durdurur</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Fotosentez Testi (40 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 40</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2ecc71; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Fotosentez Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> FOTOSENTEZE GİRİŞ</div>
+                    <ul class="summary-list">
+                        <li><strong>Fotosentez:</strong> Işık enerjisi kullanarak karbondioksit ve su gibi inorganik maddelerden organik madde sentezlenmesidir.</li>
+                        <li><strong>Fotoototrof Canlılar:</strong> Enerjisini ışıktan sağlayarak organik madde sentezleyen canlılardır (bitkiler, algler, siyanobakteriler).</li>
+                        <li><strong>Genel denklem:</strong> 6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂</li>
+                        <li><strong>Ekosistemdeki Önemi:</strong> Fotosentez, ekosistemlerde besin ve enerji akışının temelini oluşturur.</li>
+                        <li><strong>Besin Zinciri:</strong> Tüm heterotrof canlılar doğrudan veya dolaylı olarak fotosenteze bağımlıdır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sun"></i> IŞIK VE PİGMENTLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Işık:</strong> Foton adı verilen, yüksek hızda hareket eden ve enerji taşıyan temel taneciklerden oluşur.</li>
+                        <li><strong>Görünür Işık:</strong> Elektromanyetik spektrumun 380-750 nm dalga boyu aralığı.</li>
+                        <li><strong>Klorofil:</strong> Fotosentezin temel pigmenti, mor, mavi ve kırmızı dalga boylarındaki ışığı soğurur.</li>
+                        <li><strong>Yardımcı Pigmentler:</strong> Farklı dalga boylarındaki ışığı soğurarak klorofile aktarır veya fazla ışığı soğurarak klorofili korur.</li>
+                        <li><strong>Yaprak Rengi:</strong> Klorofilin yansıttığı veya geçirdiği yeşil ışık nedeniyle yapraklar yeşil görünür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-industry"></i> FOTOSENTEZ EVRELERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>1. Işığa Bağlı Evre:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Kloroplast granaları (ökaryotlarda)</li>
+                                <li>Gereklilik: Yalnızca ışık varlığında gerçekleşir</li>
+                                <li>Süreçler: Işık soğurulması, suyun fotolizi, ATP sentezi</li>
+                                <li>Ürünler: ATP, NADPH, O₂ (yan ürün)</li>
+                                <li>Fotoliz: H₂O → 2e⁻ + 2H⁺ + ½O₂</li>
+                            </ul>
+                        </li>
+                        <li><strong>2. Işıktan Bağımsız Evre (Calvin Döngüsü):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yer: Kloroplast stroması</li>
+                                <li>Gereklilik: Işık doğrudan gerekmez, ancak ATP ve NADPH gereklidir</li>
+                                <li>Girdiler: CO₂, ATP, NADPH</li>
+                                <li>Ürünler: PGAL (fosfogliseraldehit), organik bileşikler</li>
+                                <li>Sentezlenenler: Glikoz, amino asitler, yağ asitleri, vitaminler</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Işıktan bağımsız evre, ışık doğrudan gerekmediği için bu adı almıştır, ancak ışığa bağlı evrede üretilen ATP ve NADPH olmadan gerçekleşemez.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-atom"></i> KİMYASAL BİLEŞİKLER VE KOENZİMLER</div>
+                    <ul class="summary-list">
+                        <li><strong>ATP (Adenozin Trifosfat):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Hücrenin enerji birimi</li>
+                                <li>Işığa bağlı evrede sentezlenir</li>
+                                <li>Işıktan bağımsız evrede enerji kaynağı olarak kullanılır</li>
+                            </ul>
+                        </li>
+                        <li><strong>NADP⁺/NADPH:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>NADP⁺: Yükseltgenmiş form</li>
+                                <li>NADPH: İndirgenmiş form, elektron ve proton taşır</li>
+                                <li>Fotolizde açığa çıkan H⁺ iyonları ile NADP⁺ indirgenir</li>
+                                <li>Işıktan bağımsız evrede karbon tutulumunda kullanılır</li>
+                            </ul>
+                        </li>
+                        <li><strong>PGAL (Fosfogliseraldehit):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Calvin döngüsünde sentezlenen 3 karbonlu bileşik</li>
+                                <li>Glikoz ve diğer organik bileşiklerin sentezinde ara ürün</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tree"></i> ORGANİK BİLEŞİK SENTEZİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Karbohidratlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Glikoz: Temel enerji kaynağı</li>
+                                <li>Nişasta: Fazla glikozun depo şekli</li>
+                                <li>Sükroz: Taşınma formu, iletim demetleriyle taşınır</li>
+                            </ul>
+                        </li>
+                        <li><strong>Lipitler (Yağlar):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yağ asitleri ve gliserol PGAL'den sentezlenir</li>
+                                <li>Hücre zarlarının yapısına katılır</li>
+                                <li>Enerji depolama görevi görür</li>
+                            </ul>
+                        </li>
+                        <li><strong>Proteinler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Amino asitler PGAL ve azot tuzlarından sentezlenir</li>
+                                <li>Bitkiler azotu topraktan azot tuzları şeklinde alır</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vitamin ve Hormonlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Büyüme ve gelişme süreçlerini düzenler</li>
+                                <li>PGAL'den sentezlenir</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-chart-line"></i> FOTOSENTEZ HIZINI ETKİLEYEN FAKTÖRLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Işık Şiddeti:</strong> Arttıkça fotosentez hızlanır, ancak diğer faktörler sınırlayıcı hale gelir (Minimum Kuralı).</li>
+                        <li><strong>Işık Dalga Boyu:</strong> Klorofilin en çok soğurduğu mor, mavi ve kırmızı ışıkta fotosentez hızı maksimumdur.</li>
+                        <li><strong>CO₂ Miktarı:</strong> Arttıkça fotosentez hızlanır, ancak diğer faktörler sınırlayıcı olur.</li>
+                        <li><strong>Sıcaklık:</strong> Enzim aktivitesini etkiler. Optimum sıcaklıkta maksimum hız, yüksek sıcaklıkta enzimler denatüre olur.</li>
+                        <li><strong>Su Miktarı:</strong> Fotoliz için gereklidir, yetersizliği fotosentezi durdurur.</li>
+                        <li><strong>Mineraller:</strong> Klorofil sentezi ve enzim aktivitesi için gereklidir (Mg, Fe, N, P).</li>
+                    </ul>
+                    <div class="diagram-note">
+                        <strong>💡 Hatırlatma:</strong> Minimum Kuralı'na göre, fotosentez hızını belirleyen faktörlerden miktarı en az olan, fotosentez hızını sınırlandırır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> FOTOSENTEZİN EKOLOJİK ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Enerji Akışı:</strong> Güneş enerjisini kimyasal enerjiye dönüştürerek ekosisteme enerji girişi sağlar.</li>
+                        <li><strong>Karbon Döngüsü:</strong> Atmosferdeki CO₂'yi organik bileşiklere dönüştürerek karbon döngüsüne katkı sağlar.</li>
+                        <li><strong>Oksijen Üretimi:</strong> Atmosferdeki oksijenin büyük kısmı fotosentez ile üretilir.</li>
+                        <li><strong>Besin Zinciri:</strong> Tüm heterotrof canlıların enerji ve besin kaynağını oluşturur.</li>
+                        <li><strong>İklim Düzenlemesi:</strong> CO₂ tüketimi ve oksijen üretimi ile atmosfer kompozisyonunu düzenler.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖNEMLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Fotosentez:</strong> Işık enerjisi kullanarak inorganik maddelerden organik madde sentezi.</li>
+                        <li><strong>Fotoototrof:</strong> Enerjisini ışıktan sağlayarak organik madde sentezleyen canlı.</li>
+                        <li><strong>Fotoliz:</strong> Suyun ışık enerjisi ile parçalanması.</li>
+                        <li><strong>Klorofil:</strong> Fotosentezin temel pigmenti, ışığı soğurur.</li>
+                        <li><strong>Calvin Döngüsü:</strong> Işıktan bağımsız evre, CO₂'nin organik bileşiklere dönüştürülmesi.</li>
+                        <li><strong>PGAL:</strong> Fosfogliseraldehit, Calvin döngüsü ürünü, organik bileşik sentezinde ara madde.</li>
+                        <li><strong>Minimum Kuralı:</strong> Fotosentez hızını, miktarı en az olan faktörün belirlemesi.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 50 Fotosentez Sorusu (PDF'ye dayalı)
+        const csvData = `Fotosentez nedir?,"Işık enerjisi kullanarak karbondioksit ve su gibi inorganik maddelerden organik madde sentezlenmesidir."
+Fotosentezin genel denklemi nedir?,"6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂"
+Fotoototrof canlı nedir?,"Enerjisini ışıktan sağlayarak organik madde sentezleyen canlılardır."
+Fotosentez yapan canlılara örnek veriniz.,"Bitkiler (tam parazitler hariç), algler, öglena, siyanobakteriler, mor kükürt bakterileri"
+Işık nedir?,"Foton adı verilen, yüksek hızda hareket eden ve enerji taşıyan temel taneciklerden oluşan bir enerji türüdür."
+Görünür ışık nedir?,"Elektromanyetik spektrumun 380-750 nm dalga boyu aralığındaki kısmıdır."
+Klorofil nedir?,"Fotosentezin temel pigmenti olup mor, mavi ve kırmızı dalga boylarındaki ışığı soğurur."
+Yapraklar neden yeşil görünür?,"Klorofilin yansıttığı veya geçirdiği yeşil ışık nedeniyle yeşil görünür."
+Yardımcı pigmentlerin görevi nedir?,"Farklı dalga boylarındaki ışığı soğurarak klorofile aktarmak veya fazla ışığı soğurarak klorofili korumak."
+Fotosentezin evreleri nelerdir?,"Işığa bağlı evre ve ışıktan bağımsız evre (Calvin döngüsü)"
+Işığa bağlı evre nerede gerçekleşir?,"Ökaryotlarda kloroplast granalarında, prokaryotlarda sitoplazmada ve hücre zarı katlanmalarında"
+Işığa bağlı evrede neler olur?,"Işık soğurulması, suyun fotolizi, ATP sentezi, NADPH oluşumu"
+Fotoliz nedir?,"Suyun ışık enerjisiyle parçalanmasıdır: H₂O → 2e⁻ + 2H⁺ + ½O₂"
+Işığa bağlı evrenin ürünleri nelerdir?,"ATP, NADPH, O₂ (yan ürün)"
+NADPH nedir?,"NADP⁺'nin indirgenmesiyle oluşan, elektron ve proton taşıyan enerji taşıyıcı moleküldür."
+Işıktan bağımsız evre nerede gerçekleşir?,"Ökaryotlarda kloroplast stromasında, prokaryotlarda sitoplazmada"
+Işıktan bağımsız evrenin diğer adı nedir?,"Calvin döngüsü"
+Işıktan bağımsız evre için neler gereklidir?,"CO₂, ATP ve NADPH"
+Calvin döngüsünde neler sentezlenir?,"PGAL (fosfogliseraldehit) ve diğer organik bileşikler"
+PGAL nedir?,"Calvin döngüsünde sentezlenen 3 karbonlu bileşik olup organik bileşik sentezinde ara maddedir."
+PGAL'den hangi organik bileşikler sentezlenir?,"Glikoz, amino asitler, yağ asitleri, vitaminler, hormonlar"
+Bitkiler glikozu nasıl depolar?,"Fazla glikozu nişasta şeklinde depolar."
+Nişastanın görevi nedir?,"Enerji depolamak, enerji ihtiyacında glikoza parçalanarak kullanılmak"
+Sükroz nedir?,"Glikoz ve fruktozdan oluşan disakkarit, bitkilerde taşınma formudur."
+Bitkiler azotu nasıl alır?,"Topraktan azot tuzları (nitrat, nitrit, amonyum) şeklinde alır."
+Amino asitler nasıl sentezlenir?,"PGAL ve azot tuzlarından sentezlenir."
+Lipitler (yağlar) nasıl sentezlenir?,"PGAL'den sentezlenen yağ asitleri ve gliserolden oluşur."
+Fotosentez hızını etkileyen faktörler nelerdir?,"Işık şiddeti, ışık dalga boyu, CO₂ miktarı, sıcaklık, su miktarı, mineraller, pH"
+Minimum kuralı nedir?,"Fotosentez hızını, miktarı en az olan faktörün belirlemesidir."
+Işık şiddeti fotosentezi nasıl etkiler?,"Arttıkça fotosentez hızlanır, ancak diğer faktörler sınırlayıcı hale gelir."
+Işık dalga boyu fotosentezi nasıl etkiler?,"Klorofilin en çok soğurduğu mor, mavi ve kırmızı ışıkta fotosentez hızı maksimumdur."
+CO₂ miktarı fotosentezi nasıl etkiler?,"Arttıkça fotosentez hızlanır, ancak diğer faktörler sınırlayıcı olur."
+Sıcaklık fotosentezi nasıl etkiler?,"Enzim aktivitesini etkiler. Optimum sıcaklıkta maksimum hız, yüksek sıcaklıkta enzimler denatüre olur."
+Su miktarı fotosentezi nasıl etkiler?,"Fotoliz için gereklidir, yetersizliği fotosentezi durdurur."
+Fotosentezin ekolojik önemi nedir?,"Enerji akışı, karbon döngüsü, oksijen üretimi, besin zinciri temeli, iklim düzenlemesi"
+Fotosentez atmosferdeki hangi gazı tüketir?,"Karbondioksit (CO₂)"
+Fotosentez atmosfere hangi gazı salar?,"Oksijen (O₂)"
+Elektron Taşıma Sistemi (ETS) nedir?,"Elektronların taşındığı ve ATP üretilen sistemdir."
+Kloroplastın yapısı nasıldır?,"Çift zarlı organel olup grana (iç zar kıvrımları) ve stroma (sıvı kısım) bulunur."
+Grana nedir?,"Kloroplastın iç zarının kıvrımları olup ışığa bağlı evrenin gerçekleştiği yerdir."
+Stroma nedir?,"Kloroplastın içini dolduran sıvı olup ışıktan bağımsız evrenin gerçekleştiği yerdir."
+Prokaryotlarda fotosentez nerede gerçekleşir?,"Sitoplazmada ve hücre zarındaki katlanmalarda gerçekleşir."
+Fotosentez enzim kontrolünde midir?,"Evet, özellikle ışıktan bağımsız evre tamamen enzim kontrolündedir."
+Klorofil sentezi için hangi mineraller gereklidir?,"Magnezyum (Mg) ve demir (Fe)"
+Fotosentezde açığa çıkan oksijenin kaynağı nedir?,"Sudur (fotoliz sonucu)"
+Sekoya ağaçlarının kütlesinin büyük kısmı neden oluşur?,"Karbondan oluşur, karbonu havadaki CO₂'den fotosentezle alır."
+Havadaki CO₂ artışı fotosentezi nasıl etkiler?,"Diğer faktörler sınırlayıcı değilse fotosentezi hızlandırabilir."
+Bitkiler CO₂'yi nasıl alır?,"Atmosferden veya oksijenli solunumda ürettikleri CO₂'yi kullanarak alır."
+Sucul ortamlarda fotosentez yapan canlılar nelerdir?,"Algler ve siyanobakteriler"
+Fotosentez yapmayan bitkiler var mıdır?,"Evet, tam parazit bitkiler (örn. canavar otu) fotosentez yapmaz."
+Fotosentezin canlılar için önemi nedir?,"Enerji ve besin kaynağı sağlar, atmosfer gaz dengesini korur."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 40 Questions (PDF'ye dayalı)
+        const testQuestions = [
+            {
+                question: "Fotosentez nedir?",
+                options: [
+                    "Organik besinlerin parçalanarak ATP üretilmesi",
+                    "Işık enerjisi kullanarak karbondioksit ve sudan organik madde sentezlenmesi",
+                    "Oksijen kullanarak besinlerin parçalanması",
+                    "Karbondioksitin solunumla atılması",
+                    "Bitkilerin topraktan su ve mineral alması"
+                ],
+                correct: 1,
+                explanation: "Fotosentez, ışık enerjisi kullanarak karbondioksit (CO₂) ve su (H₂O) gibi inorganik maddelerden organik madde sentezlenmesidir."
+            },
+            {
+                question: "Fotosentezin genel denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP",
+                    "6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂",
+                    "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP",
+                    "6CO₂ + 12H₂O + Işık → C₆H₁₂O₆ + 6O₂ + 6H₂O",
+                    "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Işık"
+                ],
+                correct: 1,
+                explanation: "Fotosentezin genel denklemi: 6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂"
+            },
+            {
+                question: "Aşağıdakilerden hangisi fotosentez yapan canlılardan değildir?",
+                options: ["Bitkiler", "Algler", "Siyanobakteriler", "Tam parazit bitkiler", "Öglena"],
+                correct: 3,
+                explanation: "Tam parazit bitkiler (örneğin canavar otu) fotosentez yapmaz, besinlerini konak bitkiden alır."
+            },
+            {
+                question: "Fotosentezin temel pigmenti olan klorofil hangi dalga boylarındaki ışığı en çok soğurur?",
+                options: [
+                    "Sadece yeşil",
+                    "Mor, mavi ve kırmızı",
+                    "Sadece mavi",
+                    "Tüm dalga boyları eşit",
+                    "Sadece kırmızı"
+                ],
+                correct: 1,
+                explanation: "Klorofil, mor, mavi ve kırmızı dalga boylarındaki ışıkları en çok soğurur. Yeşil ışığı ise yansıtır veya geçirir."
+            },
+            {
+                question: "Yapraklar neden yeşil görünür?",
+                options: [
+                    "Klorofilin yeşil ışığı soğurmasından",
+                    "Klorofilin yeşil ışığı yansıtmasından",
+                    "Yardımcı pigmentlerin yeşil olmasından",
+                    "Işığın kırılmasından",
+                    "Su içeriğinden"
+                ],
+                correct: 1,
+                explanation: "Yapraklar, klorofil pigmentinin yeşil ışığı yansıtması veya geçirmesi nedeniyle yeşil görünür."
+            },
+            {
+                question: "Fotosentezin ışığa bağlı evresi nerede gerçekleşir?",
+                options: [
+                    "Sitoplazmada",
+                    "Kloroplast stromasında",
+                    "Kloroplast granalarında",
+                    "Mitokondride",
+                    "Çekirdekte"
+                ],
+                correct: 2,
+                explanation: "Işığa bağlı evre, kloroplastın grana adı verilen iç zar kıvrımlarında gerçekleşir."
+            },
+            {
+                question: "Fotoliz nedir?",
+                options: [
+                    "CO₂'nin parçalanması",
+                    "Glikozun parçalanması",
+                    "Suyun ışık enerjisiyle parçalanması",
+                    "ATP'nin sentezlenmesi",
+                    "Klorofilin parçalanması"
+                ],
+                correct: 2,
+                explanation: "Fotoliz, suyun (H₂O) ışık enerjisiyle parçalanmasıdır: H₂O → 2e⁻ + 2H⁺ + ½O₂"
+            },
+            {
+                question: "Işığa bağlı evrenin ürünleri nelerdir?",
+                options: [
+                    "Sadece ATP",
+                    "ATP ve glikoz",
+                    "ATP, NADPH ve O₂",
+                    "Sadece NADPH",
+                    "CO₂ ve H₂O"
+                ],
+                correct: 2,
+                explanation: "Işığa bağlı evrenin ürünleri ATP, NADPH ve O₂'dir (oksijen yan üründür)."
+            },
+            {
+                question: "NADPH nedir?",
+                options: [
+                    "Enerji deposu",
+                    "Elektron ve proton taşıyıcı",
+                    "Karbondioksit taşıyıcı",
+                    "Oksijen taşıyıcı",
+                    "Sadece enerji kaynağı"
+                ],
+                correct: 1,
+                explanation: "NADPH, NADP⁺'nin indirgenmesiyle oluşan, elektron ve proton taşıyan bir enerji taşıyıcı moleküldür."
+            },
+            {
+                question: "Işıktan bağımsız evre (Calvin döngüsü) nerede gerçekleşir?",
+                options: [
+                    "Kloroplast granalarında",
+                    "Kloroplast stromasında",
+                    "Sitoplazmada",
+                    "Mitokondride",
+                    "Hücre zarında"
+                ],
+                correct: 1,
+                explanation: "Calvin döngüsü (ışıktan bağımsız evre), kloroplastın stroma adı verilen sıvı kısmında gerçekleşir."
+            },
+            {
+                question: "Calvin döngüsü için aşağıdakilerden hangisi gereklidir?",
+                options: [
+                    "Sadece ışık",
+                    "Sadece CO₂",
+                    "CO₂, ATP ve NADPH",
+                    "Sadece su",
+                    "Sadece enzimler"
+                ],
+                correct: 2,
+                explanation: "Calvin döngüsü için CO₂, ışığa bağlı evrede üretilen ATP ve NADPH gereklidir."
+            },
+            {
+                question: "PGAL nedir?",
+                options: [
+                    "Fotosentezin son ürünü",
+                    "3 karbonlu ara bileşik",
+                    "Enerji taşıyıcı",
+                    "Sadece glikozun öncülü",
+                    "Yağ asidi"
+                ],
+                correct: 1,
+                explanation: "PGAL (fosfogliseraldehit), Calvin döngüsünde sentezlenen 3 karbonlu bir ara bileşiktir."
+            },
+            {
+                question: "PGAL'den aşağıdakilerden hangisi sentezlenmez?",
+                options: ["Glikoz", "Amino asitler", "Yağ asitleri", "Klorofil", "Vitaminler"],
+                correct: 3,
+                explanation: "Klorofil, PGAL'den değil, magnezyum ve diğer özel bileşiklerden sentezlenir."
+            },
+            {
+                question: "Bitkiler fazla glikozu nasıl depolar?",
+                options: [
+                    "Glikojen olarak",
+                    "Nişasta olarak",
+                    "Selüloz olarak",
+                    "Sükroz olarak",
+                    "Yağ olarak"
+                ],
+                correct: 1,
+                explanation: "Bitkiler fazla glikozu nişasta olarak depolar. Hayvanlarda ise depo polisakkarit glikojendir."
+            },
+            {
+                question: "Minimum kuralı nedir?",
+                options: [
+                    "Fotosentez hızını en yüksek faktörün belirlemesi",
+                    "Fotosentez hızını ortalama faktörün belirlemesi",
+                    "Fotosentez hızını miktarı en az olan faktörün belirlemesi",
+                    "Tüm faktörlerin eşit etkisi",
+                    "Sadece ışığın belirleyici olması"
+                ],
+                correct: 2,
+                explanation: "Minimum kuralına göre, fotosentez hızını belirleyen faktörlerden miktarı en az olan, fotosentez hızını sınırlandırır."
+            },
+            {
+                question: "Işık şiddeti arttıkça fotosentez hızı nasıl değişir?",
+                options: [
+                    "Sürekli artar",
+                    "Önce artar sonra sabit kalır",
+                    "Değişmez",
+                    "Azalır",
+                    "Önce azalır sonra artar"
+                ],
+                correct: 1,
+                explanation: "Işık şiddeti arttıkça fotosentez hızı önce artar, ancak diğer faktörler (CO₂, sıcaklık vb.) sınırlayıcı hale gelince sabit bir hıza ulaşır."
+            },
+            {
+                question: "Hangi dalga boyundaki ışıkta fotosentez en düşük hızda gerçekleşir?",
+                options: ["Mor", "Mavi", "Yeşil", "Kırmızı", "Sarı"],
+                correct: 2,
+                explanation: "Klorofil, yeşil ışığı en az soğurduğu için fotosentez yeşil ışıkta en düşük hızda gerçekleşir."
+            },
+            {
+                question: "Sıcaklık fotosentezi nasıl etkiler?",
+                options: [
+                    "Hiç etkilemez",
+                    "Sadece ışığa bağlı evreyi etkiler",
+                    "Enzim aktivitesini etkileyerek her iki evreyi de etkiler",
+                    "Sadece Calvin döngüsünü etkiler",
+                    "Sadece su alımını etkiler"
+                ],
+                correct: 2,
+                explanation: "Sıcaklık, enzim aktivitesini etkileyerek hem ışığa bağlı hem de ışıktan bağımsız evreyi etkiler."
+            },
+            {
+                question: "Fotosentezde açığa çıkan oksijenin kaynağı nedir?",
+                options: ["CO₂", "H₂O", "Glikoz", "ATP", "NADPH"],
+                correct: 1,
+                explanation: "Fotosentezde açığa çıkan oksijen, suyun (H₂O) fotolizi sırasında serbest kalır."
+            },
+            {
+                question: "Klorofil sentezi için hangi mineral gereklidir?",
+                options: ["Demir", "Magnezyum", "Kalsiyum", "Fosfor", "Potasyum"],
+                correct: 1,
+                explanation: "Klorofil sentezi için magnezyum (Mg) gereklidir. Klorofil molekülünün merkezinde Mg atomu bulunur."
+            },
+            {
+                question: "Prokaryotlarda fotosentez nerede gerçekleşir?",
+                options: [
+                    "Mitokondride",
+                    "Kloroplastta",
+                    "Sitoplazmada ve hücre zarı katlanmalarında",
+                    "Çekirdekte",
+                    "Ribozomlarda"
+                ],
+                correct: 2,
+                explanation: "Prokaryotlarda mitokondri ve kloroplast bulunmadığı için fotosentez, sitoplazmada ve hücre zarındaki katlanmalarda gerçekleşir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi fotosentezin ekolojik önemlerinden değildir?",
+                options: [
+                    "Enerji akışını sağlama",
+                    "Oksijen üretme",
+                    "CO₂ tüketme",
+                    "Atık ürünleri parçalama",
+                    "Besin zinciri temeli oluşturma"
+                ],
+                correct: 3,
+                explanation: "Atık ürünleri parçalama, fotosentezin değil, ayrıştırıcıların ve diğer süreçlerin görevidir."
+            },
+            {
+                question: "Bitkiler azotu nasıl alır?",
+                options: [
+                    "Atmosferden N₂ gazı olarak",
+                    "Topraktan azot tuzları şeklinde",
+                    "Yağmurdan nitrik asit olarak",
+                    "Havadaki NOx gazlarından",
+                    "Sadece organik maddelerden"
+                ],
+                correct: 1,
+                explanation: "Bitkiler azotu topraktan azot tuzları (nitrat, nitrit, amonyum) şeklinde alır."
+            },
+            {
+                question: "Fotosentez hangi canlı grubu için zorunlu değildir?",
+                options: [
+                    "Fotoototroflar",
+                    "Heterotroflar",
+                    "Kemoototroflar",
+                    "Saprofitler",
+                    "Parazitler"
+                ],
+                correct: 1,
+                explanation: "Heterotroflar fotosentez yapmaz, besinlerini hazır olarak alır."
+            },
+            {
+                question: "Sekoya ağaçlarının kütlesinin büyük kısmı neden oluşur?",
+                options: [
+                    "Sudan",
+                    "Topraktan alınan minerallerden",
+                    "Karbondan (havadaki CO₂'den)",
+                    "Havadaki oksijenden",
+                    "Güneş enerjisinden"
+                ],
+                correct: 2,
+                explanation: "Sekoya ağaçlarının kütlesinin büyük kısmı karbondan oluşur. Karbonu havadaki CO₂'den fotosentez yoluyla alır."
+            },
+            {
+                question: "Fotosentezde kullanılan su bitkiler tarafından nasıl alınır?",
+                options: [
+                    "Yapraklardan",
+                    "Köklerle topraktan",
+                    "Gövdeden",
+                    "Havadaki nemden",
+                    "Fotosentez sırasında üretilir"
+                ],
+                correct: 1,
+                explanation: "Bitkiler fotosentezde kullanılan suyu kökleriyle topraktan alır."
+            },
+            {
+                question: "Fotosentez hangi organelde gerçekleşir?",
+                options: ["Mitokondri", "Kloroplast", "Ribozom", "Lizozom", "Golgi aygıtı"],
+                correct: 1,
+                explanation: "Ökaryot hücrelerde fotosentez kloroplast organelinde gerçekleşir."
+            },
+            {
+                question: "Calvin döngüsünde CO₂'nin tutulmasını sağlayan enzim hangisidir?",
+                options: [
+                    "ATPaz",
+                    "Rubisko",
+                    "Katalaz",
+                    "Amilaz",
+                    "Pepsin"
+                ],
+                correct: 1,
+                explanation: "Calvin döngüsünde CO₂'nin tutulmasını sağlayan enzim Rubisko (ribuloz-1,5-bifosfat karboksilaz/oksijenaz)'dur."
+            },
+            {
+                question: "Fotosentez hızını ölçmek için en uygun yöntem hangisidir?",
+                options: [
+                    "Oksijen üretimini ölçmek",
+                    "CO₂ tüketimini ölçmek",
+                    "Klorofil miktarını ölçmek",
+                    "Işık şiddetini ölçmek",
+                    "Su tüketimini ölçmek"
+                ],
+                correct: 0,
+                explanation: "Fotosentez hızını ölçmek için genellikle oksijen üretim hızı ölçülür."
+            },
+            {
+                question: "Kloroplastın grana ve stroma kısımları arasındaki ilişki nedir?",
+                options: [
+                    "Birbirinden bağımsızdır",
+                    "Sadece yapısal benzerlik vardır",
+                    "Enerji ve madde transferi vardır",
+                    "Sadece ışık geçişi vardır",
+                    "Hiçbir ilişki yoktur"
+                ],
+                correct: 2,
+                correct: 2,
+                explanation: "Grana ve stroma arasında enerji (ATP, NADPH) ve madde (ADP, NADP⁺) transferi vardır."
+            },
+            {
+                question: "Fotosentezde üretilen glikozun bir kısmı bitkide nasıl kullanılır?",
+                options: [
+                    "Sadece depolanır",
+                    "Sadece enerji üretiminde kullanılır",
+                    "Enerji üretimi ve yapısal bileşen sentezinde kullanılır",
+                    "Doğrudan atılır",
+                    "Sadece üreme için kullanılır"
+                ],
+                correct: 2,
+                explanation: "Glikozun bir kısmı solunumla enerji üretiminde, bir kısmı ise nişasta, selüloz gibi yapısal bileşenlerin sentezinde kullanılır."
+            },
+            {
+                question: "Sukulent (etli) bitkiler fotosentezi ne zaman yapar?",
+                options: [
+                    "Sadece gündüz",
+                    "Sadece gece",
+                    "Hem gündüz hem gece",
+                    "Sadece sabah",
+                    "Hiç yapmaz"
+                ],
+                correct: 1,
+                explanation: "Sukulent bitkiler (kaktüs gibi) gece CO₂ alıp depolayarak gündüz fotosentez yapar (CAM fotosentezi)."
+            },
+            {
+                question: "Fotosentezde kullanılan enerjinin asıl kaynağı nedir?",
+                options: ["Toprak", "Su", "Güneş", "Hava", "Mineraller"],
+                correct: 2,
+                explanation: "Fotosentezde kullanılan enerjinin asıl kaynağı Güneş'tir."
+            },
+            {
+                question: "Fotosentezin ışıktan bağımsız evresi neden bu adı almıştır?",
+                options: [
+                    "Işık olmadan da gerçekleşebildiği için",
+                    "Işığa ihtiyaç duymadığı için",
+                    "Doğrudan ışık gerektirmediği için",
+                    "Karanlıkta daha hızlı olduğu için",
+                    "Işıkta durduğu için"
+                ],
+                correct: 2,
+                explanation: "Işıktan bağımsız evre, doğrudan ışık gerektirmediği için bu adı almıştır, ancak ışığa bağlı evrenin ürünlerine (ATP, NADPH) ihtiyaç duyar."
+            },
+            {
+                question: "Fotosentezde kullanılan elektronların kaynağı nedir?",
+                options: ["CO₂", "H₂O", "O₂", "Glikoz", "ATP"],
+                correct: 1,
+                explanation: "Fotosentezde kullanılan elektronların kaynağı sudur (H₂O). Fotoliz ile su parçalanır ve elektronlar serbest kalır."
+            },
+            {
+                question: "Klorofil molekülünde bulunan metal iyonu hangisidir?",
+                options: ["Demir (Fe)", "Magnezyum (Mg)", "Çinko (Zn)", "Bakır (Cu)", "Kalsiyum (Ca)"],
+                correct: 1,
+                explanation: "Klorofil molekülünün merkezinde magnezyum (Mg) iyonu bulunur."
+            },
+            {
+                question: "Fotosentezin gerçekleşmesi için aşağıdakilerden hangisi zorunlu değildir?",
+                options: ["Işık", "Klorofil", "CO₂", "O₂", "Su"],
+                correct: 3,
+                explanation: "Oksijen (O₂) fotosentez için zorunlu değildir, aksine fotosentezin yan ürünüdür."
+            },
+            {
+                question: "Fotosentez hızı hangi pH değerinde maksimum olur?",
+                options: ["Asidik", "Nötr", "Bazik", "Çok asidik", "Çok bazik"],
+                correct: 1,
+                explanation: "Fotosentez hızı genellikle nötre yakın pH değerlerinde (6-7,5) maksimum olur."
+            },
+            {
+                question: "Sucul bitkiler CO₂'yi nasıl alır?",
+                options: [
+                    "Sadece köklerle",
+                    "Suda çözünmüş CO₂'yi yapraklarla",
+                    "Sadece havadan",
+                    "Fotosentezde üretilen CO₂'yi",
+                    "Organik maddelerden"
+                ],
+                correct: 1,
+                explanation: "Sucul bitkiler, suda çözünmüş CO₂'yi yaprak yüzeyleriyle alır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Fotosentezi tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Fotosentezi çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Fotosentezin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
