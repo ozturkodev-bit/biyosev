@@ -887,71 +887,71 @@
     </div>
 
     <script>
-        // Dashboard Navigation
-        document.getElementById('flashcard-btn').addEventListener('click', () => {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('flashcard-section').classList.add('active');
-            updateProgress('flashcard');
-        });
+    // Dashboard Navigation
+    document.getElementById('flashcard-btn').addEventListener('click', () => {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('flashcard-section').classList.add('active');
+        updateProgress('flashcard');
+    });
 
-        document.getElementById('mindmap-btn').addEventListener('click', () => {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('mindmap-section').classList.add('active');
-            updateProgress('mindmap');
-        });
+    document.getElementById('mindmap-btn').addEventListener('click', () => {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('mindmap-section').classList.add('active');
+        updateProgress('mindmap');
+    });
 
-        document.getElementById('test-btn').addEventListener('click', () => {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('test-section').classList.add('active');
-            loadTestQuestions();
-            updateProgress('test');
-        });
+    document.getElementById('test-btn').addEventListener('click', () => {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('test-section').classList.add('active');
+        loadTestQuestions();
+        updateProgress('test');
+    });
 
-        document.getElementById('summary-btn').addEventListener('click', () => {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('summary-section').classList.add('active');
-            updateProgress('summary');
-        });
+    document.getElementById('summary-btn').addEventListener('click', () => {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('summary-section').classList.add('active');
+        updateProgress('summary');
+    });
 
-        // Back buttons
-        document.getElementById('back-from-flashcards').addEventListener('click', () => {
-            document.getElementById('flashcard-section').classList.remove('active');
-            document.getElementById('dashboard').style.display = 'grid';
-        });
+    // Back buttons
+    document.getElementById('back-from-flashcards').addEventListener('click', () => {
+        document.getElementById('flashcard-section').classList.remove('active');
+        document.getElementById('dashboard').style.display = 'grid';
+    });
 
-        document.getElementById('back-from-mindmap').addEventListener('click', () => {
-            document.getElementById('mindmap-section').classList.remove('active');
-            document.getElementById('dashboard').style.display = 'grid';
-        });
+    document.getElementById('back-from-mindmap').addEventListener('click', () => {
+        document.getElementById('mindmap-section').classList.remove('active');
+        document.getElementById('dashboard').style.display = 'grid';
+    });
 
-        document.getElementById('back-from-test').addEventListener('click', () => {
-            document.getElementById('test-section').classList.remove('active');
-            document.getElementById('dashboard').style.display = 'grid';
-            document.getElementById('test-result').style.display = 'none';
-        });
+    document.getElementById('back-from-test').addEventListener('click', () => {
+        document.getElementById('test-section').classList.remove('active');
+        document.getElementById('dashboard').style.display = 'grid';
+        document.getElementById('test-result').style.display = 'none';
+    });
 
-        document.getElementById('back-from-summary').addEventListener('click', () => {
-            document.getElementById('summary-section').classList.remove('active');
-            document.getElementById('dashboard').style.display = 'grid';
-        });
+    document.getElementById('back-from-summary').addEventListener('click', () => {
+        document.getElementById('summary-section').classList.remove('active');
+        document.getElementById('dashboard').style.display = 'grid';
+    });
 
-        // Progress Tracking
-        const completedSections = new Set();
-        
-        function updateProgress(section) {
-            if (!completedSections.has(section)) {
-                completedSections.add(section);
-                const count = completedSections.size;
-                const percent = Math.round((count / 4) * 100);
-                
-                document.getElementById('completed-count').textContent = count;
-                document.getElementById('progress-percent').textContent = percent + '%';
-                document.getElementById('progress-fill').style.width = percent + '%';
-            }
+    // Progress Tracking
+    const completedSections = new Set();
+    
+    function updateProgress(section) {
+        if (!completedSections.has(section)) {
+            completedSections.add(section);
+            const count = completedSections.size;
+            const percent = Math.round((count / 4) * 100);
+            
+            document.getElementById('completed-count').textContent = count;
+            document.getElementById('progress-percent').textContent = percent + '%';
+            document.getElementById('progress-fill').style.width = percent + '%';
         }
+    }
 
-        // FLASHCARD SYSTEM - 50 Genetik Mühendisliği ve Biyoteknoloji Sorusu
-        const csvData = `Genetik mühendisliği nedir?,"İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalıdır."
+    // FLASHCARD SYSTEM - 50 Genetik Mühendisliği ve Biyoteknoloji Sorusu
+    const csvData = `Genetik mühendisliği nedir?,"İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalıdır."
 Biyoteknoloji nedir?,"DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır."
 Rekombinant DNA nedir?,"Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülüdür."
 Transgenik canlı (GDO) nedir?,"Rekombinant DNA'ya sahip canlılara verilen addır."
@@ -1002,208 +1002,536 @@ Genetik mühendisliği ve biyoteknoloji arasındaki fark nedir?,"Gen aktarımı 
 İnsülin hangi yöntemle üretilmektedir?,"Rekombinant DNA teknolojisiyle bakterilere insan insülin geni aktarılarak"
 Kök hücre araştırmalarındaki etik sorunlar nelerdir?,"Embriyonun ahlaki statüsü, kök hücre kaynakları, tedavi amaçlı kullanım sınırları"`;
 
-        // Process CSV data
-        const lines = csvData.split('\n');
-        const flashcards = lines.map(line => {
-            let parts = [];
-            let inQuotes = false;
-            let currentPart = '';
-            
-            for (let i = 0; i < line.length; i++) {
-                if (line[i] === '"') {
-                    inQuotes = !inQuotes;
-                } else if (line[i] === ',' && !inQuotes) {
-                    parts.push(currentPart);
-                    currentPart = '';
-                } else {
-                    currentPart += line[i];
-                }
+    // Process CSV data
+    const lines = csvData.split('\n');
+    const flashcards = lines.map(line => {
+        let parts = [];
+        let inQuotes = false;
+        let currentPart = '';
+        
+        for (let i = 0; i < line.length; i++) {
+            if (line[i] === '"') {
+                inQuotes = !inQuotes;
+            } else if (line[i] === ',' && !inQuotes) {
+                parts.push(currentPart);
+                currentPart = '';
+            } else {
+                currentPart += line[i];
             }
-            parts.push(currentPart);
-            
-            const question = parts[0].replace(/^"|"$/g, '').trim();
-            const answer = parts[1].replace(/^"|"$/g, '').trim();
-            
-            return { question, answer };
-        });
-
-        // Flashcard variables
-        let currentCardIndex = 0;
-        const totalCards = flashcards.length;
-
-        // DOM elements for flashcards
-        const flashcardElement = document.getElementById('flashcard');
-        const questionElement = document.getElementById('question');
-        const answerElement = document.getElementById('answer');
-        const currentCardElement = document.getElementById('current-card');
-        const totalCardsElement = document.getElementById('total-cards');
-        const prevButton = document.getElementById('prev-btn');
-        const nextButton = document.getElementById('next-btn');
-        const flipButton = document.getElementById('flip-btn');
-        const shuffleButton = document.getElementById('shuffle-btn');
-
-        // Initialize flashcards
-        totalCardsElement.textContent = totalCards;
-        loadCard();
-
-        function loadCard() {
-            const currentCard = flashcards[currentCardIndex];
-            questionElement.textContent = currentCard.question;
-            answerElement.textContent = currentCard.answer;
-            currentCardElement.textContent = currentCardIndex + 1;
-            flashcardElement.classList.remove('flipped');
         }
+        parts.push(currentPart);
+        
+        const question = parts[0].replace(/^"|"$/g, '').trim();
+        const answer = parts[1].replace(/^"|"$/g, '').trim();
+        
+        return { question, answer };
+    });
 
-        // Flashcard event listeners
-        prevButton.addEventListener('click', () => {
-            if (currentCardIndex > 0) {
-                currentCardIndex--;
-                loadCard();
-            }
-        });
+    // Flashcard variables
+    let currentCardIndex = 0;
+    const totalCards = flashcards.length;
 
-        nextButton.addEventListener('click', () => {
-            if (currentCardIndex < totalCards - 1) {
-                currentCardIndex++;
-                loadCard();
-            }
-        });
+    // DOM elements for flashcards
+    const flashcardElement = document.getElementById('flashcard');
+    const questionElement = document.getElementById('question');
+    const answerElement = document.getElementById('answer');
+    const currentCardElement = document.getElementById('current-card');
+    const totalCardsElement = document.getElementById('total-cards');
+    const prevButton = document.getElementById('prev-btn');
+    const nextButton = document.getElementById('next-btn');
+    const flipButton = document.getElementById('flip-btn');
+    const shuffleButton = document.getElementById('shuffle-btn');
 
-        flipButton.addEventListener('click', () => {
-            flashcardElement.classList.toggle('flipped');
-        });
+    // Initialize flashcards
+    totalCardsElement.textContent = totalCards;
+    loadCard();
 
-        flashcardElement.addEventListener('click', () => {
-            flashcardElement.classList.toggle('flipped');
-        });
+    function loadCard() {
+        const currentCard = flashcards[currentCardIndex];
+        questionElement.textContent = currentCard.question;
+        answerElement.textContent = currentCard.answer;
+        currentCardElement.textContent = currentCardIndex + 1;
+        flashcardElement.classList.remove('flipped');
+    }
 
-        shuffleButton.addEventListener('click', () => {
-            for (let i = flashcards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
-            }
-            currentCardIndex = 0;
+    // Flashcard event listeners
+    prevButton.addEventListener('click', () => {
+        if (currentCardIndex > 0) {
+            currentCardIndex--;
             loadCard();
-        });
+        }
+    });
 
-        // TEST SYSTEM - 40 Questions based on PDF content
-        const testQuestions = [
-            {
-                question: "Genetik mühendisliği nedir?",
-                options: [
-                    "Doğal seleksiyon süreçlerini inceleyen bilim dalı",
-                    "İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalı",
-                    "Canlıların evrimsel süreçlerini araştıran bilim dalı",
-                    "Bitki ve hayvan yetiştiriciliğini geliştiren teknikler bütünü",
-                    "Mikroorganizmaların endüstriyel kullanımını araştıran bilim dalı"
-                ],
-                correct: 1,
-                explanation: "Genetik mühendisliği, istenen özellikte bir genin çeşitli tekniklerle izolasyonu, çoğaltılması, nükleotit dizilişlerinin belirlenmesi ya da bir canlıdan alınarak başka bir canlıya aktarılmasıyla uğraşır."
-            },
-            {
-                question: "Biyoteknoloji nedir?",
-                options: [
-                    "Sadece tarım ürünlerinin geliştirilmesi",
-                    "DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak",
-                    "Geleneksel fermantasyon yöntemlerinin tümü",
-                    "Sadece tıbbi ilaç üretimi",
-                    "Çevre kirliliğini önleme teknikleri"
-                ],
-                correct: 1,
-                explanation: "Biyoteknoloji, doğa bilimleri ve çeşitli mühendislik dallarından yararlanılarak DNA teknolojisiyle yeni bir organizma elde etmek veya mevcut organizmanın yapısında istenilen yönde değişiklikler oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır."
-            },
-            {
-                question: "Rekombinant DNA nedir?",
-                options: [
-                    "Sadece bir canlıya ait DNA",
-                    "Doğal mutasyon sonucu oluşan DNA",
-                    "Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülü",
-                    "Kromozomların normal yapısı",
-                    "RNA'dan sentezlenen DNA"
-                ],
-                correct: 2,
-                explanation: "Rekombinant DNA, farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülüdür. Genetik mühendisliği ile elde edilir."
-            },
-            {
-                question: "Transgenik canlı (GDO) nedir?",
-                options: [
-                    "Doğal yollarla mutasyona uğramış canlı",
-                    "Rekombinant DNA'ya sahip canlı",
-                    "Sadece bitkiler için kullanılan bir terim",
-                    "Klonal olarak çoğaltılmış canlı",
-                    "Gen haritası çıkarılmış canlı"
-                ],
-                correct: 1,
-                explanation: "Transgenik canlı veya Genetiği Değiştirilmiş Organizma (GDO), rekombinant DNA'ya sahip canlılara verilen addır."
-            },
-            {
-                question: "İnsan Genom Projesi'nin amacı nedir?",
-                options: [
-                    "İnsan klonlamak",
-                    "İnsanın tüm genetik şifresini çözmek",
-                    "Sadece hastalık genlerini belirlemek",
-                    "İnsan evrimini araştırmak",
-                    "Genetik tedavileri test etmek"
-                ],
-                correct: 1,
-                explanation: "İnsan Genom Projesi, insanın tüm genetik şifresinin çözülmesi projesidir. Bu projeyle hastalıkların tanı ve tedavisi için bireylerin genetik yapısına uygun ilaçlar geliştirilecektir."
-            },
-            {
-                question: "Gen klonlaması nedir?",
-                options: [
-                    "Bir canlının tamamen kopyalanması",
-                    "Bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamı",
-                    "Sadece bakterilerde yapılan bir işlem",
-                    "DNA parmak izi çıkarma işlemi",
-                    "Gen haritası çıkarma işlemi"
-                ],
-                correct: 1,
-                explanation: "Gen klonlaması, bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamıdır."
-            },
-            {
-                question: "Restriksiyon enzimlerinin görevi nedir?",
-                options: [
-                    "DNA'yı birleştirmek",
-                    "DNA'yı belirli bölgelerden kesmek",
-                    "RNA sentezlemek",
-                    "Protein sentezlemek",
-                    "DNA'yı çoğaltmak"
-                ],
-                correct: 1,
-                explanation: "Restriksiyon enzimleri, DNA'yı belirli bölgelerden kesen enzimlerdir. Genetik mühendisliğinde önemli araçlardır."
-            },
-            {
-                question: "DNA ligaz enziminin görevi nedir?",
-                options: [
-                    "DNA'yı kesmek",
-                    "Kesilmiş DNA parçalarını birleştirmek",
-                    "DNA'yı çoğaltmak",
-                    "RNA sentezlemek",
-                    "Protein sentezlemek"
-                ],
-                correct: 1,
-                explanation: "DNA ligaz enzimi, kesilmiş DNA parçalarını birleştiren enzimdir. Rekombinant DNA oluşturulmasında kullanılır."
-            },
-            {
-                question: "Plazmid nedir?",
-                options: [
-                    "Bakterilerde bulunan küçük, halkasal DNA molekülleri",
-                    "Hayvan hücrelerindeki organel",
-                    "Bitki hücre duvarının yapı taşı",
-                    "Virüslerin genetik materyali",
-                    "Kromozomların uç kısımları"
-                ],
-                correct: 0,
-                explanation: "Plazmid, bakterilerde bulunan küçük, halkasal DNA molekülleridir. Genetik mühendisliğinde vektör olarak kullanılır."
-            },
-            {
-                question: "Vektör nedir?",
-                options: [
-                    "Hastalık taşıyan canlı",
-                    "Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleri",
-                    "Sadece virüsler için kullanılan terim",
-                    "Genetik hastalıkların taşıyıcısı",
-                    "Klonlama işleminde kullanılan alet"
-                ],
-                correct: 1,
-                explanation: "Vektör, gen aktarımında taşıyıcı olarak kullanılan DNA
+    nextButton.addEventListener('click', () => {
+        if (currentCardIndex < totalCards - 1) {
+            currentCardIndex++;
+            loadCard();
+        }
+    });
+
+    flipButton.addEventListener('click', () => {
+        flashcardElement.classList.toggle('flipped');
+    });
+
+    flashcardElement.addEventListener('click', () => {
+        flashcardElement.classList.toggle('flipped');
+    });
+
+    shuffleButton.addEventListener('click', () => {
+        for (let i = flashcards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+        }
+        currentCardIndex = 0;
+        loadCard();
+    });
+
+    // TEST SYSTEM - 40 Questions based on PDF content
+    const testQuestions = [
+        {
+            question: "Genetik mühendisliği nedir?",
+            options: [
+                "Doğal seleksiyon süreçlerini inceleyen bilim dalı",
+                "İstenen özellikte bir genin izolasyonu, çoğaltılması veya başka bir canlıya aktarılmasıyla uğraşan bilim dalı",
+                "Canlıların evrimsel süreçlerini araştıran bilim dalı",
+                "Bitki ve hayvan yetiştiriciliğini geliştiren teknikler bütünü",
+                "Mikroorganizmaların endüstriyel kullanımını araştıran bilim dalı"
+            ],
+            correct: 1,
+            explanation: "Genetik mühendisliği, istenen özellikte bir genin çeşitli tekniklerle izolasyonu, çoğaltılması, nükleotit dizilişlerinin belirlenmesi ya da bir canlıdan alınarak başka bir canlıya aktarılmasıyla uğraşır."
+        },
+        {
+            question: "Biyoteknoloji nedir?",
+            options: [
+                "Sadece tarım ürünlerinin geliştirilmesi",
+                "DNA teknolojisiyle yeni organizma elde etmek veya mevcut organizmanın yapısında istenilen değişiklikleri oluşturmak",
+                "Geleneksel fermantasyon yöntemlerinin tümü",
+                "Sadece tıbbi ilaç üretimi",
+                "Çevre kirliliğini önleme teknikleri"
+            ],
+            correct: 1,
+            explanation: "Biyoteknoloji, doğa bilimleri ve çeşitli mühendislik dallarından yararlanılarak DNA teknolojisiyle yeni bir organizma elde etmek veya mevcut organizmanın yapısında istenilen yönde değişiklikler oluşturmak amacıyla yapılan çalışmaların tamamını kapsayan bilim dalıdır."
+        },
+        {
+            question: "Rekombinant DNA nedir?",
+            options: [
+                "Sadece bir canlıya ait DNA",
+                "Doğal mutasyon sonucu oluşan DNA",
+                "Farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülü",
+                "Kromozomların normal yapısı",
+                "RNA'dan sentezlenen DNA"
+            ],
+            correct: 2,
+            explanation: "Rekombinant DNA, farklı kaynaklardan gelen DNA parçalarının birleştirilmesiyle oluşan yeni DNA molekülüdür. Genetik mühendisliği ile elde edilir."
+        },
+        {
+            question: "Transgenik canlı (GDO) nedir?",
+            options: [
+                "Doğal yollarla mutasyona uğramış canlı",
+                "Rekombinant DNA'ya sahip canlı",
+                "Sadece bitkiler için kullanılan bir terim",
+                "Klonal olarak çoğaltılmış canlı",
+                "Gen haritası çıkarılmış canlı"
+            ],
+            correct: 1,
+            explanation: "Transgenik canlı veya Genetiği Değiştirilmiş Organizma (GDO), rekombinant DNA'ya sahip canlılara verilen addır."
+        },
+        {
+            question: "İnsan Genom Projesi'nin amacı nedir?",
+            options: [
+                "İnsan klonlamak",
+                "İnsanın tüm genetik şifresini çözmek",
+                "Sadece hastalık genlerini belirlemek",
+                "İnsan evrimini araştırmak",
+                "Genetik tedavileri test etmek"
+            ],
+            correct: 1,
+            explanation: "İnsan Genom Projesi, insanın tüm genetik şifresinin çözülmesi projesidir. Bu projeyle hastalıkların tanı ve tedavisi için bireylerin genetik yapısına uygun ilaçlar geliştirilecektir."
+        },
+        {
+            question: "Gen klonlaması nedir?",
+            options: [
+                "Bir canlının tamamen kopyalanması",
+                "Bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamı",
+                "Sadece bakterilerde yapılan bir işlem",
+                "DNA parmak izi çıkarma işlemi",
+                "Gen haritası çıkarma işlemi"
+            ],
+            correct: 1,
+            explanation: "Gen klonlaması, bir genin kopyasını oluşturmak için kullanılan yöntem ve tekniklerin tamamıdır."
+        },
+        {
+            question: "Restriksiyon enzimlerinin görevi nedir?",
+            options: [
+                "DNA'yı birleştirmek",
+                "DNA'yı belirli bölgelerden kesmek",
+                "RNA sentezlemek",
+                "Protein sentezlemek",
+                "DNA'yı çoğaltmak"
+            ],
+            correct: 1,
+            explanation: "Restriksiyon enzimleri, DNA'yı belirli bölgelerden kesen enzimlerdir. Genetik mühendisliğinde önemli araçlardır."
+        },
+        {
+            question: "DNA ligaz enziminin görevi nedir?",
+            options: [
+                "DNA'yı kesmek",
+                "Kesilmiş DNA parçalarını birleştirmek",
+                "DNA'yı çoğaltmak",
+                "RNA sentezlemek",
+                "Protein sentezlemek"
+            ],
+            correct: 1,
+            explanation: "DNA ligaz enzimi, kesilmiş DNA parçalarını birleştiren enzimdir. Rekombinant DNA oluşturulmasında kullanılır."
+        },
+        {
+            question: "Plazmid nedir?",
+            options: [
+                "Bakterilerde bulunan küçük, halkasal DNA molekülleri",
+                "Hayvan hücrelerindeki organel",
+                "Bitki hücre duvarının yapı taşı",
+                "Virüslerin genetik materyali",
+                "Kromozomların uç kısımları"
+            ],
+            correct: 0,
+            explanation: "Plazmid, bakterilerde bulunan küçük, halkasal DNA molekülleridir. Genetik mühendisliğinde vektör olarak kullanılır."
+        },
+        {
+            question: "Vektör nedir?",
+            options: [
+                "Hastalık taşıyan canlı",
+                "Gen aktarımında taşıyıcı olarak kullanılan DNA molekülleri",
+                "Sadece virüsler için kullanılan terim",
+                "Genetik hastalıkların taşıyıcısı",
+                "Klonlama işleminde kullanılan alet"
+            ],
+            correct: 1,
+            explanation: "Vektör, gen aktarımında taşıyıcı olarak kullanılan DNA molekülleridir."
+        },
+        {
+            question: "DNA parmak izi nedir?",
+            options: [
+                "Parmak izinin DNA analizi",
+                "Her bireye özgü DNA diziliminin belirlenmesi",
+                "DNA'nın parmak izi şeklinde görüntüsü",
+                "Sadece suçluların DNA analizi",
+                "DNA'nın kimyasal analizi"
+            ],
+            correct: 1,
+            explanation: "DNA parmak izi, her bireye özgü DNA diziliminin belirlenmesi işlemidir."
+        },
+        {
+            question: "DNA parmak izini kim keşfetmiştir?",
+            options: [
+                "Gregor Mendel",
+                "Sir Alec Jeffreys",
+                "James Watson",
+                "Francis Crick",
+                "Rosalind Franklin"
+            ],
+            correct: 1,
+            explanation: "DNA parmak izi yöntemi 1984 yılında Sir Alec Jeffreys tarafından keşfedilmiştir."
+        },
+        {
+            question: "PCR (Polimeraz Zincir Reaksiyonu) nedir?",
+            options: [
+                "Protein sentezi işlemi",
+                "DNA'nın laboratuvarda çoğaltılması işlemi",
+                "RNA sentezi işlemi",
+                "DNA tamiri işlemi",
+                "Gen klonlama işlemi"
+            ],
+            correct: 1,
+            explanation: "PCR, DNA'nın laboratuvarda çoğaltılması işlemidir."
+        },
+        {
+            question: "Elektroforez nedir?",
+            options: [
+                "DNA sentezi yöntemi",
+                "DNA parçalarının boyutlarına göre ayrılması işlemi",
+                "RNA analizi yöntemi",
+                "Protein sentezi yöntemi",
+                "Hücre kültürü yöntemi"
+            ],
+            correct: 1,
+            explanation: "Elektroforez, DNA parçalarının boyutlarına göre ayrılması işlemidir."
+        },
+        {
+            question: "Kök hücre nedir?",
+            options: [
+                "Sadece kemik iliğinde bulunan hücreler",
+                "Farklılaşmamış, kendini yenileyebilen ve farklı hücre tiplerine dönüşebilen hücreler",
+                "Sadece embriyolarda bulunan hücreler",
+                "Kanser hücreleri",
+                "Yaşlanmış hücreler"
+            ],
+            correct: 1,
+            explanation: "Kök hücre, farklılaşmamış, kendini yenileyebilen ve farklı hücre tiplerine dönüşebilen hücrelerdir."
+        },
+        {
+            question: "Embriyonik kök hücre nedir?",
+            options: [
+                "Sadece kemik iliğinde bulunan hücreler",
+                "Tek başına organizma oluşturabilme gücüne sahip kök hücreler",
+                "Sadece yetişkinlerde bulunan hücreler",
+                "Kordon kanından elde edilen hücreler",
+                "Sinir hücreleri"
+            ],
+            correct: 1,
+            explanation: "Embriyonik kök hücre, tek başına organizma oluşturabilme gücüne sahip kök hücrelerdir."
+        },
+        {
+            question: "Klonlama nedir?",
+            options: [
+                "Gen aktarımı işlemi",
+                "Bir canlının genetik ikizinin oluşturulması",
+                "DNA analizi işlemi",
+                "Hücre kültürü oluşturma",
+                "Gen terapisi uygulama"
+            ],
+            correct: 1,
+            explanation: "Klonlama, bir canlının genetik ikizinin oluşturulması işlemidir."
+        },
+        {
+            question: "İlk klonlanan memeli hayvan hangisidir?",
+            options: [
+                "Fare",
+                "Koyun (Dolly)",
+                "İnek",
+                "Köpek",
+                "Maymun"
+            ],
+            correct: 1,
+            explanation: "İlk klonlanan memeli hayvan, 1997 yılında Dr. Ian Wilmut ve ekibi tarafından klonlanan Dolly adlı koyundur."
+        },
+        {
+            question: "Model organizma nedir?",
+            options: [
+                "Sadece laboratuvarda üretilen canlılar",
+                "Biyolojik olayları anlamak için üzerinde çalışılan canlılar",
+                "Genetiği değiştirilmiş canlılar",
+                "Nesli tükenmekte olan canlılar",
+                "Evcil hayvanlar"
+            ],
+            correct: 1,
+            explanation: "Model organizma, deney ve araştırmalarda kullanılmaya uygun olan ve çeşitli biyolojik olayları anlamak için üzerinde çalışılan canlılardır."
+        },
+        {
+            question: "Geleneksel biyoteknoloji nedir?",
+            options: [
+                "Gen aktarımı teknolojileri",
+                "Mayalanma teknolojisi ağırlıklı biyoteknoloji",
+                "Kök hücre teknolojileri",
+                "DNA analiz teknolojileri",
+                "Gen terapisi uygulamaları"
+            ],
+            correct: 1,
+            explanation: "Geleneksel biyoteknoloji, mayalanma teknolojisi ağırlıklıdır (ekmek, yoğurt, peynir gibi ürünlerin üretimi)."
+        },
+        {
+            question: "Modern biyoteknoloji ne zaman başlamıştır?",
+            options: [
+                "1900'lü yılların başında",
+                "1970'li yılların başında",
+                "2000'li yıllarda",
+                "1800'lü yılların sonunda",
+                "1950'li yıllarda"
+            ],
+            correct: 1,
+            explanation: "Modern biyoteknoloji, 1970'li yılların başından itibaren genetik yapıya müdahale edilerek başlamıştır."
+        },
+        {
+            question: "Gen terapisi nedir?",
+            options: [
+                "Genetik test yapılması",
+                "Genetik bozuklukların gen aktarımı yoluyla düzeltilmesi",
+                "Gen klonlaması",
+                "DNA analizi",
+                "Gen haritası çıkarılması"
+            ],
+            correct: 1,
+            explanation: "Gen terapisi, genetik bozuklukların gen aktarımı yoluyla düzeltilmesidir."
+        },
+        {
+            question: "Biyogüvenlik nedir?",
+            options: [
+                "Biyolojik silahların kontrolü",
+                "GDO'lu ürünlerin risklerini değerlendirmek ve kontrol altına almak",
+                "Biyolojik çeşitliliğin korunması",
+                "Laboratuvar güvenliği",
+                "Biyoteknoloji patentleri"
+            ],
+            correct: 1,
+            explanation: "Biyogüvenlik, GDO'lu ürünlerin doğurabileceği riskleri değerlendirmek ve kontrol altına almak şeklinde tanımlanır."
+        },
+        {
+            question: "Cartagena Biyogüvenlik Protokolü nedir?",
+            options: [
+                "Deniz kirliliğini önleme anlaşması",
+                "GDO'ların sınır ötesi hareketlerini düzenleyen uluslararası anlaşma",
+                "Biyolojik çeşitlilik sözleşmesi",
+                "İklim değişikliği protokolü",
+                "Su kaynaklarının korunması anlaşması"
+            ],
+            correct: 1,
+            explanation: "Cartagena Biyogüvenlik Protokolü, genetik olarak değiştirilmiş organizmaların sınır ötesi hareketleriyle ilgili evrensel düzeyde bağlayıcı ilk hukuk belgesidir."
+        },
+        {
+            question: "DNA parmak izinin kullanım alanları nelerdir?",
+            options: [
+                "Sadece adli tıp",
+                "Suçluların tespiti, babalık davaları, safkan ırkların belirlenmesi",
+                "Sadece tıbbi teşhis",
+                "Sadece hayvan ıslahı",
+                "Sadece bitki ıslahı"
+            ],
+            correct: 1,
+            explanation: "DNA parmak izi yöntemi, suçluların tespiti, babalık davaları, safkan ırkların belirlenmesi gibi birçok alanda kullanılır."
+        },
+        {
+            question: "Rekombinant DNA oluşturma aşamaları hangi sırayla gerçekleşir?",
+            options: [
+                "Kesme, birleştirme, izolasyon, aktarma, çoğaltma",
+                "İzolasyon, kesme, birleştirme, aktarma, çoğaltma",
+                "Çoğaltma, kesme, izolasyon, birleştirme, aktarma",
+                "Aktarma, izolasyon, kesme, birleştirme, çoğaltma",
+                "Birleştirme, kesme, izolasyon, aktarma, çoğaltma"
+            ],
+            correct: 1,
+            explanation: "Rekombinant DNA oluşturma aşamaları: 1. DNA ve plazmid izolasyonu, 2. Kesme, 3. Birleştirme, 4. Bakteriye aktarma, 5. Çoğaltma şeklindedir."
+        }
+    ];
+
+    // Test variables
+    let userAnswers = new Array(testQuestions.length).fill(null);
+
+    // Load test questions
+    function loadTestQuestions() {
+        const testContainer = document.getElementById('test-container');
+        testContainer.innerHTML = '';
+        
+        testQuestions.forEach((q, index) => {
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            questionCard.innerHTML = `
+                <div>
+                    <span class="question-number">${index + 1}</span>
+                    <span class="question-text">${q.question}</span>
+                </div>
+                <div class="options">
+                    ${q.options.map((option, optIndex) => `
+                        <div class="option" data-question="${index}" data-option="${optIndex}">
+                            <span class="option-letter">${String.fromCharCode(65 + optIndex)}</span>
+                            <span>${option}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            testContainer.appendChild(questionCard);
+        });
+        
+        // Add event listeners to options
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionIndex = parseInt(this.dataset.question);
+                const optionIndex = parseInt(this.dataset.option);
+                
+                // Remove selected class from all options in this question
+                const options = this.parentNode.querySelectorAll('.option');
+                options.forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Save user answer
+                userAnswers[questionIndex] = optionIndex;
+            });
+        });
+    }
+
+    // Submit test
+    document.getElementById('submit-test').addEventListener('click', () => {
+        let score = 0;
+        let resultsHTML = '';
+        
+        testQuestions.forEach((q, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = userAnswer === q.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Highlight correct/incorrect answers
+            const questionCard = document.querySelector(`.question-card:nth-child(${index + 1})`);
+            const options = questionCard.querySelectorAll('.option');
+            
+            options.forEach((option, optIndex) => {
+                option.classList.remove('correct', 'wrong');
+                
+                if (optIndex === q.correct) {
+                    option.classList.add('correct');
+                } else if (optIndex === userAnswer && !isCorrect) {
+                    option.classList.add('wrong');
+                }
+            });
+            
+            // Add to results summary
+            resultsHTML += `
+                <div style="margin-bottom: 15px; padding: 10px; background: ${isCorrect ? '#d4edda' : '#f8d7da'}; border-radius: 5px;">
+                    <strong>Soru ${index + 1}:</strong> ${q.question}<br>
+                    <strong>Cevabınız:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Boş'}<br>
+                    <strong>Doğru Cevap:</strong> ${q.options[q.correct]}<br>
+                    <strong>Açıklama:</strong> ${q.explanation}
+                </div>
+            `;
+        });
+        
+        // Display results
+        const resultDiv = document.getElementById('test-result');
+        const scoreElement = document.getElementById('score');
+        const messageElement = document.getElementById('test-message');
+        const detailedResultElement = document.getElementById('detailed-result');
+        
+        scoreElement.textContent = score;
+        detailedResultElement.innerHTML = resultsHTML;
+        
+        // Set message based on score
+        const percentage = (score / testQuestions.length) * 100;
+        let message = '';
+        if (percentage >= 80) {
+            message = '🏆 Mükemmel! Genetik mühendisliği ve biyoteknoloji konusunda çok iyi bilgiye sahipsiniz.';
+        } else if (percentage >= 60) {
+            message = '👍 İyi iş! Konuyu anlamışsınız, biraz daha çalışmayla mükemmel olacaksınız.';
+        } else if (percentage >= 40) {
+            message = '📚 Orta düzeyde bilgiye sahipsiniz. Tekrar yapmanız faydalı olacaktır.';
+        } else {
+            message = '📖 Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özet bölümlerini kullanabilirsiniz.';
+        }
+        
+        messageElement.textContent = message;
+        resultDiv.style.display = 'block';
+        
+        // Scroll to results
+        resultDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Clear selections
+    document.getElementById('clear-selections').addEventListener('click', () => {
+        userAnswers.fill(null);
+        document.querySelectorAll('.option').forEach(option => {
+            option.classList.remove('selected', 'correct', 'wrong');
+        });
+        document.getElementById('test-result').style.display = 'none';
+    });
+
+    // Restart test
+    document.getElementById('restart-test').addEventListener('click', () => {
+        userAnswers.fill(null);
+        loadTestQuestions();
+        document.getElementById('test-result').style.display = 'none';
+        window.scrollTo(0, 0);
+    });
+</script>
