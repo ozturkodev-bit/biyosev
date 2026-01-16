@@ -2,37 +2,51 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Biyosev Yönetim Paneli</title>
+    <title>Yönetim Paneli - Kilitli</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
+        /* Başlangıçta her şeyi gizle */
+        body { display: none; font-family: 'Poppins', sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
+        
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; color: #2c3e50; }
-        
         .message-item { border: 1px solid #e1e4e8; padding: 15px; margin-bottom: 15px; border-radius: 8px; background: #fff; display: flex; flex-direction: column; gap: 10px; }
-        
         .info-row { display: flex; justify-content: space-between; align-items: center; }
         .author { font-weight: 700; color: #d35400; font-size: 1.1rem; }
         .date { font-size: 0.85rem; color: #95a5a6; }
         .text { background-color: #f9f9f9; padding: 10px; border-radius: 6px; border-left: 3px solid #ddd; line-height: 1.5; }
-        
         .actions { display: flex; gap: 10px; margin-top: 5px; justify-content: flex-end; }
         button { padding: 8px 20px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 600; transition: opacity 0.2s; }
         button:hover { opacity: 0.9; }
         .btn-approve { background-color: #27ae60; }
         .btn-delete { background-color: #c0392b; }
-        
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; background: #f39c12; color: white; margin-bottom: 5px; width: fit-content;}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Mesaj Onay Paneli</h1>
+    <h1>🔒 Yönetici Paneli</h1>
     <div id="adminMessages">
         <p>Yükleniyor...</p>
     </div>
 </div>
+
+<script>
+    // --- GÜVENLİK KONTROLÜ ---
+    // Buradaki "12345" yerine kendi şifreni yaz!
+    var gercekSifre = "12345"; 
+    
+    var girilen = prompt("Yönetici Şifresini Giriniz:");
+
+    if(girilen === gercekSifre) {
+        document.body.style.display = "block";
+    } else {
+        document.body.innerHTML = "";
+        alert("Hatalı Şifre! Giriş Engellendi.");
+        window.location.href = "index.html"; 
+    }
+</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -40,22 +54,19 @@
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // --- SENİN FİREBASE BİLGİLERİN BURAYA ---
-    // index.html dosyasına koyduğun aynı kodları buraya da koymalısın
     const firebaseConfig = {
-  apiKey: "AIzaSyDgKb8OUWeLzHrDhIMOjaMc4dGA_xAHhB0",
-  authDomain: "biyosev-defter.firebaseapp.com",
-  projectId: "biyosev-defter",
-  storageBucket: "biyosev-defter.firebasestorage.app",
-  messagingSenderId: "602079219548",
-  appId: "1:602079219548:web:a99ff9ab2ad62fc8db3b99",
-  measurementId: "G-3ECJQXN693"
-};
+            apiKey: "BURAYA_API_KEY_GELECEK",
+            authDomain: "BURAYA_AUTH_DOMAIN_GELECEK",
+            projectId: "BURAYA_PROJECT_ID_GELECEK",
+            storageBucket: "BURAYA_STORAGE_BUCKET_GELECEK",
+            messagingSenderId: "BURAYA_MESSAGING_ID_GELECEK",
+            appId: "BURAYA_APP_ID_GELECEK"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const messagesRef = collection(db, "guestbook_messages");
 
-    // Sadece 'beklemede' olan mesajları getir
     const q = query(messagesRef, where("status", "==", "beklemede"), orderBy("createdAt", "desc"));
 
     onSnapshot(q, (snapshot) => {
@@ -67,12 +78,13 @@
             return;
         }
 
-        snapshot.forEach((document) => {
-            const data = document.data();
-            const msgId = document.id; 
+        // HATA BURADAYDI, 'document' YERİNE 'doc' YAZDIK
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const msgId = doc.id; 
             let dateStr = data.createdAt ? data.createdAt.toDate().toLocaleString("tr-TR") : "";
 
-            const div = document.createElement("div");
+            const div = document.createElement("div"); // Artık burası sorunsuz çalışacak
             div.className = "message-item";
             div.innerHTML = `
                 <span class="status-badge">Onay Bekliyor</span>
@@ -90,25 +102,16 @@
         });
     });
 
-    // Onaylama
+    // Fonksiyonları global yapıyoruz ki HTML'den çağırılabilsin
     window.approveMessage = async function(id) {
         const docRef = doc(db, "guestbook_messages", id);
-        try {
-            await updateDoc(docRef, { status: "onaylandi" });
-        } catch (e) {
-            alert("Hata: " + e.message);
-        }
+        try { await updateDoc(docRef, { status: "onaylandi" }); } catch (e) { alert("Hata: " + e.message); }
     };
 
-    // Silme
     window.deleteMessage = async function(id) {
-        if(confirm("Bu mesajı silmek istediğine emin misin?")) {
+        if(confirm("Silmek istediğine emin misin?")) {
             const docRef = doc(db, "guestbook_messages", id);
-            try {
-                await deleteDoc(docRef);
-            } catch (e) {
-                alert("Hata: " + e.message);
-            }
+            try { await deleteDoc(docRef); } catch (e) { alert("Hata: " + e.message); }
         }
     };
 
@@ -119,5 +122,4 @@
 </script>
 
 </body>
-
 </html>
