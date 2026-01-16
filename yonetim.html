@@ -53,15 +53,17 @@
     import { getFirestore, collection, onSnapshot, query, where, orderBy, doc, updateDoc, deleteDoc } 
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- SENİN FİREBASE BİLGİLERİN BURAYA ---
+   
     const firebaseConfig = {
-            apiKey: "BURAYA_API_KEY_GELECEK",
-            authDomain: "BURAYA_AUTH_DOMAIN_GELECEK",
-            projectId: "BURAYA_PROJECT_ID_GELECEK",
-            storageBucket: "BURAYA_STORAGE_BUCKET_GELECEK",
-            messagingSenderId: "BURAYA_MESSAGING_ID_GELECEK",
-            appId: "BURAYA_APP_ID_GELECEK"
-    };
+  apiKey: "AIzaSyDgKb8OUWeLzHrDhIMOjaMc4dGA_xAHhB0",
+  authDomain: "biyosev-defter.firebaseapp.com",
+  projectId: "biyosev-defter",
+  storageBucket: "biyosev-defter.firebasestorage.app",
+  messagingSenderId: "602079219548",
+  appId: "1:602079219548:web:a99ff9ab2ad62fc8db3b99",
+  measurementId: "G-3ECJQXN693"
+};
+
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -123,3 +125,4 @@
 
 </body>
 </html>
+
