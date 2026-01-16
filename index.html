@@ -12,37 +12,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biyoloji Çalışma Sayfası</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        /* CSS Kodların BURADA AYNEN KALACAK */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        /* HEADER */
         header { text-align: center; margin-bottom: 40px; padding: 25px; background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%); border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); color: white; position: relative; overflow: hidden; }
         header::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, #1abc9c, #3498db); }
         h1 { font-family: 'Montserrat', sans-serif; font-size: 2.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; }
         .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 800px; margin: 0 auto; line-height: 1.6; }
-        
-        /* GRID SİSTEMİ */
         .class-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; align-items: start; }
         .class-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column; }
         .class-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); }
-        
         .class-header { padding: 20px; text-align: center; color: white; position: relative; }
         .class-9 .class-header { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
         .class-10 .class-header { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
         .class-11 .class-header { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
         .class-12 .class-header { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
-        
         .class-icon { font-size: 2.2rem; margin-bottom: 10px; }
         .class-title { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 700; }
         .class-subtitle { font-size: 0.9rem; opacity: 0.9; }
         .class-content { padding: 20px; flex-grow: 1; }
-        
-        /* LİSTE STİLLERİ */
         .topic-list { list-style-type: none; }
         .topic-list li { padding: 12px 15px; margin-bottom: 10px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db; transition: all 0.2s ease; display: flex; align-items: center; cursor: pointer; }
         .class-9 .topic-list li { border-left-color: #3498db; }
@@ -52,8 +43,6 @@
         .topic-list li:hover { background-color: #edf2f7; transform: translateX(5px); }
         .topic-list i { margin-right: 10px; font-size: 1.1rem; width: 20px; text-align: center; }
         .class-9 .topic-list i { color: #3498db; } .class-10 .topic-list i { color: #2ecc71; } .class-11 .topic-list i { color: #e74c3c; } .class-12 .topic-list i { color: #9b59b6; }
-
-        /* ZİYARETÇİ DEFTERİ STİLLERİ (TURUNCU) */
         .class-feedback .class-header { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
         .feedback-content { display: flex; flex-direction: column; gap: 20px; }
         .form-group { margin-bottom: 12px; }
@@ -64,99 +53,36 @@
         .btn-submit { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; width: 100%; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3); background: linear-gradient(135deg, #e67e22 0%, #a04000 100%); }
         .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
-
         .messages-title { font-size: 1rem; font-weight: 700; color: #d35400; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
         .messages-container { max-height: 250px; overflow-y: auto; padding-right: 5px; }
         .messages-container::-webkit-scrollbar { width: 6px; }
         .messages-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .messages-container::-webkit-scrollbar-thumb { background: #f39c12; border-radius: 4px; }
-
         .message-card { background: #fff; border: 1px solid #eee; border-left: 4px solid #f39c12; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .message-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.8rem; color: #7f8c8d; }
         .message-author { font-weight: 700; color: #d35400; }
         .message-text { font-size: 0.9rem; line-height: 1.4; color: #34495e; word-wrap: break-word; }
-        
         .footer { text-align: center; margin-top: 40px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; border-top: 1px solid #ddd; }
         .logo { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #2c3e50; font-size: 1.5rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
         .logo i { color: #1abc9c; margin-right: 10px; font-size: 2rem; }
-        
         @media (max-width: 768px) { .class-container { grid-template-columns: 1fr; } h1 { font-size: 2.2rem; } .subtitle { font-size: 1rem; } }
     </style>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="logo"><i class="fas fa-dna"></i> BİYOSEV</div>
-        
         <header>
             <h1>BİYOLOJİ ÇALIŞMA SAYFASI</h1>
             <p class="subtitle">9. sınıftan 12. sınıfa kadar tüm biyoloji konularına ulaşın.</p>
         </header>
-        
         <div class="class-container">
-            <div class="class-card class-9">
-                <div class="class-header">
-                    <div class="class-icon"><i class="fas fa-seedling"></i></div>
-                    <h2 class="class-title">9. SINIF</h2>
-                    <p class="class-subtitle">Temel Biyoloji</p>
-                </div>
-                <div class="class-content">
-                    <ul class="topic-list">
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9ortakozellik')"><i class="fas fa-leaf"></i> Ortak Özellikler</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9bilimselyontem')"><i class="fas fa-microscope"></i> Bilimsel Yöntem</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9siniflandirma')"><i class="fas fa-atom"></i> Sınıflandırma</li>
-                        <li onclick="openTopic('')"><i class="fas fa-tree"></i> Konu Eklenecek</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="class-card class-10">
-                <div class="class-header">
-                    <div class="class-icon"><i class="fas fa-dna"></i></div>
-                    <h2 class="class-title">10. SINIF</h2>
-                    <p class="class-subtitle">Hücre ve Metabolizma</p>
-                </div>
-                <div class="class-content">
-                    <ul class="topic-list">
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10sindirim')"><i class="fas fa-lungs"></i> Sindirim Sistemi</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10hucresel solunum')"><i class="fas fa-recycle"></i> Hücresel Solunum</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10fotosentez')"><i class="fas fa-water"></i> Fotosentez</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10atp')"><i class="fas fa-vial"></i> ATP ve Enerji</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="class-card class-11">
-                <div class="class-header">
-                    <div class="class-icon"><i class="fas fa-brain"></i></div>
-                    <h2 class="class-title">11. SINIF</h2>
-                    <p class="class-subtitle">İnsan Fizyolojisi</p>
-                </div>
-                <div class="class-content">
-                    <ul class="topic-list">
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/sinir-sistemi/')"><i class="fas fa-heartbeat"></i> Sinir Sistemi</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/endokrin-sistem/')"><i class="fas fa-microscope"></i> Endokrin Sistem</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/duyu-organlar-/')"><i class="fas fa-dna"></i> Duyu Organları</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/destek/')"><i class="fas fa-baby"></i> Destek Sistemi</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="class-card class-12">
-                <div class="class-header">
-                    <div class="class-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <h2 class="class-title">12. SINIF</h2>
-                    <p class="class-subtitle">Genetik ve Modern Biyo.</p>
-                </div>
-                <div class="class-content">
-                    <ul class="topic-list">
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12nukleik')"><i class="fas fa-atom"></i> Nükleik Asitler</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12proteinsentezi')"><i class="fas fa-recycle"></i> Protein Sentezi</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12biyoteknoloji')"><i class="fas fa-globe-americas"></i> Genetik Müh.</li>
-                        <li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12enerjifotosentez')"><i class="fas fa-book-medical"></i> Enerji Dönüşümleri</li>
-                    </ul>
-                </div>
-            </div>
+            <div class="class-card class-9"> <div class="class-header"><div class="class-icon"><i class="fas fa-seedling"></i></div><h2 class="class-title">9. SINIF</h2><p class="class-subtitle">Temel Biyoloji</p></div> <div class="class-content"><ul class="topic-list"><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9ortakozellik')"><i class="fas fa-leaf"></i> Ortak Özellikler</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9bilimselyontem')"><i class="fas fa-microscope"></i> Bilimsel Yöntem</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/9siniflandirma')"><i class="fas fa-atom"></i> Sınıflandırma</li><li onclick="openTopic('')"><i class="fas fa-tree"></i> Konu Eklenecek</li></ul></div> </div>
+            <div class="class-card class-10"> <div class="class-header"><div class="class-icon"><i class="fas fa-dna"></i></div><h2 class="class-title">10. SINIF</h2><p class="class-subtitle">Hücre ve Metabolizma</p></div> <div class="class-content"><ul class="topic-list"><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10sindirim')"><i class="fas fa-lungs"></i> Sindirim Sistemi</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10hucresel solunum')"><i class="fas fa-recycle"></i> Hücresel Solunum</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10fotosentez')"><i class="fas fa-water"></i> Fotosentez</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/10atp')"><i class="fas fa-vial"></i> ATP ve Enerji</li></ul></div> </div>
+            <div class="class-card class-11"> <div class="class-header"><div class="class-icon"><i class="fas fa-brain"></i></div><h2 class="class-title">11. SINIF</h2><p class="class-subtitle">İnsan Fizyolojisi</p></div> <div class="class-content"><ul class="topic-list"><li onclick="openTopic('https://ozturkodev-bit.github.io/sinir-sistemi/')"><i class="fas fa-heartbeat"></i> Sinir Sistemi</li><li onclick="openTopic('https://ozturkodev-bit.github.io/endokrin-sistem/')"><i class="fas fa-microscope"></i> Endokrin Sistem</li><li onclick="openTopic('https://ozturkodev-bit.github.io/duyu-organlar-/')"><i class="fas fa-dna"></i> Duyu Organları</li><li onclick="openTopic('https://ozturkodev-bit.github.io/destek/')"><i class="fas fa-baby"></i> Destek Sistemi</li></ul></div> </div>
+            <div class="class-card class-12"> <div class="class-header"><div class="class-icon"><i class="fas fa-graduation-cap"></i></div><h2 class="class-title">12. SINIF</h2><p class="class-subtitle">Genetik ve Modern Biyo.</p></div> <div class="class-content"><ul class="topic-list"><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12nukleik')"><i class="fas fa-atom"></i> Nükleik Asitler</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12proteinsentezi')"><i class="fas fa-recycle"></i> Protein Sentezi</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12biyoteknoloji')"><i class="fas fa-globe-americas"></i> Genetik Müh.</li><li onclick="openTopic('https://ozturkodev-bit.github.io/biyosev/12enerjifotosentez')"><i class="fas fa-book-medical"></i> Enerji Dönüşümleri</li></ul></div> </div>
 
             <div class="class-card class-feedback">
                 <div class="class-header">
@@ -165,7 +91,6 @@
                     <p class="class-subtitle">Görüş ve Önerileriniz</p>
                 </div>
                 <div class="class-content feedback-content">
-                    
                     <div class="form-section">
                         <div class="form-group">
                             <label class="form-label">Adınız Soyadınız:</label>
@@ -179,21 +104,16 @@
                             <i class="fas fa-paper-plane"></i> GÖNDER
                         </button>
                     </div>
-
                     <div class="messages-wrapper">
                         <h3 class="messages-title">Son Mesajlar</h3>
                         <div class="messages-container" id="messagesContainer">
                             <div style="text-align:center; color:#999; padding:10px;">Yükleniyor...</div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-        
-        <div class="footer">
-            <p>Biyoloji Çalışma Sayfası &copy; 2025 - Site Tasarımı Ö.S</p>
-        </div>
+        <div class="footer"><p>Biyoloji Çalışma Sayfası &copy; 2025 - Site Tasarımı Ö.S</p></div>
     </div>
 
     <script type="module">
@@ -202,7 +122,7 @@
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         
-       const firebaseConfig = {
+         const firebaseConfig = {
   apiKey: "AIzaSyDgKb8OUWeLzHrDhIMOjaMc4dGA_xAHhB0",
   authDomain: "biyosev-defter.firebaseapp.com",
   projectId: "biyosev-defter",
@@ -212,12 +132,22 @@
   measurementId: "G-3ECJQXN693"
 };
 
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const messagesRef = collection(db, "guestbook_messages");
 
-        // 1. MESAJ GÖNDERME (ONAY SİSTEMİ İÇİN 'beklemede' OLARAK KAYDEDER)
+        // ----------------------------------------------------
+        // --- YENİ EKLENEN KISIM: EMAILJS AYARLARI ---
+        // EmailJS sitesinden aldığın kodları buraya yapıştır
+        // ----------------------------------------------------
+        const EMAIL_SERVICE_ID = "service_yik3lx5";  // Service ID
+        const EMAIL_TEMPLATE_ID = "template_xeuts3u"; // Template ID
+        const EMAIL_PUBLIC_KEY = "qHIHOyawexXIM3nZA"; // Public Key
+
+        // EmailJS'i Başlat
+        emailjs.init(EMAIL_PUBLIC_KEY);
+
+        // --- GÖNDER BUTONU ---
         document.getElementById("sendBtn").addEventListener("click", async () => {
             const nameInput = document.getElementById("guestName");
             const msgInput = document.getElementById("guestMsg");
@@ -235,7 +165,7 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
                 btn.disabled = true;
 
-                // Veritabanına kaydet (status: 'beklemede' olduğu için hemen görünmez)
+                // 1. ADIM: FIREBASE'E KAYDET
                 await addDoc(messagesRef, {
                     author: name,
                     text: text,
@@ -243,7 +173,23 @@
                     createdAt: serverTimestamp()
                 });
 
-                // Formu temizle ve bilgi ver
+                // 2. ADIM: MAIL GÖNDER (EmailJS)
+                // Şablonundaki değişken isimleri (author, message) ile buradakiler aynı olmalı
+                const emailParams = {
+                    author: name,
+                    message: text
+                };
+
+                // Mail göndermeyi dene ama hata verirse de kullanıcıyı korkutma
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, emailParams)
+                    .then(() => {
+                        console.log("Mail başarıyla gönderildi!");
+                    })
+                    .catch((error) => {
+                        console.error("Mail gönderilemedi:", error);
+                    });
+
+                // Başarılı
                 nameInput.value = "";
                 msgInput.value = "";
                 alert("Mesajınız başarıyla gönderildi! Yönetici onayından sonra yayınlanacaktır.");
@@ -257,12 +203,12 @@
             }
         });
 
-        // 2. MESAJLARI LİSTELEME (SADECE 'ONAYLANDI' OLANLARI GETİRİR)
+        // --- MESAJLARI LİSTELEME ---
         const q = query(messagesRef, where("status", "==", "onaylandi"), orderBy("createdAt", "desc"));
 
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById("messagesContainer");
-            container.innerHTML = ""; // Temizle
+            container.innerHTML = "";
 
             if (snapshot.empty) {
                 container.innerHTML = '<div style="text-align:center; padding:10px; color:#999; font-size:0.9rem;">Henüz yayınlanmış mesaj yok.</div>';
@@ -271,17 +217,7 @@
 
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                
-                // Tarihi formatla
-                let dateStr = "";
-                if (data.createdAt) {
-                    const date = data.createdAt.toDate();
-                    dateStr = date.toLocaleDateString("tr-TR"); 
-                    // İstersen saati de ekle: + " " + date.toLocaleTimeString("tr-TR").slice(0,5);
-                } else {
-                    dateStr = "Az önce";
-                }
-
+                let dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString("tr-TR") : "Az önce";
                 const card = document.createElement("div");
                 card.className = "message-card";
                 card.innerHTML = `
@@ -295,18 +231,15 @@
             });
         });
 
-        // XSS Koruması için
         function escapeHtml(text) {
             if (!text) return "";
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
         
-        // Global Link Fonksiyonu
         window.openTopic = function(url) {
             if(url && url !== '#') window.open(url, '_blank');
         };
 
-        // Sayfa Açılış Animasyonu
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.class-card');
             cards.forEach((card, index) => {
