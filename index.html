@@ -236,8 +236,11 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
         
-        window.openTopic = function(url) {
-            if(url && url !== '#') window.open(url, '_blank');
+       window.openTopic = function(url) {
+    if(url && url !== '#') {
+        window.location.href = url; // Yeni sekme yerine aynı sayfada gitmesi için bu kodu kullanıyoruz
+    }
+};
         };
 
         document.addEventListener('DOMContentLoaded', function() {
