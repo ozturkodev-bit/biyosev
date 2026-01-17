@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organik Moleküller Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #9b59b6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #e8f6f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .context-scenario i {
+            color: #1abc9c;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-atom"></i> Organik Moleküller Öğrenme Portalı</h1>
+            <div class="subtitle">6 farklı öğrenme yöntemi ile Karbonhidratlar, Yağlar ve Proteinleri keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/6</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile organik moleküllerin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Organik molekülleri görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile organik moleküller soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile organik moleküller hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Organik moleküllerin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="comparison-btn">
+                <i class="fas fa-balance-scale"></i>
+                <div class="card-title">Karşılaştırma Tabloları</div>
+                <div class="card-description">Organik molekül çeşitlerini özellikleriyle birlikte karşılaştırarak öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Organik Moleküller Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Organik Moleküller Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Organik Moleküllerin Genel Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li>Karbon atomlarına bağlı hidrojen, oksijen, azot gibi elementler içerir</li>
+                        <li>Alkol, hidroksil, karboksil gibi fonksiyonel gruplar bulundurur</li>
+                        <li>Bitkiler, hayvanlar ve mikroorganizmalar tarafından sentezlenebilir</li>
+                        <li>İnorganik moleküllerden daha büyük yapılıdır</li>
+                        <li>Metabolik faaliyetlerin düzenlenmesinde önemli roller üstlenir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">KARBONHİDRATLAR</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapı:</strong> C, H, O atomlarından oluşur</li>
+                        <li><strong>Görev:</strong> Enerji kaynağı, yapısal destek</li>
+                        <li><strong>Sınıflandırma:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li><strong>Monosakkaritler:</strong> Glikoz, fruktoz, galaktoz, riboz, deoksiriboz</li>
+                                <li><strong>Disakkaritler:</strong> Maltoz, sükroz, laktoz</li>
+                                <li><strong>Polisakkaritler:</strong> Glikojen, nişasta, selüloz, kitin</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">LİPİTLER (YAĞLAR)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapı:</strong> Hidrofobik, polar olmayan, enerji içeriği yüksek</li>
+                        <li><strong>Görev:</strong> Enerji depolama, hücre zarı yapısı, koruma</li>
+                        <li><strong>Çeşitleri:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li><strong>Yağ asitleri:</strong> Doymuş, doymamış, esansiyel</li>
+                                <li><strong>Trigliseritler:</strong> 1 gliserol + 3 yağ asidi</li>
+                                <li><strong>Fosfolipitler:</strong> Hücre zarının ana bileşeni</li>
+                                <li><strong>Steroitler:</strong> Kolesterol, hormonlar, D vitamini</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">PROTEİNLER</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapı:</strong> Amino asitlerin polimerleri</li>
+                        <li><strong>Görev:</strong> Yapısal destek, enzimatik reaksiyonlar, taşıma, savunma</li>
+                        <li><strong>Özellikler:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Peptit bağları ile bağlanır</li>
+                                <li>Üç boyutlu yapı kazanır (natif yapı)</li>
+                                <li>Denatürasyon ve renatürasyon görülür</li>
+                                <li>20 çeşit amino asitten oluşur</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">NÜKLEİK ASİTLER ve VİTAMİNLER</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Nükleik Asitler:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>DNA: Deoksiriboz şeker, genetik bilgi</li>
+                                <li>RNA: Riboz şeker, protein sentezi</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vitaminler:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Suda çözünen vitaminler</li>
+                                <li>Yağda çözünen vitaminler</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Monosakkaritlerin Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Pentozlar (5C):</strong> Riboz (RNA), deoksiriboz (DNA)</li>
+                        <li><strong>Heksozlar (6C):</strong> Glikoz, fruktoz, galaktoz</li>
+                        <li>Genel formül: (CH₂O)ₙ</li>
+                        <li>Yapısal izomerler: Aynı kapalı formül, farklı açık formül</li>
+                        <li>Canlılar tarafından doğal olarak üretilir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Polisakkaritlerin Sınıflandırılması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Depo Polisakkaritler:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Glikojen: Hayvanlarda (karaciğer, kas)</li>
+                                <li>Nişasta: Bitkilerde (kök, yumru, tohum)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yapısal Polisakkaritler:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Selüloz: Bitki hücre duvarı</li>
+                                <li>Kitin: Mantar hücre duvarı, eklembacaklı dış iskeleti</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Yağ Asitlerinin Sınıflandırılması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Doymuş Yağ Asitleri:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Çift bağ yok</li>
+                                <li>Karbon atomları hidrojenle doyurulmuş</li>
+                                <li>Oda sıcaklığında katı (tereyağı)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Doymamış Yağ Asitleri:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Bir veya daha fazla çift bağ var</li>
+                                <li>Esansiyel yağ asitleri (vücutta üretilemez)</li>
+                                <li>Oda sıcaklığında sıvı (zeytinyağı, ayçiçek yağı)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Organik Moleküller Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Ahmet, düzenli olarak spor yapmaktadır. Antrenman öncesi enerji almak için muz yemeyi tercih ediyor. Muzda bulunan ve enerji sağlayan organik molekül nedir ve neden tercih edilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sporcular antrenman öncesi hızlı enerji sağlayacak besinler tüketirler.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Muzda bulunan ve enerji sağlayan organik molekül <strong>karbonhidratlardır</strong>. Özellikle muzda fruktoz ve glikoz gibi monosakkaritler ve nişasta gibi polisakkaritler bulunur.</p>
+                        <p><strong>Neden tercih edilir:</strong> Karbonhidratlar hızlı bir şekilde enerjiye dönüştürülebilir. Monosakkaritler doğrudan kana karışarak enerji sağlarken, polisakkaritler daha yavaş sindirilerek uzun süreli enerji kaynağı oluşturur. Bu nedenle sporcular antrenman öncesi ve sonrası karbonhidrat tüketirler.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Ayşe, süt içtikten sonra karın ağrısı ve şişkinlik yaşıyor. Doktoru bu durumu "laktoz intoleransı" olarak tanımlıyor. Bu durum hangi organik molekülle ilgilidir ve neden sindirim sorunlarına yol açar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Laktoz intoleransı, süt ve süt ürünlerinde bulunan bir karbonhidratın sindirilememesi durumudur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Bu durum <strong>laktoz</strong> adlı disakkarit karbonhidratla ilgilidir.</p>
+                        <p><strong>Neden sindirim sorunlarına yol açar:</strong> Laktoz, süt şekeri olarak bilinen bir disakkarittir (glikoz + galaktoz). Normalde bağırsaklarda bulunan laktaz enzimi laktozu monomerlerine ayırır. Laktoz intoleransında, birey yeterli laktaz enzimi üretemez. Sindirilmeyen laktoz bağırsaklarda kalır ve bağırsak bakterileri tarafından fermente edilir. Bu fermantasyon sonucu gaz, şişkinlik, karın ağrısı ve ishal gibi sindirim sorunları ortaya çıkar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Mehmet Bey, kan tahlili sonucunda kolesterol seviyesinin yüksek olduğunu öğreniyor. Doktoru ona doymuş yağ tüketimini azaltmasını öneriyor. Kolesterol hangi organik molekül grubuna aittir ve doymuş yağlarla ilişkisi nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kolesterol, vücutta sentezlenen ve besinlerle alınan bir lipit çeşididir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Kolesterol, <strong>lipitlerin</strong> bir alt grubu olan <strong>steroitler</strong> sınıfına ait bir moleküldür.</p>
+                        <p><strong>Doymuş yağlarla ilişkisi:</strong> Doymuş yağ asitleri içeren besinler (tereyağı, kırmızı et, tam yağlı süt ürünleri) kolesterol sentezini artırır. Kolesterolün yüksek olması, damar duvarlarında birikerek damar sertliğine (ateroskleroz) yol açabilir. Bu nedenle doktor, doymuş yağ tüketimini azaltarak kolesterol seviyesini düşürmeyi hedefler.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Zeynep, vegan bir beslenme düzeni benimsemiştir. Et tüketmediği için protein ihtiyacını baklagillerden karşılıyor. Baklagillerdeki proteinlerin yapı taşı nedir ve vücutta nasıl kullanılır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Vegan beslenmede hayvansal ürünler tüketilmez, protein ihtiyacı bitkisel kaynaklardan karşılanır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Baklagillerdeki proteinlerin yapı taşı <strong>amino asitlerdir</strong>.</p>
+                        <p><strong>Vücutta kullanımı:</strong> Baklagiller (fasulye, mercimek, nohut) bitkisel protein kaynaklarıdır. Sindirim sırasında proteinler, peptit bağlarının hidrolizi ile amino asitlere ve küçük peptitlere parçalanır. Bu amino asitler emilerek kana karışır ve vücudun çeşitli ihtiyaçları için kullanılır:
+                        <ul>
+                            <li>Yeni protein sentezi (enzimler, hormonlar, yapısal proteinler)</li>
+                            <li>Doku onarımı ve büyüme</li>
+                            <li>Enerji üretimi (gerektiğinde)</li>
+                        </ul>
+                        Vegan bireyler, tüm elzem (esansiyel) amino asitleri alabilmek için çeşitli bitkisel protein kaynaklarını bir arada tüketmelidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir gıda mühendisi, margarin üretmek için sıvı bitkisel yağları katı hale getirmek istiyor. Bunun için yağlara hidrojen ekliyor. Bu işlem hangi organik molekül grubunda ne tür bir değişikliğe yol açar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Margarin üretimi, bitkisel yağların hidrojenasyon işlemiyle katılaştırılmasıyla gerçekleşir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu işlem <strong>lipitlerin</strong> bir bileşeni olan <strong>yağ asitlerinde</strong> değişikliğe yol açar.</p>
+                        <p><strong>Değişiklik:</strong> Sıvı bitkisel yağlar, doymamış yağ asitleri içerir (çift bağ vardır). Hidrojenasyon işleminde, yağ asitlerindeki çift bağlara hidrojen eklenir. Bu sayede:
+                        <ul>
+                            <li>Doymamış yağ asitleri → Doymuş yağ asitlerine dönüşür</li>
+                            <li>Çift bağlar tek bağlara dönüşür</li>
+                            <li>Yağın erime noktası yükselir (oda sıcaklığında katı hale gelir)</li>
+                        </ul>
+                        Bu işlemle üretilen margarinler, doymuş yağ içeriği yüksek, oda sıcaklığında katı yağlardır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bir biyoloji öğrencisi, deney tüpündeki bir protein çözeltisini ısıttığında çözeltinin bulanıklaştığını ve katılaştığını gözlemliyor. Bu olay hangi protein özelliğiyle açıklanır ve geri dönüşümlü müdür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Proteinler, yüksek sıcaklık gibi fiziksel koşullar altında yapısal değişikliğe uğrar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Bu olay <strong>protein denatürasyonu</strong> ile açıklanır.</p>
+                        <p><strong>Açıklama:</strong> Proteinlerin üç boyutlu (natif) yapısı, hidrojen bağları, iyonik bağlar, hidrofobik etkileşimler gibi zayıf bağlarla korunur. Yüksek sıcaklık, bu zayıf bağların kopmasına neden olur. Bu durumda protein:
+                        <ul>
+                            <li>Üç boyutlu yapısını kaybeder (açılır)</li>
+                            <li>Biyolojik işlevini yitirir</li>
+                            <li>Çözünürlüğü azalır (bulanıklık ve çökelme gözlenir)</li>
+                        </ul>
+                        <strong>Geri dönüşüm:</strong> Denatürasyon, proteinin birincil yapısını (amino asit dizilimini) bozmazsa ve sadece üç boyutlu yapıyı etkilediyse, koşullar normale döndüğünde protein tekrar eski yapısını kazanabilir. Buna <strong>renatürasyon</strong> denir. Ancak yüksek sıcaklık gibi şiddetli denatürasyon genellikle geri dönüşümsüzdür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir çiftçi, arpa hasadı yapıyor. Arpa, malt üretiminde kullanılıyor ve malt şekeri olarak bilinen bir disakkarit içeriyor. Bu disakkarit nedir ve hangi monosakkaritlerden oluşur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Malt, arpadan üretilir ve bira yapımında kullanılır. Malt şekeri olarak bilinen bir karbonhidrat içerir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Arpada bulunan ve malt şekeri olarak bilinen disakkarit <strong>maltozdur</strong>.</p>
+                        <p><strong>Yapısı:</strong> Maltoz, iki glikoz molekülünün glikozit bağı ile birleşmesi sonucu oluşan bir disakkarittir. 
+                        <ul>
+                            <li>Formülü: Glikoz + Glikoz → Maltoz + Su</li>
+                            <li>Arpa şekeri olarak da bilinir</li>
+                            <li>Sindirim enzimleri (maltaz) ile tekrar iki glikoz molekülüne hidroliz edilir</li>
+                        </ul>
+                        Maltoz, tahıllarda (özellikle arpa ve malt ürünlerinde) bulunur. Birada maya tarafından fermente edilerek alkol ve karbondioksite dönüştürülür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Bir sporcu, uzun mesafe koşusu için hazırlanıyor. Koşu sırasında enerji ihtiyacını karşılamak için kaslarında depolanmış bir polisakkariti kullanıyor. Bu polisakkarit nedir ve nasıl işlev görür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Dayanıklılık sporlarında vücut, depolanmış enerji kaynaklarını kullanır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Kaslarda depolanan ve enerji için kullanılan polisakkarit <strong>glikojendir</strong>.</p>
+                        <p><strong>İşlevi:</strong> Glikojen, hayvanlarda ve insanlarda glikozun depo şeklidir.
+                        <ul>
+                            <li><strong>Depolanma yeri:</strong> Karaciğer ve kas hücrelerinde depolanır.</li>
+                            <li><strong>Karaciğerdeki görevi:</strong> Kan şekeri seviyesini düzenler.</li>
+                            <li><strong>Kaslardaki görevi:</strong> Egzersiz sırasında enerji kaynağı olarak kullanılır.</li>
+                        </ul>
+                        Koşu sırasında kas hücreleri, glikojen depolarını hidroliz ederek glikoza çevirir. Glikoz da hücre solunumuyla ATP enerjisine dönüştürülür. Uzun süreli egzersizlerde glikojen depoları tükenirse, vücut yağ depolarını kullanmaya başlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Bir araştırmacı, hücre zarının yapısını inceliyor. Hücre zarının temel yapısal bileşeni olan ve hem hidrofilik hem hidrofobik kısımlara sahip lipit molekülü nedir ve özellikleri nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hücre zarı, lipit ve proteinlerden oluşan bir yapıdır. Lipitler arasında özel bir çeşit vardır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Hücre zarının temel yapısal bileşeni olan ve hem hidrofilik hem hidrofobik kısımlara sahip lipit molekülü <strong>fosfolipitlerdir</strong>.</p>
+                        <p><strong>Özellikleri:</strong>
+                        <ul>
+                            <li><strong>Amfipatik yapı:</strong> Hem suyu seven (hidrofilik) hem de suyu sevmeyen (hidrofobik) kısımlara sahiptir.</li>
+                            <li><strong>Hidrofilik baş:</strong> Fosfat grubu ve bağlı yan gruplardan oluşur, suyla etkileşir.</li>
+                            <li><strong>Hidrofobik kuyruk:</strong> İki yağ asidi zincirinden oluşur, sudan kaçınır.</li>
+                            <li><strong>Çift tabaka oluşumu:</strong> Sulu ortamda hidrofobik kuyruklar içe, hidrofilik başlar dışa bakacak şekilde iki tabakalı (bilayer) düzen oluşturur.</li>
+                        </ul>
+                        Fosfolipit çift tabakası, hücre zarının temel yapısını oluşturur ve hücre içi ile dış ortam arasında seçici geçirgen bir bariyer görevi görür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir öğrenci, laboratuvarda DNA izolasyon deneyi yapıyor. DNA molekülünün yapısında bulunan şeker nedir ve RNA'daki şekerden farkı ne olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: DNA ve RNA, nükleik asitlerdir ve yapılarında şeker bulundururlar. Bu şekerler birbirinden farklıdır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> DNA molekülünün yapısında bulunan şeker <strong>deoksiribozdur</strong>.</p>
+                        <p><strong>RNA'daki şekerden farkı:</strong>
+                        <ul>
+                            <li><strong>DNA'daki şeker:</strong> Deoksiriboz (5 karbonlu pentoz)</li>
+                            <li><strong>RNA'daki şeker:</strong> Riboz (5 karbonlu pentoz)</li>
+                        </ul>
+                        <strong>Yapısal fark:</strong> Deoksiriboz şekerinde, riboz şekerindeki bir hidroksil grubu (OH) yerine hidrojen atomu (H) bulunur. "Deoksi" ön eki "oksijensiz" anlamına gelmez; bir oksijen atomunun eksik olduğu anlamına gelir. Ribozda 2 numaralı karbon atomunda bir OH grubu varken, deoksiribozda bu pozisyonda sadece H atomu vardır. Bu küçük fark, DNA'nın daha kararlı yapıda olmasını sağlar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Organik Moleküller Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Organik Moleküller Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-atom"></i> ORGANİK MOLEKÜLLERİN GENEL ÖZELLİKLERİ</div>
+                    <ul class="summary-list">
+                        <li>Organik moleküller, karbon atomlarına çeşitli elementlerin ve fonksiyonel grupların bağlanmasıyla oluşur.</li>
+                        <li>Hidrojen, oksijen, azot, kükürt gibi elementler ile alkol, hidroksil, karboksil gibi fonksiyonel gruplar içerir.</li>
+                        <li>Bitkiler, hayvanlar, mikroorganizmalar tarafından doğal olarak sentezlenebilir veya laboratuvarda sentetik olarak üretilebilir.</li>
+                        <li>Doğal organik moleküller: Karbohidratlar, proteinler, yağlar, nükleik asitler ve vitaminler.</li>
+                        <li>Hücrelerin temel bileşenleri olarak görev alır ve metabolik faaliyetlerin düzenlenmesinde rol oynar.</li>
+                        <li>İnorganik moleküllerden daha büyük yapılıdır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cookie-bite"></i> KARBONHİDRATLAR</div>
+                    
+                    <div class="diagram-note">
+                        <strong>📊 Monomer → Polimer İlişkisi:</strong> Monosakkaritler (glikoz, fruktoz) → Disakkaritler (maltoz, sükroz, laktoz) → Polisakkaritler (nişasta, glikojen, selüloz)
+                    </div>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Yapı:</strong> Karbon, hidrojen ve oksijen atomlarından oluşur (C, H, O). Bazıları azot da içerebilir.</li>
+                        <li><strong>Görev:</strong> Enerji kaynağı, yapısal destek, hücre tanıma.</li>
+                        <li><strong>Sınıflandırma:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Monosakkaritler (Tek Şekerler):</strong> En basit karbonhidratlar.
+                                    <ul style="margin-left: 20px; margin-top: 5px;">
+                                        <li><strong>Pentozlar (5C):</strong> Riboz (RNA), deoksiriboz (DNA)</li>
+                                        <li><strong>Heksozlar (6C):</strong> Glikoz (kan şekeri), fruktoz (meyve şekeri), galaktoz (süt şekeri)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Disakkaritler (Çift Şekerler):</strong> İki monosakkaritin birleşmesiyle oluşur.
+                                    <ul style="margin-left: 20px; margin-top: 5px;">
+                                        <li>Maltoz (arpa şekeri): Glikoz + Glikoz</li>
+                                        <li>Sükroz (çay şekeri): Glikoz + Fruktoz</li>
+                                        <li>Laktoz (süt şekeri): Glikoz + Galaktoz</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Polisakkaritler (Çok Şekerler):</strong> Çok sayıda monosakkaritin birleşmesiyle oluşur.
+                                    <ul style="margin-left: 20px; margin-top: 5px;">
+                                        <li><strong>Depo polisakkaritler:</strong> Glikojen (hayvanlarda), nişasta (bitkilerde)</li>
+                                        <li><strong>Yapısal polisakkaritler:</strong> Selüloz (bitki hücre duvarı), kitin (mantar hücre duvarı, böcek dış iskeleti)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><strong>Önemli Notlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Glikoz: Doğada en yaygın bulunan heksoz, fotosentezle üretilir, hücresel solunumda enerji kaynağıdır.</li>
+                                <li>Fruktoz: Meyvelerde ve balda bulunur, glikoza göre daha tatlıdır, gıda endüstrisinde kullanılır.</li>
+                                <li>Laktoz intoleransı: Laktozu parçalayan laktaz enzimi eksikliğinde ortaya çıkar.</li>
+                                <li>Selüloz: İnsanlar tarafından sindirilemez ama lif olarak bağırsak hareketlerini düzenler.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-oil-can"></i> LİPİTLER (YAĞLAR)</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Lipit Çeşidi</th>
+                            <th>Yapısı</th>
+                            <th>Görevi</th>
+                            <th>Örnekler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Yağ Asitleri</strong></td>
+                            <td>Uzun hidrokarbon zinciri + karboksil grubu</td>
+                            <td>Trigliserit ve fosfolipitlerin yapı taşı</td>
+                            <td>Doymuş (tereyağı), doymamış (zeytinyağı)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trigliseritler</strong></td>
+                            <td>1 gliserol + 3 yağ asidi (ester bağı)</td>
+                            <td>Enerji depolama, yalıtım, koruma</td>
+                            <td>Depo yağlar, bitkisel ve hayvansal yağlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fosfolipitler</strong></td>
+                            <td>1 gliserol + 2 yağ asidi + 1 fosfat grubu</td>
+                            <td>Hücre zarının ana bileşeni</td>
+                            <td>Hücre zarındaki lipit çift tabakası</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Steroitler</strong></td>
+                            <td>4 halkalı karbon yapısı</td>
+                            <td>Hücre zarı akışkanlığı, hormon öncülü</td>
+                            <td>Kolesterol, steroit hormonları, D vitamini</td>
+                        </tr>
+                    </table>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Genel Özellikler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Suda çözünmez (hidrofobik), polar değildir</li>
+                                <li>Enerji içeriği yüksektir (1 gram yağ ≈ 9 kcal)</li>
+                                <li>Polimer yapılı değildir (karbonhidrat ve proteinlerden farklı)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yağ Asitleri Sınıflandırması:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Doymuş Yağ Asitleri:</strong> Çift bağ yok, karbonlar hidrojenle doyurulmuş, oda sıcaklığında katı (tereyağı, hayvansal yağlar)</li>
+                                <li><strong>Doymamış Yağ Asitleri:</strong> Bir veya daha fazla çift bağ var, oda sıcaklığında sıvı (zeytinyağı, ayçiçek yağı, balık yağı)</li>
+                                <li><strong>Esansiyel Yağ Asitleri:</strong> Vücutta sentezlenemez, besinlerle alınması gerekir</li>
+                            </ul>
+                        </li>
+                        <li><strong>Fosfolipitlerin Önemi:</strong> Amfipatik yapıları sayesinde hücre zarında çift tabaka oluştururlar. Hidrofilik başlar suyla, hidrofobik kuyruklar birbirleriyle etkileşir.</li>
+                        <li><strong>Kolesterol:</strong> Hücre zarının akışkanlığını düzenler, steroit hormonların ve D vitamininin öncül maddesidir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> PROTEİNLER</div>
+                    
+                    <div class="diagram-note">
+                        <strong>🧬 Protein Sentezi:</strong> DNA → mRNA → Ribozom → Amino asit dizisi → Polipeptit → Üç boyutlu katlanma → Fonksiyonel protein
+                    </div>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Yapı Taşı:</strong> Amino asitler (20 çeşit)</li>
+                        <li><strong>Bağlanma:</strong> Amino asitler peptit bağları ile birleşir (dehidrasyon sentezi)</li>
+                        <li><strong>Proteinlerin Görevleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Yapısal:</strong> Hücre ve doku bütünlüğü (kollajen, keratin)</li>
+                                <li><strong>Enzimatik:</strong> Metabolik reaksiyonların katalizlenmesi (amilaz, pepsin)</li>
+                                <li><strong>Taşıma:</strong> Moleküllerin taşınması (hemoglobin, taşıyıcı proteinler)</li>
+                                <li><strong>Savunma:</strong> Bağışıklık sistemi (antikorlar)</li>
+                                <li><strong>Düzenleyici:</strong> Hormonlar ve reseptörler (insülin, büyüme hormonu)</li>
+                                <li><strong>Hareket:</strong> Kas kasılması (aktin, miyozin)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Protein Yapısının Düzeyleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Birincil yapı:</strong> Amino asit dizilimi (peptit bağları)</li>
+                                <li><strong>İkincil yapı:</strong> α-sarmal ve β-katlanmış yaprak (hidrojen bağları)</li>
+                                <li><strong>Üçüncül yapı:</strong> Üç boyutlu yapı (hidrojen, iyonik, disülfür bağları, hidrofobik etkileşimler)</li>
+                                <li><strong>Dördüncül yapı:</strong> Birden fazla polipeptit zincirinin birleşmesi (hemoglobin: 4 alt birim)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Denatürasyon ve Renatürasyon:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Denatürasyon:</strong> Proteinin üç boyutlu yapısının bozulması (yüksek sıcaklık, pH değişimi, ağır metaller). Biyolojik işlev kaybı.</li>
+                                <li><strong>Renatürasyon:</strong> Denatüre olmuş proteinin uygun koşullarda tekrar eski yapısını kazanması.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Elzem (Esansiyel) Amino Asitler:</strong> Vücutta sentezlenemez, besinlerle alınması gerekir (8-10 amino asit).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> DİĞER ORGANİK MOLEKÜLLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Nükleik Asitler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>DNA (Deoksiribonükleik asit):</strong> Deoksiriboz şeker, timin bazı, çift sarmal, genetik bilgi deposu</li>
+                                <li><strong>RNA (Ribonükleik asit):</strong> Riboz şeker, urasil bazı, tek zincir, protein sentezinde görevli</li>
+                                <li><strong>Yapı taşı:</strong> Nükleotitler (şeker + fosfat + azotlu organik baz)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vitaminler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Suda çözünen vitaminler:</strong> B grubu vitaminleri, C vitamini</li>
+                                <li><strong>Yağda çözünen vitaminler:</strong> A, D, E, K vitaminleri</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> ORGANİK MOLEKÜLLERİN KARŞILAŞTIRILMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Karbonhidratlar</th>
+                            <th>Lipitler</th>
+                            <th>Proteinler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Yapı Taşı</strong></td>
+                            <td>Monosakkarit</td>
+                            <td>Yağ asidi + gliserol</td>
+                            <td>Amino asit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bağ Türü</strong></td>
+                            <td>Glikozit bağı</td>
+                            <td>Ester bağı</td>
+                            <td>Peptit bağı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Polimerizasyon</strong></td>
+                            <td>Dehidrasyon sentezi</td>
+                            <td>Dehidrasyon sentezi</td>
+                            <td>Dehidrasyon sentezi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Başlıca Görev</strong></td>
+                            <td>Enerji kaynağı</td>
+                            <td>Enerji deposu</td>
+                            <td>Yapısal, enzimatik</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enerji Değeri</strong></td>
+                            <td>4 kcal/g</td>
+                            <td>9 kcal/g</td>
+                            <td>4 kcal/g</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Suda Çözünürlük</strong></td>
+                            <td>Genellikle çözünür</td>
+                            <td>Çözünmez (hidrofobik)</td>
+                            <td>Çoğu çözünür</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Depo Formu</strong></td>
+                            <td>Glikojen (hayvan), nişasta (bitki)</td>
+                            <td>Trigliseritler (yağ dokusu)</td>
+                            <td>Yok (acil enerji için kullanılır)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exclamation-triangle"></i> ÖNEMLİ SAĞLIK İLİŞKİLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Karbonhidratlar ve Sağlık:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Aşırı tüketim: Obezite, diyabet, kalp-damar hastalıkları</li>
+                                <li>Fruktozun fazlası: Karaciğer yağlanması, insülin direnci</li>
+                                <li>Lifli gıdalar (selüloz): Bağırsak sağlığı, sindirim düzeni</li>
+                            </ul>
+                        </li>
+                        <li><strong>Lipitler ve Sağlık:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Doymuş yağ fazlalığı: Kolesterol artışı, damar sertliği</li>
+                                <li>Trans yağlar: Kalp hastalığı riskini artırır</li>
+                                <li>Esansiyel yağ asitleri: Vücut tarafından üretilemez, besinlerle alınmalı</li>
+                            </ul>
+                        </li>
+                        <li><strong>Proteinler ve Sağlık:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yetersiz protein: Büyüme geriliği, kas kaybı, bağışıklık zayıflığı</li>
+                                <li>Fazla protein: Böbrek yükünü artırır, gut hastalığı riski</li>
+                                <li>Elzem amino asitler: Dengeli beslenme ile alınmalı</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dengeli Beslenme:</strong> Karbonhidrat, yağ ve proteinlerin yeterli ve dengeli alınması sağlık için esastır. Vegan/vejetaryenler, eksik amino asitleri ve B12 vitamini gibi besinleri takviye etmelidir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Tables Section -->
+        <div class="content-section" id="comparison-section">
+            <button class="back-btn" id="back-from-comparison">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-balance-scale"></i> Organik Moleküller Karşılaştırma Tabloları
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cookie-bite"></i> KARBONHİDRAT ÇEŞİTLERİ KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Karbonhidrat Tipi</th>
+                            <th>Yapısı</th>
+                            <th>Örnekler</th>
+                            <th>Kaynaklar</th>
+                            <th>Biyolojik İşlev</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Monosakkarit</strong></td>
+                            <td>Tek şeker birimi</td>
+                            <td>Glikoz, fruktoz, galaktoz, riboz, deoksiriboz</td>
+                            <td>Meyveler, bal, süt, nükleik asitler</td>
+                            <td>Enerji kaynağı, nükleik asit yapısı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Disakkarit</strong></td>
+                            <td>İki monosakkarit</td>
+                            <td>Maltoz, sükroz, laktoz</td>
+                            <td>Tahıllar, şeker kamışı, süt</td>
+                            <td>Enerji kaynağı, taşınabilir şeker formu</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Polisakkarit (Depo)</strong></td>
+                            <td>Çok sayıda monosakkarit</td>
+                            <td>Glikojen, nişasta</td>
+                            <td>Karaciğer/kas (glikojen), bitkiler (nişasta)</td>
+                            <td>Enerji depolama</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Polisakkarit (Yapısal)</strong></td>
+                            <td>Çok sayıda monosakkarit</td>
+                            <td>Selüloz, kitin</td>
+                            <td>Bitki hücre duvarı, mantar/böcek yapıları</td>
+                            <td>Yapısal destek, koruma</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-oil-can"></i> YAĞ ASİTLERİ KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Yağ Asidi Tipi</th>
+                            <th>Kimyasal Yapı</th>
+                            <th>Fiziksel Durum</th>
+                            <th>Kaynaklar</th>
+                            <th>Sağlık Etkisi</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Doymuş</strong></td>
+                            <td>Çift bağ yok, tüm karbonlar H ile doyurulmuş</td>
+                            <td>Oda sıcaklığında katı</td>
+                            <td>Hayvansal yağlar (tereyağı, iç yağı), hindistancevizi yağı</td>
+                            <td>Fazlası kolesterolü artırır, kalp hastalığı riski</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tekli Doymamış</strong></td>
+                            <td>Bir çift bağ var</td>
+                            <td>Oda sıcaklığında sıvı</td>
+                            <td>Zeytinyağı, kanola yağı, avokado</td>
+                            <td>Kalp sağlığı için faydalı, kötü kolesterolü düşürür</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Çoklu Doymamış</strong></td>
+                            <td>Birden fazla çift bağ var</td>
+                            <td>Oda sıcaklığında sıvı</td>
+                            <td>Ayçiçek yağı, mısır özü yağı, balık yağı, ceviz</td>
+                            <td>Esansiyeldir, vücutta üretilemez, hücre zarı yapısı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trans Yağ</strong></td>
+                            <td>Yapay hidrojenasyon ile oluşur</td>
+                            <td>Oda sıcaklığında katı veya yarı katı</td>
+                            <td>Margarin, işlenmiş gıdalar, kızartmalar</td>
+                            <td>En zararlı tür, kalp hastalığı riskini belirgin artırır</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> LİPİT ÇEŞİTLERİ KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Lipit Tipi</th>
+                            <th>Yapısı</th>
+                            <th>Biyolojik İşlevi</th>
+                            <th>Örnekler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Trigliserit</strong></td>
+                            <td>1 gliserol + 3 yağ asidi</td>
+                            <td>Enerji depolama, yalıtım, organ koruması</td>
+                            <td>Depo yağları, bitkisel yağlar, hayvansal yağlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fosfolipit</strong></td>
+                            <td>1 gliserol + 2 yağ asidi + 1 fosfat grubu</td>
+                            <td>Hücre zarının ana bileşeni, çift tabaka oluşumu</td>
+                            <td>Fosfatidilkolin, fosfatidilserin (hücre zarında)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Steroit</strong></td>
+                            <td>4 halkalı karbon iskeleti</td>
+                            <td>Hücre zarı akışkanlığı, hormon öncülü, safra asidi</td>
+                            <td>Kolesterol, testosteron, östrojen, D vitamini</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vaks (Mum)</strong></td>
+                            <td>Uzun zincirli alkol + yağ asidi</td>
+                            <td>Su geçirmezlik, koruyucu tabaka</td>
+                            <td>Bal mumu, bitki yapraklarındaki mum tabakası</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-vial"></i> MONOSAKKARİTLER KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Monosakkarit</th>
+                            <th>Karbon Sayısı</th>
+                            <th>Yaygın Adı</th>
+                            <th>Kaynaklar</th>
+                            <th>Önemli Özellik</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Glikoz</strong></td>
+                            <td>6 (Heksoz)</td>
+                            <td>Kan şekeri, üzüm şekeri</td>
+                            <td>Üzüm, bal, tahıllar, fotosentez ürünü</td>
+                            <td>Hücrelerin temel enerji kaynağı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fruktoz</strong></td>
+                            <td>6 (Heksoz)</td>
+                            <td>Meyve şekeri</td>
+                            <td>Meyveler, bal, bazı sebzeler</td>
+                            <td>Glikozdan daha tatlı, gıda endüstrisinde kullanılır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Galaktoz</strong></td>
+                            <td>6 (Heksoz)</td>
+                            <td>Süt şekeri</td>
+                            <td>Süt ve süt ürünleri</td>
+                            <td>Glikoza dönüştürülerek enerji sağlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Riboz</strong></td>
+                            <td>5 (Pentoz)</td>
+                            <td>RNA şekeri</td>
+                            <td>RNA molekülü, ATP, NAD, FAD</td>
+                            <td>RNA'nın yapı taşı, enerji taşıyan moleküllerde bulunur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deoksiriboz</strong></td>
+                            <td>5 (Pentoz)</td>
+                            <td>DNA şekeri</td>
+                            <td>DNA molekülü</td>
+                            <td>DNA'nın yapı taşı, ribozdan bir oksijen eksik</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="important-note">
+                    <strong>📌 Önemli Hatırlatma:</strong> Tüm bu organik moleküller canlılık için gereklidir. Dengeli beslenme, tüm organik molekül çeşitlerinin yeterli miktarda alınmasını gerektirir. Aşırı veya yetersiz tüketim çeşitli sağlık sorunlarına yol açabilir.
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Karbonhidrat,Yağ,Protein Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/9karbonhidratyagprotein.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('comparison-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('comparison-section').classList.add('active');
+            updateProgress('comparison');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-comparison').addEventListener('click', () => {
+            document.getElementById('comparison-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 6) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 30 Organik Moleküller Sorusu
+        const csvData = `Organik moleküller nedir?,"Çeşitli elementlerin ve fonksiyonel grupların karbon atomlarına bağlanmasıyla oluşan moleküllerdir. Hidrojen, oksijen, azot, kükürt gibi elementler ve alkol, hidroksil, karboksil gibi fonksiyonel gruplar içerir."
+Organik moleküllerin canlılar için önemi nedir?,"Hücrelerin temel bileşenleridir, metabolik faaliyetlerin düzenlenmesinde rol alır, enerji kaynağıdır, yapısal destek sağlar."
+Karbonhidratların yapısı nasıldır?,"Karbon, hidrojen ve oksijen atomlarından oluşur. Genel formül (CH₂O)ₙ şeklindedir. Bazı karbonhidratlar azot da içerebilir."
+Monosakkarit nedir?,"En basit karbonhidratlardır, tek şeker birimleridir. Örnekler: Glikoz, fruktoz, galaktoz (heksozlar); riboz, deoksiriboz (pentozlar)."
+Disakkarit nedir?,"İki monosakkaritin glikozit bağı ile birleşmesiyle oluşur. Örnekler: Maltoz (glikoz+glikoz), sükroz (glikoz+fruktoz), laktoz (glikoz+galaktoz)."
+Polisakkarit nedir?,"Çok sayıda monosakkaritin dehidrasyon tepkimesiyle birleşmesinden oluşan uzun zincirli moleküllerdir. Depo (glikojen, nişasta) ve yapısal (selüloz, kitin) olmak üzere iki türü vardır."
+Glikozun özellikleri nelerdir?,"Doğada en yaygın bulunan heksozdur, kan şekeri olarak bilinir, bitkilerde fotosentezle üretilir, hücrelerin temel enerji kaynağıdır."
+Fruktozun özellikleri nelerdir?,"Meyve şekeri olarak bilinir, meyvelerde, balda ve bazı sebzelerde doğal olarak bulunur, glikozdan daha tatlıdır, gıda endüstrisinde kullanılır."
+Laktoz intoleransı nedir?,"Süt şekeri olan laktozu parçalayan laktaz enziminin yetersiz üretilmesi sonucu ortaya çıkar. Sindirilmeyen laktoz bağırsaklarda bakteriler tarafından fermente edilerek gaz, şişkinlik ve ishale neden olur."
+Glikojen nedir?,"Hayvanlarda ve bazı mantarlarda glikozun depo şeklidir. Karaciğer ve kas hücrelerinde depolanır. Kan şekeri düzenlenmesinde ve egzersiz sırasında enerji kaynağı olarak kullanılır."
+Nişasta nedir?,"Bitkilerde üretilen depo polisakkaritidir. Fotosentezle üretilen glikozun köklerde, yumrularda ve tohumlarda depolanmış şeklidir. Glikojene yapısal olarak benzer."
+Selüloz nedir?,"Bitki hücre duvarının temel yapısal bileşenidir. Glikoz polimerlerinden oluşur, lifli yapıdadır. İnsanlar tarafından sindirilemez ama bağırsak hareketlerini düzenler."
+Kitin nedir?,"Mantar hücre duvarının ve eklembacaklıların dış iskeletinin bileşenidir. Glikoz türevi bir monomerden oluşur, selüloza göre daha esnek ve elastiktir. Tıbbi cerrahi ipliklerde kullanılır."
+Lipitlerin genel özellikleri nelerdir?,"Suda çözünmez (hidrofobik), polar değildir, enerji içeriği yüksektir (9 kcal/g), polimer yapılı değildir. Yapısal, metabolik ve düzenleyici görevleri vardır."
+Yağ asitleri nasıl sınıflandırılır?,"Doymuş yağ asitleri (çift bağ yok, katı), doymamış yağ asitleri (bir veya daha fazla çift bağ var, sıvı). Esansiyel yağ asitleri vücutta üretilemez, besinlerle alınmalıdır."
+Trigliseritlerin yapısı nasıldır?,"Bir gliserol molekülüne ester bağı ile bağlı üç yağ asidinden oluşur. İnsan vücudunda en fazla bulunan lipit türüdür. Enerji depolama, yalıtım, fiziksel koruma görevleri vardır."
+Fosfolipitlerin yapısı ve önemi nedir?,"Hücre zarlarının ana bileşenidir. Gliserol omurgasına iki yağ asidi ve bir fosfat grubu bağlıdır. Amfipatiktir: hidrofobik kuyruk, hidrofilik baş. Hücre zarında çift tabaka oluşturur."
+Steroitler nelerdir?,"Dört halkalı karbon yapısına sahip lipitlerdir. Kolesterol, steroit hormonları, safra asitleri ve D vitamini en bilinen örnekleridir. Kolesterol hücre zarı akışkanlığını düzenler, hormon sentezinde öncül maddedir."
+Proteinlerin yapı taşı nedir?,"Amino asitlerdir. 20 çeşit amino asit vardır. Amino asitler merkezi bir karbon atomuna bağlı amino grubu, karboksil grubu, hidrojen atomu ve değişken R grubu içerir."
+Peptit bağı nasıl oluşur?,"İki amino asit arasında, bir amino asitin amino grubu ile diğerinin karboksil grubunun birleşmesi sırasında su çıkışıyla (dehidrasyon) oluşur."
+Protein denatürasyonu nedir?,"Proteinin üç boyutlu yapısının sıcaklık, pH, tuz konsantrasyonu gibi fiziksel veya kimyasal etkenlerle bozulmasıdır. Biyolojik aktivite kaybolur. Koşullar normale dönerse renatürasyonla eski haline dönebilir."
+Proteinlerin görevleri nelerdir?,"Yapısal destek (kollajen), enzimatik kataliz (amilaz), taşıma (hemoglobin), savunma (antikorlar), düzenleme (hormonlar), hareket (aktin, miyozin)."
+DNA ve RNA'daki şekerler nelerdir?,"DNA'da deoksiriboz, RNA'da riboz şekeri bulunur. Deoksiriboz, ribozdan bir oksijen atomu eksiktir (2. karbonda H yerine OH)."
+Vitaminler nasıl sınıflandırılır?,"Suda çözünen vitaminler (B grubu, C vitamini) ve yağda çözünen vitaminler (A, D, E, K vitaminleri)."
+Doymuş ve doymamış yağların fiziksel farkı nedir?,"Doymuş yağlar oda sıcaklığında katıdır (tereyağı), doymamış yağlar ise sıvıdır (zeytinyağı, ayçiçek yağı)."
+Dehidrasyon ve hidroliz nedir?,"Dehidrasyon: Monomerlerin birleşerek polimer oluşturması sırasında su çıkışı. Hidroliz: Polimerlerin su kullanılarak monomerlerine ayrışması. Sindirim hidrolize örnektir."
+Monomer ve polimer nedir?,"Monomer: Küçük moleküler birimler (glikoz, amino asit, nükleotit). Polimer: Monomerlerin kovalent bağlarla birbirine bağlanmasıyla oluşan büyük moleküller (nişasta, protein, DNA)."
+Organik moleküllerin sentezi ve yıkımı nasıl gerçekleşir?,"Sentez: Dehidrasyon (su çıkışı) ile monomerler birleşir. Yıkım: Hidroliz (su eklenmesi) ile polimerler monomerlerine ayrılır."
+Aşırı karbonhidrat tüketiminin sonuçları nelerdir?,"Yağa dönüştürülerek depolanır, obezite, diyabet, kalp-damar hastalıkları riskini artırır."
+Yetersiz protein alımının sonuçları nelerdir?,"Büyüme ve gelişme geriliği, bağışıklık sisteminin zayıflaması, kas kaybı, hormonal düzensizlikler, enerji yetersizliği."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'teki içerikle sınırlı)
+        const testQuestions = [
+            {
+                question: "Organik moleküllerin genel tanımı aşağıdakilerden hangisidir?",
+                options: [
+                    "Sadece bitkiler tarafından üretilen moleküller",
+                    "Karbon atomlarına çeşitli elementlerin ve fonksiyonel grupların bağlanmasıyla oluşan moleküller",
+                    "Sadece laboratuvarda sentezlenebilen moleküller",
+                    "Suda çözünen tüm moleküller",
+                    "Enerji üretmeyen yapısal moleküller"
+                ],
+                correct: 1,
+                explanation: "Organik moleküller, karbon atomlarına hidrojen, oksijen, azot, kükürt gibi elementlerin ve alkol, hidroksil, karboksil gibi fonksiyonel grupların bağlanmasıyla oluşur. Bitkiler, hayvanlar ve mikroorganizmalar tarafından doğal olarak sentezlenebilir veya laboratuvarda sentetik olarak üretilebilir."
+            },
+            {
+                question: "Karbonhidratların genel formülü aşağıdakilerden hangisidir?",
+                options: ["(CH₂O)ₙ", "(C₆H₁₂O₆)", "(C₅H₁₀O₅)", "(C₁₂H₂₂O₁₁)", "C₆H₁₂O₆"],
+                correct: 0,
+                explanation: "Monosakkaritler genel olarak (CH₂O)ₙ formülüyle ifade edilen molekül formüllerine sahip karbohidratlardır. Bu formül, karbonhidratların karbon, hidrojen ve oksijen atomları içerdiğini ve bu atomların belirli oranlarda bulunduğunu gösterir."
+            },
+            {
+                question: "Aşağıdaki monosakkaritlerden hangisi pentoz (5 karbonlu) değildir?",
+                options: ["Riboz", "Deoksiriboz", "Glikoz", "Hepsi pentozdur", "Hiçbiri pentoz değildir"],
+                correct: 2,
+                explanation: "Glikoz, 6 karbonlu bir heksozdur. Riboz ve deoksiriboz ise 5 karbonlu pentozlardır. Riboz RNA'da, deoksiriboz ise DNA'da bulunur."
+            },
+            {
+                question: "Riboz ile deoksiriboz arasındaki en önemli yapısal farklılık nedir?",
+                options: [
+                    "Riboz 5 karbonlu, deoksiriboz 6 karbonludur",
+                    "Deoksiribozda bir oksijen atomu daha azdır",
+                    "Riboz sadece hayvanlarda bulunur",
+                    "Deoksiriboz daha tatlıdır",
+                    "Riboz enerji verici değildir"
+                ],
+                correct: 1,
+                correctIndex: 1,
+                explanation: "Riboz ile deoksiriboz şekerleri arasındaki en önemli yapısal farklılık deoksiribozda bir oksijen atomunun bulunmamasıdır. 'Deoksi' ön eki oksijen eksikliğini ifade eder. Ribozda 2. karbon atomunda bir OH grubu varken, deoksiribozda bu pozisyonda sadece H atomu vardır."
+            },
+            {
+                question: "Aşağıdaki heksozlardan hangisi 'meyve şekeri' olarak bilinir?",
+                options: ["Glikoz", "Fruktoz", "Galaktoz", "Riboz", "Maltoz"],
+                correct: 1,
+                explanation: "Fruktoz, meyvelerde, balda ve bazı sebzelerde doğal olarak bulunur. Meyve şekeri olarak da bilinir. Glikozdan daha tatlı olması nedeniyle gıda endüstrisi tarafından tercih edilen bir monosakkarittir."
+            },
+            {
+                question: "Aşırı fruktoz tüketimi aşağıdaki sağlık sorunlarından hangisine neden olabilir?",
+                options: [
+                    "Kemik erimesi",
+                    "Karaciğer yağlanması, obezite ve diyabet",
+                    "Tansiyon düşüklüğü",
+                    "Kas gelişiminde artış",
+                    "Bağışıklık sisteminin güçlenmesi"
+                ],
+                correct: 1,
+                explanation: "Özellikle meyve suları, meşrubatlar, tatlılar ve paketli gıdalarda yoğun bir şekilde kullanılan fruktoz; aşırı tüketildiğinde karaciğer yağlanması, obezite, diyabet gibi hastalıklara neden olur."
+            },
+            {
+                question: "Maltoz disakkariti hangi monosakkaritlerden oluşur?",
+                options: [
+                    "Glikoz + Fruktoz",
+                    "Glikoz + Galaktoz",
+                    "Glikoz + Glikoz",
+                    "Fruktoz + Galaktoz",
+                    "Riboz + Deoksiriboz"
+                ],
+                correct: 2,
+                explanation: "Arpa şekeri olarak adlandırılan maltoz, iki glikozun birleşiminden oluşan bir disakkarittir. Maltoz, tahıllarda (özellikle arpada) bulunur ve malt üretiminde kullanılır."
+            },
+            {
+                question: "Laktoz intoleransının nedeni aşağıdakilerden hangisidir?",
+                options: [
+                    "Süt proteinlerine alerji",
+                    "Laktozu parçalayan laktaz enziminin yetersiz üretilmesi",
+                    "Sütün yağ içeriğinin yüksek olması",
+                    "Sütteki kalsiyumun emilememesi",
+                    "Süt şekerinin fazla tatlı olması"
+                ],
+                correct: 1,
+                explanation: "Laktoz intoleransı, bağırsaklarda laktozu parçalayan laktaz enziminin yeterli ölçüde üretilememesi sonucu ortaya çıkar. Sindirilmeyen laktoz, bağırsak bakterileri tarafından fermente edilerek gaz, şişkinlik ve ishal gibi sindirim sorunlarına yol açar."
+            },
+            {
+                question: "Aşağıdaki polisakkaritlerden hangisi depo polisakkariti değildir?",
+                options: ["Glikojen", "Nişasta", "Selüloz", "Hepsi depo polisakkaritidir", "Hiçbiri depo polisakkariti değildir"],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Selüloz, yapısal bir polisakkarittir. Bitki hücre duvarının temel bileşenidir. Depo polisakkaritleri glikojen (hayvanlarda) ve nişastadır (bitkilerde)."
+            },
+            {
+                question: "Glikojen nerede depolanır ve görevi nedir?",
+                options: [
+                    "Bitkilerde, fotosentez ürünü olarak",
+                    "Karaciğer ve kas hücrelerinde, enerji deposu olarak",
+                    "Kanda, taşıma görevi için",
+                    "Böbreklerde, atık depolama için",
+                    "Beyinde, sinir iletimi için"
+                ],
+                correct: 1,
+                explanation: "Glikojen, hayvanlarda ve bazı mantarlarda glikoz moleküllerinin polimerleşmesiyle üretilen bir polisakkarittir. Karaciğer ve kas hücrelerinde depolanır. Karaciğerde kan şekeri seviyesinin düzenlenmesinde, kaslarda ise egzersiz sırasında enerji ihtiyacı için kullanılır."
+            },
+            {
+                question: "İnsanlar selülozu neden sindiremez?",
+                options: [
+                    "Çok büyük molekül olduğu için",
+                    "Selülozu parçalayan enzimlere sahip olmadıkları için",
+                    "Asitli mide ortamında parçalanamadığı için",
+                    "Enerji değeri çok düşük olduğu için",
+                    "Sadece bitkiler tarafından sindirilebildiği için"
+                ],
+                correct: 1,
+                explanation: "Glikojen ve nişasta gibi glikoz monomerlerinden oluşan selüloz, monomerlerinin birbirlerine bağlanmasında farklılıklar bulunduğu için insanlar dâhil çoğu canlı tarafından sindirilemez. İnsanlar selülaz enzimine sahip değildir. Ancak selüloz, lifli yapısıyla bağırsak hareketlerini düzenler."
+            },
+            {
+                question: "Kitin ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Mantar hücre duvarında bulunur",
+                    "Eklembacaklıların dış iskeletinin bileşenidir",
+                    "Selüloza göre daha esnek ve elastiktir",
+                    "İnsanlar tarafından kolayca sindirilir",
+                    "Tıbbi cerrahi ipliklerde kullanılır"
+                ],
+                correct: 3,
+                explanation: "Kitin, insanlar tarafından sindirilemez. Kitin, mantar hücre duvarının ve eklembacaklıların dış iskeletinin bileşenidir. Selüloza göre daha esnek ve elastik yapılıdır. Tıbbi alanda biyouyumlu cerrahi dikiş iplerinin üretiminde kullanılır."
+            },
+            {
+                question: "Lipitlerin (yağların) genel özellikleri arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Suda çözünmezler (hidrofobik)",
+                    "Enerji içerikleri yüksektir",
+                    "Polimer yapılıdırlar",
+                    "Polar değildirler",
+                    "Hücre zarının yapısal bileşenleridir"
+                ],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Lipitler, protein ve karbohidratlardan farklı olarak polimer yapılı değildir. Lipitler suda çözünmez (hidrofobik), polar değildir, enerji içeriği yüksektir ve hücre zarının yapısal bileşenleridir."
+            },
+            {
+                question: "Doymuş yağ asitleri ile doymamış yağ asitleri arasındaki temel fark nedir?",
+                options: [
+                    "Doymuş yağ asitleri daha uzun zincirlidir",
+                    "Doymuş yağ asitleri daha fazla enerji içerir",
+                    "Doymamış yağ asitlerinde karbon atomları arasında çift bağ vardır",
+                    "Doymuş yağ asitleri sadece hayvansal kaynaklıdır",
+                    "Doymamış yağ asitleri katı haldedir"
+                ],
+                correct: 2,
+                explanation: "Doymuş yağ asitlerinde karbon atomları arasında çift bağ yoktur ve tüm karbon atomları hidrojen ile doyurulmuştur. Doymamış yağ asitlerinde ise bir veya daha fazla çift bağ vardır, bu nedenle karbon atomları yeterli hidrojen içermez. Doymamış yağ asitleri genellikle oda sıcaklığında sıvıdır."
+            },
+            {
+                question: "Esansiyel yağ asitleri nedir?",
+                options: [
+                    "Vücutta sentezlenen temel yağ asitleri",
+                    "Sadece bitkisel yağlarda bulunan yağ asitleri",
+                    "Vücutta üretilemeyen, besinlerle alınması gereken yağ asitleri",
+                    "Enerji içeriği en yüksek olan yağ asitleri",
+                    "Sadece hayvansal yağlarda bulunan yağ asitleri"
+                ],
+                correct: 2,
+                explanation: "Bazı yağ asitleri insan vücudunda üretilemez, besinlerden hazır olarak alınır. Bu yağ asitleri esansiyel yağ asitleri olarak adlandırılır. Esansiyel yağ asitleri zeytin gibi bitkisel ve balık gibi hayvansal gıdalardan alınabilir."
+            },
+            {
+                question: "Trigliseritlerin yapısı nasıldır?",
+                options: [
+                    "Bir gliserol + iki yağ asidi",
+                    "Bir gliserol + üç yağ asidi",
+                    "İki gliserol + bir yağ asidi",
+                    "Bir fosfat grubu + iki yağ asidi",
+                    "Dört halkalı karbon yapısı"
+                ],
+                correct: 1,
+                explanation: "Trigliseritler, bir gliserol molekülüne ester bağı ile bağlı üç yağ asidinden oluşan lipit molekülleridir. İnsan vücudunda en fazla bulunan lipit türüdür ve enerjinin depolanması, yalıtım, fiziksel koruma gibi işlevlere sahiptir."
+            },
+            {
+                question: "Fosfolipitlerin hücre zarındaki önemi neyle ilgilidir?",
+                options: [
+                    "Yüksek enerji içeriğiyle",
+                    "Amfipatik yapılarıyla (hem hidrofilik hem hidrofobik)",
+                    "Dört halkalı yapılarıyla",
+                    "Çift bağ içermeleriyle",
+                    "Suda kolay çözünmeleriyle"
+                ],
+                correct: 1,
+                explanation: "Fosfolipitler, amfipatik yapıya sahiptir: hidrofobik kuyruk kısımları (yağ asitleri) ve hidrofilik baş kısımları (fosfat grubu). Bu özellikleri sayesinde sulu ortamlarda hidrofobik kuyruklar içe, hidrofilik başlar dışa bakacak şekilde çift tabaka (bilayer) oluşturur. Bu yapı hücre zarının temelini oluşturur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi steroitlere örnek değildir?",
+                options: ["Kolesterol", "Testosteron", "D vitamini", "Trigliserit", "Östrojen"],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Trigliserit, bir steroit değil, bir gliserol ve üç yağ asidinden oluşan bir lipit türüdür. Steroitler dört halkalı karbon yapısına sahiptir. Kolesterol, steroit hormonları (testosteron, östrojen), safra asitleri ve D vitamini steroitlere örnektir."
+            },
+            {
+                question: "Proteinlerin yapı taşı olan amino asitlerin genel yapısında aşağıdakilerden hangisi bulunmaz?",
+                options: ["Amino grubu (-NH₂)", "Karboksil grubu (-COOH)", "Merkezi karbon atomu", "Değişken R grubu", "Fosfat grubu"],
+                correct: 4,
+                explanation: "Amino asitlerin genel yapısında merkezi bir karbon atomuna bağlı amino grubu, karboksil grubu, bir hidrojen atomu ve değişken R grubu bulunur. Fosfat grubu, nükleik asitlerin ve fosfolipitlerin yapısında bulunur, amino asitlerde yoktur."
+            },
+            {
+                question: "Peptit bağı nasıl oluşur?",
+                options: [
+                    "İki amino asidin amino grupları arasında",
+                    "İki amino asidin karboksil grupları arasında",
+                    "Bir amino asidin amino grubu ile diğerinin karboksil grubu arasında",
+                    "Amino asitlerin R grupları arasında",
+                    "Amino asitlerin merkezi karbon atomları arasında"
+                ],
+                correct: 2,
+                explanation: "Peptit bağı, bir amino asidin amino grubu (-NH₂) ile diğer amino asidin karboksil grubu (-COOH) arasında, su çıkışı (dehidrasyon) ile oluşan kovalent bir bağdır. Bu bağın oluşumu bir dehidrasyon tepkimesidir."
+            },
+            {
+                question: "Protein denatürasyonu ne anlama gelir?",
+                options: [
+                    "Proteinin amino asitlere ayrışması",
+                    "Proteinin üç boyutlu yapısının bozulması",
+                    "Proteinin sentezlenmesi",
+                    "Proteinin enerjiye dönüştürülmesi",
+                    "Proteinin çözünürlüğünün artması"
+                ],
+                correct: 1,
+                explanation: "Protein denatürasyonu, proteinin üç boyutlu (natif) yapısının yüksek sıcaklık, pH değişimi, tuz konsantrasyonu gibi fiziksel veya kimyasal etkenlerle bozulmasıdır. Denatürasyon sonucu protein biyolojik aktivitesini kaybeder, çözünürlüğü azalır."
+            },
+            {
+                question: "Denatüre olmuş bir proteinin tekrar eski yapısını kazanmasına ne ad verilir?",
+                options: ["Dehidrasyon", "Hidroliz", "Renatürasyon", "Polimerizasyon", "Sentez"],
+                correct: 2,
+                explanation: "Biyolojik olarak etkinliğini kaybeden denatüre bir protein, kimyasal ve fiziksel koşulların normale dönmesiyle tekrar aktif üç boyutlu yapısını kazanabilir. Bu durum renatürasyon olarak adlandırılır. Ancak şiddetli denatürasyon genellikle geri dönüşümsüzdür."
+            },
+            {
+                question: "Aşağıdakilerden hangisi proteinlerin görevlerinden değildir?",
+                options: [
+                    "Yapısal destek sağlama",
+                    "Metabolik reaksiyonları katalizleme",
+                    "Enerji depolama",
+                    "Oksijen taşıma",
+                    "Bağışıklık sağlama"
+                ],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Proteinler enerji depolamaz, ancak gerektiğinde enerji kaynağı olarak kullanılabilirler. Enerji depolama, lipitlerin (özellikle trigliseritlerin) görevidir. Proteinler yapısal destek (kollajen), enzimatik kataliz (amilaz), taşıma (hemoglobin) ve bağışıklık (antikorlar) gibi görevleri yerine getirir."
+            },
+            {
+                question: "DNA ve RNA'daki şekerler sırasıyla nedir?",
+                options: [
+                    "Riboz - Deoksiriboz",
+                    "Deoksiriboz - Riboz",
+                    "Glikoz - Fruktoz",
+                    "Glikoz - Riboz",
+                    "Fruktoz - Deoksiriboz"
+                ],
+                correct: 1,
+                explanation: "DNA (deoksiribonükleik asit) yapısında deoksiriboz şekeri, RNA (ribonükleik asit) yapısında ise riboz şekeri bulunur. Riboz ile deoksiriboz arasındaki fark, deoksiribozda bir oksijen atomunun eksik olmasıdır."
+            },
+            {
+                question: "Vitaminler nasıl sınıflandırılır?",
+                options: [
+                    "Asidik ve bazik vitaminler",
+                    "Organik ve inorganik vitaminler",
+                    "Suda çözünen ve yağda çözünen vitaminler",
+                    "Bitkisel ve hayvansal vitaminler",
+                    "Enerji verici ve yapısal vitaminler"
+                ],
+                correct: 2,
+                explanation: "Vitaminler, çözünürlük özelliklerine göre suda çözünen vitaminler (B grubu, C vitamini) ve yağda çözünen vitaminler (A, D, E, K vitaminleri) olarak sınıflandırılır."
+            },
+            {
+                question: "Organik moleküllerin sentezinde görülen ve su çıkışıyla gerçekleşen tepkimeye ne ad verilir?",
+                options: ["Hidroliz", "Dehidrasyon", "Oksidasyon", "Redüksiyon", "Fermantasyon"],
+                correct: 1,
+                explanation: "Monomerlerin birbirlerine bağlanması enzimler aracılığıyla gerçekleşen, enerji gerektiren ve genellikle su çıkışı görülen bir süreçtir. Bu olayda genellikle su çıkışı meydana geldiği için süreç dehidrasyon olarak adlandırılır."
+            },
+            {
+                question: "Organik moleküllerin yıkımında görülen ve su kullanılarak gerçekleşen tepkimeye ne ad verilir?",
+                options: ["Dehidrasyon", "Hidroliz", "Sentez", "Polimerizasyon", "Yoğunlaşma"],
+                correct: 1,
+                explanation: "Oluşan polimerler hidroliz adı verilen, dehidrasyon tepkimesinin tersine işleyen ve suyun kullanıldığı bir süreçle monomerlerine ayrılır. İnsan vücudunda gerçekleşen sindirim süreçleri hidroliz olayına örnek verilebilir."
+            },
+            {
+                question: "Aşırı beslenme (organik moleküllerin fazla tüketimi) aşağıdaki sağlık sorunlarından hangisine neden olabilir?",
+                options: [
+                    "Gelişim geriliği",
+                    "Bağışıklığın zayıflaması",
+                    "Yağ depolanması, obezite, diyabet, kalp-damar hastalıkları",
+                    "Saç ve cilt problemleri",
+                    "Hormonal düzensizlikler"
+                ],
+                correct: 2,
+                explanation: "Aşırı beslenme; yağ depolanmasına, obeziteye, diyabete, kalp-damar hastalıklarına neden olabilir. Yetersiz beslenme ise gelişim geriliğine, bağışıklığın zayıflamasına, saç ve cilt problemlerine, hormonal düzensizliklere ve enerji yetersizliğine sebep olabilir."
+            },
+            {
+                question: "Organik moleküllerle ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+                options: [
+                    "Sadece bitkiler tarafından sentezlenir",
+                    "İnorganik moleküllerden daha küçük yapılıdır",
+                    "Karbonhidrat, protein, yağ, nükleik asit ve vitaminleri içerir",
+                    "Suda çözünürlükleri yüksektir",
+                    "Enerji içerikleri düşüktür"
+                ],
+                correct: 2,
+                explanation: "Doğal organik moleküller içerisinde karbohidratlar, proteinler, yağlar, nükleik asitler ve vitaminler bulunur. Bunlar hücrelerin temel bileşenleri olarak görev alabildiği gibi metabolik faaliyetlerin düzenlenmesinde de önemli roller üstlenir. Organik moleküller inorganik moleküllerden daha büyük yapılıdır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Organik molekülleri tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

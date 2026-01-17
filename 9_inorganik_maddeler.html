@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnorganik Moleküller Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #2196f3;
+        }
+
+        .context-scenario i {
+            color: #2196f3;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mineral Table Styles */
+        .mineral-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mineral-table th {
+            background: #2ecc71;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .mineral-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .mineral-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .mineral-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table, .mineral-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .question-icon {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-flask"></i> İnorganik Moleküller Öğrenme Portalı</h1>
+            <div class="subtitle">5 farklı öğrenme yöntemi ile İnorganik Molekülleri (Su ve Mineraller) keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/5</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">20 adet soru-cevap kartı ile inorganik moleküllerin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">İnorganik molekülleri görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile inorganik moleküllerle ilgili sorular çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">20 soruluk test ile inorganik moleküller hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">İnorganik moleküllerin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> İnorganik Moleküller Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #2ecc71;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">20</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> İnorganik Moleküller Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">İnorganik Moleküllerin Tanımı ve Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Canlılar tarafından üretilemeyen, doğada hazır bulunan moleküller</li>
+                        <li><strong>Su:</strong> Canlılık için vazgeçilmez, polar yapılı, çözücü özellikli</li>
+                        <li><strong>Mineraller:</strong> İnorganik tuzlar, vücut fonksiyonları için gerekli</li>
+                        <li><strong>Ortak Özellik:</strong> Enerji vermezler, yapıya katılırlar, düzenleyici rol oynarlar</li>
+                        <li><strong>Organiklerden Farkı:</strong> C-H bağı içermezler, daha basit yapılıdırlar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Suyun Moleküler Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Formül:</strong> H₂O (2 hidrojen + 1 oksijen)</li>
+                        <li><strong>Polarite:</strong> Asimetrik yapı → kutuplu molekül</li>
+                        <li><strong>Hidrojen Bağları:</strong> Su molekülleri arasındaki güçlü çekim</li>
+                        <li><strong>Önem:</strong> Canlılığın temel çözücüsü, metabolik reaksiyonların ortamı</li>
+                        <li><strong>Yapı-Fonksiyon İlişkisi:</strong> Polar yapı → çözücülük → yaşam için zorunluluk</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Suyun Fiziksel Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Adezyon:</strong> Farklı moleküller arası çekim (su-cam)</li>
+                        <li><strong>Kohezyon:</strong> Aynı tür moleküller arası çekim (su-su)</li>
+                        <li><strong>Yüzey Gerilimi:</strong> Kohezyonun sonucu, yüzey filmi oluşumu</li>
+                        <li><strong>Özgül Isı Yüksekliği:</strong> Sıcaklık değişimlerine direnç</li>
+                        <li><strong>Buzun Yoğunluğu:</strong> Sıvı sudan düşük → buz suda yüzer</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Suyun Biyolojik Önemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Çözücülük:</strong> Besin, mineral, hormonların taşınması</li>
+                        <li><strong>Metabolik Ortam:</strong> Biyokimyasal reaksiyonların gerçekleştiği ortam</li>
+                        <li><strong>Taşıma:</strong> Kan ve bitki özsuyunda taşıyıcı rol</li>
+                        <li><strong>Isı Düzenlemesi:</strong> Terleme ile vücut sıcaklığının sabit tutulması</li>
+                        <li><strong>Yapısal Rol:</strong> Hücre ve dokuların şeklinin korunması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Minerallerin Tanımı ve Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Organizmaların üretemediği, dışarıdan alınan inorganik moleküller</li>
+                        <li><strong>Kaynak:</strong> Toprak, su, kayalar, besinler</li>
+                        <li><strong>Form:</strong> İyon halde (Na⁺, K⁺, Ca²⁺, Cl⁻) bulunurlar</li>
+                        <li><strong>Alınım:</strong> Bitkiler → topraktan, Hayvanlar → besinlerden</li>
+                        <li><strong>Depolanma:</strong> Vücutta belirli oranlarda bulunmalı, eksikliği/fazlalığı sorun yaratır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Minerallerin Fonksiyonel Sınıflandırması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapısal Mineraller:</strong> Kemik, diş yapısına katılır (Ca, P, Mg)</li>
+                        <li><strong>Elektrolitler:</strong> Sinir iletimi, kas kasılması (Na, K, Cl)</li>
+                        <li><strong>Enzim Kofaktörleri:</strong> Enzim çalışmasını düzenler (Mg, Zn, Cu)</li>
+                        <li><strong>Oksijen Taşınımı:</strong> Hemoglobin yapısında (Fe)</li>
+                        <li><strong>Hormon Yapısı:</strong> Hormon sentezinde (I - tiroit hormonları)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Önemli Mineraller ve Görevleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kalsiyum (Ca):</strong> Kemik/diş yapısı, kas kasılması, sinir iletimi</li>
+                        <li><strong>Demir (Fe):</strong> Hemoglobin yapısı, oksijen taşınımı</li>
+                        <li><strong>İyot (I):</strong> Tiroit hormonları sentezi, metabolizma düzenlemesi</li>
+                        <li><strong>Sodyum (Na):</strong> Sinir iletimi, sıvı dengesi, kas kasılması</li>
+                        <li><strong>Potasyum (K):</strong> Sinir iletimi, kalp ritmi, sıvı dengesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Mineral Eksikliği ve Sonuçları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Demir Eksikliği:</strong> Anemi (kansızlık), halsizlik, solukluk</li>
+                        <li><strong>İyot Eksikliği:</strong> Guatr, metabolizma yavaşlaması</li>
+                        <li><strong>Kalsiyum Eksikliği:</strong> Osteoporoz (kemik erimesi), kas krampları</li>
+                        <li><strong>Çinko Eksikliği:</strong> Bağışıklık zayıflığı, yara iyileşmesinde gecikme</li>
+                        <li><strong>Magnezyum Eksikliği:</strong> Kas seğirmesi, kalp ritim bozukluğu</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli İnorganik Molekül Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Bir öğrenci, sıcak bir yaz gününde uzun süre futbol oynadıktan sonra baş dönmesi ve halsizlik yaşıyor. Öğretmeni ona hemen su içmesini söylüyor. Bu durumda suyun hangi özelliği ön plana çıkmaktadır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yoğun fiziksel aktivite sırasında vücutta su ve mineral kaybı olur. Terleme ile su kaybedilir, bu da vücut dengesini bozar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Suyun vücut sıcaklığını düzenleyici ve homeostazı (iç dengeyi) koruyucu özelliği ön plana çıkmaktadır.</p>
+                        <p><strong>Detaylı Açıklama:</strong> Futbol oynarken kaslar çalışır ve ısı üretir. Vücut bu fazla ısıyı terleme yoluyla uzaklaştırır. Ter, su ve minerallerden (Na⁺, K⁺, Cl⁻) oluşur. Su kaybı, kan hacminin azalmasına, kan basıncının düşmesine ve vücut ısısının düzenlenememesine neden olur. Su içmek, kaybedilen sıvıyı yerine koyarak:</p>
+                        <ol>
+                            <li>Kan hacmini ve basıncını normale döndürür.</li>
+                            <li>Terleme mekanizmasının devamını sağlayarak vücut ısısını düzenler.</li>
+                            <li>Hücrelerdeki metabolik reaksiyonların sağlıklı devam etmesini sağlar.</li>
+                        </ol>
+                        <p>Bu durum, suyun canlılar için sadece bir çözücü değil, aynı zamanda hayati bir düzenleyici olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir çiftçi, tarlasındaki domates bitkilerinin genç yapraklarının sarardığını ve solduğunu fark ediyor. Yaprak analizi yaptırdığında, bitkide magnezyum (Mg) eksikliği olduğu tespit ediliyor. Magnezyum eksikliği neden özellikle genç yapraklarda soruna yol açar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bitkilerde mineraller suda çözünmüş halde köklerden alınır ve floem ile taşınır. Bazı mineraller bitkide hareketli, bazıları hareketsizdir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Magnezyum (Mg), bitkide hareketli (mobil) bir mineral olduğu için eksiklik belirtileri önce yaşlı yapraklarda değil, genç yapraklarda görülür.</p>
+                        <p><strong>Detaylı Açıklama:</strong> Magnezyum, klorofil pigmentinin merkezinde yer alan temel bir elementtir. Klorofil, fotosentez için gereklidir. Bitkide mineral eksikliği olduğunda:</p>
+                        <ul>
+                            <li><strong>Hareketli (Mobil) Mineraller</strong> (N, P, K, Mg): Eksiklik durumunda, bitki bu mineralleri yaşlı yapraklardan alıp büyüme noktalarına (genç yapraklara) taşır. Bu nedenle eksiklik belirtileri (sararma, solma) önce yaşlı yapraklarda görülür.</li>
+                            <li><strong>Hareketsiz (İmmobil) Mineraller</strong> (Ca, B, Fe): Eksiklik durumunda, yaşlı yapraklardan genç yapraklara taşınamazlar. Bu nedenle eksiklik belirtileri doğrudan genç yapraklarda ve büyüme noktalarında görülür.</li>
+                        </ul>
+                        <p><strong>Ancak bu soruda bir istisna durum vardır:</strong> Soru metninde "genç yapraklarda sararma" dendiğine göre, burada magnezyumun hareketliliği ile ilgili temel bilgi sorgulanmıyor olabilir. Daha ziyade, magnezyumun klorofil yapısındaki rolü ve genç yaprakların aktif fotosentez yapması nedeniyle magnezyum ihtiyacının daha fazla olması vurgulanıyor olabilir. Cevap olarak: "Magnezyum klorofilin yapısında bulunur. Genç yapraklar aktif büyüme ve fotosentez yaptığı için magnezyum ihtiyacı daha fazladır. Eksiklik durumunda ilk etkilenenler genç yapraklardır" denebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Kışın çok soğuk bir günde bir gölün yüzeyi buz tutmuştur. Gölde yaşayan balıklar ve diğer su canlıları buzun altında hayatlarını sürdürebilmektedir. Bu durum suyun hangi özelliği ile açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Suyun katı hali (buz) sıvı halinden daha az yoğundur. Bu, diğer birçok maddenin tersidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Suyun katı halinin (buz) sıvı halinden daha az yoğun olması, yani buzun suda yüzmesi özelliği ile açıklanır.</p>
+                        <p><strong>Detaylı Açıklama:</strong> Su donduğunda, molekülleri arasındaki hidrojen bağları düzenli bir kristal yapı (buz) oluşturur. Bu yapı, sıvı sudakinden daha fazla boşluk içerir, bu nedenle buzun hacmi artar, yoğunluğu azalır (≈0,92 g/mL). Sıvı suyun yoğunluğu ise ≈1 g/mL'dir.</p>
+                        <p><strong>Bu özelliğin canlılık için sonuçları:</strong></p>
+                        <ol>
+                            <li><strong>Buz yalıtkan görevi görür:</strong> Göl yüzeyindeki buz tabakası, altındaki suyun daha fazla soğumasını engeller.</li>
+                            <li><strong>Su canlıları korunur:</strong> Buzun altında su sıvı halde kalır ve sıcaklığı en az 4°C civarında olabilir. Bu, su canlılarının hayatta kalması için yeterlidir.</li>
+                            <li><strong>Ekosistem devamlılığı sağlanır:</strong> Suyun bu özelliği olmasaydı, göller ve denizler diplerinden başlayarak donar ve tüm su ekosistemi yok olabilirdi.</li>
+                        </ol>
+                        <p>Bu durum, suyun yapısal özelliklerinin doğadaki yaşam döngüleri için nasıl hayati olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Diyet yapan bir kişi, sadece sebze ve meyve tüketerek protein ve yağ içeren besinleri tamamen kesiyor. Bir süre sonra halsizlik, saç dökülmesi ve tırnak kırılmaları yaşıyor. Doktor, kan testinde demir (Fe) eksikliği tespit ediyor. Sebze ve meyveler demir içerdiği halde, neden bu kişide demir eksikliği oluşmuş olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Demir mineralinin vücutta emilimi, C vitamini varlığında artar, çay/kahve gibi içeceklerle birlikte alındığında ise azalır. Ayrıca demirin "hem" ve "hem olmayan" formları vardır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Sebze ve meyvelerde bulunan demir, "hem olmayan demir" (non-heme iron) formundadır ve emilimi hayvansal gıdalardaki "hem demir"e göre daha düşüktür.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Demir Formları:</strong>
+                                <ul>
+                                    <li><strong>Hem Demir:</strong> Hayvansal gıdalarda (kırmızı et, karaciğer, yumurta) bulunur. Emilimi yüksektir (%15-35).</li>
+                                    <li><strong>Hem Olmayan Demir:</strong> Bitkisel gıdalarda (ıspanak, mercimek, kuru üzüm) bulunur. Emilimi düşüktir (%2-20).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Emilimi Etkileyen Faktörler:</strong>
+                                <ul>
+                                    <li><strong>Artıranlar:</strong> C vitamini (portakal suyu, biber), hayvansal protein.</li>
+                                    <li><strong>Azaltanlar:</strong> Fitik asit (tahılların kepeğinde), tanenler (çay, kahve), kalsiyum.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Bu Kişinin Durumu:</strong> Sadece sebze-meyve tüketmek:
+                                <ul>
+                                    <li>Hem demir almamak,</li>
+                                    <li>Bitkisel demirin düşük emilimi,</li>
+                                    <li>Diyetle yeterli C vitamini alınmaması veya çay/kahve tüketimi nedeniyle emilimin daha da azalması, demir eksikliğine yol açmış olabilir.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p>Bu senaryo, minerallerin sadece besinde bulunmasının değil, emilim biyoyararlanımının da önemli olduğunu ve dengeli beslenmenin gerekliliğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir laboratuvarda öğrenciler, iki adet lam alıp birinin üzerine birkaç damla su koyuyor ve ikinci lamı üzerine yavaşça yerleştiriyor. Daha sonra iki lamı birbirinden ayırmaya çalıştıklarında zorlanıyorlar. Bu deney suyun hangi özelliğini gösterir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Su molekülleri arasında hidrojen bağları nedeniyle güçlü çekim kuvvetleri vardır. Bu çekim kuvvetleri suyun fiziksel davranışını etkiler.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu deney, suyun <strong>adezyon</strong> (farklı tür moleküller arası çekim) ve <strong>kohezyon</strong> (aynı tür moleküller arası çekim) özelliklerini birlikte gösterir.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Adezyon (Yapışma):</strong> Su molekülleri ile cam (silika) molekülleri arasındaki çekim kuvvetidir. Su damlaları cam yüzeyine yapışır ve yayılır. Burada suyun cam lamlara yapışması adezyona örnektir.</li>
+                            <li><strong>Kohezyon (Birbirini Tutma):</strong> Su molekülleri arasındaki hidrojen bağlarından kaynaklanan çekim kuvvetidir. Su molekülleri bir arada kalmak ister. İki lam arasında ince bir su tabakası oluştuğunda, bu su tabakası içindeki moleküller güçlü kohezyon kuvvetiyle birbirini tutar.</li>
+                            <li><strong>Deneyin Mekanizması:</strong> Lamları ayırmaya çalışmak, su tabakasını germeye çalışmak demektir. Suyun yüksek kohezyonu, bu germeye direnç gösterir. Ayrıca suyun cam lamlara yüksek adezyonu da lamların hareketine direnç oluşturur. Bu iki kuvvet birleşince lamları ayırmak zorlaşır.</li>
+                            <li><strong>Günlük Hayattan Örnek:</strong> Aynı prensip, iki ıslak cam yüzeyin birbirine yapışmasında veya su damlalarının yaprak üzerinde küresel şekilde durmasında da görülür.</li>
+                        </ol>
+                        <p>Bu etkinlik, suyun kendine özgü fiziksel özelliklerinin günlük deneyimlerle nasıl gözlemlenebileceğini anlamamızı sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Dağlık bir bölgede yaşayan insanlarda guatr hastalığının görülme sıklığı, deniz kenarında yaşayanlara göre daha yüksektir. Bu farklılığın nedeni nedir ve hangi mineralin eksikliği ile ilişkilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Guatr, tiroid bezinin normalden büyümesi ile karakterize bir hastalıktır. Tiroid bezi, metabolizmayı düzenleyen hormonları üretir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Bu farklılık, <strong>iyot (I)</strong> mineralinin eksikliği ile ilişkilidir. Dağlık bölgelerde toprak ve suda iyot miktarı daha azdır.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>İyotun Görevi:</strong> İyot, tiroid bezinden salgılanan tiroksin (T4) ve triiyodotironin (T3) hormonlarının yapısında bulunur. Bu hormonlar:
+                                <ul>
+                                    <li>Bazal metabolizma hızını düzenler.</li>
+                                    <li>Büyüme ve gelişmede özellikle çocuklarda kritik öneme sahiptir.</li>
+                                    <li>Vücut ısısının düzenlenmesine yardımcı olur.</li>
+                                </ul>
+                            </li>
+                            <li><strong>İyot Eksikliği Mekanizması:</strong> Vücutta yeterli iyot yoksa, tiroid bezi yeterli hormon üretemez. Beyindeki hipofiz bezi bu durumu algılar ve tiroidi daha çok çalışmaya teşvik eden TSH hormonunu daha fazla salgılar. Sürekli uyarılan tiroid bezi büyür ve guatr oluşur.</li>
+                            <li><strong>Coğrafi Farklılık:</strong>
+                                <ul>
+                                    <li><strong>Deniz Kenarı:</strong> Deniz suyu, deniz ürünleri ve denizden gelen yağışlar iyot açısından zengindir.</li>
+                                    <li><strong>Dağlık Bölge:</strong> Denizden uzak, yüksek rakımlı bölgelerde toprak iyotça fakirdir. Yetişen bitkiler ve içme suları da iyot içermez.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Çözüm:</strong> Bu sorunu önlemek için birçok ülkede sofra tuzları iyotla zenginleştirilir (iyotlu tuz).</li>
+                        </ol>
+                        <p>Bu senaryo, bir mineralin coğrafi dağılımının toplum sağlığı üzerinde nasıl doğrudan etkisi olabileceğini ve minerallerin hormon yapısındaki hayati rolünü gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir bitki fizyoloğu, bir saksı bitkisini sulamayı unutuyor ve bitki solmaya başlıyor. Bitkiyi suladıktan birkaç saat sonra bitki tekrar canlanıyor. Bu olayda su, bitki hücrelerinde hangi mekanizma ile basınç oluşturur ve bitkinin dik durmasını sağlar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bitki hücrelerinde hücre duvarı bulunur. Su, hücre içine girerek hücreyi şişirir ve turgor basıncı oluşturur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Su, bitki hücrelerinde <strong>turgor basıncı</strong> oluşturarak bitkinin dik durmasını sağlar.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Susuz Bitki:</strong> Topraktan su alamayan bitki, köklerle su çekemez. Yapraklardan terleme ile su kaybı devam eder. Hücreler su kaybettikçe, hücre özsuyunun osmotik basıncı artar, su hücre dışına çıkar. Vakuol küçülür, sitoplazma hücre duvarından ayrılır (plazmoliz). Hücre içi basınç (turgor basıncı) düşer. Hücreler büzüşür, bitki yaprakları ve gövdesi sarkar (solma).</li>
+                            <li><strong>Sulama Sonrası:</strong> Toprağa su eklenince, topraktaki su yoğunluğu bitki kök hücrelerinden yüksek olur. Su, osmoz ile kök hücrelerine girer. Kök basıncı ve terleme-çekimi kuvveti ile su yapraklara kadar taşınır.</li>
+                            <li><strong>Turgor Basıncının Oluşumu:</strong> Su, yaprak ve gövde hücrelerinin vakuollerine dolar. Hücre içi sıvının osmotik basıncı azalır, ancak hücre içine giren su, esnek olmayan hücre duvarına baskı yapar. Bu baskıya <strong>turgor basıncı</strong> denir. Yeterli turgor basıncı, hücrenin şişkin ve gergin durmasını sağlar. Tüm hücrelerin turgorlu olması, bitkinin dik durmasını sağlar.</li>
+                            <li><strong>Suyun Rolü:</strong> Bu süreçte su, hem taşınan bir madde (ksilem ile), hem de hücresel yapıyı destekleyen bir bileşendir. Su olmadan osmoz ve turgor olmaz, bitkiler dik duramaz.</li>
+                        </ol>
+                        <p>Bu olay, suyun bitkilerdeki yapısal rolünün (destek) yanı sıra, taşınan bir madde olarak da ne kadar hayati olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Bir aşçı, yemeğine lezzet vermek için tuz (NaCl) ekliyor. Tuz, yemekte sadece lezzet artırmakla kalmaz, aynı zamanda vücutta belirli işlevleri de yerine getirir. Sofra tuzunun (NaCl) insan vücudundaki temel işlevleri nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sofra tuzu, sodyum (Na⁺) ve klor (Cl⁻) iyonlarından oluşur. Bu iyonlar vücut sıvılarında elektrolit olarak bulunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Sofra tuzunun (NaCl) vücuttaki temel işlevleri, içerdiği sodyum (Na⁺) ve klor (Cl⁻) iyonları aracılığıyla olur:</p>
+                        <ol>
+                            <li><strong>Sinir İletimini Sağlama:</strong> Sodyum (Na⁺) ve potasyum (K⁺) iyonları, sinir hücresi zarındaki voltaj kapılı kanallar sayesinde hareket ederek aksiyon potansiyelini (sinir impulsunu) oluşturur. Na⁺ iyonlarının hücre dışına çıkıp içeri girmesi, elektriksel sinyalin iletilmesini sağlar.</li>
+                            <li><strong>Kas Kasılmasını Başlatma:</strong> Kas hücrelerinde de benzer bir mekanizmayla, Na⁺ iyonlarının hareketi kas kasılmasını tetikler.</li>
+                            <li><strong>Osmotik Basınç ve Sıvı Dengesini Düzenleme:</strong> Na⁺ ve Cl⁻ iyonları, hücre dışı sıvının (plazma, doku sıvısı) ana osmotik bileşenleridir. Vücuttaki suyun dağılımını ve kan basıncını düzenlemeye yardımcı olurlar.</li>
+                            <li><strong>Asit-Baz Dengesine Katkı:</strong> Cl⁻ iyonları, kan plazmasının ana anyonudur ve kanın pH dengesinin korunmasına yardımcı olur. Ayrıca midede HCl (hidroklorik asit) oluşumunda kullanılır.</li>
+                            <li><strong>Besin Emilimini Kolaylaştırma:</strong> Bağırsaklarda glikoz ve amino asitlerin emilimi, Na⁺ iyonları ile birlikte ortak taşıma (kotransport) ile gerçekleşir.</li>
+                        </ol>
+                        <p><strong>Önemli Not:</strong> Tuzun bu hayati işlevleri, onun aşırı tüketiminin zararsız olduğu anlamına gelmez. Aşırı sodyum alımı, yüksek tansiyon (hipertansiyon) ve kalp-damar hastalıkları riskini artırır. Dengeli tüketim esastır. Bu senaryo, günlük hayatta sıradan bir madde gibi görünen tuzun, aslında vücudun temel işleyişi için ne kadar önemli bir mineral kaynağı olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Kışın yollar buz tuttuğunda, karayolları ekipleri yollara tuz (NaCl) veya kum döker. Tuz, buzu eritmek için nasıl bir etki gösterir? Bu olay, suyun hangi özelliği ile ilgilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Saf su 0°C'de donar. Suya bir madde (tuz, şeker) karıştırıldığında, donma noktası düşer.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Tuz, buzla karıştığında suyun <strong>donma noktasını düşürerek</strong> buzu eritir. Bu olay, suyun <strong>çözücülük</strong> özelliği ve çözünen maddenin suyun fiziksel özelliklerini değiştirmesi (koligatif özellikler) ile ilgilidir.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Donma Noktası Alçalması (Kriyoskopi):</strong> Saf bir çözücüye (burada su) uçucu olmayan bir katı (burada NaCl) çözündüğünde, çözeltinin donma noktası saf çözücünün donma noktasından daha düşük olur. Saf su 0°C'de donar. Tuzlu su ise 0°C'nin altında (örneğin -5°C veya -10°C) donar.</li>
+                            <li><strong>Mekanizma:</strong> Yollardaki buzun üzerine tuz döküldüğünde:
+                                <ul>
+                                    <li>Tuz, buz yüzeyindeki ince bir su tabakasına veya havadaki nemi çekerek oluşan suya çözünür.</li>
+                                    <li>Oluşan tuzlu su çözeltisinin donma noktası 0°C'nin altına iner.</li>
+                                    <li>Bu tuzlu su, henüz donmamış haldeyken altındaki buza temas eder ve onun sıcaklığını (hala 0°C civarındadır) tuzlu suyun yeni donma noktasının üzerine getirir.</li>
+                                    <li>Bu, buzu eritmeye başlar, daha fazla su açığa çıkar, bu su da tuza doyar ve donma noktası daha da düşer. Zincirleme bir erime süreci başlar.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Suyun Çözücülük Özelliğinin Rolü:</strong> Bu sürecin başlaması için tuzun suda çözünebilmesi gerekir. Suyun mükemmel bir polar çözücü olması, tuz iyonlarını (Na⁺ ve Cl⁻) ayırarak çözmesini sağlar. Su çözücü olmasaydı, tuz buza etki edemezdi.</li>
+                            <li><strong>Biyolojik Çıkarım:</strong> Aynı prensip, canlıların soğuk ortamlarda nasıl hayatta kaldığını açıklamaya yardımcı olur. Bazı balıkların ve böceklerin vücut sıvılarında "antifriz" proteinleri vardır. Bunlar da suyun donma noktasını düşürerek hücrelerin donmasını engeller.</li>
+                        </ol>
+                        <p>Bu uygulama, suyun çözücülük özelliğinin sadece canlı sistemlerde değil, endüstriyel ve günlük uygulamalarda da ne kadar önemli olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir çiftçi, tarlasındaki mısır bitkilerinin yapraklarının kenarlarında ve uçlarında yanık benzeri kahverengi lekeler olduğunu fark ediyor. Tarım danışmanı, bu belirtinin potasyum (K) eksikliğinden kaynaklandığını söylüyor. Potasyum eksikliği neden bitkilerde bu tür belirtilere yol açar? Potasyumun bitkideki temel işlevi nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Potasyum (K), bitkilerde hareketli bir makro elementtir. Eksiklik belirtileri önce yaşlı yapraklarda görülür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Potasyum eksikliğinde yaşlı yaprakların kenar ve uçlarında yanıklık görülmesinin nedeni, potasyumun bitkide <strong>hareketli (mobil)</strong> bir element olması ve <strong>stoma açılıp kapanmasının düzenlenmesi</strong> gibi işlevlerde rol almasıdır. Potasyumun temel işlevi, osmotik düzenleme ve enzim aktivasyonudur.</p>
+                        <p><strong>Detaylı Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Potasyumun Bitkideki Temel İşlevleri:</strong>
+                                <ul>
+                                    <li><strong>Osmotik Düzenleme ve Stoma Hareketleri:</strong> Potasyum (K⁺) iyonları, gözenek (stoma) hücrelerine girip çıkarak bu hücrelerin turgor basıncını değiştirir. Bu, stomların açılıp kapanmasını, dolayısıyla terlemeyi ve gaz alışverişini (fotosentez ve solunum için) kontrol eder.</li>
+                                    <li><strong>Enzim Aktivasyonu:</strong> Fotosentez, protein sentezi, nişasta sentezi gibi birçok metabolik reaksiyonda görev alan enzimler için kofaktör (aktivatör) görevi görür.</li>
+                                    <li><strong>Şeker ve Protein Taşınması:</strong> Floemde organik bileşiklerin taşınmasını teşvik eder.</li>
+                                    <li><strong>Su Dengesi ve Dayanıklılık:</strong> Hücrede su potansiyelini düzenleyerek bitkinin kuraklık, tuzluluk ve soğuğa karşı dayanıklılığını artırır.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Eksiklik Belirtilerinin Görülme Mekanizması:</strong>
+                                <ul>
+                                    <li>Potasyum mobil olduğu için, bitki büyüme noktalarındaki (genç yapraklardaki) ihtiyacı karşılamak üzere, yaşlı yapraklardan potasyumu çeker.</li>
+                                    <li>Yaşlı yapraklar potasyum kaybeder. Potasyum eksikliğinde:
+                                        <ul>
+                                            <li>Stomalar düzgün çalışamaz, terleme kontrolü bozulur.</li>
+                                            <li>Fotosentez ve diğer metabolik süreçler aksar.</li>
+                                            <li>Hücrede osmotik denge bozulur, zarar görmeye başlayan hücrelerde (özellikle yaprak kenarlarında) nekroz (doku ölümü) oluşur. Bu da "yaprak kenar yanıklığı" olarak görülür.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Neden Önce Yaşlı Yapraklar?</strong> Bitki, genç dokularını korumak için mobil elementleri yaşlı dokulardan çeker. Bu nedenle eksiklik belirtileri ilk olarak mobil elementler için yaşlı yapraklarda, hareketsiz elementler için ise genç yapraklarda görülür.</li>
+                        </ol>
+                        <p>Bu senaryo, bir mineralin (potasyum) bitki fizyolojisindeki kritik rollerini ve eksikliğinin nasıl spesifik görsel belirtilerle kendini gösterdiğini anlamamızı sağlar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> İnorganik Moleküller Testi (20 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 20</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> İnorganik Moleküller Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tint"></i> İNORGANİK MOLEKÜLLERE GİRİŞ</div>
+                    <ul class="summary-list">
+                        <li>İnorganik moleküller, canlılar tarafından <strong>sentezlenemeyen</strong>, doğada hazır bulunan basit yapılı moleküllerdir.</li>
+                        <li><strong>Organik moleküllerden (C-H içeren) temel farkları:</strong> Enerji verici olarak kullanılmazlar, yapıya katılırlar ve düzenleyici rol oynarlar.</li>
+                        <li>Canlılık için en önemli iki inorganik molekül grubu: <strong>Su</strong> ve <strong>Mineraller</strong>dir.</li>
+                        <li>Hücredeki biyokimyasal reaksiyonların gerçekleşeceği ortamı sağlarlar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-water"></i> SUYUN YAPISI VE GENEL ÖZELLİKLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Açıklama</th>
+                            <th>Biyolojik Önemi</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Moleküler Yapı</strong></td>
+                            <td>H₂O. İki hidrojen (H⁺) ve bir oksijen (O⁻) atomundan oluşur. Asimetrik, <strong>polar</strong> bir moleküldür.</td>
+                            <td>Polarite, diğer polar moleküllerle etkileşime girmesini sağlar (çözücülük).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hidrojen Bağları</strong></td>
+                            <td>Su molekülleri arasında oluşan zayıf ama çok sayıda kimyasal bağ.</td>
+                            <td>Yüksek özgül ısı, yüzey gerilimi, kohezyon ve adezyon gibi özellikleri açıklar.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kohezyon</strong></td>
+                            <td>Aynı tür moleküller arası çekim (su-su).</td>
+                            <td>Bitkilerde suyun ksilemde yukarı taşınmasında, su damlacıklarının oluşumunda etkilidir.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adezyon</strong></td>
+                            <td>Farklı tür moleküller arası çekim (su-cam, su-bitki hücre duvarı).</td>
+                            <td>Bitkilerde suyun ksilem çeperlerine tutunup yükselmesinde rol oynar.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yüzey Gerilimi</strong></td>
+                            <td>Su yüzeyindeki moleküllerin güçlü kohezyonu sonucu oluşan esnek zar.</td>
+                            <td>Bazı böceklerin su üzerinde yürümesini, su damlalarının küresel şeklini açıklar.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yüksek Özgül Isı</strong></td>
+                            <td>Suyun sıcaklığını değiştirmek için çok fazla ısı enerjisi gerekir.</td>
+                            <td>Vücut sıcaklığının ve çevre sıcaklığının kararlı kalmasına yardımcı olur.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Buzun Yoğunluğu</strong></td>
+                            <td>Katı hal (buz), sıvı halden daha az yoğundur (0.92 g/mL).</td>
+                            <td>Buz suda yüzer, su ekosistemlerinin dip kısmının donmasını önler.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Evrensel Çözücülük</strong></td>
+                            <td>Polar yapısı sayesinde birçok iyonik ve polar maddeyi çözebilir.</td>
+                            <td>Besin, mineral, hormon ve atıkların vücutta taşınmasını sağlar. Metabolik reaksiyonların ortamıdır.</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Suyun tüm bu kendine özgü özellikleri, onun polar moleküler yapısından ve molekülleri arasındaki hidrojen bağlarından kaynaklanır. Bu özellikler, suyu canlılık için vazgeçilmez kılar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> SUYUN BİYOLOJİK ÖNEMİ VE İŞLEVLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Metabolik Reaksiyonların Ortamı:</strong> Tüm biyokimyasal reaksiyonlar (solunum, fotosentez, sindirim) sulu ortamda gerçekleşir.</li>
+                        <li><strong>Taşıma:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kan plazmasında:</strong> Besin, hormon, oksijen, atık taşınır.</li>
+                                <li><strong>Bitki özsuyunda (ksilem):</strong> Su ve mineraller köklerden yapraklara taşınır.</li>
+                                <li><strong>Floemde:</strong> Organik besinler (fotosentez ürünleri) taşınır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vücut Isısının Düzenlenmesi (Termoregülasyon):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yüksek özgül ısısı sayesinde vücut ısısını sabit tutmaya yardımcı olur.</li>
+                                <li>Terleme ile buharlaşma ısısı yüksek olduğu için vücut serinler.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Destek (Bitkilerde Turgor Basıncı):</strong> Hücrelere giren su, turgor basıncı oluşturarak bitkilerin dik durmasını sağlar.</li>
+                        <li><strong>Kayganlık ve Koruma:</strong> Eklem sıvısı, göz yaşı, beyin omurilik sıvısı gibi vücut sıvılarının temel bileşenidir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-gem"></i> MİNERALLER: TANIMI, ÖZELLİKLERİ VE KAYNAKLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Canlıların kendi vücutlarında sentezleyemediği, dışarıdan hazır almak zorunda olduğu inorganik moleküllerdir (iyonlar).</li>
+                        <li><strong>Genel Özellikleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Enerji vermezler.</li>
+                                <li>Yapıya katılırlar ve düzenleyici rol oynarlar.</li>
+                                <li>Vücutta üretilmezler, besinlerle alınırlar.</li>
+                                <li>Hücre zarından geçebilirler (iyon pompaları/kanalları ile).</li>
+                                <li>Organik bileşiklerin (enzim, hormon) yapısına katılırlar.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kaynakları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Bitkiler için:</strong> Topraktan köklerle, suda çözünmüş iyonlar halinde alınır.</li>
+                                <li><strong>Hayvanlar ve İnsanlar için:</strong> Bitkileri yiyerek veya diğer hayvanları yiyerek (besin zinciri) ve içme suyuyla alınır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bulundukları Form:</strong> Vücutta genellikle iyon halinde (Na⁺, K⁺, Ca²⁺, Cl⁻, PO₄³⁻) bulunurlar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tasks"></i> ÖNEMLİ MİNERALLER, GÖREVLERİ VE EKSİKLİKLERİ</div>
+                    
+                    <table class="mineral-table">
+                        <tr>
+                            <th>Mineral</th>
+                            <th>Biyolojik Görevleri</th>
+                            <th>Bulunduğu Besinler</th>
+                            <th>Eksikliğinde Görülen Sorunlar</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Kalsiyum (Ca)</strong></td>
+                            <td>Kemik ve diş yapısı, kas kasılması, sinir iletimi, kan pıhtılaşması.</td>
+                            <td>Süt, peynir, yoğurt, yeşil yapraklı sebzeler, sardalya.</td>
+                            <td>Osteoporoz (kemik erimesi), raşitizm (çocuklarda), kas krampları, diş çürükleri.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Demir (Fe)</strong></td>
+                            <td>Hemoglobin yapısı (oksijen taşınımı), elektron taşıma zincirinde, bazı enzimlerde.</td>
+                            <td>Kırmızı et, karaciğer, yumurta, kuru baklagiller, yeşil sebzeler, pekmez.</td>
+                            <td>Demir eksikliği anemisi (kansızlık): Halsizlik, solukluk, nefes darlığı, baş dönmesi.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>İyot (I)</strong></td>
+                            <td>Tiroit hormonlarının (tiroksin) yapısında; metabolizma hızının düzenlenmesi.</td>
+                            <td>Deniz ürünleri, iyotlu tuz, süt, yumurta.</td>
+                            <td>Guatr (tiroid bezinin büyümesi), metabolizma yavaşlaması, çocuklarda zeka geriliği (kretinizm).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fosfor (P)</strong></td>
+                            <td>Kemik ve diş yapısı (Ca ile), ATP, DNA, RNA, fosfolipitlerin yapısında.</td>
+                            <td>Et, balık, süt, yumurta, kuruyemiş, tahıllar.</td>
+                            <td>Kemik zayıflığı, iştahsızlık, halsizlik (Ca ile birlikte görülür).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sodyum (Na)</strong></td>
+                            <td>Sinir impulsları iletimi, kas kasılması, vücut sıvı dengesi, besin emilimi.</td>
+                            <td>Sofra tuzu (NaCl), işlenmiş gıdalar, peynir, ekmek.</td>
+                            <td>Halsizlik, baş dönmesi, kas krampları, düşük tansiyon. <em>(Fazlalığı daha yaygın: Hipertansiyon)</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Potasyum (K)</strong></td>
+                            <td>Sinir iletimi, kalp kasılması, vücut sıvı dengesi, enzim aktivasyonu.</td>
+                            <td>Muz, patates, domates, avokado, ıspanak, fasulye.</td>
+                            <td>Kas zayıflığı, kramplar, kalp ritim bozuklukları, felç riski.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Magnezyum (Mg)</strong></td>
+                            <td>Kemik yapısı, kas ve sinir fonksiyonu, enzim kofaktörü (özellikle enerji metabolizmasında).</td>
+                            <td>Yeşil yapraklı sebzeler, kuruyemiş, tahıllar, baklagiller, muz.</td>
+                            <td>Kas seğirmesi/krampları, yorgunluk, sinirlilik, kalp çarpıntısı.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Çinko (Zn)</strong></td>
+                            <td>Birçok enzimin kofaktörü, bağışıklık sistemi, yara iyileşmesi, protein sentezi.</td>
+                            <td>Et, deniz ürünleri, kuruyemiş, tam tahıllar, baklagiller.</td>
+                            <td>Bağışıklık zayıflığı, yaraların geç iyileşmesi, tat ve koku almada bozukluk, büyüme geriliği.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flor (F)</strong></td>
+                            <td>Diş minesinin güçlenmesi, kemik sağlığı.</td>
+                            <td>İçme suyu (florlu), çay, deniz ürünleri, florlu diş macunu.</td>
+                            <td>Diş çürüklerinde artış. <em>(Fazlalığı: Diş minesinde lekelenme - florozis)</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Klor (Cl)</strong></td>
+                            <td>Vücut sıvı dengesi, sinir iletimi, midede HCl asit yapısında, kan pH dengesi.</td>
+                            <td>Sofra tuzu (NaCl), işlenmiş gıdalar.</td>
+                            <td>Metabolik alkaloz (nadir), kas krampları.</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Elektrolitler:</strong> Sodyum (Na⁺), Potasyum (K⁺) ve Klor (Cl⁻), vücut sıvılarında elektrolit olarak bulunur. Sinir iletimi, kas kasılması ve sıvı-elektrolit dengesinden sorumludurlar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heartbeat"></i> MİNERALLERİN GENEL İŞLEVLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Yapısal Görevler:</strong> Kemik, diş, kabuk gibi sert dokuların yapı taşıdır (Ca, P, Mg).</li>
+                        <li><strong>Düzenleyici Görevler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Sinir İletimi ve Kas Kasılması:</strong> Na⁺, K⁺, Ca²⁺</li>
+                                <li><strong>Sıvı-Elektrolit Dengesi ve Osmotik Basınç:</strong> Na⁺, K⁺, Cl⁻</li>
+                                <li><strong>Kan Pıhtılaşması:</strong> Ca²⁺</li>
+                                <li><strong>Asit-Baz Dengesi (pH):</strong> Bikarbonat (HCO₃⁻), fosfat (HPO₄²⁻)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Metabolik Görevler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Enzim Kofaktörü/Aktivatörü:</strong> Mg²⁺, Zn²⁺, Cu²⁺, Mn²⁺</li>
+                                <li><strong>Hormon Yapısında:</strong> I (tiroit hormonları)</li>
+                                <li><strong>Elektron Taşınmasında:</strong> Fe (sitokromlarda), Cu</li>
+                                <li><strong>Oksijen Taşınmasında:</strong> Fe (hemoglobinde)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bağışıklık Sistemi:</strong> Çinko (Zn) gibi mineraller bağışıklık hücrelerinin çalışması için gereklidir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exclamation-triangle"></i> MİNERAL EKSİKLİĞİNDE ORTAYA ÇIKAN GENEL SORUNLAR</div>
+                    <ul class="summary-list">
+                        <li>Mineral eksikliği, bitki, hayvan ve insanlarda çeşitli sağlık sorunlarına neden olur.</li>
+                        <li>Eksikliğin şiddeti ve süresine bağlı olarak geri dönüşümsüz hasarlar oluşabilir (özellikle büyüme-gelişme çağında).</li>
+                        <li><strong>Bitkilerde:</strong> Büyüme geriliği, yapraklarda renk değişiklikleri (kloroz, nekroz), verim düşüklüğü.</li>
+                        <li><strong>İnsanlarda:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Büyüme-gelişme geriliği (çocuklarda)</li>
+                                <li>Kemik ve diş hastalıkları</li>
+                                <li>Anemi (kansızlık)</li>
+                                <li>Kas ve sinir sistemi bozuklukları</li>
+                                <li>Metabolizma yavaşlaması</li>
+                                <li>Bağışıklık sisteminin zayıflaması</li>
+                            </ul>
+                        </li>
+                        <li><strong>Önleme:</strong> Sağlıklı ve dengeli beslenme, çeşitli besin gruplarından yeterli miktarda tüketmek mineral eksikliklerini önlemenin en etkili yoludur.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> İnorganik Maddeler Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/9inorganikmaddeler.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 5) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 20 İnorganik Molekül Sorusu
+        const csvData = `İnorganik moleküllerin organik moleküllerden temel farkı nedir?,"İnorganik moleküller enerji verici olarak kullanılmaz, yapıya katılır ve düzenleyici rol oynar. Organik moleküller ise enerji verici olarak kullanılabilir ve hücrenin yapı taşlarını oluşturur (protein, yağ, karbonhidrat, nükleik asit)."
+Suyun moleküler formülü ve yapısal özelliği nedir?,"H₂O'dur. İki hidrojen ve bir oksijen atomundan oluşur. Asimetrik yapısından dolayı polar (kutuplu) bir moleküldür."
+Suyun polar olması ne anlama gelir ve bu özellik neye yol açar?,"Su molekülünün bir tarafı pozitif (H), diğer tarafı negatif (O) yüklüdür. Bu polarite, su molekülleri arasında hidrojen bağlarının oluşmasına ve suyun diğer polar molekülleri çözebilmesine (evrensel çözücü olmasına) neden olur."
+Kohezyon ve Adezyon nedir? Farklarını birer örnekle açıklayın.,"Kohezyon: Aynı tür moleküller arası çekim (su molekülleri bir arada damla oluşturur). Adezyon: Farklı tür moleküller arası çekim (su damlasının cama yapışması). Bitkilerde suyun yükselmesi her iki kuvvetin birlikte çalışmasıyla olur."
+Suyun yüksek özgül ısısı ne demektir ve canlılar için önemi nedir?,"Suyun sıcaklığını 1°C değiştirmek için çok fazla ısı enerjisi gerekir. Bu, vücut sıcaklığının ve çevre sıcaklıklarının kararlı kalmasına yardımcı olur, ani sıcaklık değişimlerine karşı canlıyı korur."
+Buz neden suda yüzer? Bu özelliğin ekosistem için önemi nedir?,"Su donduğunda molekülleri arasındaki hidrojen bağları düzenli bir kristal yapı oluşturur ve hacmi artar, yoğunluğu azalır (0,92 g/mL). Bu nedenle buz, yoğunluğu 1 g/mL olan suda yüzer. Böylece su kütleleri üstten donar ve alttaki canlılar hayatta kalır."
+Mineraller nedir ve canlılar onları nasıl elde eder?,"Organizmaların ihtiyaç duyduğu ama kendi bünyesinde üretemediği inorganik moleküllerdir (iyonlar). Bitkiler topraktan suda çözünmüş halde, hayvanlar ise bitkileri veya diğer hayvanları yiyerek ve su içerek alır."
+Minerallerin genel özellikleri nelerdir? (En az 3 tane sayınız.),"1) Enerji vermezler. 2) Yapıya katılırlar/düzenleyici rol oynarlar. 3) Canlılar tarafından üretilmezler, dışarıdan alınırlar. 4) Hücre zarından geçebilirler. 5) Organik bileşiklerin (enzim, hormon) yapısına katılabilirler."
+Kalsiyum (Ca) mineralinin başlıca görevleri nelerdir?,"1) Kemik ve dişlerin yapısal bileşeni. 2) Kas kasılmasında görev alır. 3) Sinir impulsu iletiminde rol oynar. 4) Kan pıhtılaşması için gereklidir."
+Demir (Fe) eksikliğinde görülen hastalık ve belirtileri nelerdir?,"Demir eksikliği anemisi (kansızlık). Belirtileri: Halsizlik, yorgunluk, soluk cilt ve mukozalar, nefes darlığı, baş dönmesi. Nedeni: Hemoglobin yapımının azalması ve dokulara yeterli oksijen taşınamaması."
+İyot (I) mineralinin vücuttaki temel görevi nedir? Eksikliğinde ne olur?,"Tiroit bezinden salgılanan tiroksin hormonunun yapısında bulunur. Metabolizma hızını düzenler. Eksikliğinde guatr (tiroid bezinin büyümesi) görülür. Şiddetli ve uzun süreli eksiklik çocuklarda zeka geriliğine (kretinizm) yol açabilir."
+Sodyum (Na) ve Potasyum (K) minerallerinin ortak görevleri nelerdir?,"1) Sinir hücrelerinde impuls (uyarı) iletimi. 2) Kas kasılması. 3) Vücut sıvı-elektrolit dengesinin ve osmotik basıncın düzenlenmesi."
+Magnezyum (Mg) eksikliği bitkilerde nasıl anlaşılır ve neden önce yaşlı yapraklarda görülür?,"Bitkilerde klorofil yapısında bulunur. Eksikliğinde yaşlı yapraklarda damar aralarında sararma (kloroz) görülür. Magnezyum mobil (hareketli) bir element olduğu için, bitki büyüme noktalarındaki ihtiyacı karşılamak için onu yaşlı yapraklardan çeker. Bu nedenle eksiklik belirtileri önce yaşlı yapraklarda başlar."
+Çinko (Zn) mineralinin önemli işlevlerinden ikisini yazınız.,"1) Birçok enzimin kofaktörü (çalışması için gerekli) olarak görev yapar. 2) Bağışıklık sisteminin düzgün çalışması ve yara iyileşmesi için gereklidir. 3) Protein sentezinde ve hücre bölünmesinde rol oynar."
+Su, neden iyi bir çözücüdür?,"Polar yapısı nedeniyle. Su molekülünün pozitif kısmı (H) negatif iyonları, negatif kısmı (O) ise pozitif iyonları çeker. Bu sayede iyonik bileşikleri (tuzlar) ve diğer polar molekülleri çözebilir."
+Yüzey gerilimi nedir ve hangi su özelliği ile ilişkilidir? Bazı böcekler su üzerinde nasıl yürüyebilir?,"Su yüzeyindeki moleküllerin güçlü kohezyon kuvveti nedeniyle oluşan esnek zar benzeri etkidir. Su molekülleri arasındaki hidrojen bağları ile ilişkilidir. Böceklerin ayaklarındaki kıllar ve hafif vücut yapısı, su yüzey gerilimini aşmadan onların üzerinde yürümesini sağlar."
+İnorganik moleküller hücre zarından nasıl geçer?,"Küçük ve polar olan su, osmoz ile geçer. Mineraller (iyonlar) ise genellikle taşıyıcı proteinler (pompalar veya kanallar) aracılığıyla aktif taşıma veya kolaylaştırılmış difüzyon ile geçer. Çünkü iyonlar ya yüklü oldukları için ya da boyutları nedeniyle doğrudan difüzyonla yağlı zar tabakasından geçemezler."
+Vücutta su ve mineral dengesinin bozulması neden tehlikelidir?,"Su ve mineraller (elektrolitler), homeostazın (iç denge) korunması için kritiktir. Dengesizlik; sinir iletiminin, kas kasılmasının, kan basıncının, pH'ın bozulmasına ve metabolik süreçlerin aksamasına neden olur. Ciddi durumlarda organ yetmezliği ve ölüme kadar gidebilir."
+Suyun adezyon ve kohezyon özellikleri, bitkilerde suyun yapraklara kadar taşınmasında nasıl rol oynar?,"Ksilem borularında su bir sütun halinde yükselir. Terleme ile yapraklardan su buharı çıkınca, su sütununda bir çekme kuvveti oluşur. Su moleküllerinin birbirine yapışması (kohezyon) bu sütunun kopmamasını, suyun ksilem çeperine yapışması (adezyon) ise yükselmeye yardımcı olur."
+İnsan vücudunda en fazla bulunan mineral hangisidir ve temel görevi nedir?,"Kalsiyum (Ca)'dur. Vücut ağırlığının yaklaşık %1.5-2'sini oluşturur. Temel görevi; kemik ve dişlerin yapısal bileşeni olmaktır. Ayrıca kas kasılması, sinir iletimi ve kan pıhtılaşmasında da rol oynar."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 20 Questions
+        const testQuestions = [
+            {
+                question: "Aşağıdakilerden hangisi inorganik moleküllerin organik moleküllerden temel farklarından biri değildir?",
+                options: [
+                    "Enerji verici olarak kullanılabilmeleri",
+                    "Canlılar tarafından sentezlenememeleri",
+                    "Yapıya katılmaları",
+                    "Düzenleyici rol oynamaları",
+                    "Doğada hazır bulunmaları"
+                ],
+                correct: 0,
+                explanation: "İnorganik moleküller (su ve mineraller) enerji verici olarak kullanılmazlar. Enerji verici olarak kullanılmak organik moleküllerin (karbonhidrat, yağ, protein) özelliğidir. Diğer seçeneklerin tümü inorganik moleküllerin özelliklerindendir."
+            },
+            {
+                question: "Su molekülünün (H₂O) polar (kutuplu) olmasının temel nedeni nedir?",
+                options: [
+                    "Hidrojen atomlarının oksijene göre daha büyük olması",
+                    "Oksijen atomunun hidrojene göre daha elektronegatif olması",
+                    "Molekülün lineer (doğrusal) bir şekle sahip olması",
+                    "Hidrojen bağlarının bulunması",
+                    "İki farklı atom içermesi"
+                ],
+                correct: 1,
+                explanation: "Oksijen atomu hidrojen atomlarından daha elektronegatif olduğu için, bağ elektronlarını kendine daha çok çeker. Bu, oksijen tarafında kısmen negatif (δ⁻), hidrojen tarafında kısmen pozitif (δ⁺) yük oluşturur. Bu asimetrik yük dağılımı molekülü polar yapar."
+            },
+            {
+                question: "Suyun aşağıda verilen özelliklerinden hangisi, onun yüksek özgül ısısı ile doğrudan ilişkilidir?",
+                options: [
+                    "Buzun suda yüzmesi",
+                    "Bitkilerde suyun yapraklara taşınabilmesi",
+                    "Vücut sıcaklığının sabit kalabilmesi",
+                    "Birçok maddeyi çözebilmesi",
+                    "Yüzey gerilimi oluşturabilmesi"
+                ],
+                correct: 2,
+                explanation: "Yüksek özgül ısı, suyun sıcaklığını değiştirmek için çok fazla enerji gerektiği anlamına gelir. Bu özellik, vücut sıcaklığının (ve çevre sıcaklıklarının) kararlı kalmasına, ani ısı değişimlerinden korunmaya yardımcı olur. Diğer seçenekler suyun diğer özellikleriyle (yoğunluk, kohezyon-adezyon, çözücülük, yüzey gerilimi) ilişkilidir."
+            },
+            {
+                question: "Bitkilerde suyun köklerden yapraklara doğru taşınmasında aşağıdaki su özelliklerinden hangisi/hangileri etkilidir? I. Kohezyon II. Adezyon III. Yüksek özgül ısı",
+                options: [
+                    "Yalnız I",
+                    "Yalnız II",
+                    "I ve II",
+                    "II ve III",
+                    "I, II ve III"
+                ],
+                correct: 2,
+                explanation: "Bitkilerde suyun ksilem borularında yükselmesi, kohezyon (su moleküllerinin birbirini çekmesi) ve adezyon (su moleküllerinin ksilem çeperine yapışması) kuvvetlerinin birlikte çalışmasıyla gerçekleşir. Yüksek özgül ısı, suyun sıcaklık düzenlemesi ile ilgilidir, taşınma mekanizmasıyla doğrudan ilgili değildir."
+            },
+            {
+                question: "Kışın göllerin üstten donması ve buzun suda yüzmesi, suyun hangi özelliğinin bir sonucudur?",
+                options: [
+                    "Yüksek özgül ısısının",
+                    "Katı halinin sıvı halinden daha az yoğun olmasının",
+                    "İyi bir çözücü olmasının",
+                    "Yüksek yüzey geriliminin",
+                    "Polar yapıda olmasının"
+                ],
+                correct: 1,
+                explanation: "Su donduğunda (katı hale geçtiğinde), molekülleri arasında düzenli hidrojen bağları oluşur ve bu yapı daha fazla boşluk içerir. Bu nedenle buzun hacmi artar, yoğunluğu (0.92 g/mL) sıvı suyun yoğunluğundan (1 g/mL) daha az olur. Bu fiziksel özellik, buzun suda yüzmesini ve su kütlelerinin üstten donmasını sağlar, böylece alttaki canlılar hayatta kalır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi minerallerin genel bir özelliği değildir?",
+                options: [
+                    "Enerji verici olarak kullanılabilmeleri",
+                    "Yapısal bileşen olabilmeleri",
+                    "Enzimlerin kofaktörü olabilmeleri",
+                    "Vücutta sentezlenememeleri",
+                    "İyon halinde bulunabilmeleri"
+                ],
+                correct: 0,
+                explanation: "Mineraller inorganik moleküllerdir ve enerji verici olarak kullanılmazlar. Enerji verici olarak kullanılmak organik moleküllerin (karbonhidrat, yağ, protein) özelliğidir. Diğer tüm seçenekler minerallerin doğru özellikleridir."
+            },
+            {
+                question: "Bir insanda kemiklerin zayıflaması ve diş çürüklerinin artması, aşağıdaki minerallerden hangisinin eksikliğinde görülen başlıca sorunlardandır?",
+                options: [
+                    "Demir (Fe)",
+                    "İyot (I)",
+                    "Kalsiyum (Ca)",
+                    "Çinko (Zn)",
+                    "Sodyum (Na)"
+                ],
+                correct: 2,
+                explanation: "Kalsiyum (Ca), kemik ve dişlerin temel yapısal mineralidir. Eksikliğinde osteoporoz (kemik erimesi), raşitizm (çocuklarda) gibi kemik hastalıkları ve diş çürüklerinde artış görülür. Demir eksikliği anemisi, iyot eksikliği guatr, çinko eksikliği bağışıklık zayıflığı, sodyum eksikliği ise elektrolit dengesizliği ile ilişkilidir."
+            },
+            {
+                question: "Tiroid bezinden salgılanan ve metabolizma hızını düzenleyen hormonların yapısında bulunan mineral aşağıdakilerden hangisidir?",
+                options: [
+                    "Demir (Fe)",
+                    "İyot (I)",
+                    "Kalsiyum (Ca)",
+                    "Magnezyum (Mg)",
+                    "Çinko (Zn)"
+                ],
+                correct: 1,
+                explanation: "İyot (I), tiroit bezinden salgılanan tiroksin (T4) ve triiyodotironin (T3) hormonlarının yapısında bulunur. Bu hormonlar bazal metabolizma hızını, büyüme ve gelişmeyi düzenler. Eksikliğinde guatr hastalığı görülür."
+            },
+            {
+                question: "Kırmızı kan hücrelerinde (alyuvarlar) bulunan hemoglobin proteininin yapısında yer alan, oksijen taşınmasından sorumlu mineral aşağıdakilerden hangisidir?",
+                options: [
+                    "Kalsiyum (Ca)",
+                    "Demir (Fe)",
+                    "Sodyum (Na)",
+                    "Potasyum (K)",
+                    "İyot (I)"
+                ],
+                correct: 1,
+                explanation: "Demir (Fe), hemoglobin molekülünün hem kısmında bulunur. Hemoglobin, akciğerlerden dokulara oksijen taşır. Demir eksikliğinde hemoglobin sentezi azalır, bu da demir eksikliği anemisine (kansızlık) yol açar."
+            },
+            {
+                question: "Sinir hücrelerinde impuls (uyarı) iletiminde ve kas kasılmasında önemli rol oynayan, aynı zamanda vücut sıvı dengesini düzenleyen mineraller aşağıdaki seçeneklerin hangisinde birlikte verilmiştir?",
+                options: [
+                    "Kalsiyum ve Fosfor",
+                    "Demir ve İyot",
+                    "Sodyum ve Potasyum",
+                    "Magnezyum ve Çinko",
+                    "Flor ve Klor"
+                ],
+                correct: 2,
+                explanation: "Sodyum (Na⁺) ve Potasyum (K⁺), sinir hücresi zarında aksiyon potansiyelinin oluşmasından (sinir iletimi), kas kasılmasının başlatılmasından ve vücut sıvı-elektrolit dengesinin sağlanmasından sorumlu başlıca minerallerdir (elektrolitlerdir)."
+            },
+            {
+                question: "Bitkilerde klorofil pigmentinin yapısında bulunan, eksikliğinde özellikle yaşlı yapraklarda sararma görülen mineral aşağıdakilerden hangisidir?",
+                options: [
+                    "Azot (N)",
+                    "Fosfor (P)",
+                    "Potasyum (K)",
+                    "Magnezyum (Mg)",
+                    "Kalsiyum (Ca)"
+                ],
+                correct: 3,
+                explanation: "Magnezyum (Mg), klorofil molekülünün merkez atomudur ve fotosentez için kritiktir. Bitkide hareketli (mobil) bir element olduğu için eksiklik belirtileri (yapraklarda damar aralarında sararma - kloroz) önce yaşlı yapraklarda görülür. Bitki, büyüme noktaları için magnezyumu yaşlı yapraklardan çeker."
+            },
+            {
+                question: "Bağışıklık sisteminin düzgün çalışması, yara iyileşmesi ve birçok enzimin kofaktörü olarak görev yapan mineral aşağıdakilerden hangisidir?",
+                options: [
+                    "Demir (Fe)",
+                    "İyot (I)",
+                    "Kalsiyum (Ca)",
+                    "Çinko (Zn)",
+                    "Sodyum (Na)"
+                ],
+                correct: 3,
+                explanation: "Çinko (Zn), 300'den fazla enzimin çalışması için gerekli bir kofaktördür. Bağışıklık hücrelerinin fonksiyonu, yara iyileşmesi, protein sentezi, DNA sentezi ve hücre bölünmesi için gereklidir. Eksikliğinde bağışıklık zayıflığı, yaraların geç iyileşmesi, tat ve koku almada bozukluk görülür."
+            },
+            {
+                question: "Suyun, farklı tür moleküller arasındaki çekim kuvvetine ne ad verilir?",
+                options: [
+                    "Kohezyon",
+                    "Adezyon",
+                    "Polarite",
+                    "Yüzey gerilimi",
+                    "Özgül ısı"
+                ],
+                correct: 1,
+                explanation: "Adezyon, farklı tür moleküller arasındaki çekim kuvvetidir (örneğin, suyun cam yüzeye yapışması). Kohezyon ise aynı tür moleküller arasındaki çekimdir (su moleküllerinin birbirini çekmesi)."
+            },
+            {
+                question: "Deniz kenarından uzak, dağlık bölgelerde yaşayan insanlarda guatr hastalığının daha sık görülmesinin temel nedeni aşağıdakilerden hangisidir?",
+                options: [
+                    "Kalsiyum eksikliği",
+                    "Demir eksikliği",
+                    "İyot eksikliği",
+                    "Sodyum eksikliği",
+                    "Çinko eksikliği"
+                ],
+                correct: 2,
+                explanation: "İyot, deniz suyunda ve deniz ürünlerinde bolca bulunur. Deniz kenarından uzak, dağlık bölgelerde toprak ve suda iyot miktarı çok düşüktür. Bu bölgelerde yaşayan insanlar yeterli iyot alamadığı için iyot eksikliğine bağlı guatr hastalığı daha sık görülür. Çözüm olarak iyotlu tuz kullanılır."
+            },
+            {
+                question: "Minerallerle ilgili aşağıdaki ifadelerden hangisi yanlıştır?",
+                options: [
+                    "Enerji verici olarak kullanılmazlar.",
+                    "Bitkiler tarafından topraktan alınırlar.",
+                    "Vücutta sentezlenebilirler.",
+                    "Hormon ve enzim yapısına katılabilirler.",
+                    "İyon halinde bulunabilirler."
+                ],
+                correct: 2,
+                explanation: "Mineraller, canlı organizmalar tarafından sentezlenemez (üretilemez). Dışarıdan, besinler ve su yoluyla hazır alınmak zorundadırlar. Diğer tüm seçenekler minerallerin doğru özellikleridir."
+            },
+            {
+                question: "Aşağıdaki minerallerden hangisi, kemik ve dişlerin yapısına katılmanın yanı sıra, kan pıhtılaşması sürecinde de görev alır?",
+                options: [
+                    "Demir (Fe)",
+                    "Potasyum (K)",
+                    "Kalsiyum (Ca)",
+                    "İyot (I)",
+                    "Sodyum (Na)"
+                ],
+                correct: 2,
+                explanation: "Kalsiyum (Ca), kemik ve dişlerin temel yapı taşıdır. Ayrıca, kan pıhtılaşma kaskadında birçok basamağın gerçekleşmesi için gerekli olan bir mineraldir. Pıhtılaşma faktörlerinden bazıları Ca²⁺ iyonu varlığında aktive olur."
+            },
+            {
+                question: "Bir bardak suya bir miktar sofra tuzu (NaCl) atıldığında tuzun çözünmesi, suyun hangi özelliği ile açıklanır?",
+                options: [
+                    "Yüksek özgül ısısı",
+                    "Polar (kutuplu) yapısı",
+                    "Yüksek yüzey gerilimi",
+                    "Hidrojen bağları oluşturması",
+                    "Kohezyon kuvveti"
+                ],
+                correct: 1,
+                explanation: "Suyun polar yapısı, onun iyi bir çözücü olmasını sağlar. Tuz (NaCl) iyonik bir bileşiktir (Na⁺ ve Cl⁻ iyonları). Su molekülünün pozitif kısmı (H) Cl⁻ iyonunu, negatif kısmı (O) ise Na⁺ iyonunu çevreleyerek (hidrate ederek) iyonları birbirinden ayırır ve çözünmeyi sağlar."
+            },
+            {
+                question: "Aşağıdaki minerallerden hangisinin eksikliği, insanlarda en yaygın görülen kansızlık (anemi) türüne neden olur?",
+                options: [
+                    "Kalsiyum",
+                    "İyot",
+                    "Demir",
+                    "Çinko",
+                    "Magnezyum"
+                ],
+                correct: 2,
+                explanation: "Demir eksikliği, dünyada en sık görülen mineral eksikliğidir ve demir eksikliği anemisine yol açar. Demir, hemoglobinin yapısında bulunur. Eksikliğinde yeterli hemoglobin üretilemez, dokulara yeterli oksijen taşınamaz ve anemi belirtileri (halsizlik, solukluk, nefes darlığı) ortaya çıkar."
+            },
+            {
+                question: "Suyun, aynı tür molekülleri bir arada tutma özelliği aşağıdakilerden hangisi ile adlandırılır?",
+                options: [
+                    "Adezyon",
+                    "Kohezyon",
+                    "Polarite",
+                    "Yüzey gerilimi",
+                    "Çözücülük"
+                ],
+                correct: 1,
+                explanation: "Kohezyon, aynı tür moleküller arasındaki çekim kuvvetidir. Su molekülleri arasındaki hidrojen bağları güçlü bir kohezyon sağlar. Bu, su damlalarının oluşmasını, bitkilerde su sütununun kopmadan yükselmesini ve yüzey gerilimini açıklar."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! İnorganik molekülleri tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+
+        // Initialize by loading test questions if needed
+        loadTestQuestions();
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

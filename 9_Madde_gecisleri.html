@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hücre Zarından Madde Geçişleri Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #9b59b6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cell"></i> Hücre Zarından Madde Geçişleri Öğrenme Portalı</h1>
+            <div class="subtitle">6 farklı öğrenme yöntemi ile hücre zarından madde geçişlerini (Difüzyon, Ozmoz, Aktif Taşıma, Endositoz, Ekzositoz) keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/6</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile hücre zarından madde geçişlerinin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Hücre zarından madde geçişlerini görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Hücre zarından madde geçişlerinin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile hücre zarından madde geçişi soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk test ile hücre zarından madde geçişleri hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Hücre Zarından Madde Geçişleri Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Hücre Zarından Madde Geçişleri Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücre Zarının Yapısı ve Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Çift katlı lipit tabakası:</strong> Fosfolipitlerden oluşur, suyu sevmeyen özellik</li>
+                        <li><strong>Seçici geçirgenlik:</strong> Bazı maddelerin geçişine izin verir, bazılarını sınırlar</li>
+                        <li><strong>Taşıma proteinleri:</strong> Kanal ve taşıyıcı proteinler madde geçişine yardımcı olur</li>
+                        <li><strong>Küçük/yüksüz moleküller:</strong> Zardan kolay geçer (O₂, CO₂, yağda çözünen vitaminler)</li>
+                        <li><strong>Büyük/yüklü moleküller:</strong> Zardan geçişi zor veya yardımcı protein gerektirir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Pasif Taşıma (Enerji Gerektirmeyen)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Difüzyon:</strong> Moleküllerin çok yoğun ortamdan az yoğun ortama yayılması</li>
+                        <li><strong>Basit difüzyon:</strong> Küçük moleküllerin doğrudan zardan geçişi</li>
+                        <li><strong>Kolaylaştırılmış difüzyon:</strong> Taşıyıcı proteinler yardımıyla geçiş</li>
+                        <li><strong>Ozmoz:</strong> Suyun seçici geçirgen zardan difüzyonu</li>
+                        <li><strong>Ozmotik basınç:</strong> Çözeltinin su çekme kuvveti</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Çözelti Türleri ve Ozmoz</div>
+                    <ul class="mindmap-content">
+                        <li><strong>İzotonik çözelti:</strong> Hücreyle eş yoğunlukta, net su geçişi yok</li>
+                        <li><strong>Hipertonik çözelti:</strong> Hücreden daha yoğun, hücre su kaybeder (plazmoliz)</li>
+                        <li><strong>Hipotonik çözelti:</strong> Hücreden daha az yoğun, hücre su alır (turgor)</li>
+                        <li><strong>Plazmoliz:</strong> Hipertonik ortamda hücrenin su kaybedip büzüşmesi</li>
+                        <li><strong>Deplazmoliz:</strong> Plazmolize uğramış hücrenin hipotonik ortamda normale dönmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Aktif Taşıma (Enerji Gerektiren)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>ATP enerjisi kullanılır:</strong> Sadece canlı hücrelerde gerçekleşir</li>
+                        <li><strong>Protein pompaları:</strong> Enzim gibi çalışan özel taşıyıcı proteinler</li>
+                        <li><strong>Yoğunluk farkına karşı taşıma:</strong> Az yoğundan çok yoğuna madde taşınır</li>
+                        <li><strong>Sodyum-potasyum pompası:</strong> Sinir hücrelerinde ileti için önemli</li>
+                        <li><strong>Örnekler:</strong> Bağırsaktan besin emilimi, böbrekten yararlı madde geri emilimi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Büyük Molekül Taşınması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Endositoz:</strong> Büyük maddelerin hücre içine alınması</li>
+                        <li><strong>Fagositoz:</strong> Katı parçacıkların alınması ("hücre yemesi")</li>
+                        <li><strong>Pinositoz:</strong> Sıvı damlacıklarının alınması ("hücre içmesi")</li>
+                        <li><strong>Ekzositoz:</strong> Büyük maddelerin hücre dışına atılması</li>
+                        <li><strong>Hormon salgılama:</strong> Protein yapılı hormonların kana verilmesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Önemli Kavramlar ve Mekanizmalar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Seçici geçirgen zar:</strong> Bazı maddelerin geçişine izin veren, bazılarını engelleyen zar</li>
+                        <li><strong>Konsantrasyon gradyanı:</strong> İki ortam arasındaki yoğunluk farkı</li>
+                        <li><strong>Denge durumu:</strong> Yoğunluk farkı kalmadığında net madde hareketinin durması</li>
+                        <li><strong>Turgor basıncı:</strong> Bitki hücrelerinde su alımıyla hücre çeperine uygulanan basınç</li>
+                        <li><strong>Hücre zarı yüzey alanı:</strong> Endositozda azalır, ekzositozda artar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Hücre Zarından Madde Geçişleri Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-layer-group"></i> HÜCRE ZARININ YAPISI VE SEÇİCİ GEÇİRGENLİK</div>
+                    <ul class="summary-list">
+                        <li>Hücre zarı, hücreyi çevreleyen, koruyan ve hücre içi ile dış ortam arasında madde alışverişini düzenleyen temel yapıdır.</li>
+                        <li><strong>Çift katlı lipit tabakasından oluşur:</strong> Fosfolipitler, suyu sevmeyen (hidrofobik) özellikleri nedeniyle maddelerin geçişini sınırlar.</li>
+                        <li><strong>Seçici geçirgenlik:</strong> Hücre zarı, bazı maddelerin geçişine izin verirken bazılarını engeller. Bu özellik hücrenin iç dengesini (homeostaz) korumasını sağlar.</li>
+                        <li><strong>Küçük ve yüksüz moleküller</strong> (O₂, CO₂, yağda çözünen A, D, E, K vitaminleri) zardan kolaylıkla geçer.</li>
+                        <li><strong>Büyük, yüklü veya suda çözünen maddelerin</strong> (glikoz, amino asitler, iyonlar) geçişi için taşıyıcı veya kanal proteinleri gerekir.</li>
+                        <li><strong>Taşıma proteinleri:</strong> Hücre zarına gömülü özel proteinlerdir. Kanal proteinleri por oluşturur, taşıyıcı proteinler şekil değiştirerek maddeleri taşır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> PASİF TAŞIMA (ENERJİ GEREKTİRMEYEN TAŞIMA)</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Difüzyon</th>
+                            <th>Ozmoz</th>
+                            <th>Kolaylaştırılmış Difüzyon</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Tanım</strong></td>
+                            <td>Moleküllerin çok yoğun ortamdan az yoğun ortama yayılması</td>
+                            <td>Suyun seçici geçirgen zardan difüzyonu</td>
+                            <td>Taşıyıcı proteinler yardımıyla yapılan difüzyon</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enerji (ATP)</strong></td>
+                            <td>Gerekmez</td>
+                            <td>Gerekmez</td>
+                            <td>Gerekmez</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yoğunluk farkı</strong></td>
+                            <td>Çok yoğundan az yoğuna</td>
+                            <td>Az yoğundan çok yoğuna (su için)</td>
+                            <td>Çok yoğundan az yoğuna</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Protein gereksinimi</strong></td>
+                            <td>Yok (basit difüzyon) veya var (kolaylaştırılmış)</td>
+                            <td>Genellikle kanal proteinleri (akupunlar)</td>
+                            <td>Taşıyıcı proteinler gereklidir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canlılık şartı</strong></td>
+                            <td>Hayır (cansız ortamda da olur)</td>
+                            <td>Hayır (cansız ortamda da olur)</td>
+                            <td>Hayır (cansız ortamda da olur)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Örnekler</strong></td>
+                            <td>Oda parfümünün yayılması, çayın suda dağılması</td>
+                            <td>Patatesin suda şişmesi, salatanın tuzla sulanması</td>
+                            <td>Glikoz ve amino asitlerin hücreye girişi</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Pasif taşımada maddeler daima yoğunluk farkı (konsantrasyon gradyanı) yönünde hareket eder. Bu nedenle enerji harcanmaz. Sistem dengeye ulaştığında (yoğunluklar eşitlendiğinde) net madde hareketi durur ancak moleküller çift yönlü hareket etmeye devam eder.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-vial"></i> ÇÖZELTİ TÜRLERİ VE HÜCRELER ÜZERİNE ETKİLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>İzotonik çözelti:</strong> Hücre sitoplazmasıyla eş yoğunluktadır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Hücreye net su girişi veya çıkışı olmaz.</li>
+                                <li>Hücre normal şeklini ve boyutunu korur.</li>
+                                <li>Örnek: %0,9'luk tuz çözeltisi (fizyolojik serum) insan hücreleri için izotoniktir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Hipertonik çözelti:</strong> Hücre sitoplazmasından daha yoğundur.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Hücre su kaybeder (ozmozla su dışarı çıkar).</li>
+                                <li>Hayvan hücresi: Büzüşür (krenasyon).</li>
+                                <li>Bitki hücresi: Su kaybeder, sitoplazma büzüşür (plazmoliz).</li>
+                                <li>Örnek: Tuzlu su, şekerli şurup.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Hipotonik çözelti:</strong> Hücre sitoplazmasından daha az yoğundur.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Hücre su alır (ozmozla su içeri girer).</li>
+                                <li>Hayvan hücresi: Şişer ve patlayabilir (hemoliz).</li>
+                                <li>Bitki hücresi: Su alır, turgor basıncı artar, hücre gerginleşir.</li>
+                                <li>Örnek: Saf su, çok az tuz içeren su.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Turgor Basıncı:</strong> Bitki hücreleri hipotonik ortamda su alınca şişer. Hücre çeperi esnek olmadığı için hücre patlamaz, bunun yerine sitoplazma çepere basınç uygular. Bu basınca turgor basıncı denir. Bitkilerin dik durmasını ve yaprakların canlı görünmesini sağlar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-battery-full"></i> AKTİF TAŞIMA (ENERJİ GEREKTİREN TAŞIMA)</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Maddelerin az yoğun ortamdan çok yoğun ortama enerji (ATP) harcanarak taşınmasıdır.</li>
+                        <li><strong>ATP enerjisi kullanılır:</strong> Sadece canlı hücrelerde gerçekleşir. Hücre ölünce aktif taşıma durur.</li>
+                        <li><strong>Protein pompaları:</strong> Özel taşıyıcı proteinler (enzim gibi çalışır) maddeyi taşır. Her pompa belirli maddeler için özelleşmiştir.</li>
+                        <li><strong>Yoğunluk farkına karşı taşıma:</strong> Doğal eğilimin (difüzyon) tersine, düşük yoğunluktan yüksek yoğunluğa madde taşınır.</li>
+                        <li><strong>Sodyum-potasyum pompası:</strong> Sinir hücrelerinde önemli bir aktif taşıma örneğidir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>3 Na⁺ iyonu hücre dışına, 2 K⁺ iyonu hücre içine taşınır.</li>
+                                <li>Sinir impulsu iletimi için gerekli iyon konsantrasyon farkını sağlar.</li>
+                                <li>Dinlenme halindeki insan vücudunda harcanan enerjinin önemli kısmı bu pompa için kullanılır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Diğer örnekler:</strong> Bağırsak epitelinden besin emilimi, böbrek tübüllerinden yararlı maddelerin geri emilimi, mide asidi (HCl) salgılanması.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shipping-fast"></i> BÜYÜK MOLEKÜLLERİN TAŞINMASI (ENDOSİTOZ VE EKZOSİTOZ)</div>
+                    <ul class="summary-list">
+                        <li><strong>Endositoz:</strong> Büyük moleküllerin veya parçacıkların hücre içine alınması.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>ATP harcanır.</strong> Sadece canlı hücrelerde gerçekleşir.</li>
+                                <li><strong>Yoğunluk farkı önemli değildir.</strong> Hücre zarının içe doğru boğumlanması ile gerçekleşir.</li>
+                                <li><strong>Hücre zarı yüzey alanı azalır.</strong></li>
+                                <li><strong>Fagositoz:</strong> Katı parçacıkların alınması ("hücre yemesi"). Örnek: Amipin beslenmesi, akyuvarların bakteri yutması.</li>
+                                <li><strong>Pinositoz:</strong> Sıvı damlacıklarının alınması ("hücre içmesi"). Örnek: Hücrenin sıvı besin alımı.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ekzositoz:</strong> Büyük moleküllerin hücre dışına atılması veya salgılanması.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>ATP harcanır.</strong> Sadece canlı hücrelerde gerçekleşir.</li>
+                                <li><strong>Yoğunluk farkı önemli değildir.</strong> Veziküllerin (kesecik) hücre zarıyla birleşmesi ile gerçekleşir.</li>
+                                <li><strong>Hücre zarı yüzey alanı artar.</strong></li>
+                                <li><strong>Örnekler:</strong> Hormon salgılanması (insülin), sindirim enzimlerinin salgılanması, sinir ileticilerinin (nörotransmitter) salınması, hücresel atıkların atılması.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-clipboard-list"></i> ÖZET TABLO: MADDE GEÇİŞ YOLLARININ KARŞILAŞTIRILMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Difüzyon/Ozmoz</th>
+                            <th>Aktif Taşıma</th>
+                            <th>Endositoz/Ekzositoz</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Enerji (ATP)</strong></td>
+                            <td>Gerekmez</td>
+                            <td>Gerekir</td>
+                            <td>Gerekir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yoğunluk farkı</strong></td>
+                            <td>Çok yoğundan az yoğuna</td>
+                            <td>Az yoğundan çok yoğuna</td>
+                            <td>Önemli değil</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Taşınan madde boyutu</strong></td>
+                            <td>Küçük moleküller</td>
+                            <td>Küçük moleküller/iyonlar</td>
+                            <td>Büyük moleküller/parçacıklar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Protein gereksinimi</strong></td>
+                            <td>Bazılarında var (kolaylaştırılmış)</td>
+                            <td>Mutlaka var (pompalar)</td>
+                            <td>Yok (zarın kendisi kullanılır)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canlılık şartı</strong></td>
+                            <td>Hayır</td>
+                            <td>Evet</td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hücre zarı yüzey alanı</strong></td>
+                            <td>Değişmez</td>
+                            <td>Değişmez</td>
+                            <td>Endositozda azalır, ekzositozda artar</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-lightbulb"></i> GÜNLÜK HAYATTAKİ ÖRNEKLER VE UYGULAMALAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Salatanın tuzlanınca sulanması:</strong> Hipertonik ortam (tuz) oluşur, sebzelerden su çıkar (ozmoz).</li>
+                        <li><strong>Patatesin suda şişmesi:</strong> Hipotonik ortamda (saf su) patates hücreleri su alır.</li>
+                        <li><strong>Denizde derinin buruşması:</strong> Deniz suyu hipertoniktir, deri hücreleri su kaybeder.</li>
+                        <li><strong>Fizyolojik serum (%0,9 tuz):</strong> İzotonik olduğu için hücrelere zarar vermez, damar yoluyla verilebilir.</li>
+                        <li><strong>Böbrek diyalizi:</strong> Kandaki atık maddeler difüzyonla diyaliz sıvısına geçer.</li>
+                        <li><strong>Parfüm kokusunun odaya yayılması:</strong> Gaz moleküllerinin difüzyonu.</li>
+                        <li><strong>Çay poşetinin demlenmesi:</strong> Çay moleküllerinin sıcak suda difüzyonu.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Hücre Zarından Madde Geçişi Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Ahmet, bahçesinden topladığı taze marulları yıkadıktan sonra salata yapmak istiyor. Marulları doğrayıp tuzladığında, bir süre sonra salatanın sulandığını fark ediyor. Bu durum hücre zarından madde geçişlerinden hangisi ile açıklanır ve nasıl gerçekleşir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Taze sebzelerin hücreleri canlıdır ve hücre zarı seçici geçirgendir. Tuz, sebzelerin üzerine eklenince ortamın yoğunluğu değişir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Bu durum ozmoz olayı ile açıklanır.</p>
+                        <p><strong>Açıklama:</strong> Tuz eklenince sebzelerin bulunduğu ortam hipertonik (sebze hücrelerinden daha yoğun) hale gelir. Ozmoz, suyun az yoğun ortamdan çok yoğun ortama geçişidir. Bu nedenle sebze hücrelerindeki su, hücre zarından dışarı (tuzlu ortama) doğru hareket eder. Su kaybeden sebzeler buruşur ve salata sulanır. Ayrıca tuz molekülleri de difüzyonla sebzelerin içine doğru yayılır.</p>
+                        <p><strong>Önlem:</strong> Salatayı tuzladıktan hemen sonra yemek veya tuzu yemekten hemen önce eklemek sebzelerin sulanmasını geciktirir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Denizde uzun süre yüzen Ayşe, çıktığında ellerinin ve ayaklarının buruştuğunu fark ediyor. Ancak havuzda aynı süre yüzdüğünde bu durum o kadar belirgin olmuyor. Bu farkın nedeni hücre zarından madde geçişleri açısından nasıl açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Deniz suyu tuzludur (hipertonik), havuz suyu ise genellikle tatlı su veya az tuzlu su içerir. Derimizdeki ölü hücre tabakası altındaki canlı hücreler madde geçişlerinden etkilenir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Bu durum ozmoz ve farklı çözelti türleri ile açıklanır.</p>
+                        <p><strong>Açıklama:</strong> Deniz suyu, vücut sıvılarına göre hipertoniktir (daha yoğun). Deri hücreleri hipertonik ortamda su kaybeder (ozmozla su dışarı çıkar). Su kaybeden hücreler büzüşür, bu da derinin buruşmasına neden olur. Havuz suyu ise genellikle tatlı sudur (hipotonik veya izotonik). Hipotonik ortamda hücreler su alır veya izotonik ortamda su alışverişi dengededir. Bu nedenle havuzda buruşma daha az olur veya daha geç gerçekleşir.</p>
+                        <p><strong>İlginç bilgi:</strong> Buruşma aslında sinir sisteminin bir adaptasyonudur. Islak yüzeylerde daha iyi tutunmayı sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Hasta olan Mehmet'e hastanede damar yoluyla serum takılıyor. Serumun üzerinde "%0,9 NaCl" yazıyor. Hemşire, bu serumun vücut için güvenli olduğunu söylüyor. %0,9'luk tuz çözeltisi neden vücut için güvenli kabul edilir? Bu durum hangi çözelti türüne örnektir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İnsan kan plazması belirli bir yoğunluğa sahiptir. Damar yoluyla verilen sıvıların bu yoğunluğa uygun olması gerekir, aksi takdirde kan hücreleri zarar görebilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> %0,9 NaCl (sodyum klorür) çözeltisi izotonik bir çözeltidir.</p>
+                        <p><strong>Açıklama:</strong> İnsan kan plazması yaklaşık %0,9 tuz içeriğine sahiptir. Bu nedenle %0,9'luk tuz çözeltisi kan hücreleri için izotoniktir (eş yoğunlukta). İzotonik çözeltide hücreye net su girişi veya çıkışı olmaz. Hücreler normal şekillerini ve boyutlarını korur. Eğer serum hipotonik (daha az yoğun) olsaydı, kan hücreleri su alıp şişer ve patlayabilirdi (hemoliz). Hipertonik (daha yoğun) olsaydı, hücreler su kaybedip büzüşürdü (krenasyon). Bu nedenle %0,9'luk tuz çözeltisi (fizyolojik serum) vücut için güvenlidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Bir bilim insanı laboratuvarda bitki hücrelerini inceliyor. Hücreleri önce %10'luk şeker çözeltisine, sonra saf suya koyduğunda şu gözlemleri yapıyor: Şeker çözeltisinde hücreler büzüşüyor, saf suda ise şişip gerginleşiyor. Bu değişimler hangi olaylarla açıklanır ve bu olayların isimleri nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bitki hücreleri hücre çeperine sahiptir. Bu çeper esnek değildir ve hücrenin patlamasını önler. Hücrenin su alıp vermesi çeper üzerinde basınç oluşturur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Şeker çözeltisindeki büzüşme plazmoliz, saf sudaki şişme ise turgor olayıdır.</p>
+                        <p><strong>Açıklama:</strong> %10'luk şeker çözeltisi bitki hücresi sitoplazmasından daha yoğundur (hipertonik). Bu ortamda hücre su kaybeder (ozmoz). Su kaybeden sitoplazma büzüşür ve hücre çeperinden ayrılır. Bu olaya plazmoliz denir. Saf su ise hipotonik bir ortamdır (hücreden daha az yoğun). Bu ortamda hücre su alır (ozmoz). Hücre çeperi esnek olmadığı için hücre patlamaz, bunun yerine sitoplazma çepere basınç uygular. Hücre gerginleşir. Bu duruma turgor, oluşan basınca da turgor basıncı denir. Turgor bitkilerin dik durmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Sinir sistemi çalışması için sinir hücrelerinin (nöronların) içi ve dışı arasında belirli iyon konsantrasyon farkları olması gerekir. Bu fark nasıl sağlanır? Bu süreç hangi madde taşıma mekanizmasına örnektir ve neden enerji harcanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sinir hücrelerinin dinlenme halinde içi dışına göre negatif yüklüdür. Bu potansiyel fark, sodyum (Na⁺) ve potasyum (K⁺) iyonlarının hücre içi ve dışındaki farklı konsantrasyonlarıyla sağlanır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu fark sodyum-potasyum pompası ile sağlanır ve aktif taşıma mekanizmasına örnektir.</p>
+                        <p><strong>Açıklama:</strong> Sinir hücresinin dinlenme halinde dışarıda Na⁺ iyonu fazla, içerde K⁺ iyonu fazladır. Doğal difüzyon eğilimi, Na⁺'ın içeri, K⁺'ın dışarı yayılması yönündedir. Ancak sodyum-potasyum pompası, ATP enerjisi kullanarak bu doğal eğilime karşı çalışır: 3 Na⁺ iyonunu hücre dışına, 2 K⁺ iyonunu hücre içine taşır. Bu bir aktif taşıma örneğidir çünkü:
+                        <ol>
+                            <li>Enerji (ATP) harcanır.</li>
+                            <li>İyonlar az yoğun ortamdan (düşük konsantrasyon) çok yoğun ortama (yüksek konsantrasyon) taşınır (yoğunluk farkına karşı taşıma).</li>
+                            <li>Özel protein pompaları (enzim) kullanılır.</li>
+                            <li>Sadece canlı hücrelerde gerçekleşir.</li>
+                        </ol>
+                        Bu pompa sinir impulsu iletimi için gerekli elektriksel potansiyeli oluşturur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Pankreas hücreleri ürettikleri insülin hormonunu kan dolaşımına salgılar. İnsülin büyük bir protein molekülüdür. Bu hormonun hücreden nasıl dışarı çıktığını açıklayın. Bu süreçte hücre zarının yüzey alanı nasıl değişir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Proteinler gibi büyük moleküller hücre zarındaki kanallardan veya taşıyıcılardan geçemez. Hücreler bu tür maddeleri özel kesecikler kullanarak taşır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> İnsülin hormonu ekzositoz yoluyla hücre dışına salgılanır.</p>
+                        <p><strong>Açıklama:</strong> Ekzositoz, büyük moleküllerin hücre dışına ATP harcanarak taşındığı bir süreçtir. Süreç şu şekilde işler:
+                        <ol>
+                            <li>Hücrede üretilen insülin, Golgi cisimciğinde paketlenir ve zarla çevrili bir vezikül (kesecik) oluşturulur.</li>
+                            <li>Bu vezikül sitoplazmada hücre zarına doğru hareket eder.</li>
+                            <li>Vezikül zarı ile hücre zarı birleşir (füzyon).</li>
+                            <li>Vezikülün içeriği (insülin) hücre dışına boşaltılır.</li>
+                        </ol>
+                        Vezikül zarı hücre zarına eklendiği için ekzositoz sırasında <strong>hücre zarının yüzey alanı artar</strong>. Bu süreç enerji (ATP) gerektirir ve sadece canlı hücrelerde gerçekleşir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Amip, tek hücreli bir canlıdır ve beslenmek için bakteri gibi küçük organizmaları "yer". Amipin bu beslenme şekli hangi madde taşıma mekanizmasına örnektir? Bu mekanizmanın özellikleri nelerdir ve hücre zarının yüzey alanını nasıl etkiler?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Amip, besinini hücre zarını kullanarak içeri alır. Bu işlem için hücre zarı şekil değiştirir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Amipin beslenme şekli endositozun bir çeşidi olan fagositozdur.</p>
+                        <p><strong>Açıklama:</strong> Fagositoz, katı parçacıkların hücre zarının içe doğru boğumlanmasıyla hücre içine alınmasıdır. Özellikleri:
+                        <ul>
+                            <li><strong>ATP enerjisi harcanır</strong> (sadece canlı hücrelerde).</li>
+                            <li>Taşınan madde <strong>çok büyüktür</strong> (bakteri, besin parçası).</li>
+                            <li>Yoğunluk farkı önemli değildir.</li>
+                            <li>Hücre zarı, besin etrafında bir cep oluşturur, bu cep koparak hücre içinde besin kofulunu oluşturur.</li>
+                            <li><strong>Hücre zarının yüzey alanı azalır</strong>, çünkü zarın bir kısmı besin kofulu olarak içeri girer.</li>
+                        </ul>
+                        Amip, fagositozla aldığı bakteriyi lizozom enzimleriyle sindirir. Sindirim ürünleri daha sonra difüzyon veya aktif taşımayla kofuldan sitoplazmaya geçer. Artık maddeler ise ekzositozla atılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Kola içildiğinde kandaki şeker (glikoz) seviyesi yükselir. Kandan şeker, karaciğer ve kas hücrelerine taşınır. Bu hücreler şekeri içlerine alırken bazen enerji harcar, bazen harcamaz. Bu durumu açıklayın. Hangi koşullarda enerji harcanır, hangilerinde harcanmaz?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Glikoz büyük ve polar bir moleküldür, hücre zarından doğrudan geçemez. Taşınması için özel proteinler gerekir. Kandaki glikoz konsantrasyonu hücre içinden genellikle daha yüksektir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Glikoz taşınması kolaylaştırılmış difüzyon veya aktif taşıma ile gerçekleşebilir. Hangi mekanizmanın kullanılacağı konsantrasyon farkına bağlıdır.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ol>
+                            <li><strong>Kolaylaştırılmış Difüzyon (Enerji harcanmaz):</strong> Kanda glikoz konsantrasyonu hücre içinden yüksek olduğunda (yemekten hemen sonra) glikoz, yoğunluk farkı yönünde (kandan hücreye) taşınır. Bu sırada özel taşıyıcı proteinler kullanılır ama ATP harcanmaz. Sadece proteinin şekil değiştirmesi yeterlidir.</li>
+                            <li><strong>Aktif Taşıma (Enerji harcanır):</strong> Eğer hücre içi glikoz konsantrasyonu kandan daha yüksek hale gelirse (örneğin, karaciğer hücresi glikoz depolarken), glikozun hücreye alınması için enerji gerekir. Bu durumda glikoz, az yoğun ortamdan (kandaki düşük konsantrasyon) çok yoğun ortama (hücre içindeki yüksek konsantrasyon) taşınır. Bu aktif taşımadır ve ATP harcanır.</li>
+                        </ol>
+                        Genellikle glikozun çoğu kolaylaştırılmış difüzyonla taşınır. Aktif taşıma özel durumlarda (yoğun depolama yapılan hücrelerde) görülür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Böbrekler, kandaki atık maddeleri süzerken aynı zamanda vücut için gerekli olan glikoz, amino asit ve iyonların büyük kısmını geri emer. Bu geri emilim işlemi hangi madde taşıma mekanizmalarıyla gerçekleşir? Neden bu mekanizmalar enerji harcar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Böbrek tübüllerinden kan damarlarına madde geri emilimi, çoğunlukla yoğunluk farkına karşı gerçekleşir çünkü kanda bu maddelerin konsantrasyonu zaten yüksektir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Geri emilim büyük ölçüde aktif taşıma ile gerçekleşir.</p>
+                        <p><strong>Açıklama:</strong> Böbreklerden süzülen idrarda glikoz, amino asit ve iyonlar bulunur. Ancak vücut bu maddeleri kaybetmek istemez. Bu maddelerin böbrek tübüllerinden kan damarlarına geri taşınması gerekir. Kan damarlarında bu maddelerin konsantrasyonu zaten yüksek olduğu için, taşıma az yoğun ortamdan (idrar) çok yoğun ortama (kan) doğrudur. Bu, yoğunluk farkına karşı taşımadır ve aktif taşıma gerektirir.</p>
+                        <p><strong>Neden aktif taşıma?</strong>
+                        <ul>
+                            <li>Taşıma yoğunluk farkına karşı yapılır.</li>
+                            <li>Özel protein pompaları (taşıyıcılar) kullanılır.</li>
+                            <li>ATP enerjisi harcanır.</li>
+                            <li>Sadece canlı hücrelerde (böbrek tübülü hücreleri) gerçekleşir.</li>
+                        </ul>
+                        Bu aktif taşıma mekanizması bozulursa (örneğin şeker hastalığında), glikoz idrarla atılır ve vücut enerji kaybeder.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir öğrenci laboratuvarda iki deney tüpüne eşit miktarda su koyuyor. Birinci tüpe bir damla mavi mürekkep, ikinci tüpe bir damla gliserin (yoğun, yapışkan bir sıvı) damlatıyor. Mürekkep hızla suda dağılırken, gliserin yavaş yavaş dağılıyor ve dibe çöküyor. Bu gözlemi difüzyon açısından açıklayın. Difüzyon hızını etkileyen faktörler nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Difüzyon hızı molekülün büyüklüğü, sıcaklık, ortamın akışkanlığı (viskozitesi) ve yoğunluk farkı gibi faktörlerden etkilenir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Bu gözlem, difüzyon hızının molekül büyüklüğü ve yoğunluğu ile ilişkisini gösterir.</p>
+                        <p><strong>Açıklama:</strong> Mürekkep molekülleri küçük ve sudaki pigmentlerin yoğunluğu yüksektir. Bu nedenle difüzyon (yayılma) hızlı gerçekleşir. Gliserin molekülleri ise büyük, ağır ve yoğundur. Ayrıca gliserin suda çözünür ancak daha yavaş karışır. Yoğunluğu sudan fazla olduğu için önce dibe çöker, sonra yavaş yavaş difüzyonla suya karışır.</p>
+                        <p><strong>Difüzyon Hızını Etkileyen Faktörler:</strong>
+                        <ol>
+                            <li><strong>Molekül büyüklüğü:</strong> Küçük moleküller daha hızlı yayılır (mürekkep > gliserin).</li>
+                            <li><strong>Sıcaklık:</strong> Sıcaklık arttıkça moleküllerin kinetik enerjisi artar, difüzyon hızlanır.</li>
+                            <li><strong>Yoğunluk farkı (konsantrasyon gradyanı):</strong> Fark ne kadar büyükse difüzyon o kadar hızlıdır.</li>
+                            <li><strong>Ortamın akışkanlığı (viskozite):</strong> Ortam ne kadar akışkan (viskozitesi düşük) ise difüzyon o kadar hızlıdır. Su, baldan daha akışkandır.</li>
+                            <li><strong>Yol uzunluğu:</strong> Difüzyon mesafesi arttıkça hız azalır.</li>
+                        </ol>
+                        Bu prensipler hücre zarından difüzyon için de geçerlidir. Küçük moleküller büyüklerden daha hızlı geçer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Hücre Zarından Madde Geçişleri Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden moleküller çok yoğun ortamdan az yoğun ortama kendiliğinden geçer?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Moleküller sürekli hareket halindedir (Brown hareketi). Bu hareket tamamen rastgele ve kaotiktir.</p>
+                        <p><strong>Mantık:</strong> Yoğun ortamda çok sayıda molekül bir aradadır. Rastgele hareket eden bu moleküller birbirleriyle çarpışır ve birbirlerini iter. Bu itme, moleküllerin daha az yoğun (daha boş) bölgelere doğru yayılmasına neden olur.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnekle açıklama:</strong> Kalabalık bir odada durduğunuzu düşünün. İnsanlar sürekli hareket eder ve birbirine çarpar. Bu çarpışmalar sonucunda insanlar doğal olarak odanın daha boş köşelerine doğru yayılır. Aynı mantık moleküller için de geçerlidir. Bu nedenle parfüm kokusu odanın bir köşesinden sıkılsa bile zamanla tüm odaya yayılır.</p>
+                            <p><strong>Biyolojik önemi:</strong> Bu sayede hücre, dış ortamdaki oksijeni (yoğun ortam) hücre içine (az yoğun ortam) enerji harcamadan alabilir. Aynı şekilde hücre içinde üretilen karbondioksit (yoğun) de dışarı (az yoğun) atılabilir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Difüzyon ve ozmozda neden enerji (ATP) harcanmaz?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Doğada her sistem minimum enerji ile maksimum düzensizliğe (entropi) ulaşmaya eğilimlidir.</p>
+                        <p><strong>Mantık yürütme:</strong> Difüzyon ve ozmoz, moleküllerin doğal hareket eğiliminin bir sonucudur. Enerji harcanmaz çünkü sistem zaten bu yönde ilerlemek "istemektedir".</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Analoji:</strong> Bir topu yokuş aşağı bıraktığınızda, top aşağı yuvarlanırken enerji harcamazsınız; yer çekimi onu aşağı çeker. Difüzyonda da yoğunluk farkı (konsantrasyon gradyanı) molekülleri "aşağı" (az yoğun tarafa) doğru iter. Bu bir "aşağı yuvarlanma" işlemidir.</p>
+                            <p><strong>Aktif taşıma ile karşılaştırma:</strong> Aktif taşımada ise topu yokuş yukarı itmek gibidir. Doğal eğilime (aşağı yuvarlanmaya) karşı geldiğiniz için enerji harcarsınız. Yani aktif taşımada moleküller "yokuş yukarı" (az yoğundan çok yoğuna) itilir, bu yüzden ATP enerjisi gerekir.</p>
+                            <p><strong>Sonuç:</strong> Pasif taşıma "bedava" bir süreçtir; aktif taşıma "paralı" bir süreçtir. Hücre enerjisini aktif taşımaya saklar, pasif taşımada harcamaz.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Hücre zarı neden seçici geçirgendir? Bu özellik olmasaydı ne olurdu?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Yapısal sebep:</strong> Hücre zarı fosfolipit çift tabakasından oluşur. Fosfolipitlerin "baş" kısmı suyu sever (hidrofilik), "kuyruk" kısmı suyu sevmez (hidrofobik).</p>
+                        <p><strong>Mantık:</strong> Bu yapı, suda çözünen ve yüklü maddelerin (iyonlar, glikoz) doğrudan geçişini engeller. Sadece küçük, yüksüz ve yağda çözünen maddeler (O₂, CO₂, A,D,E,K vitaminleri) kolayca geçebilir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Neden gerekli?</strong> Seçici geçirgenlik olmasaydı:
+                            <ul>
+                                <li><strong>Homeostaz bozulurdu:</strong> Hücre içi ve dışındaki madde dengesi korunamazdı. İstenmeyen maddeler içeri girer, gerekli maddeler dışarı çıkardı.</li>
+                                <li><strong>Enerji kaybı olurdu:</strong> Hücre, sürekli istenmeyen maddeleri dışarı atmak veya kaybolan maddeleri içeri almak için çok fazla enerji harcardı.</li>
+                                <li><strong>Hücre ölürdü:</strong> Hücrenin elektriksel potansiyeli (iyon dengesi) korunamaz, sinyal iletimi durur, hücre fonksiyonlarını kaybederdi.</li>
+                            </ul>
+                            <p><strong>Sonuç:</strong> Seçici geçirgenlik, hücrenin "güvenlik kapısı" gibidir. Kimin gireceğine, kimin çıkacağına karar verir ve iç ortamın kararlılığını (homeostaz) sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Aktif taşımada neden protein pompası kullanılır? Normal taşıyıcı protein yetmez mi?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel fark:</strong> Normal taşıyıcı proteinler (kolaylaştırılmış difüzyonda) sadece şekil değiştirir; pompalar ise hem şekil değiştirir hem de ATP enerjisini kimyasal reaksiyona çevirir.</p>
+                        <p><strong>Mantık:</strong> Aktif taşıma, yoğunluk farkına karşı yapıldığı için ek bir "itme gücü" gerektirir. Bu güç ATP'nin enerjisidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Pompanın çalışma prensibi:</strong>
+                            <ol>
+                                <li>Taşınacak madde pompanın bir bölgesine bağlanır.</li>
+                                <li>Pompa, ATP'den bir fosfat grubu (Pi) alır ve enerji yüklenir (fosforlanır).</li>
+                                <li>Bu enerji, pompanın şeklini değiştirerek maddeyi diğer tarafa "iter".</li>
+                                <li>Fosfat grubu ayrılır, pompa eski şekline döner ve yeni bir madde molekülü bağlanır.</li>
+                            </ol>
+                            <p><strong>Analoji:</strong> Bir kapıyı açmak için bazen sadece itmeniz yeterlidir (kolaylaştırılmış difüzyon). Ama bazen kapı çok sıkıdır ve kilidini açmanız gerekir (aktif taşıma). ATP, bu kilidi açan anahtardır. Pompa ise hem kilidi açan hem de kapıyı iten mekanizmadır.</p>
+                            <p><strong>Örnek:</strong> Sodyum-potasyum pompası, her döngüde 3 Na⁺ dışarı, 2 K⁺ içeri taşır. Bu "ters yönde" taşıma için ATP enerjisi şarttır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Hücreler neden bazen enerji harcayıp endositoz/ekzositoz yapar? Neden küçültüp difüzyonla taşımaz?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Boyut sınırlaması:</strong> Hücre zarındaki kanallar ve taşıyıcı proteinler belirli bir boyutun üzerindeki molekülleri taşıyamaz.</p>
+                        <p><strong>Mantık:</strong> Büyük moleküller (proteinler, polisakkaritler) veya büyük parçacıklar (bakteriler) zarın porlarından geçemez. Bu durumda hücrenin iki seçeneği vardır: Ya bu maddelerle hiç ilgilenmeyecek (ki bu beslenme veya atıklar için mümkün değil) ya da zarın kendisini kullanarak taşıyacak.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Endositozun mantığı:</strong> Hücre zarı esnektir. Büyük bir besin parçasıyla karşılaşınca, zar onu içine alacak şekilde bükülür (boğumlanır). Bu, bir insanın ağzını açıp büyük bir lokmayı alması gibidir. Lokma çiğnenmeden (parçalanmadan) yutulur. İşte bu "bütün halinde alma" işlemi endositozdur.</p>
+                            <p><strong>Ekzositozun mantığı:</strong> Hücre içinde üretilen büyük moleküller (hormonlar, enzimler) paketlenir (vezikül). Bu paket, hücre zarına gidip onunla birleşir ve içeriği dışarı boşaltılır. Bu, bir postacının mektubu posta kutusuna atması gibidir. Mektup bütün halinde dışarı çıkar.</p>
+                            <p><strong>Neden enerji harcanır?</strong> Zarın bükülmesi, keseciklerin hareket ettirilmesi ve zar füzyonu (birleşme) gibi işlemler için kasılmaya benzer kasılmalar gerekir. Bu da ATP enerjisi demektir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Ozmozda su neden hep az yoğundan çok yoğuna geçer? Yoğunluk nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Yoğunluk kavramı:</strong> Burada yoğunluk, çözünen madde (tuz, şeker vb.) konsantrasyonudur. Su miktarı değil!</p>
+                        <p><strong>Mantık:</strong> Ozmoz olayında asıl hareket eden <strong>su molekülleridir</strong>. Su molekülleri, seçici geçirgen zardan geçebilirken, çözünen madde molekülleri (tuz, şeker) geçemez veya daha zor geçer.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnekle açıklama:</strong> Bir zarın bir tarafında %10 şeker, diğer tarafında %5 şeker çözeltisi olsun. Zar sadece suyun geçişine izin versin. %10 şekerli taraf daha yoğundur (daha fazla çözünen madde var). Bu tarafta su molekülü başına düşen şeker molekülü fazladır, yani su molekülleri "seyrek" dağılmıştır. %5'lik tarafta ise su molekülleri daha "sık" paketlenmiştir.</p>
+                            <p><strong>Suyun hareketi:</strong> Su molekülleri her iki tarafta da rastgele hareket eder. Ancak daha sık paketlenmiş oldukları %5'lik taraftan, daha seyrek oldukları %10'luk tarafa doğru geçiş yapma olasılığı daha yüksektir. Çünkü %10'luk tarafta onları "karşılayacak" daha az su molekülü vardır (yer vardır).</p>
+                            <p><strong>Sonuç:</strong> Su, çözünen madde konsantrasyonunun az olduğu yerden (az yoğun) çok olduğu yere (çok yoğun) doğru hareket eder. Bu, konsantrasyonları dengelemek (eşitlemek) içindir.</p>
+                            <p><strong>Günlük örnek:</strong> Salataya tuz dökülünce, tuzlu ortam (hipertonik) oluşur. Sebze hücrelerindeki su (hipotonik) bu tuzlu ortama doğru hareket eder. Salata sulanır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Bitki hücresi turgor durumundayken neden patlamaz da hayvan hücresi patlar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel yapı farkı:</strong> Bitki hücrelerinde hücre çeperi (duvarı) vardır; hayvan hücrelerinde yoktur.</p>
+                        <p><strong>Mantık:</strong> Hücre çeperi selüloz gibi sert, esnek olmayan bir yapıdır. Hücre zarının dışını sarar ve ona destek sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Bitki hücresi hipotonik ortamda (örneğin saf suda):</strong>
+                            <ol>
+                                <li>Hücre su alır (ozmoz).</li>
+                                <li>Sitoplazma şişmeye başlar.</li>
+                                <li>Hücre zarı, hücre çeperine doğru itilir.</li>
+                                <li>Çeper esnek olmadığı için genişleyemez ve içeriden gelen basınca (turgor basıncı) karşı koyar.</li>
+                                <li>Sonuç: Hücre çok gergin hale gelir ama patlamaz. Bu turgor durumudur ve bitkinin dik durmasını sağlar.</li>
+                            </ol>
+                            <p><strong>Hayvan hücresi hipotonik ortamda:</strong>
+                            <ol>
+                                <li>Hücre su alır (ozmoz).</li>
+                                <li>Sitoplazma şişer.</li>
+                                <li>Hücre zarı esnektir ve genişler.</li>
+                                <li>Yeterince su alınırsa zarın esneme sınırı aşılır ve hücre patlar (hemoliz).</li>
+                            </ol>
+                            <p><strong>Analoji:</strong> Bitki hücresi, lastik bir balonun (zar) kağıttan bir kutunun (çeper) içine konması gibidir. Balon şişse de kutu onu patlamaktan korur. Hayvan hücresi ise sadece lastik balondur; çok şişirilirse patlar.</p>
+                            <p><strong>İnsan vücudunda:</strong> Kırmızı kan hücreleri (alyuvarlar) hayvan hücresidir. Damardan saf su verilirse, hipotonik ortamda su alıp patlarlar. Bu nedenle damar yoluyla sadece izotonik sıvılar (%0,9 tuz) verilir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden bazı maddeler kolaylaştırılmış difüzyonla, bazıları aktif taşımayla taşınır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Kilit faktör:</strong> Hücrenin o maddeye ne zaman, ne kadar ve hangi yönde ihtiyacı olduğu.</p>
+                        <p><strong>Mantık:</strong> Hücre, enerji tasarrufu yapmak ister. Eğer bir madde yoğunluk farkı yönünde (yüksekten düşüğe) taşınabiliyorsa, enerji harcamaya gerek yoktur (kolaylaştırılmış difüzyon). Ancak hücrenin o maddeyi yoğunluk farkına rağmen (düşükten yükseğe) alması veya atması gerekiyorsa, enerji harcamak zorundadır (aktif taşıma).</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnek 1 - Glikoz (Şeker):</strong>
+                            <ul>
+                                <li><strong>Yemekten sonra:</strong> Kanda glikoz yüksek, hücrede düşüktür. Glikoz yoğunluk farkı yönünde (kandan hücreye) taşınır → Kolaylaştırılmış difüzyon (enerji yok).</li>
+                                <li><strong>Açken veya karaciğer depolarken:</strong> Hücre içi glikoz kandan daha yüksek olabilir. Glikozun hücreye girmesi için yoğunluk farkına karşı taşınması gerekir → Aktif taşıma (enerji var).</li>
+                            </ul>
+                            <p><strong>Örnek 2 - İyonlar (Na⁺, K⁺):</strong>
+                            <ul>
+                                <li>Sinir hücresinde, Na⁺ dışarıda fazla, K⁺ içeride fazla olmalıdır. Bu, doğal difüzyonun tam tersidir (Na⁺ içeri, K⁺ dışarı yayılma eğilimindedir). Bu yapıyı korumak için sürekli olarak Na⁺'ı dışarı, K⁺'ı içeri itmek gerekir → Aktif taşıma (Sodyum-potasyum pompası).</li>
+                            </ul>
+                            <p><strong>Kural:</strong> Hücre "bedava" taşıma (difüzyon) fırsatı varsa onu kullanır. Ama hayati bir işlem için "zorunlu" ise enerji harcar (aktif taşıma). Aktif taşıma daha kontrollü ve "pahalı" bir yöntemdir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücrede Madde Alışverişi Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/9h%C3%BCcredemaddealisverisi.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 6) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Hücre Zarından Madde Geçişleri Sorusu
+        const csvData = `Hücre zarının temel özelliği nedir?,"Seçici geçirgen olmasıdır. Bazı maddelerin geçişine izin verirken bazılarını engeller."`
+        + `\nDifüzyon nedir?,"Moleküllerin çok yoğun ortamdan az yoğun ortama doğru yayılmasıdır. Enerji (ATP) harcanmaz."`
+        + `\nOzmoz nedir?,"Suyun seçici geçirgen bir zardan, az yoğun ortamdan çok yoğun ortama doğru geçişidir. Özel bir difüzyon çeşididir."`
+        + `\nPasif taşıma nedir?,"Maddelerin enerji harcanmadan, yoğunluk farkı yönünde (çok yoğundan az yoğuna) taşınmasıdır. Difüzyon ve ozmoz pasif taşımadır."`
+        + `\nAktif taşıma nedir?,"Maddelerin enerji (ATP) harcanarak, yoğunluk farkına karşı (az yoğundan çok yoğuna) taşınmasıdır. Sadece canlı hücrelerde gerçekleşir."`
+        + `\nKolaylaştırılmış difüzyon nedir?,"Büyük veya yüklü moleküllerin taşıyıcı proteinler yardımıyla, enerji harcanmadan, yoğunluk farkı yönünde taşınmasıdır."`
+        + `\nEndositoz nedir?,"Büyük moleküllerin hücre zarının içe doğru boğumlanmasıyla hücre içine alınmasıdır. Enerji harcanır, sadece canlı hücrelerde olur."`
+        + `\nEkzositoz nedir?,"Büyük moleküllerin veziküllerle hücre dışına atılmasıdır. Enerji harcanır, sadece canlı hücrelerde olur. Hormon salgılanması örnektir."`
+        + `\nFagositoz nedir?,"Katı parçacıkların hücre içine alınmasıdır. Endositozun bir çeşididir. Amipin beslenmesi ve akyuvarların bakteri yutması örnektir."`
+        + `\nPinositoz nedir?,"Sıvı damlacıklarının hücre içine alınmasıdır. Endositozun bir çeşididir. Hücrenin sıvı besin alımı örnektir."`
+        + `\nİzotonik çözelti nedir?,"Hücre sitoplazmasıyla eş yoğunluktaki çözeltidir. Hücreye net su girişi veya çıkışı olmaz. %0,9 tuz çözeltisi (fizyolojik serum) örnektir."`
+        + `\nHipertonik çözelti nedir?,"Hücre sitoplazmasından daha yoğun çözeltidir. Hücre su kaybeder (ozmoz). Hayvan hücresi büzüşür, bitki hücresi plazmolize uğrar."`
+        + `\nHipotonik çözelti nedir?,"Hücre sitoplazmasından daha az yoğun çözeltidir. Hücre su alır (ozmoz). Hayvan hücresi şişip patlayabilir, bitki hücresi turgor durumuna geçer."`
+        + `\nPlazmoliz nedir?,"Bitki hücresinin hipertonik ortamda su kaybedip sitoplazmasının büzüşmesi, hücre çeperinden ayrılmasıdır."`
+        + `\nTurgor nedir?,"Bitki hücresinin hipotonik ortamda su alıp şişmesi, sitoplazmanın hücre çeperine basınç yapmasıdır. Bitkinin dik durmasını sağlar."`
+        + `\nDeplazmoliz nedir?,"Plazmolize uğramış bir bitki hücresinin hipotonik ortamda su alarak eski haline dönmesidir."`
+        + `\nSodyum-potasyum pompası nedir?,"Aktif taşımaya örnektir. Sinir hücresinde 3 Na⁺ iyonu dışarı, 2 K⁺ iyonu içeri ATP harcanarak taşınır. Sinir impulsu için önemlidir."`
+        + `\nHücre zarının seçici geçirgenliğini sağlayan yapı nedir?,"Çift katlı fosfolipit tabakası ve içine gömülü proteinler. Küçük/yüksüz moleküller geçer, büyük/yüklüler geçemez veya proteinle geçer."`
+        + `\nDifüzyon hızını etkileyen faktörler nelerdir?,"Sıcaklık (artarsa hızlanır), molekül büyüklüğü (küçükse hızlı), yoğunluk farkı (fazlaysa hızlı), ortamın akışkanlığı (azsa yavaş)."`
+        + `\nOzmotik basınç nedir?,"Çözeltinin su çekme kuvvetidir. Çözünen madde miktarı arttıkça ozmotik basınç artar."`
+        + `\nDifüzyon ve ozmoz arasındaki temel fark nedir?,"Difüzyonda her türlü molekül hareket eder, ozmozda sadece su molekülleri hareket eder."`
+        + `\nAktif ve pasif taşıma arasındaki temel fark nedir?,"Aktif taşımada ATP harcanır ve yoğunluk farkına karşı taşınır; pasif taşımada ATP harcanmaz ve yoğunluk farkı yönünde taşınır."`
+        + `\nHücre zarı yüzey alanı endositoz ve ekzositozda nasıl değişir?,"Endositozda azalır (zar içeri girer), ekzositozda artar (vezikül zarı eklenir)."`
+        + `\nSalatanın tuzlanınca sulanmasının nedeni nedir?,"Tuz hipertonik ortam oluşturur, sebze hücrelerinden su ozmozla dışarı çıkar."`
+        + `\nDenizde derimizin buruşmasının nedeni nedir?,"Deniz suyu hipertoniktir, deri hücreleri su kaybeder (ozmoz) ve büzüşür."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Hücre zarının en önemli özelliği nedir?",
+                options: [
+                    "Tam geçirgen olması",
+                    "Seçici geçirgen olması",
+                    "Kalın ve sert olması",
+                    "Renkli olması",
+                    "Esnek olmaması"
+                ],
+                correct: 1,
+                explanation: "Hücre zarının en önemli özelliği seçici geçirgen olmasıdır. Bu sayede bazı maddelerin geçişine izin verirken bazılarını engelleyerek hücrenin iç dengesini (homeostaz) korur."
+            },
+            {
+                question: "Difüzyon olayında moleküller nasıl bir yol izler?",
+                options: [
+                    "Az yoğundan çok yoğuna, ATP harcanır",
+                    "Çok yoğundan az yoğuna, ATP harcanmaz",
+                    "Az yoğundan çok yoğuna, ATP harcanmaz",
+                    "Çok yoğundan az yoğuna, ATP harcanır",
+                    "Rastgele yönde, ATP harcanır"
+                ],
+                correct: 1,
+                explanation: "Difüzyonda moleküller daima çok yoğun ortamdan az yoğun ortama doğru (yoğunluk farkı yönünde) hareket eder. Bu doğal bir yayılma olduğu için ATP harcanmaz."
+            },
+            {
+                question: "Ozmoz olayında aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Tüm moleküller hareket eder",
+                    "Sadece tuz molekülleri hareket eder",
+                    "Sadece şeker molekülleri hareket eder",
+                    "Sadece su molekülleri hareket eder",
+                    "Hiçbir molekül hareket etmez"
+                ],
+                correct: 3,
+                explanation: "Ozmoz, suyun seçici geçirgen bir zardan, az yoğun ortamdan çok yoğun ortama doğru geçişidir. Özel bir difüzyon çeşididir ve sadece su molekülleri hareket eder."
+            },
+            {
+                question: "Pasif taşıma ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "ATP harcanmaz",
+                    "Difüzyon ve ozmoz pasif taşımadır",
+                    "Yoğunluk farkı yönünde gerçekleşir",
+                    "Sadece canlı hücrelerde görülür",
+                    "Küçük moleküller taşınır"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Pasif taşıma (difüzyon ve ozmoz) canlı ve cansız ortamlarda gerçekleşebilir. Aktif taşıma, endositoz ve ekzositoz ise sadece canlı hücrelerde gerçekleşir."
+            },
+            {
+                question: "Aktif taşımanın en önemli özelliği nedir?",
+                options: [
+                    "ATP harcanmaz",
+                    "Yoğunluk farkı yönünde gerçekleşir",
+                    "ATP harcanır ve yoğunluk farkına karşı gerçekleşir",
+                    "Sadece cansız hücrelerde görülür",
+                    "Sadece su taşınır"
+                ],
+                correct: 2,
+                explanation: "Aktif taşımanın en önemli özelliği ATP enerjisi harcanması ve maddelerin az yoğun ortamdan çok yoğun ortama (yoğunluk farkına karşı) taşınmasıdır."
+            },
+            {
+                question: "Kolaylaştırılmış difüzyon hangi moleküllerin taşınmasında görülür?",
+                options: [
+                    "Çok küçük ve yüksüz moleküller",
+                    "Çok büyük ve yüklü moleküller",
+                    "Sadece su molekülleri",
+                    "Sadece oksijen molekülleri",
+                    "Sadece karbondioksit molekülleri"
+                ],
+                correct: 1,
+                explanation: "Kolaylaştırılmış difüzyon, büyük veya yüklü moleküllerin (glikoz, amino asitler, iyonlar) taşıyıcı proteinler yardımıyla, enerji harcanmadan, yoğunluk farkı yönünde taşınmasıdır."
+            },
+            {
+                question: "Endositoz ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "ATP harcanmaz",
+                    "Sadece küçük moleküller taşınır",
+                    "Hücre zarı yüzey alanı artar",
+                    "Büyük moleküller hücre içine alınır",
+                    "Sadece cansız hücrelerde görülür"
+                ],
+                correct: 3,
+                explanation: "Endositoz, büyük moleküllerin hücre zarının içe doğru boğumlanmasıyla hücre içine alınmasıdır. ATP harcanır, sadece canlı hücrelerde gerçekleşir ve hücre zarı yüzey alanı azalır."
+            },
+            {
+                question: "Ekzositoz hangi durumda gerçekleşir?",
+                options: [
+                    "Hücre su kaybettiğinde",
+                    "Büyük moleküller hücre dışına atıldığında",
+                    "Küçük moleküller hücre içine alındığında",
+                    "Difüzyon hızlandığında",
+                    "Ozmoz durduğunda"
+                ],
+                correct: 1,
+                explanation: "Ekzositoz, büyük moleküllerin (hormonlar, enzimler, atıklar) veziküllerle hücre dışına atılmasıdır. ATP harcanır, sadece canlı hücrelerde gerçekleşir ve hücre zarı yüzey alanı artar."
+            },
+            {
+                question: "Fagositoz nedir?",
+                options: [
+                    "Sıvı damlacıklarının alınması",
+                    "Katı parçacıkların alınması",
+                    "Gaz moleküllerinin alınması",
+                    "Suyun alınması",
+                    "İyonların alınması"
+                ],
+                correct: 1,
+                explanation: "Fagositoz, katı parçacıkların (bakteri, besin parçası) hücre içine alınmasıdır. Endositozun bir çeşididir. Amipin beslenmesi ve akyuvarların bakteri yutması örnektir."
+            },
+            {
+                question: "İzotonik çözelti nedir?",
+                options: [
+                    "Hücreden daha yoğun çözelti",
+                    "Hücreden daha az yoğun çözelti",
+                    "Hücreyle eş yoğunluktaki çözelti",
+                    "Hiç çözünen içermeyen çözelti",
+                    "Çok yoğun çözelti"
+                ],
+                correct: 2,
+                explanation: "İzotonik çözelti, hücre sitoplazmasıyla eş yoğunluktaki çözeltidir. Bu ortamda hücreye net su girişi veya çıkışı olmaz. %0,9 tuz çözeltisi (fizyolojik serum) insan hücreleri için izotoniktir."
+            },
+            {
+                question: "Hipertonik çözelti içine konan bir hücrede ne olur?",
+                options: [
+                    "Hücre su alır ve şişer",
+                    "Hücre su kaybeder ve büzüşür",
+                    "Hücrenin şekli değişmez",
+                    "Hücre patlar",
+                    "Hücre bölünür"
+                ],
+                correct: 1,
+                explanation: "Hipertonik çözelti, hücre sitoplazmasından daha yoğundur. Bu ortamda hücre su kaybeder (ozmoz). Hayvan hücresi büzüşür (krenasyon), bitki hücresi plazmolize uğrar (sitoplazma büzüşür)."
+            },
+            {
+                question: "Hipotonik çözelti içine konan bir hayvan hücresinde ne olur?",
+                options: [
+                    "Hücre su kaybeder ve büzüşür",
+                    "Hücre su alır ve şişer, patlayabilir",
+                    "Hücrenin şekli değişmez",
+                    "Hücre bölünür",
+                    "Hücre ölür ama şekli değişmez"
+                ],
+                correct: 1,
+                explanation: "Hipotonik çözelti, hücre sitoplazmasından daha az yoğundur. Bu ortamda hücre su alır (ozmoz). Hayvan hücresi şişer ve patlayabilir (hemoliz). Bitki hücresi ise turgor durumuna geçer."
+            },
+            {
+                question: "Plazmoliz nedir?",
+                options: [
+                    "Bitki hücresinin su alıp şişmesi",
+                    "Hayvan hücresinin su alıp patlaması",
+                    "Bitki hücresinin su kaybedip büzüşmesi",
+                    "Hayvan hücresinin su kaybedip büzüşmesi",
+                    "Hücrenin bölünmesi"
+                ],
+                correct: 2,
+                explanation: "Plazmoliz, bitki hücresinin hipertonik ortamda su kaybedip sitoplazmasının büzüşmesi, hücre çeperinden ayrılmasıdır. Bu durumda bitki solgun görünür."
+            },
+            {
+                question: "Turgor nedir?",
+                options: [
+                    "Bitki hücresinin su kaybedip büzüşmesi",
+                    "Bitki hücresinin su alıp şişmesi",
+                    "Hayvan hücresinin patlaması",
+                    "Hücrenin bölünmesi",
+                    "Difüzyonun durması"
+                ],
+                correct: 1,
+                explanation: "Turgor, bitki hücresinin hipotonik ortamda su alıp şişmesi, sitoplazmanın hücre çeperine basınç yapmasıdır. Turgor basıncı bitkinin dik durmasını ve yaprakların canlı görünmesini sağlar."
+            },
+            {
+                question: "Sodyum-potasyum pompası hangi taşıma çeşidine örnektir?",
+                options: [
+                    "Difüzyon",
+                    "Ozmoz",
+                    "Kolaylaştırılmış difüzyon",
+                    "Aktif taşıma",
+                    "Endositoz"
+                ],
+                correct: 3,
+                explanation: "Sodyum-potasyum pompası aktif taşımaya örnektir. Sinir hücresinde 3 Na⁺ iyonu dışarı, 2 K⁺ iyonu içeri ATP harcanarak taşınır. Bu pompa sinir impulsu iletimi için gereklidir."
+            },
+            {
+                question: "Hücre zarının seçici geçirgenliğini sağlayan temel yapı nedir?",
+                options: [
+                    "Proteinler",
+                    "Karbohidratlar",
+                    "Çift katlı fosfolipit tabakası",
+                    "DNA",
+                    "Ribozomlar"
+                ],
+                correct: 2,
+                explanation: "Hücre zarının seçici geçirgenliğini sağlayan temel yapı çift katlı fosfolipit tabakasıdır. Fosfolipitlerin hidrofobik (suyu sevmeyen) kuyrukları, suda çözünen maddelerin geçişini sınırlar."
+            },
+            {
+                question: "Difüzyon hızını etkileyen faktörlerden biri değildir?",
+                options: [
+                    "Sıcaklık",
+                    "Molekül büyüklüğü",
+                    "Yoğunluk farkı",
+                    "Hücrenin rengi",
+                    "Ortamın akışkanlığı"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Difüzyon hızını etkileyen faktörler: sıcaklık (artarsa hızlanır), molekül büyüklüğü (küçükse hızlı), yoğunluk farkı (fazlaysa hızlı), ortamın akışkanlığı (azsa yavaş). Hücrenin renginin difüzyon hızıyla ilişkisi yoktur."
+            },
+            {
+                question: "Ozmotik basınç nedir?",
+                options: [
+                    "Suyun hareket hızı",
+                    "Çözeltinin su çekme kuvveti",
+                    "Hücrenin patlama basıncı",
+                    "Difüzyon hızı",
+                    "Aktif taşıma gücü"
+                ],
+                correct: 1,
+                explanation: "Ozmotik basınç, çözeltinin su çekme kuvveti veya potansiyelidir. Çözünen madde miktarı arttıkça ozmotik basınç artar. Ozmoz olayında su, ozmotik basıncı yüksek olan tarafa doğru hareket eder."
+            },
+            {
+                question: "Difüzyon ve ozmoz arasındaki temel fark nedir?",
+                options: [
+                    "Difüzyonda ATP harcanır, ozmozda harcanmaz",
+                    "Ozmozda ATP harcanır, difüzyonda harcanmaz",
+                    "Difüzyonda her molekül, ozmozda sadece su hareket eder",
+                    "Ozmozda her molekül, difüzyonda sadece su hareket eder",
+                    "Aralarında fark yoktur"
+                ],
+                correct: 2,
+                explanation: "Difüzyon ve ozmoz arasındaki temel fark: Difüzyonda her türlü molekül (O₂, CO₂, tuz, şeker vb.) hareket eder. Ozmozda ise sadece su molekülleri hareket eder. Ozmoz aslında suyun difüzyonudur."
+            },
+            {
+                question: "Aktif ve pasif taşıma arasındaki temel fark nedir?",
+                options: [
+                    "Aktif taşımada ATP harcanır, pasifte harcanmaz",
+                    "Pasif taşımada ATP harcanır, aktifte harcanmaz",
+                    "Aktif taşımada moleküller küçüktür",
+                    "Pasif taşımada moleküller büyüktür",
+                    "Aralarında fark yoktur"
+                ],
+                correct: 0,
+                explanation: "Aktif ve pasif taşıma arasındaki temel fark: Aktif taşımada ATP harcanır ve maddeler yoğunluk farkına karşı (az yoğundan çok yoğuna) taşınır. Pasif taşımada ATP harcanmaz ve maddeler yoğunluk farkı yönünde (çok yoğundan az yoğuna) taşınır."
+            },
+            {
+                question: "Endositoz ve ekzositoz sırasında hücre zarı yüzey alanı nasıl değişir?",
+                options: [
+                    "Endositozda artar, ekzositozda azalır",
+                    "Endositozda azalır, ekzositozda artar",
+                    "Her ikisinde de artar",
+                    "Her ikisinde de azalır",
+                    "Değişmez"
+                ],
+                correct: 1,
+                explanation: "Endositoz sırasında hücre zarının bir kısmı içeri doğru boğumlanır ve besin kofulu oluşur, bu nedenle hücre zarı yüzey alanı azalır. Ekzositoz sırasında ise vezikül zarı hücre zarına eklenir, bu nedenle hücre zarı yüzey alanı artar."
+            },
+            {
+                question: "Salataya tuz dökülünce neden sulanır?",
+                options: [
+                    "Sebzelerden su difüzyonla dışarı çıkar",
+                    "Sebzelerden su ozmozla dışarı çıkar",
+                    "Tuz sebzelerden suyu emer",
+                    "Sebzeler su üretir",
+                    "Tuz erirken su açığa çıkar"
+                ],
+                correct: 1,
+                explanation: "Tuz eklenince sebzelerin bulunduğu ortam hipertonik hale gelir. Ozmozla, sebze hücrelerindeki su (az yoğun) tuzlu ortama (çok yoğun) doğru hareket eder. Bu nedenle salata sulanır."
+            },
+            {
+                question: "Denizde uzun süre kalınca deri neden buruşur?",
+                options: [
+                    "Deri su kaybeder (ozmoz)",
+                    "Deri su alır",
+                    "Deri yağlanır",
+                    "Deri güneşten etkilenir",
+                    "Deri soğuktan etkilenir"
+                ],
+                correct: 0,
+                explanation: "Deniz suyu hipertoniktir (vücut sıvılarından daha yoğun). Deri hücreleri bu ortamda su kaybeder (ozmoz). Su kaybeden hücreler büzüşür, bu da derinin buruşmasına neden olur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi aktif taşımaya örnek değildir?",
+                options: [
+                    "Sodyum-potasyum pompası",
+                    "Bağırsaktan glikoz emilimi (bazen)",
+                    "Böbrekten yararlı maddelerin geri emilimi",
+                    "Oksijenin akciğerlerden kana geçişi",
+                    "Mide asidi (HCl) salgılanması"
+                ],
+                correct: 3,
+                explanation: "Oksijenin akciğerlerden kana geçişi difüzyonla (pasif taşıma) gerçekleşir. Diğer seçenekler aktif taşımaya örnektir çünkü ATP harcanır ve/veya yoğunluk farkına karşı taşıma vardır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Hücre zarından madde geçişlerini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

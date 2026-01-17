@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hücre ve Organeller Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #2ecc71;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #9b59b6;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #5c6bc0;
+        }
+
+        .context-scenario i {
+            color: #5c6bc0;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #e74c3c;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #9b59b6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #9b59b6;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #9b59b6;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-microscope"></i> Hücre ve Organeller Öğrenme Portalı</h1>
+            <div class="subtitle">5 farklı öğrenme yöntemi ile hücre yapısını, organelleri ve görevlerini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/5</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini sohbet havasında dinleyerek bilgilerinizi pekiştirin ve öğrenin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile hücre ve organellerin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Hücre yapısını görsel olarak öğrenin ve organeller arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile hücre ve organellerle ilgili sorular çözün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile hücre ve organeller hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Hücre ve organellerin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Hücre ve Organeller Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Hücre ve Organeller Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücre Tipleri ve Temel Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Prokaryot Hücre:</strong> Çekirdek zarı yok, zarlı organel yok, bakteri ve arke domainlerinde bulunur</li>
+                        <li><strong>Ökaryot Hücre:</strong> Çekirdek zarı var, zarlı organeller var, protistler, mantarlar, bitkiler, hayvanlarda bulunur</li>
+                        <li><strong>Ortak Özellikler:</strong> Hücre zarı, sitoplazma, DNA, ribozom</li>
+                        <li><strong>Temel Farklar:</strong> DNA konumu, organel varlığı, boyut farkı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücre Zarı ve Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapı:</strong> Akıcı-mozaik zar modeli, çift katlı fosfolipit, proteinler, kolesterol</li>
+                        <li><strong>Özellik:</strong> Seçici geçirgen, hücrenin dış sınırı</li>
+                        <li><strong>İşlevler:</strong> Madde geçişi kontrolü, hücre tanıma, haberleşme</li>
+                        <li><strong>Hücre Duvarı:</strong> Bazı canlılarda hücre zarının dışında ek koruyucu yapı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sitoplazma ve Hücre İskeleti</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sitoplazma:</strong> Hücre zarı içindeki sıvı ortam, kimyasal reaksiyonların gerçekleştiği bölge</li>
+                        <li><strong>Yapısı:</strong> Su, iyonlar, küçük moleküller, makromoleküller</li>
+                        <li><strong>İşlevleri:</strong> Hücre şeklini koruma, madde taşınımı, yapıları sabitleme</li>
+                        <li><strong>Sentrozom:</strong> Hayvan hücrelerinde mikrotübül üretim merkezi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Çekirdek ve Genetik Materyal</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yapı:</strong> Çekirdek zarfı (çift katlı zar), nükleoplazma, çekirdekçik, kromatin</li>
+                        <li><strong>İşlev:</strong> Genetik materyali (DNA) saklama, hücre faaliyetlerini yönetme</li>
+                        <li><strong>Nüklear Por:</strong> Çekirdek- sitoplazma arası madde alışverişini sağlayan geçitler</li>
+                        <li><strong>Ökaryotlarda:</strong> DNA çekirdek içinde, Prokaryotlarda: DNA sitoplazmada (nükleoid)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Protein Sentezi ve Taşınması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ribozom:</strong> Protein sentezinden sorumlu (zarsız organel), hem prokaryot hem ökaryotta var</li>
+                        <li><strong>Endoplazmik Retikulum (ER):</strong> Granüllü ER (protein sentezi), Düz ER (lipit sentezi, detoks)</li>
+                        <li><strong>Golgi Aygıtı:</strong> ER'de üretilen maddeleri işleme, paketleme, dağıtma</li>
+                        <li><strong>Veziküller:</strong> Maddeleri hücre içinde taşıyan kesecikler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Enerji Üretim Organelleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Mitokondri:</strong> ATP üretimi (hücrenin enerji santrali), kendi DNA'sı var</li>
+                        <li><strong>Kloroplast:</strong> Fotosentez (bitkiler ve algler), kendi DNA'sı var, klorofil içerir</li>
+                        <li><strong>Plastitler:</strong> Bitkilerde; kloroplast, kromoplast, lökoplast</li>
+                        <li><strong>Prokaryotlarda:</strong> Mitokondri yok, enerji üretimi hücre zarı kıvrımlarında</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sindirim ve Temizlik Organelleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Lizozom:</strong> Hücre içi sindirim, yaşlı organel ve atıkların parçalanması</li>
+                        <li><strong>Peroksizom:</strong> Zararlı kimyasalları (hidrojen peroksit) parçalama</li>
+                        <li><strong>Kofullar:</strong> Depolama, taşıma, düzenleme (bitkilerde büyük merkezi koful)</li>
+                        <li><strong>İşlev Bütünlüğü:</strong> Sindirim kofulu (besin kofulu + lizozom)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Özel İşlevli Yapılar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kontraktil Kofullar:</strong> Tatlı su protistlerinde fazla suyu atma</li>
+                        <li><strong>Sentriyoller:</strong> Hayvan hücrelerinde hücre bölünmesinde görev alır</li>
+                        <li><strong>Mikrotübüller:</strong> Hücre iskeleti, madde taşınması, sil ve kamçı yapısı</li>
+                        <li><strong>Hücre Duvarları:</strong> Bakteri, arke, alg, bitki ve mantarlarda koruyucu yapı</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Hücre ve Organeller Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Bir öğrenci laboratuvarda mikroskopla hücre incelerken bazı hücrelerde zarla çevrili organeller gözlemlerken, bazılarında gözlemleyemiyor. Bu farklılığın sebebi nedir ve hangi hücre tiplerini inceliyor olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Laboratuvar çalışmasında hem bakteri (prokaryot) hem de ağız içi epitel hücresi (ökaryot) preparatları inceleniyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Öğrenci prokaryot ve ökaryot hücreleri karşılaştırmalı olarak inceliyor olabilir. Prokaryot hücrelerde (bakteri gibi) zarla çevrili organel bulunmaz. Ökaryot hücrelerde (hayvan, bitki, mantar hücreleri gibi) ise mitokondri, endoplazmik retikulum, Golgi aygıtı gibi zarla çevrili organeller vardır.</p>
+                        <p><strong>Ek Bilgi:</strong> Bu temel fark, iki hücre tipini birbirinden ayıran en önemli özelliklerden biridir ve evrimsel gelişimi gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir fabrikanın üretim sürecinde, ham madde girişi, işleme, paketleme ve dağıtım aşamaları vardır. Hücrede bu süreçler hangi organeller tarafından ve nasıl gerçekleştirilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hücrenin karmaşık işleyişi bir fabrikanın üretim sürecine benzetilerek anlatılabilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong></p>
+                        <ul>
+                            <li><strong>Ham Madde Girişi/Kontrol:</strong> Hücre zarı (seçici geçirgenlik)</li>
+                            <li><strong>Üretim (Protein Sentezi):</strong> Ribozom (üretim), Granüllü ER (işleme)</li>
+                            <li><strong>Paketleme ve Dağıtım:</strong> Golgi aygıtı (paketleme, etiketleme), Veziküller (dağıtım)</li>
+                            <li><strong>Enerji Santrali:</strong> Mitokondri (ATP üretimi)</li>
+                            <li><strong>Yönetim Merkezi:</strong> Çekirdek (genetik talimatlar)</li>
+                            <li><strong>Atık İşleme:</strong> Lizozom (sindirim), Peroksizom (zararlı kimyasal parçalama)</li>
+                        </ul>
+                        <p>Bu benzetme, hücre organellerinin işlevsel bütünlüğünü anlamayı kolaylaştırır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Bitki hücreleri ile hayvan hücreleri arasındaki yapısal farklılıklar nelerdir ve bu farklılıkların işlevsel sonuçları nasıl açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Biyoloji dersinde öğrenciler bitki ve hayvan hücre modellerini karşılaştırıyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong></p>
+                        <table class="comparison-table" style="margin: 15px 0;">
+                            <tr>
+                                <th>Özellik</th>
+                                <th>Bitki Hücresi</th>
+                                <th>Hayvan Hücresi</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Hücre Duvarı</strong></td>
+                                <td>Var (selüloz)</td>
+                                <td>Yok</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kloroplast</strong></td>
+                                <td>Var (fotosentez)</td>
+                                <td>Yok</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Koful</strong></td>
+                                <td>Büyük, merkezi</td>
+                                <td>Küçük, çok sayıda</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lizozom</strong></td>
+                                <td>Genellikle yok (gelişmiş bitkilerde)</td>
+                                <td>Var</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sentrozom</strong></td>
+                                <td>Yok (bazı ilkel bitkilerde var)</td>
+                                <td>Var</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Şekil</strong></td>
+                                <td>Genellikle köşeli</td>
+                                <td>Genellikle yuvarlak</td>
+                            </tr>
+                        </table>
+                        <p><strong>İşlevsel Sonuçlar:</strong> Bitki hücreleri kendi besinini üretir (fotosentez), hayvan hücreleri dışarıdan alır. Bitki hücreleri sert yapıya sahiptir, hayvan hücreleri esnektir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Bir hücrenin salgı protein üretimi sırasında, bu proteinin sentezlenmesinden hücre dışına salgılanmasına kadar hangi organeller sırayla görev alır ve her bir organelin bu süreçteki işlevi nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İnsan pankreas hücresi sindirim enzimi (protein) sentezler ve bunu salgılar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Salgı proteininin üretim ve salgılanma süreci:</p>
+                        <ol>
+                            <li><strong>Çekirdek:</strong> DNA'dan protein sentezi talimatı (mRNA) oluşur.</li>
+                            <li><strong>Ribozom (Granüllü ER üzerinde):</strong> mRNA talimatına göre amino asitler birleştirilir, protein sentezlenir.</li>
+                            <li><strong>Granüllü Endoplazmik Retikulum (GER):</strong> Sentezlenen proteinin işlenmesi (katlanma, modifikasyon), veziküllere paketlenmesi.</li>
+                            <li><strong>Golgi Aygıtı:</strong> Proteinin son işlemleri (örn: karbonhidrat eklenmesi), sınıflandırılması, paketlenmesi.</li>
+                            <li><strong>Salgı Vezikülleri:</strong> Golgi'den ayrılan veziküller proteinleri hücre zarına taşır.</li>
+                            <li><strong>Hücre Zarı (Ekzositoz):</strong> Vezikül hücre zarıyla birleşir, protein hücre dışına salgılanır.</li>
+                        </ol>
+                        <p>Bu süreç, organeller arasındaki iş bölümü ve işbirliğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Mitokondri ve kloroplast organellerinin hem kendi DNA'larının hem de ribozomlarının olması ne anlama gelir? Bu durum hangi bilimsel teoriyi destekler?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Biyoloji tarihinde, bazı organellerin kökeni ile ilgili önemli bir teori bulunmaktadır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Mitokondri ve kloroplastın kendi DNA ve ribozomlarının olması, bu organellerin eskiden bağımsız yaşayan prokaryot canlılar olduğu, daha sonra ökaryot hücreler tarafından içselleştirildiği (endo-simbiyoz) teorisini destekler.</p>
+                        <p><strong>Endosimbiyoz Teorisi Kanıtları:</strong></p>
+                        <ul>
+                            <li>Kendi DNA'ları var (halkasal, prokaryot DNA'sı gibi)</li>
+                            <li>Kendi ribozomları var (prokaryot ribozomuna benzer)</li>
+                            <li>Çift katlı zarla çevrili (iç zar prokaryot hücre zarı, dış zar konak hücre zarı olabilir)</li>
+                            <li>Bağımsız üreyebilme yetenekleri (mitokondri ve kloroplast bölünebilir)</li>
+                        </ul>
+                        <p>Bu teori, ökaryot hücrelerin evriminde önemli bir adımı açıklar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bir tatlı su amipinin kontraktil kofuluna sahip olması, tuzlu suda yaşayan bir amipin ise bu yapıya sahip olmaması veya daha az gelişmiş olmasının nedeni nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Tatlı su ve tuzlu suda yaşayan aynı tür organizmaların hücresel adaptasyonları farklılık gösterir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Bu durum, osmoz prensibi ve hücrenin osmotik dengesiyle açıklanır.</p>
+                        <ul>
+                            <li><strong>Tatlı Su Amipi:</strong> Ortam (tatlı su) hipotoniktir (çözünen madde yoğunluğu hücre içinden az). Osmozla hücreye sürekli su girer. Kontraktil koful, bu fazla suyu aktif taşımayla dışarı atar, hücrenin patlamasını önler.</li>
+                            <li><strong>Tuzlu Su Amipi:</strong> Ortam (tuzlu su) hipertoniktir (çözünen madde yoğunluğu hücre içinden fazla). Osmozla hücreden su çıkışı olur, su girişi olmaz veya az olur. Bu nedenle kontraktil kofula ihtiyaç azdır veya yoktur.</li>
+                        </ul>
+                        <p>Bu adaptasyon, organizmanın bulunduğu ortama göre hücresel yapılarını şekillendirdiğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Hücredeki lizozom organelleri sadece sindirim yapmaz, aynı zamanda programlanmış hücre ölümü (apoptoz) sürecinde de rol oynar. Bu nasıl gerçekleşir ve neden önemlidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Organ gelişimi sırasında, parmakların birbirinden ayrılması gibi süreçlerde lizozomlar aktif rol oynar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Lizozomlar, içerdikleri sindirim enzimlerini (hidrolaz) hücrenin kendi içine salarak programlanmış hücre ölümünü (apoptoz) başlatabilir.</p>
+                        <p><strong>Süreç:</strong></p>
+                        <ol>
+                            <li>Apoptotik sinyal alındığında, lizozom zarları kararsız hale gelir.</li>
+                            <li>Lizozom içeriği (enzimler) sitoplazmaya salınır.</li>
+                            <li>Enzimler hücrenin kendi proteinlerini, organellerini ve DNA'sını parçalar.</li>
+                            <li>Hücre küçülür, zarı kabarcıklar oluşturur, parçalara ayrılır.</li>
+                            <li>Makrofajlar tarafından temizlenir, çevre dokulara zarar vermez.</li>
+                        </ol>
+                        <p><strong>Önemi:</strong> Apoptoz, gelişim sırasında (örneğin parmak arası perdelerin kaybolması), hasarlı veya enfekte hücrelerin temizlenmesi, kanserli hücrelerin yok edilmesi için gereklidir. Kontrolsüz hücre ölümü (nekroz) iltihaplanmaya neden olurken, apoptoz düzenli ve temizdir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Bitkilerde bulunan lökoplast, kloroplast ve kromoplast plastitleri birbirine dönüşebilir. Bu dönüşüm hangi koşullarda gerçekleşir ve bitki için ne anlama gelir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yeşil domates kızardıkça rengi değişir. Havuç kökünde turuncu pigment birikir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Plastitler arası dönüşüm, bitkinin gelişim aşamasına, bulunduğu organa ve çevresel koşullara bağlıdır.</p>
+                        <ul>
+                            <li><strong>Lökoplast → Kloroplast:</strong> Işık gören depo dokularda (örneğin patates güneşte yeşillenir). Lökoplast, klorofil sentezleyerek fotosentez yapabilen kloroplasta dönüşür.</li>
+                            <li><strong>Kloroplast → Kromoplast:</strong> Meyve olgunlaşması sırasında (örneğin domates kızarması). Klorofil parçalanır, karotenoid pigmentler (likopen, beta-karoten) birikir, fotosentez önceliği azalır.</li>
+                            <li><strong>Kromoplast → Kloroplast:</strong> Nadiren, bazı olgunlaşmış meyvelerde tekrar yeşillenme görülebilir.</li>
+                        </ul>
+                        <p><strong>Bitki İçin Anlamı:</strong> Bu dönüşüm esnekliği, bitkinin enerji üretimi (fotosentez), depolama ve üreme (tozlaşmayı çekici renklerle artırma) arasında önceliklerini değiştirebilmesini sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Hücre zarının yapısı "akıcı-mozaik" model ile açıklanır. Bu modeldeki "akıcı" ve "mozaik" ifadeleri neyi ifade eder? Bu yapı hücre için ne gibi avantajlar sağlar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hücre zarının dinamik yapısı, hücrenin birçok işlevini mümkün kılar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong></p>
+                        <ul>
+                            <li><strong>Akıcı (Sıvı):</strong> Zarı oluşturan fosfolipit çift tabakası ve içine gömülü proteinler sabit değildir, yan yana hareket edebilir (lateral difüzyon). Bu hareketlilik, sıcaklık ve kolesterol miktarına bağlıdır. Kolesterol artarsa akışkanlık azalır.</li>
+                            <li><strong>Mozaik:</strong> Zar yapısında farklı türde proteinler, kolesterol ve glikoproteinler, fosfolipit denizinde bir mozaik gibi dağılmıştır. Yüksek büyütmede mozaik görünüm verir.</li>
+                        </ul>
+                        <p><strong>Avantajları:</strong></p>
+                        <ul>
+                            <li><strong>Esneklik:</strong> Hücre şekil değiştirebilir (örneğin akyuvarların damar duvarından geçişi).</li>
+                            <li><strong>Madde Alışverişi:</strong> Proteinlerin hareketi, taşıma kanallarının oluşumuna ve düzenlenmesine olanak tanır.</li>
+                            <li><strong>Hücre Tanıma ve Haberleşme:</strong> Yüzey proteinleri ve reseptörler hareket ederek sinyal molekülleriyle etkileşebilir.</li>
+                            <li><strong>Zar Kaynaşması:</strong> Vezikül-hücre zarı kaynaşması, hücre bölünmesi gibi olaylar için gereklidir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Ribozom organel olarak kabul edilmez. Bunun nedeni nedir? Ribozomların hücre içindeki farklı konumlarda (serbest veya ER'ye bağlı) bulunmasının işlevsel bir anlamı var mıdır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ribozom, hem prokaryot hem de ökaryot hücrelerde bulunan temel bir yapıdır ancak organel tanımına tam uymaz.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong></p>
+                        <p><strong>Ribozom Neden Organel Değildir?</strong> Organeller genellikle bir zarla çevrilidir. Ribozom zarla çevrili değildir, bu nedenle "hücre birimi" veya "makromoleküler kompleks" olarak adlandırılır.</p>
+                        <p><strong>Konumunun İşlevsel Anlamı:</strong></p>
+                        <ul>
+                            <li><strong>Serbest Ribozomlar (Sitoplazmada):</strong> Hücre içinde kullanılacak proteinleri sentezler (örneğin sitoplazmik enzimler, yapısal proteinler).</li>
+                            <li><strong>Bağlı Ribozomlar (Granüllü ER Zarına):</strong> Hücre dışına salgılanacak proteinleri (örneğin hormonlar, sindirim enzimleri) veya zar sistemine entegre olacak proteinleri (örneğin lizozom enzimleri, hücre zarı proteinleri) sentezler. Sentez sırasında protein doğrudan ER kanalına geçer, işlenmeye ve taşınmaya hazır olur.</li>
+                            <li><strong>Diğer Konumlar:</strong> Mitokondri ve kloroplastın kendi ribozomları vardır ve bu organellerin kendi DNA'sından üretilen proteinleri sentezler.</li>
+                        </ul>
+                        <p>Bu konum farkı, proteinin nihai hedefine ve işlenme şekline göre verimli bir iş bölümü sağlar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Hücre ve Organeller Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Hücre ve Organeller Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bacteria"></i> PROKARYOT VE ÖKARYOT HÜCRELER</div>
+                    <ul class="summary-list">
+                        <li><strong>Prokaryot Hücre:</strong> Bakteri ve arkeler. Çekirdek zarı ve zarlı organel yok. DNA sitoplazmada nükleoid bölgesinde (halkasal). Hücre duvarı var. Küçük boyutlu (1-5 µm).</li>
+                        <li><strong>Ökaryot Hücre:</strong> Protistler, mantarlar, bitkiler, hayvanlar. Gerçek çekirdek (zarı var) ve zarlı organeller var. DNA çekirdek içinde (doğrusal). Büyük boyutlu (10-100 µm).</li>
+                        <li><strong>Ortak Özellikler:</strong> Hücre zarı, sitoplazma, ribozom, DNA (genetik materyal).</li>
+                        <li><strong>Temel Farklar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>DNA konumu (çekirdek içi/dışı)</li>
+                                <li>Zarlı organel varlığı/yokluğu</li>
+                                <li>Boyut farkı</li>
+                                <li>Hücre bölünme şekli</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shield-alt"></i> HÜCRE ZARI VE HÜCRE DUVARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Hücre Zarı (Plazma Zarı):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Yapı:</strong> Akıcı-mozaik model. Çift katlı fosfolipit, proteinler, kolesterol (hayvan), karbonhidratlar.</li>
+                                <li><strong>Özellik:</strong> Seçici geçirgen. Hücrenin dış sınırı.</li>
+                                <li><strong>İşlevler:</strong> Madde alışverişini kontrol, hücreyi koruma, tanıma, haberleşme.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Hücre Duvarı:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kimde Bulunur?</strong> Bakteri (peptidoglikan), arke (psödopeptidoglikan), algler (selüloz), mantarlar (kitin), bitkiler (selüloz).</li>
+                                <li><strong>İşlevi:</strong> Koruma, destek, şekil verme, osmotik basınca dayanıklılık.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-water"></i> SİTOPLAZMA VE HÜCRE İSKELETİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Sitoplazma:</strong> Hücre zarı ile çekirdek arasını dolduran yarı akışkan, jelimsi sıvı.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İçeriği:</strong> Su, iyonlar, organik moleküller, organeller.</li>
+                                <li><strong>İşlevleri:</strong> Kimyasal reaksiyonların ortamı, madde taşınımı, hücre şeklini koruma.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sentrozom:</strong> Hayvan hücrelerinde bulunur. Mikrotübül organizasyon merkezi.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>İki sentriyolden oluşur.</li>
+                                <li>Hücre bölünmesinde iğ ipliklerini oluşturur.</li>
+                                <li>Sil ve kamçıların yapısına katılır.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> ÇEKİRDEK VE GENETİK MATERYAL</div>
+                    <ul class="summary-list">
+                        <li><strong>Yapı:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Çekirdek Zarfı:</strong> Çift katlı zar, nüklear porlar (geçitler).</li>
+                                <li><strong>Nükleoplazma:</strong> Çekirdek sıvısı.</li>
+                                <li><strong>Kromatin:</strong> DNA+protein (kromozomların interfazdaki hali).</li>
+                                <li><strong>Çekirdekçik:</strong> Ribozom alt birimlerinin sentezlendiği bölge.</li>
+                            </ul>
+                        </li>
+                        <li><strong>İşlevleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Genetik bilgiyi (DNA) saklama ve koruma.</li>
+                                <li>Hücre faaliyetlerini yönetme (protein sentezi talimatları).</li>
+                                <li>Hücre bölünmesini kontrol etme.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Prokaryotlarda:</strong> Çekirdek yok. DNA sitoplazmada nükleoid bölgesinde.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-industry"></i> PROTEİN SENTEZİ, İŞLENMESİ VE TAŞINMASI</div>
+                    <ul class="summary-list">
+                        <li><strong>Ribozom:</strong> Protein sentezi. Zarsız. İki alt birimli (küçük+büyük). Hem serbest hem bağlı (GER'de) bulunur. Prokaryot ve ökaryotta ortak.</li>
+                        <li><strong>Endoplazmik Retikulum (ER):</strong> Zar sistemleri ağı.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Granüllü ER (GER):</strong> Ribozom taşır. Protein sentezi, katlanma, modifikasyon. "Zar fabrikası".</li>
+                                <li><strong>Düz ER (DER):</strong> Ribozom yok. Lipit sentezi, detoksifikasyon, Ca²⁺ depolama.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Golgi Aygıtı (Cisimciği):</strong> ER ürünlerini işleme, sınıflandırma, paketleme, etiketleme. Salgı vezikülleri oluşturur. Salgı hücrelerinde bol.</li>
+                        <li><strong>Veziküller:</strong> Hücre içi taşıma kesecikleri.</li>
+                        <li><strong>Süreç (Salgı Proteini):</strong> Çekirdek (mRNA) → Ribozom (sentez) → GER (işleme) → Golgi (paketleme) → Salgı vezikülü → Hücre zarı (ekzositoz).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> ENERJİ ÜRETİM ORGANELLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Mitokondri:</strong> "Hücrenin enerji santrali".
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İşlev:</strong> Oksijenli solunum → ATP üretimi.</li>
+                                <li><strong>Yapı:</strong> Çift katlı zar, krista (iç zar kıvrımı), matriks (iç sıvı).</li>
+                                <li><strong>Özel:</strong> Kendi DNA'sı ve ribozomu var. Endosimbiyoz teorisi.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Plastitler (Bitki ve Bazı Algler):</strong> Çift katlı zarlı.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kloroplast:</strong> Fotosentez. Klorofil içerir. Tilakoid (grana) ve stroma. Kendi DNA'sı var.</li>
+                                <li><strong>Kromoplast:</strong> Karotenoid pigmentleri (kırmızı, sarı, turuncu). Çiçek ve meyvelerde.</li>
+                                <li><strong>Lökoplast:</strong> Renksiz, depo (nişasta, yağ, protein).</li>
+                                <li><strong>Dönüşüm:</strong> Koşullara göre birbirine dönüşebilir.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-recycle"></i> SİNDİRİM, TEMİZLİK VE DEPOLAMA</div>
+                    <ul class="summary-list">
+                        <li><strong>Lizozom:</strong> Tek katlı zarla çevrili, sindirim enzimleri (hidrolaz) içerir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İşlevler:</strong> Hücre içi sindirim (besin kofulu, yabancı partiküller), yaşlı organellerin yıkımı (otofaji), apoptoz (programlı hücre ölümü).</li>
+                                <li><strong>Bitkilerde:</strong> Gelişmiş bitkilerde yok veya farklı yapılar görev alır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Peroksizom:</strong> Tek katlı zarlı.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İşlev:</strong> Uzun zincirli yağ asitlerini ve amino asitleri oksitler. Yan ürün H₂O₂'yi (hidrojen peroksit) katalaz enzimiyle su ve oksijene parçalar.</li>
+                                <li><strong>Bitkilerde:</strong> Glikoneogenez (yağdan karbonhidrat sentezi).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kofullar:</strong> ER ve Golgi'den oluşan keseler.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>İşlevler:</strong> Depolama (su, iyonlar, besin, atık), taşıma, düzenleme.</li>
+                                <li><strong>Bitki Hücresi:</strong> Büyük, merkezi koful (%90 hacim). Turgor basıncı, depo.</li>
+                                <li><strong>Hayvan Hücresi:</strong> Küçük, çok sayıda.</li>
+                                <li><strong>Özel Kofullar:</strong> Besin kofulu (fagositoz), sindirim kofulu (lizozomla birleşir), kontraktil koful (tatlı su protistleri, fazla su atar).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sitemap"></i> HÜCRESEL ORGANİZASYON İLKELERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>İş Bölümü:</strong> Her organel özgül işlev(ler) üstlenir.</li>
+                        <li><strong>İşbirliği ve Bütünlük:</strong> Organeller birbirinden bağımsız çalışmaz (örneğin protein sentez ve taşıma yolu).</li>
+                        <li><strong>Zarlarla Bölünme (Ökaryotlarda):</strong> Sitoplazmayı kompartımanlara ayırarak aynı anda farklı (hatta zıt) metabolik olayların gerçekleşmesine olanak tanır.</li>
+                        <li><strong>Yüzey-Hacim Oranı:</strong> Hücre büyüdükçe yüzey/hacim oranı azalır. Bu, madde alışverişini zorlaştırır. Ökaryot hücreler zarlı organellerle iç yüzey alanını artırarak bu sorunu aşar (örneğin mitokondri kristaları, ER kanalları).</li>
+                        <li><strong>Fabrika Benzetmesi:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yönetim: Çekirdek</li>
+                                <li>Enerji: Mitokondri/Kloroplast</li>
+                                <li>Üretim Hattı: Ribozom → ER → Golgi</li>
+                                <li>Taşıma: Veziküller</li>
+                                <li>Atık İşleme: Lizozom, Peroksizom</li>
+                                <li>Giriş/Çıkış Kontrol: Hücre Zarı</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/hucre1.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 5) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 30 Hücre ve Organeller Sorusu (PDF'ten)
+        const csvData = `Prokaryot hücre nedir?,"Bakteri ve arke domainlerinde bulunan, çekirdek zarı ve zarlı organeli olmayan hücre tipidir."
+Ökaryot hücre nedir?,"Protist, mantar, bitki ve hayvanlarda bulunan, gerçek çekirdek ve zarlı organelleri olan hücre tipidir."
+Prokaryot ve ökaryot hücrelerin ortak özellikleri nelerdir?,"Hücre zarı, sitoplazma, DNA (genetik materyal), ribozom."
+Prokaryot ve ökaryot hücreler arasındaki en temel fark nedir?,"DNA'nın konumu: Ökaryotta çekirdek içinde, prokaryotta sitoplazmada (nükleoid)."
+Hücre zarının temel özelliği nedir?,"Seçici geçirgen olması; hücreye giren ve çıkan maddeleri kontrol eder."
+Akıcı-mozaik zar modeli neyi açıklar?,"Hücre zarının yapısını: Fosfolipit çift tabaka, hareketli proteinler, kolesterol."
+Hücre duvarı hangi canlılarda bulunur?,"Bakteri, arke, algler (bazı protistler), mantarlar, bitkiler."
+Sitoplazmanın işlevi nedir?,"Hücre içi kimyasal reaksiyonların ortamı, madde taşınımı, hücre şeklinin korunması."
+Ribozomun görevi nedir?,"Protein sentezi. Zarla çevrili değildir, organel sayılmaz."
+Ribozom nerelerde bulunur?,"Sitoplazmada serbest veya granüllü ER'ye bağlı, ayrıca mitokondri ve kloroplast içinde."
+Çekirdeğin yapısal bileşenleri nelerdir?,"Çekirdek zarfı (çift katlı zar), nükleoplazma (sıvı), kromatin (DNA), çekirdekçik."
+Çekirdeğin işlevi nedir?,"Genetik materyali (DNA) saklamak, hücre faaliyetlerini yönetmek."
+Nüklear por nedir?,"Çekirdek zarfındaki, çekirdek-sitoplazma arası madde alışverişini sağlayan geçitler."
+Endoplazmik retikulum (ER) nedir?,"Hücre içinde zar labirentleri oluşturan, protein ve lipit sentezi, taşınması, detoks gibi işlevleri olan yapı."
+Granüllü ER (GER) ve Düz ER (DER) arasındaki fark nedir?,"GER: Ribozom taşır, protein sentezi. DER: Ribozom taşımaz, lipit sentezi, detoks, Ca²⁺ depolama."
+Golgi aygıtının işlevi nedir?,"ER'de üretilen maddeleri işlemek, paketlemek, sınıflandırmak, veziküllere yerleştirmek, salgılamak."
+Lizozomun işlevi nedir?,"Hücre içi sindirim (besin, yabancı partikül, yaşlı organel), programlanmış hücre ölümü (apoptoz)."
+Peroksizomun işlevi nedir?,"Zararlı bileşikleri (hidrojen peroksit, H₂O₂) parçalamak, yağ asitlerini oksitlemek."
+Kofulların işlevi nedir?,"Depolama (su, iyon, besin, atık), taşıma, düzenleme. Bitkilerde büyük merkezi koful."
+Besin kofulu ve sindirim kofulu nedir?,"Besin kofulu: Fagositozla alınan besin. Sindirim kofulu: Besin kofulu + lizozom (sindirim gerçekleşir)."
+Kontraktil koful nedir?,"Tatlı su protistlerinde fazla suyu aktif taşımayla hücre dışına atan özel koful."
+Mitokondrinin işlevi nedir?,"Oksijenli solunumla ATP (enerji) üretmek. Hücrenin enerji santrali."
+Mitokondrinin özel özelliği nedir?,"Kendi DNA'sı ve ribozomu var. Endosimbiyoz teorisini destekler."
+Plastit nedir?,"Bitki ve bazı alg hücrelerinde bulunan, çift katlı zarlı organeller (kloroplast, kromoplast, lökoplast)."
+Kloroplastın işlevi nedir?,"Fotosentez: Güneş enerjisini kullanarak besin (glikoz) ve oksijen üretmek."
+Kloroplastın yapısı nasıldır?,"Çift katlı zar, tilakoid (grana) zar sistemi, stroma (sıvı), klorofil pigmenti."
+Kromoplastın işlevi nedir?,"Karotenoid pigmentleri (likopen, beta-karoten) içerir, kırmızı, sarı, turuncu renk verir, tozlaşmayı kolaylaştırır."
+Lökoplastın işlevi nedir?,"Renksiz depo plastiti. Nişasta, yağ, protein depolar."
+Sentrozom nedir?,"Hayvan hücrelerinde bulunan, mikrotübül organizasyon merkezi. Hücre bölünmesinde iğ ipliklerini oluşturur."
+Mikrotübüllerin işlevi nedir?,"Hücre iskeleti, madde taşınması, sil ve kamçı yapısı, hücre bölünmesinde kromozom hareketi."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'ten)
+        const testQuestions = [
+            {
+                question: "Aşağıdakilerden hangisi prokaryot hücrelerin özelliklerinden değildir?",
+                options: [
+                    "Çekirdek zarı yoktur",
+                    "Zarlı organelleri yoktur",
+                    "DNA sitoplazmada nükleoid bölgesindedir",
+                    "Mitokondri organeli bulunur",
+                    "Bakteri ve arkelerde görülür"
+                ],
+                correct: 3,
+                explanation: "Prokaryot hücrelerde zarlı organel bulunmaz. Mitokondri, zarlı bir organeldir ve sadece ökaryot hücrelerde bulunur. Prokaryotlarda enerji üretimi hücre zarı kıvrımlarında gerçekleşir."
+            },
+            {
+                question: "Ökaryot hücrelerde DNA'nın çoğu nerede bulunur?",
+                options: [
+                    "Sitoplazmada dağınık halde",
+                    "Çekirdekçik içinde",
+                    "Çift katlı zarla çevrili çekirdek içinde",
+                    "Mitokondri organelinde",
+                    "Ribozom üzerinde"
+                ],
+                correct: 2,
+                explanation: "Ökaryot hücrelerde DNA'nın çoğu, çift katlı zarla çevrili bir organel olan çekirdeğin içindedir. Prokaryot hücrelerde ise DNA sitoplazmada nükleoid adı verilen bölgede yoğunlaşmıştır."
+            },
+            {
+                question: "Hücre zarının yapısı hangi modelle açıklanır?",
+                options: [
+                    "Sabit-kapalı model",
+                    "Katı-küre model",
+                    "Akıcı-mozaik model",
+                    "Çift sarmal model",
+                    "Dalga-parçacık modeli"
+                ],
+                correct: 2,
+                explanation: "Hücre zarının yapısı akıcı-mozaik model ile açıklanır. Bu modele göre zar; çift katlı fosfolipit tabaka, bunlar arasına yerleşmiş proteinler ve kolesterol moleküllerinden oluşur. Fosfolipitler ve proteinler hareket edebildiği için 'akıcı', proteinlerin dağılımı mozaik görünüm verdiği için 'mozaik' adını alır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi hem prokaryot hem de ökaryot hücrelerde ortak bulunur?",
+                options: [
+                    "Çekirdek",
+                    "Mitokondri",
+                    "Endoplazmik retikulum",
+                    "Ribozom",
+                    "Golgi aygıtı"
+                ],
+                correct: 3,
+                explanation: "Ribozom, hem prokaryot hem de ökaryot hücrelerde bulunan, protein sentezinden sorumlu hücre birimidir. Diğer seçeneklerdeki yapılar (çekirdek, mitokondri, ER, Golgi) sadece ökaryot hücrelerde bulunur."
+            },
+            {
+                question: "Hücre zarının seçici geçirgen olması ne anlama gelir?",
+                options: [
+                    "Tüm maddeleri serbestçe geçirir",
+                    "Hiçbir maddeyi geçirmez",
+                    "Hücreye giren ve çıkan maddeleri kontrol eder",
+                    "Sadece suyu geçirir",
+                    "Sadece oksijeni geçirir"
+                ],
+                correct: 2,
+                explanation: "Hücre zarı seçici geçirgendir; yani bazı maddelerin geçişine izin verirken bazılarının geçişini engeller veya kontrol eder. Bu sayede hücre içi ortamın dengesi (homeostazi) korunur."
+            },
+            {
+                question: "Çekirdekte protein sentezinde görevli RNA moleküllerinin sitoplazmaya geçişi nasıl sağlanır?",
+                options: [
+                    "Difüzyonla doğrudan çekirdek zarından",
+                    "Aktif taşıma proteinleriyle",
+                    "Nüklear por adı verilen geçitlerden",
+                    "Endoplazmik retikulum kanallarından",
+                    "Golgi aygıtı veziküllerinden"
+                ],
+                correct: 2,
+                explanation: "Çekirdek zarfı üzerinde bulunan nüklear porlar, çekirdek ile sitoplazma arasında madde alışverişini sağlayan özelleşmiş geçitlerdir. mRNA gibi büyük moleküller bu porlardan geçerek sitoplazmaya ulaşır."
+            },
+            {
+                question: "Granüllü endoplazmik retikulum (GER) üzerindeki ribozomların sentezlediği proteinler nereye yöneliktir?",
+                options: [
+                    "Sadece hücre içinde kullanılmak üzere",
+                    "Sadece hücre zarına entegre olmak üzere",
+                    "Hücre dışına salgılanmak veya zarlı yapılara katılmak üzere",
+                    "Sadece mitokondride kullanılmak üzere",
+                    "Sadece çekirdekte kullanılmak üzere"
+                ],
+                correct: 2,
+                explanation: "Granüllü ER üzerindeki ribozomlar, hücre dışına salgılanacak proteinleri (örn: hormon, enzim) veya hücre zarına ya da lizozom gibi zarlı organellere entegre olacak proteinleri sentezler. Protein sentez sırasında doğrudan ER kanalına geçer ve işlenmeye başlar."
+            },
+            {
+                question: "Golgi aygıtının temel işlevi aşağıdakilerden hangisidir?",
+                options: [
+                    "ATP sentezi",
+                    "Protein sentezi",
+                    "DNA replikasyonu",
+                    "Maddeleri işleme, paketleme ve dağıtma",
+                    "Fotosentez"
+                ],
+                correct: 3,
+                explanation: "Golgi aygıtının temel işlevi, endoplazmik retikulumda üretilen protein, lipit ve diğer maddeleri işlemek (örn: karbonhidrat eklemek), sınıflandırmak, paketlemek ve hedef bölgelere (hücre zarı, lizozom vb.) göndermektir."
+            },
+            {
+                question: "Lizozom organeli ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Sindirim enzimleri içerir",
+                    "Hücre içi sindirimde görev alır",
+                    "Programlanmış hücre ölümünde (apoptoz) rol oynar",
+                    "Bitki hücrelerinde yoktur (gelişmiş bitkilerde)",
+                    "Fotosentez yapar"
+                ],
+                correct: 4,
+                explanation: "Lizozom, fotosentez yapmaz. Fotosentez kloroplast organelinde gerçekleşir. Lizozomun görevleri: hücre içi sindirim, yaşlı organellerin yıkımı (otofaji) ve apoptozu başlatmaktır. Gelişmiş bitki hücrelerinde lizozom bulunmaz, benzer işlevleri diğer yapılar üstlenir."
+            },
+            {
+                question: "Peroksizom organelinin en önemli işlevlerinden biri nedir?",
+                options: [
+                    "ATP sentezi",
+                    "Protein sentezi",
+                    "Hidrojen peroksiti (H₂O₂) parçalamak",
+                    "Fotosentez",
+                    "DNA replikasyonu"
+                ],
+                correct: 2,
+                explanation: "Peroksizom, özellikle yağ asitlerinin oksidasyonu sırasında oluşan zararlı hidrojen peroksiti (H₂O₂), katalaz enzimi sayesinde su (H₂O) ve oksijene (O₂) dönüştürerek etkisiz hale getirir."
+            },
+            {
+                question: "Bitki hücrelerinde genellikle büyük ve merkezi olarak bulunan, su, iyon ve bazı besinleri depolayan yapı aşağıdakilerden hangisidir?",
+                options: [
+                    "Lizozom",
+                    "Mitokondri",
+                    "Kloroplast",
+                    "Koful",
+                    "Sentrozom"
+                ],
+                correct: 3,
+                explanation: "Bitki hücrelerinde genellikle büyük, merkezi bir koful bulunur. Bu koful hücre hacminin büyük kısmını kaplar ve su, iyonlar, pigmentler, bazı atık ve besin maddelerini depolar. Ayrıca turgor basıncı sağlayarak hücreye destek verir."
+            },
+            {
+                question: "Tatlı suda yaşayan bir amipin, hücre içine osmozla giren fazla suyu dışarı atmasını sağlayan yapı aşağıdakilerden hangisidir?",
+                options: [
+                    "Lizozom",
+                    "Besin kofulu",
+                    "Kontraktil koful",
+                    "Peroksizom",
+                    "Golgi aygıtı"
+                ],
+                correct: 2,
+                explanation: "Kontraktil koful, tatlı su protistlerinde (örneğin amip, paramesyum) bulunur. Hipotonik ortamda (tatlı su) osmozla hücreye giren fazla suyu aktif taşımayla düzenli aralıklarla dışarı atarak hücrenin patlamasını (osmoz) önler."
+            },
+            {
+                question: "Hücrenin enerji santrali olarak adlandırılan, oksijenli solunumla ATP üreten organel hangisidir?",
+                options: [
+                    "Kloroplast",
+                    "Lizozom",
+                    "Endoplazmik retikulum",
+                    "Mitokondri",
+                    "Ribozom"
+                ],
+                correct: 3,
+                explanation: "Mitokondri, ökaryot hücrelerde oksijenli solunumun gerçekleştiği ve ATP (adenozin trifosfat) üretildiği organeldir. Bu nedenle 'hücrenin enerji santrali' olarak adlandırılır."
+            },
+            {
+                question: "Mitokondri ve kloroplast organellerinin kendi DNA'larının olması hangi teoriyi destekler?",
+                options: [
+                    "Hücre teorisi",
+                    "Evrim teorisi",
+                    "Endosimbiyoz teorisi",
+                    "Doğal seçilim teorisi",
+                    "Kromozom teorisi"
+                ],
+                correct: 2,
+                explanation: "Endosimbiyoz teorisi, mitokondri ve kloroplast gibi organellerin, eskiden bağımsız yaşayan prokaryot canlılar olduğunu, daha sonra daha büyük bir ökaryot hücre tarafından içselleştirilip simbiyotik bir ilişki kurduğunu öne sürer. Bu organellerin kendi DNA ve ribozomlarının olması bu teori için önemli bir kanıttır."
+            },
+            {
+                question: "Kloroplast organelinde fotosentez için gerekli ışık enerjisini soğuran yeşil pigment aşağıdakilerden hangisidir?",
+                options: [
+                    "Karoten",
+                    "Ksantofil",
+                    "Klorofil",
+                    "Fikosiyanin",
+                    "Likopen"
+                ],
+                correct: 2,
+                explanation: "Kloroplastta bulunan klorofil pigmenti, fotosentez için gerekli olan ışık enerjisini soğurur. Bu pigment bitkilere yeşil rengini verir. Karoten, ksantofil ve likopen kromoplastta bulunan diğer pigmentlerdir."
+            },
+            {
+                question: "Bitki hücrelerinde, olgunlaşan domatesin kırmızı rengini veren pigmenti içeren plastit türü aşağıdakilerden hangisidir?",
+                options: [
+                    "Kloroplast",
+                    "Lökoplast",
+                    "Kromoplast",
+                    "Amiloplast",
+                    "Elaioplast"
+                ],
+                correct: 2,
+                explanation: "Kromoplast, karotenoid pigmentleri (likopen, beta-karoten, ksantofil) içerir ve kırmızı, turuncu, sarı renkleri verir. Olgun domatesin kırmızı rengi likopen pigmentinden kaynaklanır."
+            },
+            {
+                question: "Bitki hücrelerinde, renksiz ve genellikle nişasta depolamak için kullanılan plastit türü aşağıdakilerden hangisidir?",
+                options: [
+                    "Kloroplast",
+                    "Kromoplast",
+                    "Lökoplast",
+                    "Karyoplast",
+                    "Mitoplast"
+                ],
+                correct: 2,
+                explanation: "Lökoplast, pigment içermeyen, renksiz plastitlerdir. Temel işlevi depolamaktır. Nişasta depolayanlara 'amiloplast', yağ depolayanlara 'elaioplast', protein depolayanlara 'proteoplast' denir."
+            },
+            {
+                question: "Hayvan hücrelerinde bulunan ve hücre bölünmesi sırasında iğ ipliklerinin oluşum merkezi olan yapı aşağıdakilerden hangisidir?",
+                options: [
+                    "Sentrozom",
+                    "Lizozom",
+                    "Ribozom",
+                    "Koful",
+                    "Peroksizom"
+                ],
+                correct: 0,
+                explanation: "Sentrozom, hayvan hücrelerinde bulunan ve mikrotübül organizasyon merkezi görevi gören yapıdır. Hücre bölünmesi sırasında iğ ipliklerini (mikrotübüllerden oluşur) oluşturur. İçinde iki adet dikine duran sentriyol bulunur."
+            },
+            {
+                question: "Hücre iskeletini oluşturan, sil ve kamçı yapısında bulunan, ayrıca hücre içi madde taşınmasında görev alan yapısal proteinler aşağıdakilerden hangisidir?",
+                options: [
+                    "Aktin filamentleri",
+                    "Ara filamentler",
+                    "Mikrotübüller",
+                    "Kollajen lifleri",
+                    "Elastin lifleri"
+                ],
+                correct: 2,
+                explanation: "Mikrotübüller, tübulin proteinlerinden oluşan, boru şeklindeki hücre iskeleti elemanlarıdır. Hücre şeklinin korunması, hücre bölünmesinde kromozom hareketi, sil ve kamçı yapısı, hücre içi organel taşınmasında (motor proteinlerle) görev alırlar."
+            },
+            {
+                question: "Hücre zarındaki kolesterol moleküllerinin temel işlevi nedir?",
+                options: [
+                    "Enerji sağlamak",
+                    "Zarın akışkanlığını düzenlemek",
+                    "Madde taşımak",
+                    "Sinyal iletmek",
+                    "Hücreye sertlik kazandırmak"
+                ],
+                correct: 1,
+                explanation: "Hücre zarındaki kolesterol molekülleri (hayvan hücrelerinde), fosfolipitler arasına yerleşerek zarın akışkanlığını düzenler. Sıcaklık değişimlerine karşı zarın fazla akışkan veya fazla katı hale gelmesini önler, stabilite sağlar."
+            },
+            {
+                question: "Prokaryot hücrelerde mitokondri bulunmadığı için enerji üretimi nerede gerçekleşir?",
+                options: [
+                    "Ribozomlarda",
+                    "Çekirdekte",
+                    "Hücre zarı kıvrımlarında",
+                    "Sitoplazmada serbest",
+                    "Kloroplastlarda"
+                ],
+                correct: 2,
+                explanation: "Prokaryot hücreler zarlı organel (mitokondri) içermez. Solunum ile enerji (ATP) üretimi, hücre zarının içe doğru kıvrımlanmasıyla oluşan yapılar (mezozom gibi) veya doğrudan sitoplazmada gerçekleşir."
+            },
+            {
+                question: "Hücre çekirdeğinde ribozom alt birimlerinin sentezlendiği yoğun yapılı bölgeye ne ad verilir?",
+                options: [
+                    "Nükleoplazma",
+                    "Nüklear por",
+                    "Kromatin",
+                    "Çekirdekçik",
+                    "Çekirdek zarfı"
+                ],
+                correct: 3,
+                explanation: "Çekirdekçik, çekirdek içinde oldukça yoğun bir yapıya sahip bölgedir. Ribozomal RNA (rRNA) sentezi ve ribozom alt birimlerinin birleştirilmesi burada gerçekleşir. Bu nedenle 'ribozom yapım merkezi' olarak adlandırılır."
+            },
+            {
+                question: "Salgı proteinlerinin hücrede izlediği yol aşağıdakilerden hangisinde doğru sırayla verilmiştir?",
+                options: [
+                    "Ribozom → GER → Golgi → Salgı vezikülü → Hücre dışı",
+                    "GER → Ribozom → Golgi → Hücre dışı",
+                    "Golgi → GER → Ribozom → Hücre dışı",
+                    "Ribozom → Golgi → GER → Hücre dışı",
+                    "Hücre dışı → GER → Ribozom → Golgi"
+                ],
+                correct: 0,
+                explanation: "Salgı proteininin sentez ve salgılanma yolu: 1. Çekirdek (DNA'dan mRNA), 2. Ribozom (GER'ye bağlı, protein sentezi), 3. Granüllü ER (işleme), 4. Golgi aygıtı (paketleme, modifikasyon), 5. Salgı vezikülü (taşıma), 6. Hücre zarı (ekzositoz ile salgılanma)."
+            },
+            {
+                question: "Aşağıdaki organellerden hangisi tek katlı zarla çevrilidir?",
+                options: [
+                    "Mitokondri",
+                    "Kloroplast",
+                    "Çekirdek",
+                    "Lizozom",
+                    "Ribozom"
+                ],
+                correct: 3,
+                explanation: "Lizozom, tek katlı zarla çevrilidir. Mitokondri ve kloroplast çift katlı zarla çevrilidir. Çekirdek çift katlı çekirdek zarfı ile çevrilidir. Ribozom ise zarla çevrili değildir."
+            },
+            {
+                question: "Fagositozla hücre içine alınan büyük bir besin parçasının sindirimi hangi organel çiftinin işbirliği ile gerçekleşir?",
+                options: [
+                    "Mitokondri ve koful",
+                    "Besin kofulu ve lizozom",
+                    "Golgi ve endoplazmik retikulum",
+                    "Ribozom ve sentrozom",
+                    "Kloroplast ve koful"
+                ],
+                correct: 1,
+                explanation: "Fagositozla (hücre yutması) hücre içine alınan besin partikülü, bir besin kofulu içinde bulunur. Daha sonra bu besin kofulu, sindirim enzimleri taşıyan lizozomla birleşir ve sindirim kofulunu oluşturur. Lizozom enzimleri besini parçalar."
+            },
+            {
+                question: "Hücre zarındaki proteinler aşağıdaki işlevlerden hangisini gerçekleştirmez?",
+                options: [
+                    "Madde taşıma (taşıyıcı, kanal)",
+                    "Hücre tanıma (glikoprotein)",
+                    "Enzimatik aktivite",
+                    "Enerji üretimi (ATP sentezi)",
+                    "Sinyal iletimi (reseptör)"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Hücre zarı proteinleri; madde taşıma (taşıyıcı, kanal), enzimatik aktivite, hücre tanıma (glikoprotein), hücre birleşmesi, sinyal iletimi (reseptör) gibi işlevler görür. Ancak ATP sentezi (enerji üretimi) mitokondri organelinde gerçekleşir, hücre zarı proteinlerinin doğrudan işlevi değildir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi bitki hücresinde bulunmaz?",
+                options: [
+                    "Hücre duvarı",
+                    "Kloroplast",
+                    "Büyük merkezi koful",
+                    "Sentrozom",
+                    "Plastit"
+                ],
+                correct: 3,
+                explanation: "Sentrozom, hayvan hücrelerinde bulunan ve hücre bölünmesinde iğ ipliklerini oluşturan yapıdır. Bitki hücrelerinde genellikle sentrozom yoktur (bazı ilkel bitkiler hariç). Bitki hücreleri hücre duvarı, kloroplast, büyük koful ve plastit içerir."
+            },
+            {
+                question: "Ökaryot bir hücrede, aynı anda birbirinden farklı ve hatta zıt koşullar gerektiren metabolik olayların gerçekleşebilmesini sağlayan temel özellik nedir?",
+                options: [
+                    "Hücrenin küçük olması",
+                    "Organellerin zarlarla birbirinden ayrılması",
+                    "DNA'nın çekirdek içinde olması",
+                    "Ribozomların bol olması",
+                    "Sitoplazmanın akışkan olması"
+                ],
+                correct: 1,
+                explanation: "Ökaryot hücrelerde organeller zarlarla çevrilidir. Bu zarlar, sitoplazmayı kompartımanlara (bölmelere) ayırır. Böylece farklı pH, enzim konsantrasyonu veya substrat gerektiren, hatta birbirine zarar verebilecek metabolik olaylar (örneğin sindirim ve sentez) aynı anda farklı kompartımanlarda gerçekleşebilir."
+            },
+            {
+                question: "Prokaryot hücrelerin ökaryot hücrelere göre genellikle daha küçük olmasının bir avantajı aşağıdakilerden hangisi olabilir?",
+                options: [
+                    "Daha fazla organel taşıyabilirler",
+                    "Yüzey/hacim oranları daha yüksektir, madde alışverişi daha verimlidir",
+                    "DNA'ları daha karmaşıktır",
+                    "Hareket etmeleri daha zordur",
+                    "Çevresel değişimlere daha duyarsızdırlar"
+                ],
+                correct: 1,
+                explanation: "Küçük hücrelerin yüzey alanı/hacim oranı daha yüksektir. Bu, hücre zarından birim zamanda birim hacme daha fazla madde giriş-çıkışı anlamına gelir. Bu verimli madde alışverişi, prokaryotların hızlı büyüme ve çoğalmasını sağlayan faktörlerden biridir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi hücre teorisinin temel ilkelerinden biri değildir?",
+                options: [
+                    "Tüm canlılar bir veya daha fazla hücreden oluşur",
+                    "Hücre, canlının yapısal ve işlevsel temel birimidir",
+                    "Tüm hücreler daha önce var olan hücrelerden bölünerek oluşur",
+                    "Tüm hücreler aynı organellere sahiptir",
+                    "Hücre, canlılık özelliklerini gösteren en küçük yapıdır"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Hücre teorisinin temel ilkeleri: 1) Tüm canlılar bir veya daha fazla hücreden oluşur. 2) Hücre, canlının yapısal ve işlevsel temel birimidir. 3) Tüm hücreler daha önce var olan hücrelerden bölünerek oluşur (biyogenez). 'Tüm hücreler aynı organellere sahiptir' ifadesi yanlıştır; prokaryot ve ökaryot hücreler, farklı hücre tipleri arasında organel farklılıkları vardır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Hücre ve organeller konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>
