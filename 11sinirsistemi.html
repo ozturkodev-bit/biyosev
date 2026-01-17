@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinir Sistemi Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #9b59b6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2ecc71;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #2ecc71;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> Sinir Sistemi Öğrenme Portalı</h1>
+            <div class="subtitle">4 farklı öğrenme yöntemi ile konuyu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/4</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">60 adet soru-cevap kartı ile sinir sistemi konusunu tekrar edin ve bilgilerinizi test edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Sinir sisteminin ana hatlarını görsel olarak öğrenin ve bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">50 soruluk detaylı test ile sinir sistemi bilgilerinizi sınayın ve performansınızı görün.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Sinir sisteminin tüm detaylarını kapsamlı özet şeklinde tekrar edin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #e74c3c;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">60</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Sinir Sistemi Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sinir Sisteminin Temel Kavramları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Reseptör:</strong> İç ve dış çevreden gelen uyarıları algılayan özelleşmiş hücreler</li>
+                        <li><strong>Uyarı:</strong> Canlıyı etkileyen fiziksel, kimyasal ve biyolojik faktörler</li>
+                        <li><strong>Uyartı:</strong> Uyarıların organizmada oluşturduğu etkiler</li>
+                        <li><strong>Efektör:</strong> Tepki organları (kas ve salgı bezleri)</li>
+                        <li><strong>Homeostasi:</strong> Kararlı ve dengeli iç çevre</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sinir Doku ve Nöron Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Nöron:</strong> Sinir hücresi</li>
+                        <li><strong>Nörolemma:</strong> Sinir hücresinin zarı</li>
+                        <li><strong>Nöroplazma:</strong> Sinir hücresinin sitoplazması</li>
+                        <li><strong>Hücre gövdesi:</strong> Çekirdek ve sitoplazmayı kapsayan kısım</li>
+                        <li><strong>Dendrit:</strong> Uyartıyı alan kısa uzantılar</li>
+                        <li><strong>Akson:</strong> Uyartıyı ileten uzun uzantı</li>
+                        <li><strong>Miyelin kılıf:</strong> Aksonu saran izolasyon tabakası</li>
+                        <li><strong>Ranvier boğumu:</strong> Miyelin kılıfın kesintiye uğradığı bölgeler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Nöron Çeşitleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Duyu nöronu (Afferent):</strong> Reseptörlerden merkeze uyartı taşır</li>
+                        <li><strong>Ara nöron (İnternöron):</strong> Merkezde değerlendirme yapar</li>
+                        <li><strong>Motor nöron (Efferent):</strong> Merkezden efektöre uyartı taşır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Gila (Destek) Hücreleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Mikroglialar:</strong> Savunma hücresi, mikropları ve hasarlı dokuyu yok eder</li>
+                        <li><strong>Astrositler:</strong> Destek sağlar, kan-beyin bariyerini oluşturur</li>
+                        <li><strong>Oligodendrositler:</strong> Merkezi sinir sisteminde miyelin kılıf oluşturur</li>
+                        <li><strong>Schwann hücreleri:</strong> Çevresel sinir sisteminde miyelin kılıf oluşturur</li>
+                        <li><strong>Ependim hücreler:</strong> Beyin omurilik sıvısını salgılar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Impuls Oluşumu ve İletimi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Impuls:</strong> Nöronda ortaya çıkan elektrokimyasal değişim</li>
+                        <li><strong>Eşik değer:</strong> Impuls oluşumuna neden olan en düşük uyarı şiddeti</li>
+                        <li><strong>Ya hep ya hiç prensibi:</strong> Nöron ya tepki vermez ya da tüm gücüyle tepki gösterir</li>
+                        <li><strong>Aksiyon potansiyeli:</strong> Impulsun nöronda meydana getirdiği elektriksel değişim</li>
+                        <li><strong>Uyartı iletim hızını artıran faktörler:</strong> Miyelin kılıf varlığı, akson çapının artması, sıcaklık artışı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Sinaps ve Nörotransmitterler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sinaps:</strong> Nöronların bağlantı yaptığı yer</li>
+                        <li><strong>Sinaptik yumru:</strong> Aksonun sinaps boşluğu ile sonlanan ucu</li>
+                        <li><strong>Nörotransmitter:</strong> Impuls iletimini sağlayan kimyasal maddeler</li>
+                        <li><strong>Nörotransmitter çeşitleri:</strong> Asetilkolin, adrenalin, noradrenalin, dopamin, histamin</li>
+                        <li><strong>Seçici direnç:</strong> Impulsun belirli bir yöne ilerlemesini sağlama</li>
+                        <li><strong>Kolaylaştırıcı sinaps:</strong> Sonraki nörona iletimi hızlandırır</li>
+                        <li><strong>Durdurucu sinaps:</strong> Sonraki nörona iletimi durdurur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Merkezi Sinir Sistemi: Beyin</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Beyin zarları (Meninges):</strong> Sert zar, örümceksi zar, ince zar</li>
+                        <li><strong>Beyin omurilik sıvısı (BOS):</strong> Koruma ve madde alışverişi sağlar</li>
+                        <li><strong>Ön beyin:</strong> Uç beyin ve ara beyin</li>
+                        <li><strong>Orta beyin:</strong> Görme ve işitme refleksleri, kas tonusu</li>
+                        <li><strong>Arka beyin:</strong> Beyincik, omurilik soğanı, pons</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Uç Beyin ve Loblar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ön lob (Frontal):</strong> İstemli hareket, karar verme, konuşma</li>
+                        <li><strong>Yan lob (Parietal):</strong> Dokunma, basınç, acı hissi, sıcaklık</li>
+                        <li><strong>Şakak lob (Temporal):</strong> Hafıza, tat, koku, duyma</li>
+                        <li><strong>Arka lob (Oksipital):</strong> Görme, cisim tanıma</li>
+                        <li><strong>Beyin kabuğu (Serebral korteks):</strong> Bütünleştirici, duyu ve motor alanlar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Sinir Sistemi Testi (50 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #2ecc71; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 50</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Sinir Sistemi Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-info-circle"></i> SİNİR SİSTEMİNİN TEMEL KAVRAMLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Reseptör:</strong> İç ve dış çevremizden gelen çeşitli uyarıları algılayan özelleşmiş hücrelerdir.</li>
+                        <li><strong>Uyarı:</strong> Canlıyı etkileyen, vücudun içinde veya çevrede meydana gelen ses, koku, ışık vb. fiziksel, kimyasal ve biyolojik faktörlerdir.</li>
+                        <li><strong>Uyartı:</strong> Uyarıların organizmada oluşturduğu etkilerdir.</li>
+                        <li><strong>Efektör:</strong> Kas ve salgı bezi gibi tepki organlarıdır.</li>
+                        <li><strong>Homeostasi:</strong> Kararlı ve dengeli bir iç çevre oluşturarak organizmanın vücut içi ortamının dengede tutulmasıdır.</li>
+                        <li>Sinir sistemi, endokrin bezler ve duyu organları ile birlikte denetleyici ve düzenleyici sistemi oluşturur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-microscope"></i> SİNİR DOKU VE NÖRON YAPISI</div>
+                    <ul class="summary-list">
+                        <li><strong>Nöron:</strong> Sinir hücresidir. Vücut içinden ve dışından gelen uyarıların algılanmasını, değerlendirilmesini ve oluşan cevapların ilgili yapı ve organlara iletilmesini sağlar.</li>
+                        <li><strong>Nöronun bölümleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Hücre gövdesi:</span> Çekirdeği ve sitoplazmayı kapsar. Nissi cisimcikleri ve nörofibriller içerir.</li>
+                                <li><span class="highlight">Dendrit:</span> Hücre gövdesinden çıkan, çok sayıda olabilen kısa uzantıdır. Uyartıyı alır ve hücre gövdesine iletir.</li>
+                                <li><span class="highlight">Akson:</span> Hücre gövdesinden çıkan, genellikle dendritten daha uzun yapıdır. Uyartıyı diğer sinir hücrelerine veya efektör organlara iletir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Miyelin kılıf:</strong> Aksonun etrafını saran, gila hücreleri tarafından oluşturulan bir tabakadır. Elektriksel izolasyon sağlayarak uyartı iletimini hızlandırır.</li>
+                        <li><strong>Ranvier boğumu:</strong> Miyelin kılıflı aksonların yer yer kesintiye uğradığı bölgelerdir. Impuls iletimi bir boğumdan diğer boğuma atlamalı olarak ilerler.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-users"></i> NÖRON ÇEŞİTLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Duyu nöronu (Afferent/Getirici):</strong> Vücudun çeşitli kısımlarından gelen uyartıları alır. Duyu organlarındaki ve iç organlardaki reseptörlerden aldığı uyartıları merkezî sinir sistemine taşır.</li>
+                        <li><strong>Ara nöron (İnternöron):</strong> Merkezî sinir sisteminde (beyin veya omurilikte) bulunur. Duyu ve motor nöronlar arasındaki bağlantıyı sağlar. Duyu nöronlarından gelen bilgileri değerlendirerek motor nöronlara iletir.</li>
+                        <li><strong>Motor nöron (Efferent/Götürücü):</strong> Beyinden ve omurilikten gelen uyartıları efektör organlara (kaslara veya bezlere) taşıyarak tepkinin ortaya çıkmasını sağlar.</li>
+                    </ul>
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Duyu nöronu zarar gören birey hissedemez (lokal anestezi). Ara nöron zarar gören birey hissedemez (felç). Motor nöron zarar gören birey tepki veremez (botoks).
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shield-alt"></i> GİLA (DESTEK) HÜCRELERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Mikroglialar:</strong> Merkezî sinir sistemindeki savunma hücresidir. Mikropları ve hasarlı sinir dokusunu yok eder.</li>
+                        <li><strong>Astrositler:</strong> Merkezî sinir sisteminde desteklik sağlar. Kan-beyin bariyerini oluşturarak zararlı maddelerin kandan beyin dokusuna ulaşmasını engeller.</li>
+                        <li><strong>Oligodendrositler:</strong> Merkezî sinir sistemindeki nöronların miyelin kılıfını oluşturur.</li>
+                        <li><strong>Schwann hücreleri:</strong> Çevresel sinir sistemindeki nöronların miyelin kılıfını oluşturur.</li>
+                        <li><strong>Ependim hücreler:</strong> Beyin omurilik sıvısını salgılayarak beyin ve omurilik içindeki sıvı dolu boşlukları çevreler. Sinir sistemini hastalıklara karşı korur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> İMPULS OLUŞUMU VE İLETİMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Impuls:</strong> Uyarılan sinir hücresinin dendritinden aksonun ucuna doğru ortaya çıkan elektriksel ve kimyasal değişimdir.</li>
+                        <li><strong>Eşik değer:</strong> Sinir hücresinde impuls oluşumuna neden olan en düşük uyarı şiddetidir.</li>
+                        <li><strong>Ya hep ya hiç prensibi:</strong> Sinir hücresi eşik değerin altındaki uyarılara tepki vermezken, eşik değeri ve üzerindeki uyarılara aynı şiddette tepki verir. Ya tepki vermez ya da tüm gücüyle tepki gösterir.</li>
+                        <li><strong>Aksiyon potansiyeli:</strong> Impulsun nöronda meydana getirdiği elektriksel değişimlerdir.</li>
+                        <li><strong>Uyartı iletim hızını artıran faktörler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Miyelin kılıf bulunması</li>
+                                <li>Akson çapının artması</li>
+                                <li>Sinaps sayısının azalması</li>
+                                <li>Ortam sıcaklığının artması</li>
+                            </ul>
+                        </li>
+                        <li>Uyarı şiddetindeki artış, impuls büyüklüğünü ve hızını artırmaz ancak nöronda oluşacak impuls sayısını artırır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> SİNAPS VE NÖROTRANSMİTTERLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Sinaps:</strong> Bir nöronun diğer bir nöronla ya da salgı bezi veya kas gibi tepki organları ile dar bir boşluk bırakarak bağlantı yaptığı yerdir.</li>
+                        <li><strong>Sinaptik yumru:</strong> Aksonun sinaps boşluğu ile sonlanan ucudur. Bol miktarda sinaptik kesecikler bulunur.</li>
+                        <li><strong>Nörotransmitter:</strong> İki nöron arasında veya nöron ile başka hücre arasında iletişimi yani impuls iletimini gerçekleştiren kimyasal maddelerdir.</li>
+                        <li><strong>Nörotransmitter çeşitleri:</strong> Asetilkolin, adrenalin, noradrenalin, dopamin, histamin gibi maddelerdir.</li>
+                        <li><strong>Impuls iletim mekanizması:</strong> Impuls akson ucuna gelince sinaptik keseciklerdeki nörotransmitterler sinaps boşluğuna salınır. Bunlar difüzyonla diğer nöronun dendritine ulaşır ve reseptörlere bağlanarak yeni bir impuls oluşturur.</li>
+                        <li><strong>Seçici direnç:</strong> Sinapsa gelen her impulsun sinapstan geçmemesi, böylece impulsun belirli bir yöne ilerlemesi ve sadece ilgili hedef organın uyarılmasıdır.</li>
+                        <li><strong>Kolaylaştırıcı sinaps:</strong> Sinaps boşluğuna bırakılan nörotransmitter, komşu hücrenin zar geçirgenliğini artırarak impulsun sonraki nörona iletimine yardım eder.</li>
+                        <li><strong>Durdurucu sinaps:</strong> Sinaps boşluğuna salgılanan nörotransmitter, komşu hücre zarının dendritinde impuls iletimini durdurur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-brain"></i> MERKEZİ SİNİR SİSTEMİ: BEYİN</div>
+                    <ul class="summary-list">
+                        <li><strong>Beyin zarları (Meninges):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Sert zar:</span> Kafatası kemiklerinin altında bulunur, kalın ve dayanıklıdır.</li>
+                                <li><span class="highlight">Örümceksi zar:</span> Sert zar ile ince zar arasında bulunur.</li>
+                                <li><span class="highlight">İnce zar:</span> En alttaki zardır, bol miktarda kan damarı bulundurur, beyni besler.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Beyin omurilik sıvısı (BOS):</strong> Örümceksi zar ile ince zar arasında bulunur. Beyni ve omuriliği darbelerden korur, iyon dengesini ve madde alışverişini düzenler.</li>
+                        <li><strong>Beyin bölümleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Ön beyin:</span> Uç beyin ve ara beyin</li>
+                                <li><span class="highlight">Orta beyin:</span> Ön beyin ile arka beyni birbirine bağlar</li>
+                                <li><span class="highlight">Arka beyin:</span> Beyincik, omurilik soğanı, pons</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cogs"></i> UÇ BEYİN VE LOBLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Uç beyin:</strong> İki yarım küreden oluşur (sağ ve sol). Yarım küreler sinir demeti ile birbirine bağlıdır.</li>
+                        <li><strong>Beyin yarım küresi lobları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Ön lob (Frontal lob):</span> İstemli hareketlerin kontrolü, karar verme, plan yapma, yazma, konuşma</li>
+                                <li><span class="highlight">Yan lob (Parietal lob):</span> Dokunma, basınç, acı hissi, sıcaklık, konuşmanın algılanması</li>
+                                <li><span class="highlight">Şakak lob (Temporal lob):</span> Hafıza, tat alma, koklama, duyma</li>
+                                <li><span class="highlight">Arka lob (Oksipital lob):</span> Görme, cisim tanıma</li>
+                            </ul>
+                        </li>
+                        <li><strong>Beyin kabuğu (Serebral korteks):</strong> Uç beynin yüzeyindeki boz maddeden meydana gelmiş kısımdır.</li>
+                        <li><strong>Beyin kabuğu alanları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Bütünleştirici alan:</span> Düşünme, konuşma, hafıza, öğrenme, zekâ, değerlendirme</li>
+                                <li><span class="highlight">Duyu alanı:</span> Tat, acı, basınç, sıcaklık, görme, işitme, koku alma</li>
+                                <li><span class="highlight">Motor alan:</span> Efektör organlara uyarılar göndererek istemli kas faaliyetlerini düzenler</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> ARA BEYİN BÖLÜMLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Talamus:</strong> Koku duyusu hariç diğer duyuların toplanıp sınıflandırıldığı ve beyin kabuğundaki ilgili merkezlere iletildiği bölümdür. Duyuları ve uyanıklığı kontrol eder.</li>
+                        <li><strong>Hipotalamus:</strong> Vücut ısısının ayarlanmasını, yağ ve karbohidrat metabolizmasını, uykuyu, iştahı, günlük ritmi, su dengesini, cinsel olgunlaşmayı, heyecanı, stres kontrolünü düzenler. "Savaş ya da kaç!" tepkisini başlatır. Hipofiz bezinin çalışmasını kontrol eder.</li>
+                        <li><strong>Epitalamus:</strong> Melatonin hormonu salgılayan epifiz bezini içerir. Melatonin biyolojik saati düzenler, karanlıkta salgılanır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-eye"></i> ORTA BEYİN VE ARKA BEYİN</div>
+                    <ul class="summary-list">
+                        <li><strong>Orta beyin:</strong> Ara beyin ile beyincik arasında bulunur. Görme ve işitme reflekslerini kontrol eder. Kas tonusu (kasların dinlenme halinde hafif kasılı kalması) ve vücut duruşunun denetlenmesinde görev yapar.</li>
+                        <li><strong>Arka beyin:</strong> Beyincik, omurilik soğanı ve ponstan oluşur.</li>
+                        <li><strong>Beyincik:</strong> Hareketleri ve vücut dengesini kontrol eder. İç kulaktaki yarım daire kanallarından ve gözden gelen uyartıları değerlendirerek dengeyi sağlar. Görmeyi, işitmeyi ve çizgili kaslar arasındaki koordinasyonu düzenler.</li>
+                        <li><strong>Omurilik soğanı (Hayat düğümü):</strong> Omurilik ile beyin arasındaki sinirlerin geçtiği yerdir. Dışında ak, içinde boz madde bulunur. Kalp atışı, solunum, dolaşım, boşaltım, sindirim gibi hayatsal faaliyetlerle çiğneme, yutma, hapşırma, öksürme, kusma, emme gibi refleksleri düzenler. Motor sinirler burada çaprazlanır (sağ yarım küre sol tarafı, sol yarım küre sağ tarafı kontrol eder).</li>
+                        <li><strong>Pons (Varolli köprüsü):</strong> Omurilik soğanı ile orta beyin arasında bulunur. Beyinciğin iki yarım küresi arasında impuls iletimini gerçekleştirir. Omurilik soğanındaki solunum merkezini düzenler.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-spine"></i> OMURİLİK VE REFLEKSLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Omurilik:</strong> Omurgalı canlılarda omurga kanalı içinde bulunur. Duyu sinirlerindeki impulsları beyne iletir, beyinden gelen impulsları motor nöronlar aracılığıyla efektör organa iletir.</li>
+                        <li><strong>Omurilik yapısı:</strong> Sinir hücrelerinin gövde kısımlarından oluşan boz madde kelebek şeklinde ve içte, nöron aksonlarından oluşan ak madde dışta bulunur.</li>
+                        <li><strong>Refleks:</strong> Belirli bir uyarana karşı verilen istemsiz ve ani tepkidir.</li>
+                        <li><strong>Refleks çeşitleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Kalıtsal (Doğuştan) refleksler:</span> Göz kırpma, emme, diz kapağı refleksi</li>
+                                <li><span class="highlight">Kazanılmış refleksler:</span> Yürümek, koşmak, araba sürmek gibi öğrenilmiş davranışlar</li>
+                            </ul>
+                        </li>
+                        <li><strong>Refleks yayı:</strong> Refleks oluşurken uyartının geçtiği iki ya da daha fazla nöronu kapsayan sinir yoludur. Genellikle duyu, ara ve motor nöronlardan oluşur.</li>
+                        <li><strong>Basit refleks yayı:</strong> Sadece duyu ve motor nörondan oluşur (diz kapağı refleksi).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-network-wired"></i> ÇEVRESEL SİNİR SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Çevresel sinir sistemi:</strong> Duyu nöronları ve motor nöronlardan oluşur. Omurilikten çıkan 31 çift omurilik siniri ve beyinden çıkan 12 çift kafa sinirinden oluşur.</li>
+                        <li><strong>Omurilikten çıkan en büyük sinir:</strong> Siyatik sinirleri (bacaklara gider).</li>
+                        <li><strong>Beyinden çıkan 10. sinir çifti:</strong> Vagus siniri (kalp, akciğer, mide, bağırsak gibi iç organlarla bağlantılıdır).</li>
+                        <li><strong>Çevresel sinir sisteminin bölümleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><span class="highlight">Somatik sinir sistemi:</span> Miyelinli duyu ve motor nöronlardan oluşur. İstemli hareketleri düzenler (koşmak, yazı yazmak, resim yapmak).</li>
+                                <li><span class="highlight">Otonom sinir sistemi:</span> Miyelinsiz motor nöronlardan oluşur. İç organların çalışmasını düzenleyen impulsları iletir (damarlardaki düz kaslar, sindirim, boşaltım, kalp kası, eşeysel bezler).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 4) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 60 Sinir Sistemi Sorusu
+        const csvData = `Sinir sisteminin özelleşmiş hücrelerine ne ad verilir?,"Nöron (sinir hücresi)"
+Reseptör nedir?,"İç ve dış çevreden gelen uyarıları algılayan özelleşmiş hücrelerdir."
+Uyarı nedir?,"Canlıyı etkileyen, vücudun içinde veya çevrede meydana gelen ses, koku, ışık vb. fiziksel, kimyasal ve biyolojik faktörlerdir."
+Uyartı nedir?,"Uyarıların organizmada oluşturduğu etkilerdir."
+Efektör organlar nelerdir?,"Kas ve salgı bezi gibi tepki organlarıdır."
+Homeostasi nedir?,"Kararlı ve dengeli bir iç çevre oluşturarak organizmanın vücut içi ortamının dengede tutulmasıdır."
+Nöronun hücre zarına ne ad verilir?,"Nörolemma"
+Nöronun sitoplazmasına ne ad verilir?,"Nöroplazma"
+Nöronun uyartıyı alan kısa uzantılarına ne denir?,"Dendrit"
+Nöronun uyartıyı ileten uzun uzantısına ne denir?,"Akson"
+Aksonu saran ve impuls iletimini hızlandıran tabakaya ne ad verilir?,"Miyelin kılıf"
+Miyelin kılıflı aksonlarda impuls iletiminin atlamalı olarak ilerlediği bölgelere ne denir?,"Ranvier boğumu"
+Sinir sisteminde destek hücrelerine ne ad verilir?,"Gila hücreleri"
+Merkezi sinir sistemindeki savunma hücresi hangisidir?,"Mikroglialar"
+Merkezi sinir sisteminde kan-beyin bariyerini oluşturan gila hücresi hangisidir?,"Astrositler"
+Merkezi sinir sisteminde miyelin kılıf oluşturan gila hücresi hangisidir?,"Oligodendrositler"
+Çevresel sinir sisteminde miyelin kılıf oluşturan gila hücresi hangisidir?,"Schwann hücreleri"
+Beyin omurilik sıvısını salgılayan gila hücresi hangisidir?,"Ependim hücreleri"
+Reseptörlerden aldığı uyartıları merkezi sinir sistemine taşıyan nöron çeşidi nedir?,"Duyu nöronu (afferent/getirici)"
+Merkezi sinir sisteminde bulunan ve duyu ile motor nöronlar arasında bağlantı kuran nöron çeşidi nedir?,"Ara nöron (internöron)"
+Beyinden ve omurilikten gelen uyartıları efektör organlara taşıyan nöron çeşidi nedir?,"Motor nöron (efferent/götürücü)"
+Impuls nedir?,"Uyarılan sinir hücresinin dendritinden aksonun ucuna doğru ortaya çıkan elektriksel ve kimyasal değişimdir."
+Sinir hücresinde impuls oluşumuna neden olan en düşük uyarı şiddetine ne denir?,"Eşik değer"
+Sinir hücresinin eşik değerin altındaki uyarılara tepki vermemesi, eşik değer ve üzerindeki uyarılara aynı şiddette tepki vermesine ne denir?,"Ya hep ya hiç prensibi"
+Impulsun nöronda meydana getirdiği elektriksel değişimlere ne ad verilir?,"Aksiyon potansiyeli"
+Uyartı iletim hızını artıran faktörler nelerdir?,"Miyelin kılıf bulunması, akson çapının artması, sinaps sayısının azalması, ortam sıcaklığının artması"
+Bir nöronun diğer bir nöronla ya da tepki organları ile bağlantı yaptığı yere ne ad verilir?,"Sinaps"
+Aksonun sinaps boşluğu ile sonlanan ucuna ne denir?,"Sinaptik yumru"
+İki nöron arasında impuls iletimini sağlayan kimyasal maddelere ne ad verilir?,"Nörotransmitter"
+Asetilkolin, adrenalin, dopamin gibi maddeler ne çeşit maddelerdir?,"Nörotransmitter"
+Sinapsa gelen her impulsun sinapstan geçmemesi ve impulsun belirli bir yöne ilerlemesine ne denir?,"Seçici direnç"
+Beyni saran zarlara ne ad verilir?,"Meninges"
+Beyin zarları nelerdir?,"Sert zar, örümceksi zar, ince zar"
+Örümceksi zar ile ince zar arasında bulunan ve beyni koruyan sıvıya ne ad verilir?,"Beyin omurilik sıvısı (BOS)"
+Beynin bölümleri nelerdir?,"Ön beyin, orta beyin, arka beyin"
+Ön beyin hangi bölümlerden oluşur?,"Uç beyin ve ara beyin"
+Beyin yarım kürelerini enine ayıran yarığa ne ad verilir?,"Rolando yarığı"
+Uç beyinde istemli hareketlerin kontrolünden sorumlu lob hangisidir?,"Ön lob (frontal lob)"
+Uç beyinde dokunma, basınç, acı hissinden sorumlu lob hangisidir?,"Yan lob (parietal lob)"
+Uç beyinde hafıza, tat alma, duymadan sorumlu lob hangisidir?,"Şakak lob (temporal lob)"
+Uç beyinde görmeden sorumlu lob hangisidir?,"Arka lob (oksipital lob)"
+Uç beynin yüzeyindeki boz maddeden meydana gelmiş kısma ne ad verilir?,"Beyin kabuğu (serebral korteks)"
+Beyin kabuğundaki düşünme, konuşma, hafıza, öğrenme becerilerinin gerçekleştiği alana ne ad verilir?,"Bütünleştirici alan"
+Koku hariç diğer duyuların toplanıp sınıflandırıldığı ara beyin bölümü hangisidir?,"Talamus"
+Vücut ısısı, metabolizma, uyku, iştah, su dengesini düzenleyen ara beyin bölümü hangisidir?,"Hipotalamus"
+Melatonin hormonu salgılayan ve biyolojik saati düzenleyen ara beyin bölümü hangisidir?,"Epitalamus (epifiz bezi)"
+Görme ve işitme reflekslerini kontrol eden beyin bölümü hangisidir?,"Orta beyin"
+Hareketleri ve vücut dengesini kontrol eden arka beyin bölümü hangisidir?,"Beyincik"
+Kalp atışı, solunum, sindirim gibi hayatsal faaliyetleri düzenleyen arka beyin bölümü hangisidir?,"Omurilik soğanı"
+Beyinciğin iki yarım küresi arasında impuls iletimini sağlayan arka beyin bölümü hangisidir?,"Pons (Varolli köprüsü)"
+Omurilik soğanına neden hayat düğümü denir?,"Gelen darbeler ölüme neden olabileceği için"
+Motor sinirler nerede çaprazlanır?,"Omurilik soğanında"
+Belirli bir uyarana karşı verilen istemsiz ve ani tepkilere ne ad verilir?,"Refleks"
+Doğuştan gelen reflekslere ne ad verilir?,"Kalıtsal refleksler"
+Göz kırpma, emme, diz kapağı refleksi hangi refleks türüdür?,"Kalıtsal refleksler"
+Yürümek, koşmak, araba sürmek gibi öğrenilmiş davranışlar hangi refleks türüdür?,"Kazanılmış refleksler"
+Refleks oluşurken uyartının geçtiği sinir yoluna ne ad verilir?,"Refleks yayı"
+Refleks yayı genellikle hangi nöronlardan oluşur?,"Duyu, ara ve motor nöronlardan"
+Sadece duyu ve motor nörondan oluşan basit refleks yayına örnek nedir?,"Diz kapağı refleksi"
+Çevresel sinir sisteminde kaç çift omurilik siniri bulunur?,"31 çift"
+Çevresel sinir sisteminde kaç çift kafa siniri bulunur?,"12 çift"
+Omurilikten çıkan en büyük sinir çifti hangisidir?,"Siyatik sinirleri"
+Beyinden çıkan ve iç organlarla bağlantılı olan 10. sinir çifti hangisidir?,"Vagus siniri"
+İstemli hareketleri düzenleyen çevresel sinir sistemi bölümü hangisidir?,"Somatik sinir sistemi"
+İç organların çalışmasını düzenleyen çevresel sinir sistemi bölümü hangisidir?,"Otonom sinir sistemi"`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // TEST SYSTEM - 50 Questions
+        const testQuestions = [
+            {
+                question: "Sinir sisteminin özelleşmiş hücrelerine ne ad verilir?",
+                options: [
+                    "Reseptör",
+                    "Nöron",
+                    "Efektör",
+                    "Gila hücresi",
+                    "Nörotransmitter"
+                ],
+                correct: 1,
+                explanation: "Sinir sisteminin özelleşmiş hücrelerine nöron (sinir hücresi) adı verilir."
+            },
+            {
+                question: "İç ve dış çevreden gelen uyarıları algılayan özelleşmiş hücrelere ne ad verilir?",
+                options: [
+                    "Nöron",
+                    "Efektör",
+                    "Reseptör",
+                    "Gila hücresi",
+                    "Nörotransmitter"
+                ],
+                correct: 2,
+                explanation: "İç ve dış çevreden gelen uyarıları algılayan özelleşmiş hücrelere reseptör denir."
+            },
+            {
+                question: "Sinir hücresinin uyartıyı alan kısa uzantılarına ne denir?",
+                options: ["Akson", "Dendrit", "Nörolemma", "Miyelin kılıf", "Ranvier boğumu"],
+                correct: 1,
+                explanation: "Sinir hücresinin uyartıyı alan kısa uzantılarına dendrit denir. Akson ise uyartıyı ileten uzun uzantıdır."
+            },
+            {
+                question: "Aksonu saran ve impuls iletimini hızlandıran tabakaya ne ad verilir?",
+                options: ["Nörolemma", "Dendrit", "Miyelin kılıf", "Ranvier boğumu", "Sinaps"],
+                correct: 2,
+                explanation: "Aksonu saran ve impuls iletimini hızlandıran tabakaya miyelin kılıf adı verilir."
+            },
+            {
+                question: "Merkezi sinir sisteminde miyelin kılıf oluşturan gila hücresi hangisidir?",
+                options: ["Mikroglialar", "Astrositler", "Oligodendrositler", "Schwann hücreleri", "Ependim hücreleri"],
+                correct: 2,
+                explanation: "Merkezi sinir sisteminde miyelin kılıf oluşturan gila hücresi oligodendrositlerdir. Schwann hücreleri çevresel sinir sisteminde miyelin kılıf oluşturur."
+            },
+            {
+                question: "Reseptörlerden aldığı uyartıları merkezi sinir sistemine taşıyan nöron çeşidi nedir?",
+                options: ["Motor nöron", "Ara nöron", "Duyu nöronu", "İnternöron", "Efferent nöron"],
+                correct: 2,
+                explanation: "Reseptörlerden aldığı uyartıları merkezi sinir sistemine taşıyan nöron çeşidi duyu nöronudur (afferent/getirici)."
+            },
+            {
+                question: "Beyinden ve omurilikten gelen uyartıları efektör organlara taşıyan nöron çeşidi nedir?",
+                options: ["Duyu nöronu", "Ara nöron", "Motor nöron", "İnternöron", "Afferent nöron"],
+                correct: 2,
+                explanation: "Beyinden ve omurilikten gelen uyartıları efektör organlara taşıyan nöron çeşidi motor nörondur (efferent/götürücü)."
+            },
+            {
+                question: "Sinir hücresinde impuls oluşumuna neden olan en düşük uyarı şiddetine ne denir?",
+                options: ["Aksiyon potansiyeli", "Eşik değer", "Impuls", "Nörotransmitter", "Sinaps"],
+                correct: 1,
+                explanation: "Sinir hücresinde impuls oluşumuna neden olan en düşük uyarı şiddetine eşik değer denir."
+            },
+            {
+                question: "'Ya hep ya hiç prensibi' nedir?",
+                options: [
+                    "Sinir hücresinin tüm uyaranlara tepki vermesi",
+                    "Sinir hücresinin eşik değerin altındaki uyarılara tepki vermemesi, eşik değer ve üzerindeki uyarılara aynı şiddette tepki vermesi",
+                    "Sinir hücresinin sadece güçlü uyaranlara tepki vermesi",
+                    "Sinir hücresinin hiçbir uyarana tepki vermemesi",
+                    "Sinir hücresinin sürekli impuls üretmesi"
+                ],
+                correct: 1,
+                explanation: "'Ya hep ya hiç prensibi', sinir hücresinin eşik değerin altındaki uyarılara tepki vermemesi, eşik değer ve üzerindeki uyarılara aynı şiddette tepki vermesidir."
+            },
+            {
+                question: "Bir nöronun diğer bir nöronla ya da tepki organları ile bağlantı yaptığı yere ne ad verilir?",
+                options: ["Dendrit", "Akson", "Sinaps", "Ranvier boğumu", "Miyelin kılıf"],
+                correct: 2,
+                explanation: "Bir nöronun diğer bir nöronla ya da tepki organları ile bağlantı yaptığı yere sinaps adı verilir."
+            },
+            {
+                question: "İki nöron arasında impuls iletimini sağlayan kimyasal maddelere ne ad verilir?",
+                options: ["Hormonlar", "Nörotransmitterler", "Enzimler", "Reseptörler", "Efektörler"],
+                correct: 1,
+                explanation: "İki nöron arasında impuls iletimini sağlayan kimyasal maddelere nörotransmitterler adı verilir."
+            },
+            {
+                question: "Asetilkolin, adrenalin, dopamin gibi maddeler ne çeşit maddelerdir?",
+                options: ["Hormonlar", "Nörotransmitterler", "Enzimler", "Vitaminler", "Mineral iyonları"],
+                correct: 1,
+                explanation: "Asetilkolin, adrenalin, dopamin gibi maddeler nörotransmitterlerdir."
+            },
+            {
+                question: "Beyni saran zarlara ne ad verilir?",
+                options: ["Meninges", "Nörolemma", "Miyelin kılıf", "Epitel doku", "Bağ doku"],
+                correct: 0,
+                explanation: "Beyni saran zarlara meninges adı verilir. Sert zar, örümceksi zar ve ince zar olmak üzere üç katlıdır."
+            },
+            {
+                question: "Örümceksi zar ile ince zar arasında bulunan ve beyni koruyan sıvıya ne ad verilir?",
+                options: ["Kan plazması", "Lenf sıvısı", "Beyin omurilik sıvısı (BOS)", "Eklem sıvısı", "Göz sıvısı"],
+                correct: 2,
+                explanation: "Örümceksi zar ile ince zar arasında bulunan ve beyni koruyan sıvıya beyin omurilik sıvısı (BOS) adı verilir."
+            },
+            {
+                question: "Uç beyinde istemli hareketlerin kontrolünden sorumlu lob hangisidir?",
+                options: ["Yan lob (parietal lob)", "Ön lob (frontal lob)", "Şakak lob (temporal lob)", "Arka lob (oksipital lob)", "Talamus"],
+                correct: 1,
+                explanation: "Uç beyinde istemli hareketlerin kontrolünden sorumlu lob ön lob (frontal lob) dur."
+            },
+            {
+                question: "Uç beyinde görmeden sorumlu lob hangisidir?",
+                options: ["Yan lob (parietal lob)", "Ön lob (frontal lob)", "Şakak lob (temporal lob)", "Arka lob (oksipital lob)", "Hipotalamus"],
+                correct: 3,
+                explanation: "Uç beyinde görmeden sorumlu lob arka lob (oksipital lob) dur."
+            },
+            {
+                question: "Koku hariç diğer duyuların toplanıp sınıflandırıldığı ara beyin bölümü hangisidir?",
+                options: ["Hipotalamus", "Talamus", "Epitalamus", "Orta beyin", "Beyincik"],
+                correct: 1,
+                explanation: "Koku hariç diğer duyuların toplanıp sınıflandırıldığı ara beyin bölümü talamustur."
+            },
+            {
+                question: "Vücut ısısı, metabolizma, uyku, iştah, su dengesini düzenleyen ara beyin bölümü hangisidir?",
+                options: ["Talamus", "Hipotalamus", "Epitalamus", "Orta beyin", "Beyin kabuğu"],
+                correct: 1,
+                explanation: "Vücut ısısı, metabolizma, uyku, iştah, su dengesini düzenleyen ara beyin bölümü hipotalamustur."
+            },
+            {
+                question: "Melatonin hormonu salgılayan ve biyolojik saati düzenleyen ara beyin bölümü hangisidir?",
+                options: ["Talamus", "Hipotalamus", "Epitalamus", "Beyincik", "Pons"],
+                correct: 2,
+                explanation: "Melatonin hormonu salgılayan ve biyolojik saati düzenleyen ara beyin bölümü epitalamustur (epifiz bezi)."
+            },
+            {
+                question: "Görme ve işitme reflekslerini kontrol eden beyin bölümü hangisidir?",
+                options: ["Ön beyin", "Orta beyin", "Arka beyin", "Beyincik", "Omurilik soğanı"],
+                correct: 1,
+                explanation: "Görme ve işitme reflekslerini kontrol eden beyin bölümü orta beyindir."
+            },
+            {
+                question: "Hareketleri ve vücut dengesini kontrol eden arka beyin bölümü hangisidir?",
+                options: ["Orta beyin", "Beyincik", "Omurilik soğanı", "Pons", "Talamus"],
+                correct: 1,
+                explanation: "Hareketleri ve vücut dengesini kontrol eden arka beyin bölümü beyinciktir."
+            },
+            {
+                question: "Kalp atışı, solunum, sindirim gibi hayatsal faaliyetleri düzenleyen arka beyin bölümü hangisidir?",
+                options: ["Beyincik", "Omurilik soğanı", "Pons", "Orta beyin", "Hipotalamus"],
+                correct: 1,
+                explanation: "Kalp atışı, solunum, sindirim gibi hayatsal faaliyetleri düzenleyen arka beyin bölümü omurilik soğanıdır."
+            },
+            {
+                question: "Motor sinirler nerede çaprazlanır?",
+                options: ["Beyincikte", "Omurilik soğanında", "Pons'ta", "Talamusta", "Beyin kabuğunda"],
+                correct: 1,
+                explanation: "Motor sinirler omurilik soğanında çaprazlanır. Böylece sağ yarım küre vücudun sol tarafını, sol yarım küre sağ tarafını kontrol eder."
+            },
+            {
+                question: "Belirli bir uyarana karşı verilen istemsiz ve ani tepkilere ne ad verilir?",
+                options: ["Impuls", "Refleks", "Uyartı", "Homeostasi", "Sinaps"],
+                correct: 1,
+                explanation: "Belirli bir uyarana karşı verilen istemsiz ve ani tepkilere refleks adı verilir."
+            },
+            {
+                question: "Göz kırpma, emme, diz kapağı refleksi hangi refleks türüdür?",
+                options: ["Kazanılmış refleksler", "Kalıtsal refleksler", "Şartlı refleksler", "Öğrenilmiş refleksler", "Karmaşık refleksler"],
+                correct: 1,
+                explanation: "Göz kırpma, emme, diz kapağı refleksi kalıtsal (doğuştan gelen) reflekslerdir."
+            },
+            {
+                question: "Yürümek, koşmak, araba sürmek gibi öğrenilmiş davranışlar hangi refleks türüdür?",
+                options: ["Kalıtsal refleksler", "Kazanılmış refleksler", "Basit refleksler", "İlkel refleksler", "İçgüdüsel refleksler"],
+                correct: 1,
+                explanation: "Yürümek, koşmak, araba sürmek gibi öğrenilmiş davranışlar kazanılmış reflekslerdir."
+            },
+            {
+                question: "Refleks oluşurken uyartının geçtiği sinir yoluna ne ad verilir?",
+                options: ["Sinaps", "Refleks yayı", "Nöron ağı", "Impuls yolu", "Duyu yolu"],
+                correct: 1,
+                explanation: "Refleks oluşurken uyartının geçtiği sinir yoluna refleks yayı adı verilir."
+            },
+            {
+                question: "Sadece duyu ve motor nörondan oluşan basit refleks yayına örnek nedir?",
+                options: ["Göz kırpma refleksi", "Diz kapağı refleksi", "Elimizi çekme refleksi", "Hapşırma refleksi", "Öksürme refleksi"],
+                correct: 1,
+                explanation: "Sadece duyu ve motor nörondan oluşan basit refleks yayına örnek diz kapağı refleksidir."
+            },
+            {
+                question: "Çevresel sinir sisteminde kaç çift omurilik siniri bulunur?",
+                options: ["12 çift", "31 çift", "24 çift", "36 çift", "8 çift"],
+                correct: 1,
+                explanation: "Çevresel sinir sisteminde 31 çift omurilik siniri bulunur. Ayrıca beyinden çıkan 12 çift kafa siniri vardır."
+            },
+            {
+                question: "Omurilikten çıkan en büyük sinir çifti hangisidir?",
+                options: ["Vagus siniri", "Siyatik sinirleri", "Optik sinir", "İşitme siniri", "Trigeminal sinir"],
+                correct: 1,
+                explanation: "Omurilikten çıkan en büyük sinir çifti bacaklara giden siyatik sinirleridir."
+            },
+            {
+                question: "Beyinden çıkan ve iç organlarla bağlantılı olan 10. sinir çifti hangisidir?",
+                options: ["Optik sinir", "Trigeminal sinir", "Fasiyal sinir", "Vagus siniri", "Siyatik sinir"],
+                correct: 3,
+                explanation: "Beyinden çıkan ve kalp, akciğer, mide, bağırsak gibi iç organlarla bağlantılı olan 10. sinir çifti vagus siniridir."
+            },
+            {
+                question: "İstemli hareketleri düzenleyen çevresel sinir sistemi bölümü hangisidir?",
+                options: ["Otonom sinir sistemi", "Somatik sinir sistemi", "Sempatik sinir sistemi", "Parasempatik sinir sistemi", "Enterik sinir sistemi"],
+                correct: 1,
+                explanation: "İstemli hareketleri düzenleyen çevresel sinir sistemi bölümü somatik sinir sistemidir."
+            },
+            {
+                question: "İç organların çalışmasını düzenleyen çevresel sinir sistemi bölümü hangisidir?",
+                options: ["Somatik sinir sistemi", "Otonom sinir sistemi", "Merkezi sinir sistemi", "Çevresel sinir sistemi", "Periferik sinir sistemi"],
+                correct: 1,
+                explanation: "İç organların çalışmasını düzenleyen çevresel sinir sistemi bölümü otonom sinir sistemidir."
+            },
+            {
+                question: "Uyartı iletim hızını artıran faktörler arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Miyelin kılıf bulunması",
+                    "Akson çapının artması",
+                    "Sinaps sayısının azalması",
+                    "Ortam sıcaklığının artması",
+                    "Dendrit sayısının artması"
+                ],
+                correct: 4,
+                explanation: "Uyartı iletim hızını artıran faktörler: miyelin kılıf bulunması, akson çapının artması, sinaps sayısının azalması, ortam sıcaklığının artmasıdır. Dendrit sayısının artması iletim hızını etkilemez."
+            },
+            {
+                question: "Aşağıdakilerden hangisi nörotransmitter değildir?",
+                options: ["Asetilkolin", "Adrenalin", "Dopamin", "İnsülin", "Noradrenalin"],
+                correct: 3,
+                explanation: "Asetilkolin, adrenalin, dopamin, noradrenalin nörotransmitterlerdir. İnsülin ise pankreastan salgılanan bir hormondur."
+            },
+            {
+                question: "Beyin kabuğundaki (serebral korteks) alanlardan hangisi düşünme, konuşma, hafıza, öğrenme becerilerinin gerçekleştiği alandır?",
+                options: ["Duyu alanı", "Motor alan", "Bütünleştirici alan", "Görme alanı", "İşitme alanı"],
+                correct: 2,
+                explanation: "Beyin kabuğundaki bütünleştirici alanda düşünme, konuşma, hafıza, öğrenme, zekâ, değerlendirme becerileri gerçekleşir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi hipotalamusun görevlerinden biri değildir?",
+                options: [
+                    "Vücut ısısını ayarlama",
+                    "Su dengesini düzenleme",
+                    "Melatonin salgılama",
+                    "İştahı kontrol etme",
+                    "Hipofiz bezini kontrol etme"
+                ],
+                correct: 2,
+                explanation: "Vücut ısısını ayarlama, su dengesini düzenleme, iştahı kontrol etme, hipofiz bezini kontrol etme hipotalamusun görevleridir. Melatonin salgılama epitalamusun (epifiz bezinin) görevidir."
+            },
+            {
+                question: "Omurilik soğanına neden 'hayat düğümü' denir?",
+                options: [
+                    "Beynin en büyük bölümü olduğu için",
+                    "Duyuların toplandığı yer olduğu için",
+                    "Gelen darbelerin ölüme neden olabileceği için",
+                    "Hafızanın merkezi olduğu için",
+                    "Görme merkezi olduğu için"
+                ],
+                correct: 2,
+                explanation: "Omurilik soğanına gelen darbeler kalp atışı, solunum gibi hayatsal faaliyetleri durdurabileceği için 'hayat düğümü' denir."
+            },
+            {
+                question: "Aşağıdaki gila hücrelerinden hangisi kan-beyin bariyerini oluşturur?",
+                options: ["Mikroglialar", "Astrositler", "Oligodendrositler", "Schwann hücreleri", "Ependim hücreleri"],
+                correct: 1,
+                explanation: "Astrositler kan-beyin bariyerini oluşturarak zararlı maddelerin kandan beyin dokusuna ulaşmasını engeller."
+            },
+            {
+                question: "Aşağıdakilerden hangisi doğrudan beyinden çıkan sinirlerle ilgili yanlış bir ifadedir?",
+                options: [
+                    "12 çift kafa siniri vardır",
+                    "Vagus siniri 10. kafa siniridir",
+                    "Optik sinir görme ile ilgilidir",
+                    "Siyatik sinir beyinden çıkar",
+                    "Trigeminal sinir yüz kasları ile ilgilidir"
+                ],
+                correct: 3,
+                explanation: "Siyatik sinir omurilikten çıkar, beyinden çıkmaz. Beyinden 12 çift kafa siniri çıkar."
+            },
+            {
+                question: "Refleks yayı genellikle hangi nöronlardan oluşur?",
+                options: [
+                    "Sadece duyu nöronu",
+                    "Sadece motor nöron",
+                    "Sadece ara nöron",
+                    "Duyu, ara ve motor nöron",
+                    "Sadece duyu ve motor nöron"
+                ],
+                correct: 3,
+                explanation: "Refleks yayı genellikle duyu, ara ve motor nöronlardan oluşur. Basit refleks yaylarında (diz kapağı refleksi) sadece duyu ve motor nöron bulunur."
+            },
+            {
+                question: "Uyartının sinirlerde belirli bir yöne doğru ilerlemesini sağlayan olaya ne ad verilir?",
+                options: ["Ya hep ya hiç prensibi", "Eşik değer", "Seçici direnç", "Aksiyon potansiyeli", "Nörotransmitter"],
+                correct: 2,
+                explanation: "Sinapsa gelen her impulsun sinapstan geçmemesi ve impulsun belirli bir yöne ilerlemesine seçici direnç denir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi beynin koruyucu yapılarından biri değildir?",
+                options: ["Kafatası kemikleri", "Meninges zarları", "Beyin omurilik sıvısı", "Deri", "Omurga"],
+                correct: 4,
+                explanation: "Kafatası kemikleri, meninges zarları, beyin omurilik sıvısı ve deri beyni korur. Omurga ise omuriliği korur."
+            },
+            {
+                question: "İmpulsun nöronda meydana getirdiği elektriksel değişimlere ne ad verilir?",
+                options: ["Eşik değer", "Nörotransmitter", "Aksiyon potansiyeli", "Sinaps", "Refleks"],
+                correct: 2,
+                explanation: "İmpulsun nöronda meydana getirdiği elektriksel değişimlere aksiyon potansiyeli adı verilir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi beyincik ile ilgili yanlış bir ifadedir?",
+                options: [
+                    "Vücut dengesini sağlar",
+                    "İç kulaktan gelen uyartıları değerlendirir",
+                    "Hareketleri koordine eder",
+                    "Hayatsal faaliyetleri düzenler",
+                    "İki yarım küreden oluşur"
+                ],
+                correct: 3,
+                explanation: "Beyincik vücut dengesini sağlar, hareketleri koordine eder, iki yarım küreden oluşur. Hayatsal faaliyetleri (kalp atışı, solunum vb.) düzenleyen omurilik soğanıdır."
+            },
+            {
+                question: "Çevresel sinir sistemi ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+                options: [
+                    "Sadece motor nöronlardan oluşur",
+                    "Beyin ve omurilikten oluşur",
+                    "Sadece duyu nöronlarından oluşur",
+                    "Somatik ve otonom sinir sistemi olarak ikiye ayrılır",
+                    "Sadece istemsiz hareketleri kontrol eder"
+                ],
+                correct: 3,
+                explanation: "Çevresel sinir sistemi somatik (istemli hareketler) ve otonom (istemsiz/iç organ faaliyetleri) sinir sistemi olarak ikiye ayrılır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi kalıtsal (doğuştan) reflekslere örnek değildir?",
+                options: ["Göz kırpma", "Emme", "Diz kapağı refleksi", "Araba sürme", "Hapşırma"],
+                correct: 3,
+                explanation: "Göz kırpma, emme, diz kapağı refleksi, hapşırma kalıtsal reflekslerdir. Araba sürme ise kazanılmış (öğrenilmiş) bir reflekstir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Sinir sistemini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Sinir sistemini çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Sinir sisteminin temellerini anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
