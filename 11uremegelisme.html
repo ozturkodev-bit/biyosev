@@ -1,0 +1,3170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Üreme Sistemi Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #9b59b6;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #9b59b6;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #9b59b6;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #9b59b6;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #f3e8ff;
+            border-left: 4px solid #9b59b6;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f9f0ff;
+            border-color: #9b59b6;
+        }
+
+        .option.selected {
+            background: #9b59b6;
+            color: white;
+            border-color: #9b59b6;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #9b59b6;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #9b59b6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #9b59b6;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #9b59b6;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Advanced Biology Styles */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #e74c3c;
+        }
+
+        .advanced-content {
+            background: #ffeaea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #e74c3c;
+        }
+
+        .advanced-fact {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #9b59b6;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">11. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Üreme-Gelişme</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-baby"></i> Üreme Sistemi Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile üreme sistemini (Erkek-Dişi, Gamet Oluşumu, Menstrual Döngü, Embriyonik Gelişim) keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+         <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile üreme sisteminin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Üreme sistemini görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Üreme sisteminin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile üreme sistemi soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk test ile üreme sistemi hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Üreme sistemi ile ilgili ilginç detaylar, üst düzey bilgiler ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Üreme Sistemi Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Üreme Sistemi Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Erkek Üreme Sistemi Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Testisler:</strong> Sperm üretir, skrotumda bulunur, vücut sıcaklığından 2°C daha soğuk</li>
+                        <li><strong>Seminifer tüpçükler:</strong> Sperm üretim yeri, içinde Sertoli ve spermatogonik hücreler</li>
+                        <li><strong>Leyding hücreleri:</strong> Testosteron hormonu salgılar</li>
+                        <li><strong>Yardımcı bezler:</strong> Seminal kese, prostat bezi, Cowper bezi</li>
+                        <li><strong>Seminal sıvı:</strong> Spermleri besler, hareket yeteneği kazandırır, kayganlaştırır</li>
+                        <li><strong>Penis:</strong> Üreme ve boşaltım sisteminin son bölümü</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Spermatogenez (Sperm Oluşumu)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Spermatogonium:</strong> 2n kromozomlu sperm ana hücresi</li>
+                        <li><strong>Birincil spermatosit:</strong> Spermatogoniumdan mayoz öncesi oluşur (2n)</li>
+                        <li><strong>İkincil spermatosit:</strong> Mayoz I sonucu oluşur (n)</li>
+                        <li><strong>Spermatit:</strong> Mayoz II sonucu oluşur (n)</li>
+                        <li><strong>Sperm:</strong> Baş, boyun, kuyruk kısımlarından oluşur</li>
+                        <li><strong>Hormonal kontrol:</strong> FSH spermatogenezi başlatır, LH testosteron salgılatır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Dişi Üreme Sistemi Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yumurtalık (ovaryum):</strong> Yumurta üretir, östrojen ve progesteron salgılar</li>
+                        <li><strong>Yumurta kanalı (fallop tüpü):</strong> Yumurtayı rahme iletir, döllenme burada olur</li>
+                        <li><strong>Rahim (uterus):</strong> Embriyonun yerleştiği ve geliştiği organ</li>
+                        <li><strong>Endometriyum:</strong> Rahmin iç yüzeyi, kan damarları ve mukus bakımından zengin</li>
+                        <li><strong>Vajina:</strong> Spermlerin bırakıldığı, doğumun gerçekleştiği açıklık</li>
+                        <li><strong>Serviks:</strong> Rahmin vajinaya açıldığı dar kanal</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Oogenez (Yumurta Oluşumu)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Oogonyum:</strong> Dişi eşey ana hücresi, sayısı doğumda bellidir</li>
+                        <li><strong>Birincil oosit:</strong> Profaz I safhasında, ergenliğe kadar bu safhada kalır</li>
+                        <li><strong>İkincil oosit:</strong> Mayoz I sonucu oluşur, bol sitoplazmalı</li>
+                        <li><strong>Mayoz II durması:</strong> İkincil oosit metafazda durur, döllenmeyle devam eder</li>
+                        <li><strong>Kutup cisimciği:</strong> Küçük, sitoplazmasız hücre, eriyerek kaybolur</li>
+                        <li><strong>Olgun yumurta:</strong> Döllenme sonucu mayoz II tamamlanır, yumurta oluşur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Menstrual Döngü (28 gün)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Folikül evresi (10-14 gün):</strong> FSH ve LH folikülü büyütür, östrojen artar</li>
+                        <li><strong>Ovulasyon (14-16. gün):</strong> LH artışıyla yumurta serbest kalır</li>
+                        <li><strong>Korpus luteum evresi (13-15 gün):</strong> Sarı cisim progesteron salgılar</li>
+                        <li><strong>Menstruasyon (5 gün):</strong> Döllenme olmazsa endometriyum dökülür</li>
+                        <li><strong>Hormonal kontrol:</strong> Hipotalamus→Hipofiz→FSH/LH→Yumurtalık hormonları</li>
+                        <li><strong>Negatif geri bildirim:</strong> Hormon fazlalığı salgıyı azaltır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Embriyonik Gelişim Süreci</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Segmentasyon:</strong> Zigotun hızlı mitoz bölünmeleri</li>
+                        <li><strong>Blastula:</strong> İçi boş top şeklinde hücre kümesi</li>
+                        <li><strong>Gastrulasyon:</strong> Hücre göçü, üç embriyonik tabaka oluşur</li>
+                        <li><strong>Organogenez:</strong> Organların farklılaşması ve oluşumu</li>
+                        <li><strong>Zigot dönemi:</strong> Döllenmeden 2. haftaya kadar</li>
+                        <li><strong>Embriyo dönemi:</strong> 3.-8. haftalar, organlar şekillenir</li>
+                        <li><strong>Fetüs dönemi:</strong> 8. haftadan doğuma kadar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Üreme Sistemi Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-male"></i> ERKEK ÜREME SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Testisler:</strong> Skrotum (testis torbası) içinde bulunur. Vücut dışında olması sperm üretimi için uygun sıcaklık (vücut sıcaklığından 2°C daha düşük) sağlar.</li>
+                        <li><strong>Seminifer tüpçükler:</strong> Testislerde sperm üretilen kıvrımlı yapılar.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Sertoli hücreleri:</strong> Spermlerin beslenmesini ve korunmasını sağlar.</li>
+                                <li><strong>Spermatogonik hücreler:</strong> Sperm oluşumundan sorumludur.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Leyding hücreleri:</strong> Seminifer tüpçükler arasında dağılmıştır. Erkeklik hormonu <strong>testosteron</strong> salgılar.</li>
+                        <li><strong>Yardımcı bezler (3 çeşit):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Seminal kese:</strong> Seminal sıvının büyük kısmını salgılar.</li>
+                                <li><strong>Prostat bezi:</strong> Mesanenin dışında, idrar ve semenin aynı anda çıkışına izin vermez.</li>
+                                <li><strong>Cowper (Kevpir) bezi:</strong> Kaygan sıvı salgılayan iki küçük bez.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Seminal sıvı:</strong> Spermleri besler, hareket yeteneği kazandırır, taşınmasını sağlar, yolu kayganlaştırır, spermleri korur.</li>
+                        <li><strong>Penis:</strong> Çiftleşme organıdır. Sperm, seminal sıvı ve idrarın dışarı atılmasını sağlar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> SPERMATOGENEZ (SPERM OLUŞUMU)</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Testislerdeki seminifer tüpçüklerde mayoz bölünmeyle spermlerin oluşması.</li>
+                        <li><strong>Sperm yapısı:</strong> Baş (çekirdek), boyun (mitokondri), kuyruk (hareket) olmak üzere üç kısım.</li>
+                        <li><strong>Oluşum basamakları:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Spermatogonium (2n):</strong> Sperm ana hücresi</li>
+                                <li><strong>Birincil spermatosit (2n):</strong> Hacimce büyüme</li>
+                                <li><strong>İkincil spermatosit (n):</strong> Mayoz I sonucu</li>
+                                <li><strong>Spermatit (n):</strong> Mayoz II sonucu</li>
+                                <li><strong>Sperm:</strong> Olgun sperm hücresi</li>
+                            </ol>
+                        </li>
+                        <li><strong>Hormonal kontrol:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>FSH (Folikül uyarıcı hormon):</strong> Spermatogenezi başlatır.</li>
+                                <li><strong>LH (Lüteinleştirici hormon):</strong> Testosteron hormonunu salgılatır.</li>
+                                <li><strong>Testosteron:</strong> Erkeklik hormonu, fazla salgılanınca negatif geri bildirimle kontrol edilir.</li>
+                                <li><strong>İnhibin:</strong> Sertoli hücrelerinden salgılanır, FSH salgısını azaltır.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-female"></i> DİŞİ ÜREME SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Yumurtalık (ovaryum):</strong> Karnın iki yanında, yaklaşık 2,5 cm boyunda iki organ.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Görevleri:</strong> Yumurta üretmek, hormon (östrojen, progesteron) salgılamak.</li>
+                                <li><strong>Yumurtlama:</strong> Ergenlikle başlar, menopozla biter. Her ay genellikle bir yumurta atılır.</li>
+                                <li><strong>Doğurganlık dönemi:</strong> Menopoza kadar olan dönem.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yumurta kanalı (fallop tüpü):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yumurtalığa bakan kısmı kirpikli huni şeklinde.</li>
+                                <li><strong>Görevi:</strong> Yumurtayı yumurtalıktan rahme iletmek.</li>
+                                <li><strong>Döllenme:</strong> Bu kanalda gerçekleşir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Rahim (uterus):</strong> Döl yatağı olarak bilinir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Yapısı:</strong> Düz kaslardan oluşan bir tabaka ile çevrilidir.</li>
+                                <li><strong>Endometriyum:</strong> İç yüzeydeki kan damarları ve mukus bakımından zengin tabaka.</li>
+                                <li><strong>İşlevi:</strong> Döllenme gerçekleşirse embriyonun yerleşip geliştiği ortam.</li>
+                                <li><strong>Menstrual döngü:</strong> Döllenme olmazsa endometriyum dökülür, menstrüasyon olur.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vajina ve serviks:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Vajina:</strong> 7-9 cm uzunluğunda, bağ dokusu ve düz kaslardan oluşur.</li>
+                                <li><strong>İşlevleri:</strong> Spermlerin bırakıldığı, döllenmemiş yumurtanın atıldığı, doğumun gerçekleştiği açıklık.</li>
+                                <li><strong>Serviks:</strong> Rahmin vajinaya açıldığı dar kanal.</li>
+                                <li><strong>Not:</strong> Dişilerde idrar ve üreme açıklıkları farklıdır.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-egg"></i> OOGENEZ (YUMURTA OLUŞUMU)</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Yumurtalıklarda mayoz bölünmeyle dişi üreme hücresinin oluşumu.</li>
+                        <li><strong>Oogonyum:</strong> Olgunlaşmamış eşey ana hücresi.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yeni doğmuş bir kız çocuğunda sayısı bellidir, sonradan eklenemez.</li>
+                                <li>Tek katlı folikül hücrelerle sarılıdır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Gelişim basamakları:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Birincil oosit:</strong> Fetüste üçüncü aydan sonra oluşur, profaz I safhasındadır.</li>
+                                <li><strong>Ergenlikte mayoz I:</strong> Yumurtlama sırasında tamamlanır.
+                                    <ul style="margin-left: 20px; list-style-type: square;">
+                                        <li><strong>İkincil oosit:</strong> Büyük ve bol sitoplazmalı</li>
+                                        <li><strong>Birinci kutup hücresi:</strong> Küçük, sitoplazmasız</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Mayoz II durması:</strong> İkincil oosit metafazda durur.</li>
+                                <li><strong>Döllenme sonrası:</strong> Sperm girerse mayoz II devam eder.
+                                    <ul style="margin-left: 20px; list-style-type: square;">
+                                        <li><strong>Olgun yumurta:</strong> Döllenmiş yumurta</li>
+                                        <li><strong>İkinci kutup hücresi:</strong> Eriyerek kaybolur</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </li>
+                        <li><strong>Önemli nokta:</strong> Dişilerde mayoz süreci doğumda başlar, ergenlikte devam eder, döllenmeyle tamamlanır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-calendar-alt"></i> MENSTRUAL DÖNGÜ (ADET DÖNGÜSÜ)</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Evre</th>
+                            <th>Süre</th>
+                            <th>Hormonal Değişim</th>
+                            <th>Olaylar</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Folikül Evresi</strong></td>
+                            <td>10-14 gün</td>
+                            <td>FSH↑, LH↑, Östrojen↑</td>
+                            <td>Folikül büyür, birincil oosit olgunlaşır, endometriyum kalınlaşır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ovulasyon</strong></td>
+                            <td>14-16. gün</td>
+                            <td>LH zirve yapar, Östrojen düşer</td>
+                            <td>Yumurta serbest kalır, fallop tüpüne geçer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Korpus Luteum</strong></td>
+                            <td>13-15 gün</td>
+                            <td>Progesteron↑, Östrojen↑</td>
+                            <td>Sarı cisim oluşur, endometriyum hazır kalır, gebelik beklenir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Menstruasyon</strong></td>
+                            <td>5 gün</td>
+                            <td>Progesteron↓, Östrojen↓</td>
+                            <td>Döllenme olmazsa endometriyum dökülür, kanama olur</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Hormonal Kontrol Mekanizması:</strong> 
+                        Hipotalamus → RF → Hipofiz → FSH/LH → Yumurtalık → Östrojen/Progesteron → Rahim
+                        <br><strong>Negatif geri bildirim:</strong> Hormon fazlalığı hipofiz ve hipotalamusu baskılar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-baby"></i> EMBRİYONİK GELİŞİM SÜRECİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Segmentasyon:</strong> Zigotun hızlı mitoz bölünmeleri, büyüme olmadan hücre sayısı artar.</li>
+                        <li><strong>Blastula:</strong> İçi boş top şeklinde hücre kümesi, blastosöl boşluğu vardır.</li>
+                        <li><strong>Gastrulasyon:</strong> Hücre göçü ile üç embriyonik tabaka oluşur:
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Ektoderm:</strong> Dış tabaka → Sinir sistemi, deri</li>
+                                <li><strong>Mezoderm:</strong> Orta tabaka → Kas, iskelet, dolaşım sistemi</li>
+                                <li><strong>Endoderm:</strong> İç tabaka → Sindirim ve solunum sistemleri</li>
+                            </ul>
+                        </li>
+                        <li><strong>Organogenez:</strong> Embriyonik tabakalardan organların farklılaşması.</li>
+                        <li><strong>Gelişim dönemleri:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li><strong>Zigot dönemi:</strong> Döllenmeden 2. haftaya kadar.</li>
+                                <li><strong>Embriyo dönemi:</strong> 3.-8. haftalar, organlar şekillenmeye başlar.</li>
+                                <li><strong>Fetüs dönemi:</strong> 8. haftadan doğuma kadar, organlar büyür ve olgunlaşır.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Plasenta:</strong> Embriyo döneminde oluşur. Anne ile fetüs arasında madde alışverişini sağlar, hormon salgılar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exclamation-triangle"></i> ÜREME SAĞLIĞI VE KORUNMA</div>
+                    <ul class="summary-list">
+                        <li><strong>Cinsel yolla bulaşan hastalıklar:</strong> Sadece bireyi değil, partneri, doğacak çocuğu ve çevreyi etkiler.</li>
+                        <li><strong>Korunma yöntemleri:</strong> Kondom (prezervatif) kullanmak en etkili yöntemlerdendir.</li>
+                        <li><strong>Tedavi edilmezse:</strong> Kısırlık ve ölüm gibi ciddi sonuçlara yol açabilir.</li>
+                        <li><strong>Erken teşhis:</strong> Belirli aralıklarla kanser tarama testi yaptırmak önemlidir.</li>
+                        <li><strong>Belirtiler:</strong> İdrarda yanma, kötü kokulu akıntı, ağrılı ülserler, kasıklarda sertlikler görüldüğünde sağlık kuruluşuna başvurulmalıdır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Üreme Sistemi Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Testisler neden vücut dışında (skrotumda) bulunur? Bu durum sperm üretimi için neden önemlidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Vücut içi sıcaklığı yaklaşık 37°C'dir. Sperm üretimi için özel sıcaklık koşulları gereklidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Testisler vücut dışında bulunur çünkü sperm üretimi vücut sıcaklığından yaklaşık 2°C daha düşük sıcaklıkta gerçekleşir.</p>
+                        <p><strong>Açıklama:</strong> Spermler seminifer tüpçüklerde üretilir ve bu süreç enzimatik reaksiyonlara dayanır. Yüksek sıcaklık (vücut içi sıcaklığı) sperm üretimini olumsuz etkiler, hatta durdurabilir. Skrotum (testis torbası) testisleri vücut dışında tutarak uygun sıcaklık (35-36°C) sağlar. Ayrıca skrotumun kasılıp gevşeme özelliği ile sıcaklık düzenlemesi yapılır: Soğukta kasılarak testisleri vücuda yaklaştırır, sıcakta gevşeyerek uzaklaştırır.</p>
+                        <p><strong>Klinik önemi:</strong> Testislerin karın boşluğunda kalması (kriptorşidizm) durumunda sperm üretimi gerçekleşmez ve kısırlık oluşur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir çift, 1 yıldır çocuk sahibi olmaya çalışıyor ama başarılı olamıyor. Doktor erkeğin semen analizinde sperm sayısının düşük olduğunu tespit ediyor. Bu durumda spermatogenez sürecinde hangi hormonların düzensizliği olabilir ve nasıl tedavi edilebilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sperm üretimi (spermatogenez) FSH ve LH hormonları tarafından kontrol edilir. Testosteron da sperm olgunlaşması için gereklidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Düşük sperm sayısı FSH, LH veya testosteron hormon düzensizliklerinden kaynaklanabilir.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <ol>
+                            <li><strong>FSH (Folikül uyarıcı hormon):</strong> Spermatogenezi başlatır. Eksikliğinde sperm üretimi azalır.</li>
+                            <li><strong>LH (Lüteinleştirici hormon):</strong> Leyding hücrelerini uyararak testosteron salgılatır.</li>
+                            <li><strong>Testosteron:</strong> Sperm olgunlaşması için gereklidir. Düşük testosteron sperm kalitesini ve sayısını düşürür.</li>
+                        </ol>
+                        <strong>Hormonal kontrol mekanizması:</strong> Hipotalamus → RF → Hipofiz → FSH/LH → Testisler → Sperm üretimi
+                        <br><strong>Negatif geri bildirim:</strong> Testosteron fazlalığı hipofiz ve hipotalamusu baskılar.
+                        <br><strong>Tedavi yaklaşımı:</strong> Hormon takviyesi (FSH, LH veya testosteron), altta yatan nedenin tedavisi, yaşam tarzı değişiklikleri.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Menstrual döngünün 14. gününde bir kadın hafif karın ağrısı ve berrak bir akıntı fark ediyor. Bu belirtiler neyin göstergesi olabilir? Bu dönemde hormonal olarak neler değişmektedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Menstrual döngü ortalama 28 gündür. 14-16. günler yumurtlama (ovulasyon) zamanıdır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Bu belirtiler ovulasyon (yumurtlama) göstergesidir.</p>
+                        <p><strong>Açıklama:</strong> Menstrual döngünün 14-16. günlerinde ovulasyon gerçekleşir. Bu sırada:
+                        <ol>
+                            <li><strong>Folikül yırtılır:</strong> Olgun folikül yırtılır ve yumurta serbest kalır. Bu hafif karın ağrısına neden olabilir.</li>
+                            <li><strong>Berrak akıntı:</strong> Servikal mukus incelir ve berrak, esnek bir hal alır. Bu spermlerin rahme geçişini kolaylaştırır.</li>
+                            <li><strong>Hormonal değişim:</strong> 
+                                <ul>
+                                    <li>Östrojen seviyesi zirve yapar sonra düşer.</li>
+                                    <li>LH (lüteinleştirici hormon) ani yükselir (LH piki).</li>
+                                    <li>LH piki folikülün yırtılmasını tetikler.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <strong>Biyolojik önemi:</strong> Ovulasyon, kadının doğurgan olduğu dönemdir. Yumurta fallop tüpüne geçer ve 24 saat boyunca döllenmeye hazırdır. Bu nedenle gebelik planlayan çiftler için önemli bir zaman dilimidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">"Tüp bebek" tedavisi nedir ve hangi durumlarda uygulanır? Klasik tüp bebek yöntemi ile mikroenjeksiyon arasındaki fark nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yardımcı üreme teknikleri, normal yolla gebelik şansı olmayan veya çok az olan çiftlerde kullanılır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Tüp bebek (IVF), kadından alınan yumurta ile erkekten alınan spermin laboratuvar ortamında döllendirilmesi ve embriyonun rahme yerleştirilmesi işlemidir.</p>
+                        <p><strong>Açıklama:</strong>
+                        <strong>Uygulama alanları:</strong>
+                        <ul>
+                            <li>Tüplerin tıkalı olması</li>
+                            <li>Erkekte sperm sayı/kalite problemleri</li>
+                            <li>Açıklanamayan kısırlık</li>
+                            <li>İleri kadın yaşı</li>
+                            <li>Endometriozis</li>
+                        </ul>
+                        <strong>Yöntemler:</strong>
+                        <ol>
+                            <li><strong>Klasik tüp bebek (IVF - In Vitro Fertilizasyon):</strong> Yumurta ve sperm aynı ortama konur, sperm kendiliğinden yumurtayı döller.</li>
+                            <li><strong>Mikroenjeksiyon (ICSI - Intracytoplasmic Sperm Injection):</strong> Tek bir sperm mikroskop altında yumurtanın içine enjekte edilir. Özellikle erkek faktörü kısırlığında kullanılır.</li>
+                        </ol>
+                        <strong>Temel fark:</strong> Klasik IVF'de sperm kendiliğinden yumurtayı döllerken, mikroenjeksiyonda sperm direkt yumurta içine enjekte edilir. Mikroenjeksiyon, düşük sperm kalitesi durumlarında daha etkilidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Hamilelik testleri idrarda veya kanda hCG (insan koryonik gonadotropin) hormonunu tespit ederek çalışır. Bu hormon nereden salgılanır ve neden gebeliğin erken belirtecidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Döllenme gerçekleştikten sonra embriyo rahme tutunur ve plasenta gelişmeye başlar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> hCG hormonu embriyonun rahme tutunmasından sonra gelişen plasentadan salgılanır.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <ol>
+                            <li><strong>Kaynak:</strong> hCG, embriyonun rahme tutunmasından (implantasyon) 6-12 gün sonra gelişmeye başlayan plasenta tarafından salgılanır.</li>
+                            <li><strong>İşlevi:</strong> hCG'nin temel görevi korpus luteumun (sarı cisim) devamlılığını sağlamaktır.
+                                <ul>
+                                    <li>Normal menstrual döngüde korpus luteum 13-15 gün sonra parçalanır.</li>
+                                    <li>Gebelikte hCG, korpus luteumu uyararak progesteron salgılamasını sürdürür.</li>
+                                    <li>Progesteron rahmi gebeliğe hazırlar, endometriyumu korur, düşüğü önler.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Erken belirteç olması:</strong> hCG gebeliğin çok erken döneminde (adet gecikmesinden önce) kanda ve idrarda tespit edilebilir. Seviyesi gebeliğin ilk haftalarında hızla artar.</li>
+                            <li><strong>Test mantığı:</strong> Hamilelik testleri hCG'ye karşı antikorlar kullanır. hCG varlığı test çizgisinin oluşmasını sağlar.</li>
+                        </ol>
+                        <strong>Klinik önemi:</strong> hCG seviyesi gebeliğin sağlıklı ilerleyip ilerlemediğinin göstergesidir. Düşük veya dış gebelikte hCG seviyesi normal artmaz.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bir kadının menstrual döngüsü 35 gün sürüyor. Bu kadında ovulasyon (yumurtlama) muhtemelen ne zaman gerçekleşir? Bu durum menstrual döngünün hangi evresini etkiler?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Standart menstrual döngü 28 gündür ve ovulasyon 14. günde gerçekleşir. Ancak döngü uzunluğu kadından kadına değişir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> 35 günlük döngüde ovulasyon muhtemelen 21. günde gerçekleşir.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <ol>
+                            <li><strong>Temel kural:</strong> Ovulasyon, bir sonraki menstruasyondan yaklaşık 14 gün önce gerçekleşir. Bu süre (ovulasyon sonrası dönem) oldukça sabittir (13-15 gün).</li>
+                            <li><strong>Hesaplama:</strong> 35 günlük döngüde:
+                                <br>Ovulasyon = Döngü uzunluğu - 14 = 35 - 14 = <strong>21. gün</strong>
+                            </li>
+                            <li><strong>Evrelerin süresi:</strong>
+                                <ul>
+                                    <li><strong>Folikül evresi:</strong> 1. günden ovulasyona kadar (21 gün)</li>
+                                    <li><strong>Korpus luteum evresi:</strong> Ovulasyondan menstruasyona kadar (14 gün)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Değişen evre:</strong> Döngü uzunluğundaki değişiklik genellikle folikül evresinin uzamasından kaynaklanır. Yani yumurta daha geç olgunlaşır. Korpus luteum evresi (ovulasyon sonrası) genellikle sabittir.</li>
+                        </ol>
+                        <strong>Pratik önemi:</strong> Gebelik planlayan kadınlar ovulasyon zamanını doğru hesaplamalıdır. Döngü uzunluğu değişken olan kadınlar için ovulasyon tahmini daha zordur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">"Dış gebelik" nedir ve neden tehlikelidir? Dış gebelik en sık nerede görülür ve belirtileri nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Normalde döllenme fallop tüpünde gerçekleşir ve embriyo rahme doğru ilerleyerek rahme tutunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Dış gebelik (ektopik gebelik), döllenmiş yumurtanın rahim dışında bir yere (genellikle fallop tüpüne) tutunmasıdır.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>En sık görüldüğü yer:</strong> Fallop tüpleri (%95-98)
+                        <br><strong>Neden tehlikelidir?</strong>
+                        <ol>
+                            <li><strong>Tüpün yırtılması:</strong> Fallop tüpleri rahim gibi genişleme kapasitesine sahip değildir. Embriyo büyüdükçe tüp yırtılabilir.</li>
+                            <li><strong>İç kanama:</strong> Tüp yırtılınca şiddetli iç kanama olur. Acil tıbbi müdahale gerektirir, hayatı tehdit eder.</li>
+                            <li><strong>Gebeliğin devam etmemesi:</strong> Dış gebelik canlı bir bebek doğumuna yol açmaz.</li>
+                        </ol>
+                        <strong>Risk faktörleri:</strong>
+                        <ul>
+                            <li>Geçirilmiş pelvik enfeksiyonlar</li>
+                            <li>Önceki dış gebelik öyküsü</li>
+                            <li>Tüplerde hasar veya tıkanıklık</li>
+                            <li>Endometriozis</li>
+                            <li>İleri anne yaşı</li>
+                            <li>Sigara kullanımı</li>
+                        </ul>
+                        <strong>Belirtileri:</strong>
+                        <ul>
+                            <li>Adet gecikmesi</li>
+                            <li>Karın veya pelvik ağrı (genellikle tek taraflı)</li>
+                            <li>Vajinal kanama (lekelenme şeklinde)</li>
+                            <li>Baş dönmesi, bayılma (kanama belirtisi)</li>
+                            <li>Omuz ağrısı (diyafram irritasyonu)</li>
+                        </ul>
+                        <strong>Tedavi:</strong> Erken teşhis edilirse ilaçla (metotreksat) tedavi mümkündür. İleri durumlarda cerrahi gerekir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Fetal alkol sendromu (FAS) nedir? Hamilelikte alkol kullanımı fetüsü nasıl etkiler ve neden "güvenli" bir alkol düzeyi belirlenemez?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Alkol plasentadan geçerek direkt fetüse ulaşır. Fetüsün karaciğeri alkolü yetişkin gibi metabolize edemez.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Fetal alkol sendromu (FAS), hamilelikte alkol kullanımının neden olduğu doğumsal kusurlar bütünüdür.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Etki mekanizmaları:</strong>
+                        <ol>
+                            <li><strong>Hücre bölünmesi ve büyümesine zarar:</strong> Alkol hücre bölünmesini inhibe eder, fetal büyümeyi yavaşlatır.</li>
+                            <li><strong>Besin emilimini engeller:</strong> Kalsiyum, protein, folik asit, B vitaminleri gibi önemli besinlerin emilimini azaltır.</li>
+                            <li><strong>Sinir sistemini bozar:</strong> Nöron göçünü ve bağlantılarını etkiler, beyin gelişimini bozar.</li>
+                            <li><strong>DNA sentezini baskılar:</strong> Hücre çoğalması için gerekli DNA sentezini engeller.</li>
+                            <li><strong>Protein sentezini azaltır:</strong> Fetüse protein sağlanmasını engeller.</li>
+                        </ol>
+                        <strong>FAS belirtileri:</strong>
+                        <ul>
+                            <li><strong>Yüz anomalileri:</strong> Düz filtrum (üst dudak-burun arası), ince üst dudak, küçük göz açıklıkları</li>
+                            <li><strong>Büyüme geriliği:</strong> Düşük doğum ağırlığı, doğum sonrası büyüme geriliği</li>
+                            <li><strong>Merkezi sinir sistemi problemleri:</strong> Zekâ geriliği, öğrenme güçlükleri, dikkat eksikliği, hiperaktivite, koordinasyon problemleri</li>
+                            <li><strong>Organ anomalileri:</strong> Kalp, böbrek, kemik anomalileri</li>
+                        </ul>
+                        <strong>Neden "güvenli" alkol düzeyi belirlenemez?</strong>
+                        <ol>
+                            <li><strong>Bireysel farklılıklar:</strong> Her kadının ve fetüsün alkol metabolizması farklıdır.</li>
+                            <li><strong>Kümülatif etki:</strong> Az miktarda da olsa düzenli alkol alımı zararlı olabilir.</li>
+                            <li><strong>Kritik dönemler:</strong> Organogenez dönemindeki (3-8. haftalar) alkol maruziyeti özellikle tehlikelidir.</li>
+                            <li><strong>Doz-yanıt ilişkisi:</strong> Ne kadar çok alkol, o kadar çok risk ama "güvenli eşik" belirsizdir.</li>
+                        </ol>
+                        <strong>Öneri:</strong> Hamilelik planlandığı andan itibaren ve hamilelik boyunca alkol alınmamalıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Folik asit neden hamilelikte önemlidir? Folik asit eksikliği hangi doğumsal anomalilere yol açar ve ne zaman alınmaya başlanmalıdır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Folik asit (B9 vitamini) yeşil yapraklı sebzelerde bol bulunur. Sinir dokusunun gelişimi için kritiktir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Folik asit, nöral tüpün kapanması için gereklidir. Eksikliği nöral tüp defektlerine (beyin ve omurilik anomalileri) yol açar.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Folik asidin önemi:</strong>
+                        <ol>
+                            <li><strong>DNA sentezi ve hücre bölünmesi:</strong> Folik asit DNA yapımında gereklidir. Hızlı hücre bölünmesinin olduğu fetal dönemde kritik öneme sahiptir.</li>
+                            <li><strong>Nöral tüp kapanması:</strong> Nöral tüp, bebeğin beyin ve omuriliğini oluşturan yapıdır. Hamileliğin 4. haftasında kapanır. Folik asit bu kapanmanın sağlıklı olmasını sağlar.</li>
+                            <li><strong>Amino asit metabolizması:</strong> Homosistein adlı amino asidin düzenlenmesinde rol oynar. Yüksek homosistein damar hasarına neden olur.</li>
+                        </ol>
+                        <strong>Folik asit eksikliğinin sonuçları (Nöral Tüp Defektleri):</strong>
+                        <ul>
+                            <li><strong>Spina bifida:</strong> Omurganın açık kalması, omuriliğin dışarı çıkması</li>
+                            <li><strong>Anensefali:</strong> Beyin ve kafatasının gelişmemesi, genellikle ölümcül</li>
+                            <li><strong>Ensefalosel:</strong> Beyin dokusunun kafatasından dışarı çıkması</li>
+                        </ul>
+                        <strong>Diğer riskler:</strong>
+                        <ul>
+                            <li>Düşük doğum ağırlığı</li>
+                            <li>Yarık dudak/damak</li>
+                            <li>Konjenital kalp defektleri</li>
+                            <li>Preeklempsi riskinde artış</li>
+                        </ul>
+                        <strong>Ne zaman başlanmalı?</strong> Nöral tüp hamileliğin ilk 4 haftasında kapandığı için, folik asit alımına <strong>hamile kalmadan en az 1 ay önce</strong> başlanmalıdır. Çoğu kadın hamile olduğunu 4-6. haftalarda öğrendiğinden, bu dönemde folik asit alımına başlamak geç kalınmış olabilir.
+                        <br><strong>Önerilen doz:</strong> Hamilelik planlayan kadınlara günde 400-800 mcg folik asit takviyesi önerilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Amniyosentez nedir ve hangi durumlarda yapılır? Bu işlemin riskleri nelerdir ve ne zaman uygulanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Amniyosentez, gebelikte fetüsün sağlık durumunu değerlendirmek için kullanılan invaziv bir tanı yöntemidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Amniyosentez, anne karnından bir iğneyle girilerek amniyon sıvısından örnek alınması işlemidir.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Teknik:</strong> Hamileliğin 14-16. haftasında ultrason eşliğinde, karından ince bir iğneyle girilerek amniyon sıvısı alınır.
+                        <br><strong>Yapıldığı durumlar:</strong>
+                        <ol>
+                            <li><strong>Kromozom anomalilerinin tespiti:</strong> Down sendromu (trizomi 21), Edwards sendromu (trizomi 18), Patau sendromu (trizomi 13)</li>
+                            <li><strong>Genetik hastalıklar:</strong> Aile öyküsü olan genetik hastalıklar (kistik fibrozis, orak hücre anemisi, Tay-Sachs hastalığı)</li>
+                            <li><strong>Nöral tüp defektleri:</strong> Amniyon sıvısında alfafetoprotein (AFP) seviyesi ölçülerek spina bifida gibi anomaliler tespit edilebilir.</li>
+                            <li><strong>Enfeksiyon taraması:</strong> Fetüste enfeksiyon şüphesi (TORCH enfeksiyonları)</li>
+                            <li><strong>Akciğer olgunluğunun değerlendirilmesi:</strong> Geç gebelikte (34. haftadan sonra) fetüsün akciğer olgunluğunu değerlendirmek için</li>
+                            <li><strong>Polihidramnios tedavisi:</strong> Amniyon sıvısının fazla olduğu durumlarda sıvıyı azaltmak için</li>
+                        </ol>
+                        <strong>Risk faktörleri olan gebelikler:</strong>
+                        <ul>
+                            <li>İleri anne yaşı (35 yaş ve üzeri)</li>
+                            <li>Önceki gebelikte kromozom anomalisi öyküsü</li>
+                            <li>Ailede genetik hastalık öyküsü</li>
+                            <li>Ultrasonda fetal anomali şüphesi</li>
+                            <li>Tarama testlerinde (ikili, üçlü, dörtlü test) yüksek risk</li>
+                        </ul>
+                        <strong>Riskleri:</strong>
+                        <ul>
+                            <li><strong>Düşük riski:</strong> %0,5-1 (200-500'de 1)</li>
+                            <li>Enfeksiyon</li>
+                            <li>Su gelişi (amniyon sıvı kaçağı)</li>
+                            <li>Kas krampları veya lekelenme</li>
+                            <li>İğnenin fetüse zarar vermesi (nadir, ultrason eşliğinde yapıldığı için)</li>
+                        </ul>
+                        <strong>Zamanlama:</strong> Genetik tanı için en uygun zaman 14-16. haftalardır. Bu dönemde yeterli amniyon sıvısı vardır ve fetüs hücreleri kültürde üretilebilir.
+                        <br><strong>Alternatifler:</strong> Daha az riskli tarama testleri (NIPT - noninvaziv prenatal test) önce yapılabilir, şüpheli durumlarda amniyosentez doğrulama için kullanılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Menopoz nedir ve neden olur? Menopoz döneminde kadın vücudunda hangi değişiklikler görülür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Menopoz, kadının doğurganlık döneminin sona ermesidir. Genellikle 45-55 yaşları arasında gerçekleşir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Menopoz, yumurtalıkların fonksiyonlarını kaybetmesi sonucu adet döngüsünün kalıcı olarak sonlanmasıdır.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Neden olur?</strong> Yumurtalıklardaki folikül (yumurta) rezervinin tükenmesi:
+                        <ol>
+                            <li>Doğumda kız bebekte yaklaşık 1-2 milyon folikül vardır.</li>
+                            <li>Ergenlikte 300-400 bin folikül kalır.</li>
+                            <li>Her menstrual döngüde bir folikül olgunlaşır ama binlercesi atreziye uğrar (kaybolur).</li>
+                            <li>Yaşla birlikte folikül sayısı azalır, kalitesi düşer.</li>
+                            <li>Folikül kalmayınca yumurtlama olmaz, östrojen ve progesteron üretimi durur.</li>
+                        </ol>
+                        <strong>Menopoz belirtileri:</strong>
+                        <ul>
+                            <li><strong>Vazomotor semptomlar:</strong> Sıcak basması, gece terlemeleri (en sık görülen belirti)</li>
+                            <li><strong>Menstrual değişiklikler:</strong> Adet düzensizlikleri, aralıkların uzaması/kısalması, kanama miktarında değişiklikler, sonunda adetlerin tamamen kesilmesi</li>
+                            <li><strong>Ürogenital semptomlar:</strong> Vajinal kuruluk, ağrılı cinsel ilişki, idrar yolu enfeksiyonlarında artış, idrar kaçırma</li>
+                            <li><strong>Psikolojik semptomlar:</strong> Duygudurum değişiklikleri, irritabilite, depresyon, anksiyete, uyku bozuklukları</li>
+                            <li><strong>Bilişsel değişiklikler:</strong> Unutkanlık, konsantrasyon güçlüğü</li>
+                            <li><strong>Cilt ve saç değişiklikleri:</strong> Ciltte incelme ve kuruluk, kırışıklıklarda artış, saçlarda incelme ve dökülme</li>
+                        </ul>
+                        <strong>Uzun dönem riskler:</strong>
+                        <ul>
+                            <li><strong>Osteoporoz:</strong> Östrojen kemik yapımını uyarır, kemik yıkımını inhibe eder. Menopozla birlikte kemik kaybı hızlanır, kemik kırıkları riski artar.</li>
+                            <li><strong>Kardiyovasküler hastalıklar:</strong> Östrojen kalp-damar sistemini korur. Menopoz sonrası kalp krizi ve inme riski artar.</li>
+                            <li><strong>Metabolik değişiklikler:</strong> Kilo artışı (özellikle karın bölgesinde), insülin direnci, tip 2 diyabet riskinde artış</li>
+                            <li><strong>Alzheimer riskinde artış</strong></li>
+                        </ul>
+                        <strong>Tanı:</strong> 12 ay boyunca adet görmeme ve FSH seviyesinde yükselme (40 IU/L üzeri) ile konur.
+                        <br><strong>Yönetim:</strong> Hormon replasman tedavisi (HRT), yaşam tarzı değişiklikleri, kalsiyum ve D vitamini takviyesi, düzenli egzersiz.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Sperm sayısı ve kalitesini etkileyen faktörler nelerdir? Hangi yaşam tarzı değişiklikleri sperm kalitesini iyileştirebilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sperm üretimi (spermatogenez) yaklaşık 74 gün sürer. Bu süreç çevresel faktörlerden kolayca etkilenir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Sperm sayı ve kalitesi; ısı, toksinler, beslenme, stres ve hormonal faktörlerden etkilenir.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Sperm parametreleri (WHO kriterleri):</strong>
+                        <ul>
+                            <li><strong>Hacim:</strong> ≥1,5 mL</li>
+                            <li><strong>Konsantrasyon:</strong> ≥15 milyon/mL</li>
+                            <li><strong>Toplam sperm sayısı:</strong> ≥39 milyon/ejakülat</li>
+                            <li><strong>Hareketlilik:</strong> ≥%32 ileri doğru hareketli</li>
+                            <li><strong>Morfoloji (şekil):</strong> ≥%4 normal şekilli</li>
+                            <li><strong>Canlılık:</strong> ≥%58 canlı sperm</li>
+                        </ul>
+                        <strong>Sperm kalitesini olumsuz etkileyen faktörler:</strong>
+                        <ol>
+                            <li><strong>Isı:</strong> Testislerin aşırı ısınması sperm üretimini durdurabilir.
+                                <ul>
+                                    <li>Sıcak banyo, sauna, jakuzi kullanımı</li>
+                                    <li>Sıkı iç çamaşırı ve pantolonlar</li>
+                                    <li>Uzun süre oturma (bilgisayar başında çalışma, uzun yol şoförlüğü)</li>
+                                    <li>Laptopu kucağa koyarak çalışma</li>
+                                </ul>
+                            </li>
+                            <li><strong>Toksik maddeler:</strong>
+                                <ul>
+                                    <li><strong>Sigara:</strong> Sperm sayısını, hareketliliğini ve morfolojisini bozar. DNA hasarına neden olur.</li>
+                                    <li><strong>Alkol:</strong> Aşırı tüketim testosteron seviyesini düşürür, sperm üretimini azaltır.</li>
+                                    <li><strong>İlaçlar:</strong> Anabolik steroidler, kemoterapi ilaçları, bazı antibiyotikler</li>
+                                    <li><strong>Çevresel toksinler:</strong> Pestisitler, ağır metaller (kurşun, cıva), endüstriyel kimyasallar</li>
+                                </ul>
+                            </li>
+                            <li><strong>Beslenme:</strong>
+                                <ul>
+                                    <li>Obezite: Testosteronu östrojene çeviren aromataz enzimi artar.</li>
+                                    <li>Düşük antioksidan alımı: Sperm DNA'sı oksidatif strese duyarlıdır.</li>
+                                    <li>Doymuş yağlardan zengin, meyve-sebzeden fakir beslenme</li>
+                                </ul>
+                            </li>
+                            <li><strong>Stres:</strong> Kronik stres kortizol seviyesini artırır, bu da testosteronu baskılar.</li>
+                            <li><strong>Sağlık sorunları:</strong> Varikosel (testis damarlarında genişleme), enfeksiyonlar, hormonal bozukluklar, diyabet</li>
+                        </ol>
+                        <strong>Sperm kalitesini iyileştiren yaşam tarzı değişiklikleri:</strong>
+                        <ol>
+                            <li><strong>Isıdan kaçınma:</strong> Dar pantolon ve iç çamaşırı giymemek, sıcak banyo/saunadan uzak durmak</li>
+                            <li><strong>Sigarayı bırakmak:</strong> Sperm parametrelerinde 3 ay içinde düzelme görülür.</li>
+                            <li><strong>Alkolü sınırlandırmak:</strong> Günde 1-2 kadeh ile sınırlı tutmak</li>
+                            <li><strong>Sağlıklı beslenme:</strong>
+                                <ul>
+                                    <li>Antioksidanlardan zengin besinler: C vitamini (narenciye, kivi), E vitamini (badem, ayçiçeği çekirdeği), çinko (kabak çekirdeği, istiridye), selenyum (brezilya cevizi, ton balığı)</li>
+                                    <li>Omega-3 yağ asitleri: Somon, ceviz, keten tohumu</li>
+                                    <li>Folik asit: Yeşil yapraklı sebzeler, baklagiller</li>
+                                </ul>
+                            </li>
+                            <li><strong>Düzenli egzersiz:</strong> Orta düzeyde egzersiz (aşırı egzersiz testosteronu düşürebilir)</li>
+                            <li><strong>Stres yönetimi:</strong> Meditasyon, yoga, nefes egzersizleri</li>
+                            <li><strong>İdeal kiloyu korumak</strong></li>
+                            <li><strong>Yeterli uyku:</strong> Testosteron üretimi uyku sırasında artar.</li>
+                        </ol>
+                        <strong>Önemli:</strong> Sperm üretim döngüsü 74 gün sürdüğü için değişikliklerin etkisini göstermesi 2-3 ay alır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">"Rh uyuşmazlığı" nedir ve neden önemlidir? Rh uyuşmazlığında hemolitik hastalık nasıl gelişir ve nasıl önlenir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kan grupları A, B, O ve Rh faktöründen oluşur. Rh(+) veya Rh(-) olabilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Rh uyuşmazlığı, Rh(-) anne ile Rh(+) baba arasında olur ve Rh(+) fetüsün anne bağışıklık sistemi tarafından reddedilmesine yol açabilir.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Mekanizma:</strong>
+                        <ol>
+                            <li><strong>İlk gebelik:</strong> Rh(-) anne ve Rh(+) fetüs.
+                                <ul>
+                                    <li>Normalde anne ve fetüs kanları plasenta bariyeri ile ayrılır.</li>
+                                    <li>Doğum sırasında (veya düşük, kürtaj, amniyosentez, kanama gibi durumlarda) fetüs kanı anne kanına karışabilir.</li>
+                                    <li>Anne bağışıklık sistemi Rh(+) antijenini yabancı olarak algılar ve anti-Rh antikorları (IgG) üretir.</li>
+                                    <li>Bu antikorlar plasentadan geçemeyecek kadar büyük olduğu için ilk gebelikte genellikle sorun olmaz.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Sonraki gebelikler:</strong> Anne artık Rh(+) antijenine karşı duyarlılaşmıştır.
+                                <ul>
+                                    <li>İkinci Rh(+) fetüsün kan hücreleri anne kan dolaşımına geçtiğinde, anne hızla anti-Rh antikorları üretir.</li>
+                                    <li>Bu antikorlar küçüktür (IgG) ve plasentadan geçerek fetüs kan dolaşımına ulaşır.</li>
+                                    <li>Antikorlar fetüsün Rh(+) kırmızı kan hücrelerine bağlanır ve yıkımına (hemoliz) neden olur.</li>
+                                    <li>Bu duruma "yenidoğanın hemolitik hastalığı" veya "eritroblastozis fetalis" denir.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <strong>Hemolitik hastalığın sonuçları:</strong>
+                        <ul>
+                            <li><strong>Anemi:</strong> Kırmızı kan hücrelerinin yıkımı sonucu fetüs ağır anemi geliştirir.</li>
+                            <li><strong>Hidrops fetalis:</strong> Şiddetli anemi sonucu kalp yetmezliği gelişir, fetüste ödem (vücutta sıvı birikmesi) olur.</li>
+                            <li><strong>Hiperbilirubinemi (sarılık):</strong> Hemoglobin yıkım ürünü bilirubin artar, ciltte sarılık oluşur.</li>
+                            <li><strong>Kernikterus:</strong> Yüksek bilirubin beyin hasarına neden olur, zekâ geriliği, işitme kaybı, hareket bozuklukları gelişir.</li>
+                            <li><strong>Ölü doğum veya yenidoğan ölümü</strong></li>
+                        </ul>
+                        <strong>Önleme:</strong>
+                        <ul>
+                            <li><strong>Rh immünoglobulini (RhoGAM):</strong> Rh(-) annelere koruyucu olarak verilir.</li>
+                            <li><strong>Zamanlama:</strong>
+                                <ol>
+                                    <li>28. gebelik haftasında (profilaktik)</li>
+                                    <li>Doğumdan sonra 72 saat içinde (eğer bebek Rh(+) ise)</li>
+                                    <li>Düşük, kürtaj, dış gebelik, amniyosentez gibi işlemlerden sonra</li>
+                                    <li>Gebeliğe bağlı kanama durumlarında</li>
+                                </ol>
+                            </li>
+                            <li><strong>Etki mekanizması:</strong> RhoGAM, fetüsten geçen Rh(+) antijenlerini temizleyerek annenin bağışıklık yanıtı oluşturmasını engeller.</li>
+                        </ul>
+                        <strong>Önemli notlar:</strong>
+                        <ul>
+                            <li>Rh uyuşmazlığı sadece Rh(-) anne ve Rh(+) baba durumunda olur.</li>
+                            <li>Anne Rh(+), baba Rh(-) ise sorun olmaz.</li>
+                            <li>ABO uyuşmazlığı (anne O, bebek A veya B) genellikle daha hafif seyreder ve ilk gebelikte de sorun yaratabilir.</li>
+                            <li>Günümüzde Rh uyuşmazlığı RhoGAM ile etkili şekilde önlenebilmektedir.</li>
+                        </ul></p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Endometriozis nedir ve neden infertiliteye (kısırlığa) yol açar? Endometriozisin belirtileri nelerdir ve nasıl tedavi edilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Endometriyum, rahmin iç yüzeyini kaplayan dokudur. Her menstrual döngüde kalınlaşır, döllenme olmazsa dökülür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Endometriozis, endometriyum dokusunun rahim dışında (yumurtalıklar, fallop tüpleri, karın zarı gibi) bulunmasıdır.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Patogenez (Oluşum mekanizması):</strong> Kesin nedeni bilinmemekle birlikte birkaç teori vardır:
+                        <ol>
+                            <li><strong>Retrograd menstruasyon:</strong> Menstrual kanın fallop tüplerinden geriye doğru karın boşluğuna akması ve endometriyal hücrelerin burada tutunması (en yaygın teori).</li>
+                            <li><strong>Lenfatik/yayılım:</strong> Endometriyal hücrelerin lenfatik veya kan damarlarıyla yayılması.</li>
+                            <li><strong>Metaplazi:</strong> Karın zarı hücrelerinin endometriyal hücrelere dönüşmesi.</li>
+                            <li><strong>Bağışıklık sistemi bozukluğu:</strong> Normalde bağışıklık sistemi rahim dışındaki endometriyal hücreleri temizler, endometrioziste bu mekanizma bozulmuştur.</li>
+                        </ol>
+                        <strong>Yerleşim yerleri:</strong>
+                        <ul>
+                            <li><strong>Yumurtalıklar (en sık):</strong> "Çikolata kisti" (endometrioma) oluşur.</li>
+                            <li>Fallop tüpleri</li>
+                            <li>Karın zarı (periton)</li>
+                            <li>Rahim ile rektum arasındaki boşluk (Douglas poşu)</li>
+                            <li>Bağırsaklar, mesane, nadiren akciğer, burun gibi uzak organlar</li>
+                        </ul>
+                        <strong>Belirtileri:</strong>
+                        <ul>
+                            <li><strong>Ağrılı adet görme (dismenore):</strong> Genellikle adetten 1-2 gün önce başlar, adet boyunca devam eder.</li>
+                            <li><strong>Kronik pelvik ağrı:</strong> Adet döngüsüyle ilişkili veya ilişkisiz sürekli ağrı.</li>
+                            <li><strong>Ağrılı cinsel ilişki (disparoni):</strong> Özellikle derin penetrasyonda ağrı.</li>
+                            <li><strong>Kısırlık (infertilite):</strong> Endometriozisli kadınların %30-50'sinde görülür.</li>
+                            <li><strong>Adet düzensizlikleri</strong></li>
+                            <li><strong>Bağırsak veya mesane şikayetleri:</strong> Ağrılı dışkılama, kanlı idrar, adet döneminde ishal/kabızlık</li>
+                            <li><strong>Yorgunluk</strong></li>
+                        </ul>
+                        <strong>İnfertiliteye yol açma mekanizmaları:</strong>
+                        <ol>
+                            <li><strong>Anatomik bozukluklar:</strong> Yapışıklıklar (adezyonlar) fallop tüplerini tıkayabilir, yumurtalık ve tüplerin normal pozisyonunu bozabilir.</li>
+                            <li><strong>Yumurtalık rezervinde azalma:</strong> Endometrioma (çikolata kisti) yumurtalık dokusuna zarar verir, folikül sayısını azaltır.</li>
+                            <li><strong>Yumurtlama bozuklukları:</strong> Endometriozis hormonal dengesizliğe neden olabilir.</li>
+                            <li><strong>Yumurta kalitesinde bozulma:</strong> Endometriozis oluşturduğu inflamatuvar ortam yumurta kalitesini düşürebilir.</li>
+                            <li><strong>Embriyo gelişiminde bozukluk:</strong> Endometriyal dokunun salgıladığı maddeler embriyo gelişimini olumsuz etkileyebilir.</li>
+                            <li><strong>Endometriyal reseptivitede azalma:</strong> Rahmin iç tabakası embriyonun tutunması için uygun olmayabilir.</li>
+                        </ol>
+                        <strong>Tanı:</strong> Kesin tanı <strong>laparoskopi</strong> (karından küçük kesilerle kamera ile bakma) ve biyopsi ile konur. Ultrason, MR gibi görüntüleme yöntemleri yardımcıdır.
+                        <br><strong>Tedavi:</strong>
+                        <ol>
+                            <li><strong>Medikal tedavi (ilaçlar):</strong>
+                                <ul>
+                                    <li><strong>Ağrı kesiciler:</strong> NSAİİ'ler (ibuprofen, naproksen)</li>
+                                    <li><strong>Hormonal tedaviler:</strong> Doğum kontrol hapları, progestinler, GnRH agonistleri (yapay menopoz oluşturur), danazol</li>
+                                </ul>
+                                <em>Not: Hormonal tedaviler endometriozisi baskılar ama infertiliteyi tedavi etmez, gebe kalmayı engeller.</em>
+                            </li>
+                            <li><strong>Cerrahi tedavi:</strong>
+                                <ul>
+                                    <li><strong>Laparoskopik cerrahi:</strong> Endometriyal implantların ve yapışıklıkların çıkarılması</li>
+                                    <li><strong>Kistektomi:</strong> Çikolata kistinin çıkarılması (yumurtalık dokusunu koruyarak)</li>
+                                    <li><strong>Histerektomi (rahmin alınması):</strong> Son çare, doğurganlık istenmeyen, şiddetli vakalarda</li>
+                                </ul>
+                            </li>
+                            <li><strong>İnfertilite tedavisi:</strong>
+                                <ul>
+                                    <li>Cerrahi sonrası spontan gebelik denemesi (6-12 ay)</li>
+                                    <li><strong>Ovulasyon indüksiyonu + aşılama (IUI):</strong> Hafif-orta endometrioziste</li>
+                                    <li><strong>Tüp bebek (IVF):</strong> İleri endometrioziste, cerrahiye rağmen gebelik olmayanlarda</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <strong>Önemli:</strong> Endometriozis kronik, ilerleyici bir hastalıktır. Tedavi semptomları kontrol altına almayı, fertiliteyi korumayı ve yaşam kalitesini artırmayı amaçlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Plasenta nedir ve işlevleri nelerdir? Plasental bariyer (kan-beyin bariyerine benzer) ne işe yarar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Plasenta, anne ve fetüs arasında madde alışverişini sağlayan geçici bir organdır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Plasenta, anne ile fetüs arasında madde alışverişini sağlayan, hormon salgılayan geçici bir organdır.</p>
+                        <p><strong>Açıklama:</strong> 
+                        <strong>Yapısı:</strong>
+                        <ul>
+                            <li><strong>Anne kısmı:</strong> Desidua bazalis (rahim duvarı)</li>
+                            <li><strong>Fetüs kısmı:</strong> Koryonik villuslar (parmaksı çıkıntılar)</li>
+                            <li><strong>Göbek kordonu:</strong> Plasentayı fetüse bağlar, iki atardamar ve bir toplardamar içerir.</li>
+                            <li><strong>Boyut:</strong> Oluşumu tamamlandığında yaklaşık 20 cm uzunluğunda, 2,5 cm kalınlığında, 500-600 gram ağırlığındadır.</li>
+                        </ul>
+                        <strong>İşlevleri:</strong>
+                        <ol>
+                            <li><strong>Gaz alışverişi:</strong>
+                                <ul>
+                                    <li>Oksijen: Anne kanından fetüs kanına difüzyonla geçer.</li>
+                                    <li>Karbondioksit: Fetüs kanından anne kanına difüzyonla geçer.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Besin transferi:</strong>
+                                <ul>
+                                    <li>Glukoz, amino asitler, yağ asitleri, vitaminler, mineraller</li>
+                                    <li>Difüzyon, kolaylaştırılmış difüzyon ve aktif taşıma ile</li>
+                                </ul>
+                            </li>
+                            <li><strong>Atık ürünlerin atılımı:</strong>
+                                <ul>
+                                    <li>Üre, kreatinin, bilirubin</li>
+                                    <li>Anne böbrekleri ve karaciğeri tarafından atılır</li>
+                                </ul>
+                            </li>
+                            <li><strong>Hormon sentezi:</strong>
+                                <ul>
+                                    <li><strong>hCG (insan koryonik gonadotropini):</strong> Korpus luteumu uyarır, gebeliğin devamını sağlar.</li>
+                                    <li><strong>Östrojen:</strong> Rahim ve meme gelişimini uyarır.</li>
+                                    <li><strong>Progesteron:</strong> Rahim kasılmalarını inhibe eder, gebeliği korur.</li>
+                                    <li><strong>hPL (insan plasental laktojeni):</strong> Anne metabolizmasını fetüs lehine değiştirir, meme gelişimini uyarır.</li>
+                                    <li><strong>Relaksin:</strong> Pelvik bağları gevşeterek doğuma hazırlık yapar.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Bağışıklık koruması:</strong>
+                                <ul>
+                                    <li>Fetüsün yabancı antijenlerine karşı anne bağışıklık yanıtını baskılar.</li>
+                                    <li>Anneden fetüse geçen IgG antikorları ile pasif bağışıklık sağlar.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Detoksifikasyon:</strong> Bazı toksinleri metabolize eder.</li>
+                            <li><strong>Endokrin işlev:</strong> Gebelikte önemli bir endokrin organdır.</li>
+                        </ol>
+                        <strong>Plasental bariyer (anne-fetüs bariyeri):</strong>
+                        <ul>
+                            <li><strong>Yapı:</strong> Koryonik villuslardaki fetüs kapiller endoteli, bağ dokusu ve trofoblast tabakası</li>
+                            <li><strong>İşlevi:</strong> Anne ve fetüs kanlarını ayırmak, seçici geçirgenlik sağlamak</li>
+                            <li><strong>Geçiş mekanizmaları:</strong>
+                                <ol>
+                                    <li><strong>Difüzyon:</strong> O₂, CO₂, su, elektrolitler, yağda çözünen maddeler</li>
+                                    <li><strong>Kolaylaştırılmış difüzyon:</strong> Glukoz</li>
+                                    <li><strong>Aktif taşıma:</strong> Amino asitler, kalsiyum, demir</li>
+                                    <li><strong>Pinositoz:</strong> Proteinler (IgG antikorları)</li>
+                                    <li><strong>Kırılma (rüptür):</strong> Fetüs kan hücrelerinin anne dolaşımına geçmesi (Rh uyuşmazlığında olduğu gibi)</li>
+                                </ol>
+                            </li>
+                            <li><strong>Geçebilen maddeler:</strong>
+                                <ul>
+                                    <li>Oksijen, karbondioksit</li>
+                                    <li>Besinler: Glukoz, amino asitler, yağ asitleri, vitaminler, mineraller</li>
+                                    <li>Su, elektrolitler</li>
+                                    <li>Uyuşturucular, alkol, sigara bileşenleri, bazı ilaçlar, virüsler (kızamıkçık, sitomegalovirüs, HIV), toksinler</li>
+                                </ul>
+                            </li>
+                            <li><strong>Geçemeyen/çok az geçen maddeler:</strong>
+                                <ul>
+                                    <li>Çoğu bakteri (büyük boyutları nedeniyle)</li>
+                                    <li>Bazı ilaçlar (heparin, insülin - büyük moleküller)</li>
+                                    <li>Anne kan hücreleri (normalde)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <strong>Klinik önemi:</strong>
+                        <ol>
+                            <li><strong>Gebelik takibi:</strong> Plasenta ultrasonla değerlendirilir. Lokalizasyonu, kalınlığı, olgunluğu önemlidir.</li>
+                            <li><strong>Plasenta previa:</strong> Plasentanın rahim ağzını kapatması, ağrısız vajinal kanamaya neden olur.</li>
+                            <li><strong>Plasenta dekolmanı:</strong> Plasentanın erken ayrılması, ağrılı kanamaya neden olur.</li>
+                            <li><strong>Plasental yetmezlik:</strong> Plasentanın yeterli çalışmaması, fetüs gelişim geriliğine neden olur.</li>
+                            <li><strong>İlaç geçişi:</strong> Hamilelikte kullanılan ilaçların plasentadan geçip geçmediği dikkate alınmalıdır (teratojen etki).</li>
+                        </ol>
+                        <strong>Doğum sonrası:</strong> Plasenta "eş" veya "son" olarak adlandırılır, doğumdan 5-30 dakika sonra atılır.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Üreme Sistemi Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #9b59b6; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden testisler vücut dışında (skrotumda) bulunur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Sperm üretimi (spermatogenez) vücut sıcaklığından 2-3°C daha düşük sıcaklıkta en iyi şekilde gerçekleşir.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <ol>
+                            <li><strong>Enzimatik optimum:</strong> Spermatogenezde görev alan enzimler 34-35°C'de en iyi çalışır. Vücut içi sıcaklık (37°C) bu enzimler için çok yüksektir.</li>
+                            <li><strong>DNA stabilitesi:</strong> Yüksek sıcaklık sperm DNA'sında hasara neden olabilir. Daha düşük sıcaklık DNA stabilitesini korur.</li>
+                            <li><strong>Evolüsyonel adaptasyon:</strong> Memelilerin çoğunda testisler vücut dışındadır. Bu, sperm kalitesi ve sayısı için kritik bir adaptasyondur.</li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kanıt:</strong> 
+                            <ul>
+                                <li>Varikosel (testis damarlarında genişleme) testis sıcaklığını artırarak sperm sayısını düşürür.</li>
+                                <li>Sauna, sıcak banyo gibi ısı maruziyetleri geçici infertiliteye neden olabilir.</li>
+                                <li>Kriptorşidizm (inmemiş testis) tedavi edilmezse kalıcı infertilite ile sonuçlanır.</li>
+                            </ul>
+                            <p><strong>Skrotumun adaptasyonları:</strong>
+                            <ul>
+                                <li><strong>Kasılma/gevşeme:</strong> Kremaster kası soğukta kasılarak testisleri vücuda yaklaştırır, sıcakta gevşeyerek uzaklaştırır.</li>
+                                <li><strong>Ter bezleri:</strong> Skrotum derisi ter bezleri açısından zengindir, evaporatif soğutma sağlar.</li>
+                                <li><strong>Damar ağı:</strong> Testis damarları (pampiniform pleksus) ısı değişimi sağlar.</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Menstrual döngüde neden hormon seviyeleri sürekli değişir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Menstrual döngü, yumurta olgunlaşması, yumurtlama ve rahmin gebeliğe hazırlanması gibi birbirini takip eden olaylar zinciridir. Her olay farklı hormonlar tarafından kontrol edilir.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <ol>
+                            <li><strong>Folikül evresi:</strong> Hipofizden FSH salgılanır → yumurtalıktaki folikül büyür → folikül östrojen salgılar → östrojen rahmi (endometriyumu) kalınlaştırır.</li>
+                            <li><strong>Ovulasyon:</strong> Östrojen belirli bir seviyeye ulaşınca pozitif geri bildirimle hipofizi uyarır → LH piki olur → LH folikülü yırtarak yumurtlamayı sağlar.</li>
+                            <li><strong>Korpus luteum evresi:</strong> Yırtılan folikül korpus luteuma dönüşür → progesteron salgılar → progesteron endometriyumu gebeliğe hazırlar.</li>
+                            <li><strong>Menstruasyon:</strong> Döllenme olmazsa korpus luteum bozulur → progesteron düşer → endometriyum dökülür (menstruasyon).</li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Negatif ve pozitif geri bildirim:</strong>
+                            <ul>
+                                <li><strong>Negatif geri bildirim:</strong> Hormon seviyesi yükselince salgıyı azaltan mekanizma (çoğu hormon için geçerli).</li>
+                                <li><strong>Pozitif geri bildirim:</strong> Hormon seviyesi yükselince salgıyı artıran mekanizma (östrojenin LH üzerindeki etkisi gibi).</li>
+                            </ul>
+                            <p><strong>Biyolojik mantık:</strong> Bu karmaşık hormonal dansın amacı:
+                            <ol>
+                                <li>Her ay bir yumurta olgunlaştırmak</li>
+                                <li>Yumurtlamayı zamanlamak</li>
+                                <li>Rahmi sadece gerekli olduğunda (döllenme olursa) hazırlamak</li>
+                                <li>Enerji tasarrufu yapmak (rahmi sürekli hazır tutmak enerji israfı olurdu)</li>
+                            </ol></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Döllenme neden fallop tüpünde gerçekleşir ve embriyo neden rahme kadar ilerler?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Zamanlama ve yer mantığı:</strong> Döllenme ve implantasyon için kritik zaman pencereleri ve yerleşim yerleri vardır.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <ol>
+                            <li><strong>Yumurta ömrü:</strong> Yumurtlama sonrası yumurta sadece 12-24 saat canlı kalır. Sperm ise kadın üreme sisteminde 3-5 gün yaşayabilir.</li>
+                            <li><strong>Fallop tüpünün işlevi:</strong> 
+                                <ul>
+                                    <li>Yumurtayı yakalar (kirpikli huni)</li>
+                                    <li>Sperm ve yumurtayı bir araya getirir</li>
+                                    <li>Döllenme için uygun ortam sağlar (pH, besinler)</li>
+                                    <li>Embriyoyu rahme taşır (kirpiklerin hareketi ve tüp kasılmaları ile)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Rahmin işlevi:</strong> Embriyo için besin açısından zengin, koruyucu bir ortam sağlar. Fallop tüpleri bu işlev için uygun değildir.</li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kritik zaman çizelgesi:</strong>
+                            <ol>
+                                <li><strong>Ovulasyon:</strong> Yumurta fallop tüpüne geçer</li>
+                                <li><strong>Döllenme (0. gün):</strong> Fallop tüpünün ampulla kısmında</li>
+                                <li><strong>Bölünmeler (1-3. gün):</strong> Embriyo fallop tüpünde ilerlerken mitoz bölünmelerle çoğalır</li>
+                                <li><strong>Morula (4. gün):</strong> 16-32 hücreli top şeklinde yapı</li>
+                                <li><strong>Blastosist (5-6. gün):</strong> Rahme ulaşır, içi boş top şeklinde</li>
+                                <li><strong>İmplantasyon (6-10. gün):</strong> Blastosist endometriyuma tutunur</li>
+                            </ol>
+                            <p><strong>Neden rahim dışında tutunma olmaz?</strong>
+                            <ul>
+                                <li><strong>Besin yetersizliği:</strong> Fallop tüpleri endometriyum gibi zengin kanlanmaya sahip değildir.</li>
+                                <li><strong>Mekanik nedenler:</strong> Tüp dar ve esnek değildir, embriyo büyüdükçe tüpü yırtar (dış gebelik).</li>
+                                <li><strong>Hormonal destek:</strong> Rahim progesteron reseptörlerine sahiptir, tüplerde bu reseptörler yoktur.</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Hamilelik testleri neden hCG hormonunu tespit eder?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Spesifik belirteç mantığı:</strong> hCG (insan koryonik gonadotropin) sadece gebelikte üretilen bir hormondur.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <ol>
+                            <li><strong>Kaynak spesifikliği:</strong> hCG sadece plasental trofoblast hücreleri tarafından üretilir. Gebe olmayan kadınlarda bu hücreler yoktur.</li>
+                            <li><strong>Erken üretim:</strong> İmplantasyondan (rahme tutunma) 6-12 gün sonra kanda tespit edilebilir düzeylere ulaşır.</li>
+                            <li><strong>Hızlı artış:</strong> Gebeliğin ilk 8-10 haftasında her 48-72 saatte bir ikiye katlanır. Bu dinamik artış yalancı pozitifliği önler.</li>
+                            <li><strong>İdrarla atılım:</strong> hCG böbreklerden süzülerek idrarla atılır, bu da idrar testlerini mümkün kılar.</li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Biyolojik işlevi neden test için uygun?</strong>
+                            <ul>
+                                <li><strong>Korpus luteum kurtarıcı:</strong> hCG'nin asıl işlevi korpus luteumu uyararak progesteron üretimini sürdürmektir.</li>
+                                <li><strong>Yapısal benzerlik:</strong> hCG yapısal olarak LH'ye benzer, LH reseptörlerine bağlanır. Bu nedenle gebelik testlerinde LH ile çapraz reaksiyon olmaması için özel antikorlar kullanılır.</li>
+                            </ul>
+                            <p><strong>Test sensitivitesi:</strong>
+                            <ul>
+                                <li><strong>İdrar testleri:</strong> Genellikle 25 mIU/mL üzeri hCG'yi tespit eder (adet gecikmesinden 1-2 gün sonra pozitif olabilir).</li>
+                                <li><strong>Kan testleri (beta-hCG):</strong> 5 mIU/mL kadar düşük seviyeleri tespit edebilir (implantasyondan 6-8 gün sonra).</li>
+                            </ul>
+                            <p><strong>Yalancı pozitif/negatif nedenleri:</strong>
+                            <ul>
+                                <li><strong>Yalancı pozitif:</strong> LH piki, bazı ilaçlar, tümörler, menopoz, proteinüri</li>
+                                <li><strong>Yalancı negatif:</strong> Çok erken test, seyreltik idrar (aşırı sıvı alımı), test hatası, ektopik gebelik (düşük hCG)</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden kadınlarda doğurganlık yaşı sınırlıyken erkeklerde nispeten daha uzundur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel biyolojik fark:</strong> Kadınlarda yumurta rezervi doğumda belirlenir ve tükenir, erkeklerde ise sperm üretimi ömür boyu devam eder.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Özellik</th>
+                                <th>Kadın</th>
+                                <th>Erkek</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Gamet rezervi</strong></td>
+                                <td>Doğumda belirlenir (~1-2 milyon folikül)</td>
+                                <td>Sürekli üretilir (günde ~100-200 milyon sperm)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Üretim mekanizması</strong></td>
+                                <td>Mayoz doğumda başlar, döllenmeyle tamamlanır</td>
+                                <td>Mayoz ergenlikte başlar, süreklidir</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yaşlanma etkisi</strong></td>
+                                <td>Folikül sayısı ve kalitesi azalır (35 yaşından sonra hızlanır)</td>
+                                <td>Sperm sayısı ve hareketliliği azalır ama üretim devam eder</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Menopoz/andropos</strong></td>
+                                <td>Menopoz (45-55 yaş): Yumurta tükenir, doğurganlık biter</td>
+                                <td>Andropoz: Yavaş, kısmi testosteron azalması, doğurganlık devam eder</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kromozomal anomaliler</strong></td>
+                                <td>İleri anne yaşı ile Down sendromu riski artar</td>
+                                <td>İleri baba yaşı ile otizm, şizofreni riski artar</td>
+                            </tr>
+                        </table></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kadınlarda sınırlı doğurganlık nedenleri:</strong>
+                            <ol>
+                                <li><strong>Folikül atrezisi:</strong> Her menstrual döngüde bir folikül olgunlaşır ama binlercesi kaybedilir.</li>
+                                <li><strong>Mitokondrial yaşlanma:</strong> Yumurta hücresindeki mitokondriler yaşlanır, enerji üretimi azalır.</li>
+                                <li><strong>Kromozomal ayrılmama:</strong> İleri yaşta mayoz sırasında kromozomlar düzgün ayrılamaz, anöploidi riski artar.</li>
+                                <li><strong>Oosit kalitesi:</strong> 35 yaşından sonra yumurta kalitesi hızla düşer.</li>
+                            </ol>
+                            <p><strong>Erkeklerde sürekli üretim nedenleri:</strong>
+                            <ol>
+                                <li><strong>Spermatogonial kök hücreler:</strong> Testislerde kendini yenileyen kök hücre populasyonu vardır.</li>
+                                <li><strong>Mayoz sürekliliği:</strong> Mayoz kesintisiz devam eder, yeni spermler sürekli üretilir.</li>
+                                <li><strong>DNA tamir mekanizmaları:</strong> Sperm DNA'sı için aktif tamir mekanizmaları vardır (ancak yaşla etkinliği azalır).</li>
+                            </ol>
+                            <p><strong>Evolüsyonel mantık:</strong>
+                            <ul>
+                                <li><strong>Kadın:</strong> Sınırlı sayıda yumurta + uzun gebelik/emzirme → Kaliteli yumurtaları koruma, genç yaşta üreme</li>
+                                <li><strong>Erkek:</strong> Bol sperm + kısa üretim süresi → Sürekli üreme şansı, genetik çeşitlilik</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Gebelikte neden bulantı ve kusma (sabah bulantıları) olur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Adaptif hipotez:</strong> Sabah bulantıları (hiperemezis gravidarum hafif formu) aslında fetüsü koruyucu bir adaptasyon olabilir.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <ol>
+                            <li><strong>Zamanlama:</strong> Genellikle 6. haftada başlar, 12-14. haftalarda azalır. Bu, organogenez dönemine (3-8. haftalar) denk gelir.</li>
+                            <li><strong>Koruyucu teori:</strong> Annenin potansiyel toksinlerden ve patojenlerden kaçınmasını sağlar.
+                                <ul>
+                                    <li><strong>Et, balık, kümes hayvanları:</strong> Bakteri, parazit riski</li>
+                                    <li><strong>Alkol, sigara:</strong> Teratojen etki</li>
+                                    <li><strong>Bazı sebzeler:</strong> Doğal toksinler (acı tatlılar)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Hormonal nedenler:</strong>
+                                <ul>
+                                    <li><strong>hCG:</strong> Bulantı şiddeti genellikle hCG seviyesi ile koreledir (ikiz gebelikte daha şiddetli).</li>
+                                    <li><strong>Östrojen:</strong> Koku ve tat duyarlılığını artırır.</li>
+                                    <li><strong>Progesteron:</strong> Mide-bağırsak kaslarını gevşeterek sindirimi yavaşlatır.</li>
+                                </ul>
+                            </li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kanıtlar:</strong>
+                            <ul>
+                                <li><strong>Düşük riski azalması:</strong> Hafif-orta bulantısı olan gebelerde düşük riski daha düşüktür.</li>
+                                <li><strong>Beslenme tercihleri:</strong> Gebeler genellikle tatsız, kokusuz, karbonhidratlı yiyeceklere yönelir (ekmek, kraker, makarna).</li>
+                                <li><strong>Kültürler arası tutarlılık:</strong> Tüm kültürlerde görülür, evrensel bir fenomendir.</li>
+                                <li><strong>Evolüsyonel mantık:</strong> İnsan omnivordur, çeşitli yiyecekler tüketir. Gebelikte daha seçici olmak fetüsü korur.</li>
+                            </ul>
+                            <p><strong>Ancak istisnalar da var:</strong>
+                            <ul>
+                                <li><strong>Hiperemezis gravidarum:</strong> Şiddetli, tedavi gerektiren bulantı-kusma. Adaptif değil, patolojiktir.</li>
+                                <li><strong>Bulantısız gebelikler:</strong> Tüm gebelerde bulantı olmaz, bu da sağlıklı gebeliklerde görülebilir.</li>
+                            </ul>
+                            <p><strong>Yönetim:</strong>
+                            <ul>
+                                <li><strong>Yaşam tarzı:</strong> Sık, küçük öğünler; yataktan kalkmadan kraker yeme; yağlı, baharatlı yiyeceklerden kaçınma</li>
+                                <li><strong>İlaçlar:</strong> B6 vitamini, doksylamin (Diclectin), ondansetron (şiddetli vakalarda)</li>
+                                <li><strong>Alternatif tedaviler:</strong> Zencefil, akupresür bileklikleri, meditasyon</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Emzirme neden doğum kontrol yöntemi olarak kullanılabilir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Laktasyonel amenore metodu (LAM):</strong> Emzirme, yumurtlamayı baskılayarak geçici bir doğum kontrol yöntemi olarak işlev görebilir.</p>
+                        <p><strong>Mantık yürütme:</strong> 
+                        <strong>Hormonal mekanizma:</strong>
+                        <ol>
+                            <li><strong>Prolaktin:</strong> Emzirme sırasında hipofizden prolaktin salgılanır.
+                                <ul>
+                                    <li>Süt üretimini uyarır</li>
+                                    <li>GnRH salgısını baskılar</li>
+                                    <li>GnRH baskılanınca FSH ve LH salgılanmaz</li>
+                                    <li>FSH ve LH olmayınca yumurtlama olmaz</li>
+                                </ul>
+                            </li>
+                            <li><strong>Mekanik uyarı:</strong> Bebeğin meme başını emmesi prolaktin salgısını tetikler.</li>
+                            <li><strong>Geçici etki:</strong> Emzirme azalınca prolaktin düşer, GnRH inhibisyonu kalkar, menstrual döngü ve yumurtlama başlar.</li>
+                        </ol></p>
+                        <div class="reasoning-answer">
+                            <p><strong>LAM kriterleri (WHO):</strong>
+                            <ol>
+                                <li><strong>Tam veya neredeyse tam emzirme:</strong> Bebek sadece anne sütü almalı (su, mama, ek gıda yok)</li>
+                                <li><strong>Sık emzirme:</strong> Gündüz 4 saatten, gece 6 saatten uzun aralıklarla emzirilmemeli</li>
+                                <li><strong>Postpartum 6 ay içinde:</strong> Doğumdan sonraki ilk 6 ayda etkilidir</li>
+                                <li><strong>Adet görmeme:</strong> Anne henüz adet görmemiş olmalı</li>
+                            </ol>
+                            <p><strong>Etkinlik:</strong> Tüm kriterler sağlandığında gebelikten korunma oranı %98'dir (doğum kontrol hapı kadar etkilidir).</p>
+                            <p><strong>Sınırlamalar:</strong>
+                            <ul>
+                                <li><strong>Zaman sınırı:</strong> Sadece ilk 6 ay etkilidir</li>
+                                <li><strong>Emzirme şartları:</strong> Kriterlerden biri bozulursa etkinlik azalır</li>
+                                <li><strong>Yumurtlamanın belirsizliği:</strong> İlk yumurtlama adetten önce olabilir, anne fark etmez</li>
+                                <li><strong>Bebek faktörleri:</strong> Bebek hasta olabilir, emmeyi reddedebilir, uyku düzeni değişebilir</li>
+                            </ul>
+                            <p><strong>Biyolojik mantık:</strong>
+                            <ul>
+                                <li><strong>Kaynak optimizasyonu:</strong> Vücut enerjiyi süt üretimine ve mevcut bebeğe odaklar, yeni gebeliği erteler.</li>
+                                <li><strong>Bebek sağkalımı:</strong> Kardeş rekabetini önleyerek mevcut bebeğin hayatta kalma şansını artırır.</li>
+                                <li><strong>Anne sağlığı:</strong> Doğumlar arasında en az 18-24 ay olması anne sağlığı için önemlidir.</li>
+                            </ul>
+                            <p><strong>Pratik öneri:</strong> LAM güvenilir bir yöntem olmakla birlikte, 6. aydan sonra veya emzirme kriterleri bozulunca ek bir doğum kontrol yöntemine geçilmelidir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Biology Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-dna"></i> Epigenetik ve Üreme: Sadece Genler Değil</div>
+                    <div class="advanced-content">
+                        <p>Epigenetik, DNA dizisinde değişiklik olmadan gen ifadesinin değişmesidir. Üreme biyolojisinde epigenetiğin şaşırtıcı rolleri vardır:</p>
+                        <div class="advanced-fact">
+                            <p><strong>Genomik imprinting:</strong> Bazı genlerin ifadesi, genin anne veya babadan gelmesine bağlı olarak değişir. Bu "genetik hafıza" gamet oluşumu sırasında epigenetik işaretlerle belirlenir.</p>
+                            <ul>
+                                <li><strong>Örnek:</strong> İnsülin benzeri büyüme faktörü 2 (IGF2) geni sadece babadan gelen kopyasından ifade edilir. Anneden gelen kopya susturulmuştur.</li>
+                                <li><strong>Klinik önemi:</strong> Prader-Willi ve Angelman sendromları imprinting bozukluklarıdır.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Transgenerational epigenetik:</strong> Ebeveynlerin çevresel maruziyetleri (diyet, stres, toksinler) epigenetik işaretler yoluyla çocuklara ve hatta torunlara aktarılabilir.</p>
+                            <ul>
+                                <li><strong>Hollanda Kıtlık Çalışması:</strong> 1944-45 kışında hamile kadınların aç kalması, çocuklarında ve torunlarında obezite, diyabet ve kardiyovasküler hastalık riskini artırmıştır.</li>
+                                <li><strong>Mekanizma:</strong> DNA metilasyonu, histon modifikasyonları, mikroRNA'lar.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Yumurta yaşlanması ve epigenetik:</strong> İleri anne yaşı ile birlikte yumurta epigenetik profilinde değişiklikler olur. Bu, kromozomal ayrılmama (Down sendromu) ve embriyo gelişim bozuklukları riskini artırabilir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-viruses"></i> Mikrobiyom ve Üreme Sağlığı</div>
+                    <div class="advanced-content">
+                        <p>İnsan vücudu trilyonlarca mikroorganizma (mikrobiyom) ile simbiyotik bir ilişki içindedir. Üreme sisteminin de kendine özgü bir mikrobiyomu vardır.</p>
+                        <div class="advanced-fact">
+                            <p><strong>Vajinal mikrobiyom:</strong> Sağlıklı kadınlarda vajina laktobasiller (L. crispatus, L. jensenii, L. gasseri, L. iners) tarafından domine edilir.</p>
+                            <ul>
+                                <li><strong>İşlevler:</strong> Laktik asit üreterek pH'ı düşürür (3.5-4.5), patojenlerin büyümesini inhibe eder, hidrojen peroksit üretir, biyofilm oluşturur.</li>
+                                <li><strong>Dysbiosis:</strong> Laktobasil azalıp anaerob bakteriler artarsa bakteriyel vajinozis gelişir. Bu erken doğum, düşük, infertilite riskini artırır.</li>
+                                <li><strong>Menstrual döngü etkisi:</strong> Östrojen glikojen üretimini artırarak laktobasiller için substrat sağlar. Menstruasyon sırasında pH yükselir, mikrobiyom geçici olarak değişir.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Endometrial mikrobiyom:</strong> Uzun süre rahmin steril olduğu düşünülüyordu ama son çalışmalar endometriyumun da kendi mikrobiyomu olduğunu gösterdi.</p>
+                            <ul>
+                                <li><strong>İmplantasyon etkisi:</strong> Sağlıklı endometrial mikrobiyom embriyo implantasyonunu kolaylaştırır. Dysbiosis implantasyon başarısını düşürür.</li>
+                                <li><strong>Tüp bebek başarısı:</strong> Lactobacillus dominant endometrial mikrobiyomu olan kadınlarda tüp bebek başarısı daha yüksektir.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Sperm mikrobiyomu:</strong> Semende de mikroorganizmalar bulunur. Bazı bakteriler sperm hareketliliğini ve DNA bütünlüğünü olumsuz etkiler.</p>
+                            <ul>
+                                <li><strong>Örnek:</strong> Üreaplazma urealyticum, Mycoplasma genitalium sperm parametrelerini bozabilir.</li>
+                                <li><strong>Teşhis:</strong> Sperm kültürü ve mikrobiyom analizi.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Anne sütü mikrobiyomu:</strong> Anne sütü steril değildir, probiyotik bakteriler (Lactobacillus, Bifidobacterium) ve prebiyotikler (oligosakkaritler) içerir.</p>
+                            <ul>
+                                <li><strong>Bebek bağırsak mikrobiyomunun kolonizasyonu:</strong> Anne sütü bebeğin bağırsak mikrobiyomunu şekillendirir.</li>
+                                <li><strong>Bağışıklık gelişimi:</strong> Mikrobiyom bebeğin bağışıklık sisteminin eğitiminde kritik rol oynar.</li>
+                                <li><strong>Kaynak:</strong> Anne sütündeki bakteriler annenin bağırsaklarından meme bezlerine lenfatik yolla taşınır (entero-mammary pathway).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-brain"></i> Nöroendokrinoloji: Beyin ve Üreme Sistemi Bağlantısı</div>
+                    <div class="advanced-content">
+                        <p>Üreme sistemi beyin tarafından kontrol edilir, ancak bu ilişki tek yönlü değildir. Üreme hormonları da beyin yapısı ve işlevini etkiler.</p>
+                        <div class="advanced-fact">
+                            <p><strong>Kisspeptin nöronları:</strong> Hipotalamustaki kisspeptin salgılayan nöronlar üreme sisteminin ana düzenleyicisidir.</p>
+                            <ul>
+                                <li><strong>İşlev:</strong> GnRH nöronlarını uyararak GnRH salgılatır.</li>
+                                <li><strong>Ergenlik başlatıcı:</strong> Kisspeptin aktivitesindeki artış ergenliği başlatır.</li>
+                                <li><strong>Cinsiyet farkı:</strong> Erkek ve dişi beyinlerinde farklı kisspeptin nöron populasyonları vardır.</li>
+                                <li><strong>Klinik önemi:</strong> Kisspeptin reseptör mutasyonları hipogonadotropik hipogonadizme neden olur.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Östrojenin nöroprotektif etkileri:</strong> Östrojen sadece üreme organlarını değil, beyni de etkiler.</p>
+                            <ul>
+                                <li><strong>Sinir plastisitesi:</strong> Östrojen sinir hücrelerinde dendritik diken sayısını artırır, sinaptik bağlantıları güçlendirir.</li>
+                                <li><strong>Nörotransmitter sistemleri:</strong> Serotonin, dopamin, asetilkolin sistemlerini modüle eder.</li>
+                                <li><strong>Menopoz ve bilişsel fonksiyon:</strong> Menopozda östrojen düşüşü ile birlikte bazı kadınlarda hafıza ve konsantrasyon problemleri görülür.</li>
+                                <li><strong>Alzheimer riski:</strong> Östrojen Alzheimer hastalığına karşı koruyucu olabilir. Menopoz sonrası kadınlarda Alzheimer riski artar.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Stres ve üreme ekseni:</strong> Kronik stres üreme fonksiyonunu baskılar.</p>
+                            <ul>
+                                <li><strong>Mekanizma:</strong> Stres → Hipotalamus-hipofiz-adrenal (HHA) ekseni aktive olur → Kortizol artar → Kortizol GnRH salgısını baskılar → GnRH düşer → FSH/LH düşer → Yumurtlama/sperm üretimi baskılanır.</li>
+                                <li><strong>Fonksiyonel hipotalamik amenore:</strong> Aşırı egzersiz, yeme bozuklukları, psikolojik stres nedeniyle adetlerin kesilmesi.</li>
+                                <li><strong>Evrimsel mantık:</strong> Stresli koşullarda (kıtlık, tehlike) üremeyi ertelemek hayatta kalma şansını artırır.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Feromonlar ve üreme davranışı:</strong> Feromonlar aynı tür bireyler arasında kimyasal sinyal iletişimi sağlar.</p>
+                            <ul>
+                                <li><strong>İnsanlarda:</strong> Vomeronazal organ (VNO) rudimenterdir ama feromon etkileri gösterilmiştir.</li>
+                                <li><strong>McClintock etkisi:</strong> Kadınların adet döngülerinin senkronize olması (belki androstadienon feromonu ile).</li>
+                                <li><strong>Cinsel çekim:</strong> MHC (major histocompatibility complex) kompleksi ile ilişkili feromonlar. Kadınlar, kendilerinden farklı MHC'ye sahip erkeklerin kokusunu tercih eder (heterozigot avantajı).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-clock"></i> Kronobiyoloji ve Üreme: Biyolojik Saatler</div>
+                    <div class="advanced-content">
+                        <p>Üreme fonksiyonları sirkadiyen (günlük) ve infradian (aylık) ritimlerle düzenlenir. Biyolojik saatler bu ritimleri kontrol eder.</p>
+                        <div class="advanced-fact">
+                            <p><strong>Sirkadiyen ritimler:</strong> 24 saatlik döngüler.</p>
+                            <ul>
+                                <li><strong>GnRH salgısı:</strong> Pulsatil (atımlı) salgılanır. Erkeklerde her 2 saatte bir, kadınlarda menstrual döngü evresine göre değişir.</li>
+                                <li><strong>Testosteron:</strong> Sabah en yüksek, akşam en düşük seviyededir.</li>
+                                <li><strong>LH piki:</strong> Genellikle sabahın erken saatlerinde (02:00-04:00) başlar.</li>
+                                <li><strong>Doğum zamanlaması:</strong> Çoğu doğum gece veya sabahın erken saatlerinde gerçekleşir. Melatonin ve oksitosin ritimleri ile ilişkilidir.</li>
+                                <li><strong>Vardiyalı çalışma:</strong> Sirkadiyen ritim bozuklukları (jet lag, vardiyalı çalışma) menstrual düzensizliklere, düşük sperm kalitesine neden olabilir.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Infradian ritimler:</strong> 24 saatten uzun döngüler.</p>
+                            <ul>
+                                <li><strong>Menstrual döngü:</strong> Klasik infradian ritim örneği (ortalama 28 gün).</li>
+                                <li><strong>Lunar döngü ile ilişki:</strong> Bazı çalışmalar menstrual döngü ile ay döngüsü (29,5 gün) arasında ilişki olduğunu göstermiştir ama kanıtlar zayıftır.</li>
+                                <li><strong>Mevsimsel ritimler:</strong> Bazı hayvanlarda üreme mevsimseldir (fotoperiyoda duyarlı). İnsanlarda daha zayıf olsa da bazı çalışmalar mevsimsel doğum ve konsepsyon farklılıkları olduğunu göstermiştir.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Moleküler saat mekanizması:</strong> Hücresel düzeyde saat genleri (Clock, Bmal1, Per, Cry) sirkadiyen ritimleri düzenler.</p>
+                            <ul>
+                                <li><strong>Yumurtlama saat genleri:</strong> Yumurtalıkta saat genlerinin ekspresyonu LH pikinden önce değişir.</li>
+                                <li><strong>Spermatogenez:</strong> Testislerde saat genleri spermatogenezin ilerlemesini düzenler.</li>
+                                <li><strong>Embriyo gelişimi:</strong> Embriyoda saat genleri erken gelişimde kritiktir.</li>
+                                <li><strong>Klinik uygulamalar:</strong> Hormon tedavilerinin zamanlaması, tüp bebek protokollerinde stimülasyon zamanlaması biyolojik ritimlere göre optimize edilebilir.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-robot"></i> Gelecekte Üreme Teknolojileri</div>
+                    <div class="advanced-content">
+                        <p>Üreme tıbbı hızla gelişmektedir. Yakın gelecekte şu teknolojiler klinik uygulamaya girebilir:</p>
+                        <div class="advanced-fact">
+                            <p><strong>Yapay rahim (ektogenik gebelik):</strong> Prematüre bebekler için yapay bir ortam.</p>
+                            <ul>
+                                <li><strong>Mevcut durum:</strong> Koyun fetuslarında 4 haftaya kadar başarılı deneyler.</li>
+                                <li><strong>Zorluklar:</strong> Plasental fonksiyon, immun sistem gelişimi, nörolojik gelişim.</li>
+                                <li><strong>Etik sorunlar:</strong> Tam ektogenik gebelik (tüm gebeliğin rahim dışında) ciddi etik tartışmalara neden olacaktır.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Üç ebeveynli tüp bebek (mitokondrial replasman tedavisi):</strong> Mitokondrial hastalıkları önlemek için.</p>
+                            <ul>
+                                <li><strong>Teknik:</strong> Annenin yumurtasından çekirdek alınır, bağışçının (mitokondrileri sağlıklı) yumurtasına aktarılır, sonra babanın spermi ile döllenir.</li>
+                                <li><strong>Sonuç:</strong> Bebek genetik materyalinin %99,9'unu anne-babadan, mitokondrial DNA'sını bağışçıdan alır.</li>
+                                <li><strong>Durum:</strong> İngiltere gibi bazı ülkelerde onaylanmıştır.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>In vitro gametogenez (IVG):</strong> Kök hücrelerden yumurta veya sperm üretimi.</p>
+                            <ul>
+                                <li><strong>Teknik:</strong> Deri hücresi → İndüklenmiş pluripotent kök hücre (iPSC) → Primordial germ hücresi → Gamet</li>
+                                <li><strong>Potansiyel uygulamalar:</strong> Kanser tedavisi sonrası infertilite, menopoz sonrası gebelik, tek ebeveynli biyolojik çocuk, eşcinsel çiftlerin biyolojik çocukları.</li>
+                                <li><strong>Zorluklar:</strong> Epigenetik programlama, genomik imprinting, güvenlik.</li>
+                                <li><strong>Etik sorunlar:</strong> "Tasarım bebekler", genetik çeşitliliğin azalması, sosyal eşitsizlikler.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>CRISPR/Cas9 gen düzenleme:</strong> Germline (üreme hücreleri) gen düzenlemesi.</p>
+                            <ul>
+                                <li><strong>Potansiyel:</strong> Kalıtsal genetik hastalıkların (kistik fibrozis, orak hücre anemisi, Huntington hastalığı) kökten tedavisi.</li>
+                                <li><strong>He Jiankui skandalı:</strong> 2018'de Çin'de HIV'ye dirençli bebeklerin doğumu, etik ihlaller ve güvenlik sorunları.</li>
+                                <li><strong>Mevcut durum:</strong> Çoğu ülkede germline gen düzenlemesi yasaklanmış veya sıkı şekilde düzenlenmiştir.</li>
+                                <li><strong>Gelecek:</strong> Somatic (vücut hücreleri) gen düzenlemesi tedavileri geliştirilmektedir ama germline düzenleme tartışmalı olmaya devam edecektir.</li>
+                            </ul>
+                        </div>
+                        <div class="advanced-fact">
+                            <p><strong>Yapay zeka (AI) ve üreme tıbbı:</strong></p>
+                            <ul>
+                                <li><strong>Embriyo seçimi:</strong> AI algoritmaları embriyo görüntülerini analiz ederek implantasyon potansiyelini tahmin edebilir.</li>
+                                <li><strong>Sperm seçimi:</strong> Mikroskopik görüntülerden en sağlıklı spermleri seçebilir.</li>
+                                <li><strong>Fertilite tahmini:</strong> Hastanın yaşı, hormon seviyeleri, yaşam tarzı verilerine dayanarak fertilite potansiyelini tahmin edebilir.</li>
+                                <li><strong>Kişiselleştirilmiş tedavi:</strong> Hasta özelliklerine göre optimize edilmiş tüp bebek protokolleri.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Üreme ve Gelişme Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/11uremegelisme.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+   <script>
+        // Dashboard Navigation - DÜZELTİLMİŞ VERSİYON
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            updateProgress('advanced');
+        });
+
+        // Back buttons - DÜZELTİLMİŞ VERSİYON
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-advanced').addEventListener('click', () => {
+            document.getElementById('advanced-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Üreme Sistemi Sorusu
+        const csvData = `Üreme sisteminin temel işlevi nedir?,"Gamet (sperm ve yumurta) üretmek, döllenmeyi sağlamak ve yeni bir bireyin gelişimini başlatmaktır."`
+        + `\nTestisler nerede bulunur ve neden vücut dışındadır?,"Skrotum (testis torbası) içinde bulunur. Vücut dışında olması sperm üretimi için uygun sıcaklık (vücut sıcaklığından 2°C daha düşük) sağlar."`
+        + `\nSeminifer tüpçükler nedir?,"Testislerde sperm üretilen kıvrımlı yapılardır. İçinde Sertoli hücreleri (beslenme ve koruma) ve spermatogonik hücreler (sperm oluşumu) bulunur."`
+        + `\nLeyding hücreleri ne yapar?,"Seminifer tüpçükler arasında dağılmıştır. Erkeklik hormonu testosteronu salgılar."`
+        + `\nYardımcı bezler nelerdir ve işlevleri nedir?,"Seminal kese, prostat bezi ve Cowper bezidir. Seminal sıvıyı salgılayarak spermleri besler, hareket yeteneği kazandırır ve yolu kayganlaştırır."`
+        + `\nSpermatogenez nedir?,"Testislerde seminifer tüpçüklerde mayoz bölünmeyle spermlerin oluşmasıdır. Spermatogonium → Birincil spermatosit → İkincil spermatosit → Spermatit → Sperm."`
+        + `\nSperm yapısı nasıldır?,"Baş (çekirdek), boyun (mitokondri) ve kuyruk (hareket) olmak üzere üç kısımdan oluşur."`
+        + `\nErkek üreme sisteminin hormonal kontrolü nasıldır?,"FSH spermatogenezi başlatır, LH testosteron salgılatır. Testosteron fazla salgılanınca negatif geri bildirim ile kontrol edilir."`
+        + `\nYumurtalık (ovaryum) nedir?,"Karnın iki yanında, yumurta üreten ve hormon (östrojen, progesteron) salgılayan organdır. Her ay genellikle bir yumurta atılır."`
+        + `\nYumurta kanalı (fallop tüpü) işlevi nedir?,"Yumurtayı yumurtalıktan rahme iletir. Döllenme bu kanalda gerçekleşir."`
+        + `\nRahim (uterus) yapısı ve işlevi nedir?,"Döl yatağıdır. Endometriyum tabakası ile kaplıdır. Döllenme olursa embriyo buraya tutunur ve gelişir."`
+        + `\nOogenez nedir?,"Yumurtalıklarda mayoz bölünmeyle dişi üreme hücresinin oluşumudur. Oogonyum → Birincil oosit → İkincil oosit → Olgun yumurta."`
+        + `\nDişilerde mayozun özelliği nedir?,"Birincil oositler profaz I'de doğumdan ergenliğe kadar bekler. Mayoz II ise döllenmeye kadar metafazda durur, döllenmeyle tamamlanır."`
+        + `\nMenstrual döngü nedir ve kaç gün sürer?,"Dişinin üreme döneminde yumurtalık ve rahimde meydana gelen döngüsel değişimlerdir. Ortalama 28 gün sürer."`
+        + `\nMenstrual döngünün evreleri nelerdir?,"Folikül evresi (10-14 gün), Ovulasyon (14-16. gün), Korpus luteum evresi (13-15 gün), Menstruasyon (5 gün)."`
+        + `\nOvulasyon nedir ve nasıl gerçekleşir?,"Olgun folikülün yırtılarak yumurtanın serbest kalmasıdır. LH hormonunun ani artışı (LH piki) ile gerçekleşir."`
+        + `\nKorpus luteum nedir?,"Yumurtlamadan sonra yırtılan folikülün dönüştüğü sarı renkli yapıdır. Progesteron ve az miktarda östrojen salgılar."`
+        + `\nMenstruasyon nedir?,"Döllenme olmadığında korpus luteum parçalanır, progesteron düşer, endometriyum dökülür ve vajinadan kanama şeklinde atılır."`
+        + `\nGebeliğin hormonal kontrolü nasıldır?,"Döllenme sonrası embriyo hCG salgılar. hCG korpus luteumu uyarır, progesteron salgılanır. Daha sonra plasenta progesteron ve östrojen salgılar."`
+        + `\nSegmentasyon nedir?,"Zigotun oluşumundan sonra başlayan, büyüme olmadan gerçekleşen çok hızlı mitoz bölünmelerdir."`
+        + `\nBlastula nedir?,"Segmentasyon sonucu oluşan, içi boş top şeklindeki hücre kümesidir. Blastosöl adı verilen bir boşluk içerir."`
+        + `\nGastrulasyon nedir?,"Blastulanın hücre göçü ile üç embriyonik tabaka oluşturmasıdır: Ektoderm, mezoderm, endoderm."`
+        + `\nOrganogenez nedir?,"Gastrulasyon evresinde özelleşen hücrelerin özel doku ve organları oluşturmasıdır."`
+        + `\nPlasenta işlevleri nelerdir?,"Anne ile fetüs arasında madde alışverişini sağlar, hormon (hCG, östrojen, progesteron) salgılar, bağışıklık koruması yapar."`
+        + `\nFetüs dönemi nedir?,"Gebeliğin 8. haftasından doğuma kadar geçen süredir. Bu dönemde organlar büyür ve olgunlaşır."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Testislerin vücut dışında (skrotumda) bulunmasının nedeni nedir?",
+                options: [
+                    "Darbelerden korunmak için",
+                    "Sperm üretimi için uygun sıcaklık sağlamak",
+                    "Hormon salgılamak için",
+                    "Boşaltım sistemine yakın olmak için",
+                    "Cinsel ilişkiyi kolaylaştırmak için"
+                ],
+                correct: 1,
+                explanation: "Testisler vücut dışında bulunur çünkü sperm üretimi (spermatogenez) vücut sıcaklığından yaklaşık 2°C daha düşük sıcaklıkta gerçekleşir. Skrotum bu uygun sıcaklığı sağlar."
+            },
+            {
+                question: "Seminifer tüpçüklerde bulunan Sertoli hücrelerinin görevi nedir?",
+                options: [
+                    "Testosteron hormonu salgılamak",
+                    "Spermleri beslemek ve korumak",
+                    "Sperm oluşumunu başlatmak",
+                    "Seminal sıvı üretmek",
+                    "Yumurtayı döllemek"
+                ],
+                correct: 1,
+                explanation: "Sertoli hücreleri seminifer tüpçüklerde bulunur ve spermlerin beslenmesini, korunmasını sağlar. Ayrıca inhibin hormonu salgılayarak FSH salgısını düzenler."
+            },
+            {
+                question: "Aşağıdakilerden hangisi erkek üreme sisteminde yardımcı bez değildir?",
+                options: [
+                    "Seminal kese",
+                    "Prostat bezi",
+                    "Cowper bezi",
+                    "Bartholin bezi",
+                    "Hepsi yardımcı bezdir"
+                ],
+                correct: 3,
+                explanation: "Bartholin bezi (Bartholin glands) dişi üreme sisteminde bulunur, vajinal kayganlık sağlar. Erkek üreme sistemindeki yardımcı bezler seminal kese, prostat bezi ve Cowper bezidir."
+            },
+            {
+                question: "Spermatogenez sırasında mayoz I bölünmesi sonucu hangi hücre oluşur?",
+                options: [
+                    "Spermatogonium (2n)",
+                    "Birincil spermatosit (2n)",
+                    "İkincil spermatosit (n)",
+                    "Spermatit (n)",
+                    "Sperm"
+                ],
+                correct: 2,
+                explanation: "Spermatogenez basamakları: Spermatogonium (2n) → Birincil spermatosit (2n) → Mayoz I → İkincil spermatosit (n) → Mayoz II → Spermatit (n) → Farklılaşma → Sperm."
+            },
+            {
+                question: "Erkek üreme sisteminin hormonal kontrolünde FSH hormonunun görevi nedir?",
+                options: [
+                    "Testosteron salgılatmak",
+                    "Spermatogenezi başlatmak",
+                    "Seminal sıvı üretimini artırmak",
+                    "Penisin ereksiyonunu sağlamak",
+                    "Spermlerin olgunlaşmasını sağlamak"
+                ],
+                correct: 1,
+                explanation: "FSH (Folikül uyarıcı hormon) spermatogenezi başlatır. LH (Lüteinleştirici hormon) ise Leyding hücrelerini uyararak testosteron salgılatır."
+            },
+            {
+                question: "Yumurtalıkların (ovaryum) temel görevi nedir?",
+                options: [
+                    "Yumurta üretmek ve hormon salgılamak",
+                    "Döllenmeyi sağlamak",
+                    "Embriyoyu beslemek",
+                    "Menstrual kanamayı düzenlemek",
+                    "Cinsel ilişkiyi sağlamak"
+                ],
+                correct: 0,
+                explanation: "Yumurtalıkların iki temel görevi vardır: 1) Yumurta (ovum) üretmek (oogenez), 2) Hormon (östrojen ve progesteron) salgılamak."
+            },
+            {
+                question: "Döllenme (fertilizasyon) insanda nerede gerçekleşir?",
+                options: [
+                    "Yumurtalıkta (ovaryum)",
+                    "Yumurta kanalında (fallop tüpü)",
+                    "Rahimde (uterus)",
+                    "Vajinada",
+                    "Servikste"
+                ],
+                correct: 1,
+                explanation: "Döllenme yumurta kanalında (fallop tüpü) gerçekleşir. Sperm ve yumurta burada birleşir. Döllenmiş yumurta (zigot) daha sonra rahme ilerler ve buraya tutunur."
+            },
+            {
+                question: "Rahmin (uterus) iç yüzeyini kaplayan, kan damarları ve mukus bakımından zengin tabakanın adı nedir?",
+                options: [
+                    "Myometrium",
+                    "Perimetrium",
+                    "Endometriyum",
+                    "Serviks",
+                    "Vajina"
+                ],
+                correct: 2,
+                explanation: "Endometriyum rahmin iç yüzeyini kaplayan tabakadır. Menstrual döngü boyunca kalınlaşır, döllenme olursa embriyo buraya tutunur, olmazsa dökülür (menstruasyon)."
+            },
+            {
+                question: "Oogenez sırasında birincil oosit hangi mayoz evresinde uzun süre bekler?",
+                options: [
+                    "Profaz I",
+                    "Metafaz I",
+                    "Anafaz I",
+                    "Profaz II",
+                    "Metafaz II"
+                ],
+                correct: 0,
+                explanation: "Dişilerde birincil oositler profaz I evresinde doğumdan ergenliğe kadar (10-15 yıl) bekler. Ergenlikte menstrual döngü başlayınca her ay bir tanesi mayoz I'i tamamlar."
+            },
+            {
+                question: "Dişilerde mayoz II ne zaman tamamlanır?",
+                options: [
+                    "Yumurtlama (ovulasyon) sırasında",
+                    "Menstruasyon sırasında",
+                    "Döllenme (fertilizasyon) sırasında",
+                    "Embriyo rahme tutununca",
+                    "Doğum sırasında"
+                ],
+                correct: 2,
+                explanation: "Dişilerde ikincil oosit mayoz II'nin metafaz evresinde durur. Mayoz II ancak bir sperm yumurtaya girerse (döllenme) tamamlanır. Bu mekanizma yumurtanın sadece döllenme olduğunda tam olgunluğa ulaşmasını sağlar."
+            },
+            {
+                question: "Menstrual döngü ortalama kaç gün sürer?",
+                options: [
+                    "21 gün",
+                    "28 gün",
+                    "35 gün",
+                    "40 gün",
+                    "45 gün"
+                ],
+                correct: 1,
+                explanation: "Menstrual döngü ortalama 28 gün sürer ancak bu 21-35 gün arasında değişebilir. Döngü uzunluğu kadından kadına farklılık gösterir ve aynı kadında da döngüler arasında fark olabilir."
+            },
+            {
+                question: "Ovulasyon (yumurtlama) menstrual döngünün hangi günlerinde gerçekleşir?",
+                options: [
+                    "1-5. günler",
+                    "7-10. günler",
+                    "14-16. günler",
+                    "21-24. günler",
+                    "26-28. günler"
+                ],
+                correct: 2,
+                explanation: "28 günlük standart döngüde ovulasyon genellikle 14-16. günlerde gerçekleşir. Ancak döngü uzunluğu değişkense, ovulasyon bir sonraki menstruasyondan 14 gün önce gerçekleşir."
+            },
+            {
+                question: "Ovulasyonu (yumurtlamayı) tetikleyen temel hormonal olay nedir?",
+                options: [
+                    "FSH piki",
+                    "LH piki",
+                    "Östrojen piki",
+                    "Progesteron piki",
+                    "Testosteron piki"
+                ],
+                correct: 1,
+                explanation: "LH (lüteinleştirici hormon) piki ovulasyonu tetikler. LH seviyesindeki ani yükselme olgun folikülün yırtılmasına ve yumurtanın serbest kalmasına neden olur."
+            },
+            {
+                question: "Korpus luteum (sarı cisim) hangi hormonları salgılar?",
+                options: [
+                    "Sadece östrojen",
+                    "Sadece progesteron",
+                    "Östrojen ve progesteron",
+                    "FSH ve LH",
+                    "hCG ve östrojen"
+                ],
+                correct: 2,
+                explanation: "Korpus luteum yumurtlamadan sonra yırtılan folikülün dönüştüğü yapıdır. Bol miktarda progesteron ve az miktarda östrojen salgılar. Bu hormonlar endometriyumu gebeliğe hazırlar."
+            },
+            {
+                question: "Döllenme olmadığında korpus luteum ne olur?",
+                options: [
+                    "Plasentaya dönüşür",
+                    "Sürekli progesteron salgılamaya devam eder",
+                    "Parçalanır ve yerinde beyaz cisim (corpus albicans) kalır",
+                    "Yeni bir folikül oluşturur",
+                    "Rahme tutunur"
+                ],
+                correct: 2,
+                explanation: "Döllenme olmadığında korpus luteum parçalanır (regrese olur). Yerinde nedbe dokusundan oluşan beyaz cisim (corpus albicans) kalır. Korpus luteumun parçalanması progesteron düşüşüne neden olur, bu da menstruasyonu başlatır."
+            },
+            {
+                question: "Zigotun hızlı mitoz bölünmelerle çoğalmasına ne ad verilir?",
+                options: [
+                    "Gastrulasyon",
+                    "Organogenez",
+                    "Segmentasyon",
+                    "İmplantasyon",
+                    "Farklılaşma"
+                ],
+                correct: 2,
+                explanation: "Segmentasyon, zigotun oluşumundan sonra başlayan ve birbirini takip eden büyüme olmadan gerçekleşen çok hızlı mitoz bölünmelerdir. Hücre sayısı artar ama toplam hacim değişmez."
+            },
+            {
+                question: "Blastula evresindeki içi boş sıvı dolu boşluğun adı nedir?",
+                options: [
+                    "Gastrula boşluğu",
+                    "Amniyon boşluğu",
+                    "Blastosöl",
+                    "Yolk kesesi",
+                    "Allantois"
+                ],
+                correct: 2,
+                explanation: "Blastosöl, blastula evresindeki içi sıvı dolu boşluktur. Geçici bir boşluk olup embriyonun sonraki gelişim aşamalarında kaybolur."
+            },
+            {
+                question: "Gastrulasyon sırasında oluşan üç embriyonik tabaka aşağıdakilerden hangisidir?",
+                options: [
+                    "Endoderm, mezoderm, ektoderm",
+                    "Endoderm, periderm, mezoderm",
+                    "Ektoderm, periderm, endoderm",
+                    "Mezoderm, epidermis, endoderm",
+                    "Ektoderm, mezoderm, periderm"
+                ],
+                correct: 0,
+                explanation: "Gastrulasyon sırasında hücre göçü ile üç embriyonik tabaka oluşur: Ektoderm (dış tabaka), mezoderm (orta tabaka) ve endoderm (iç tabaka). Tüm doku ve organlar bu üç tabakadan köken alır."
+            },
+            {
+                question: "Organogenez nedir?",
+                options: [
+                    "Embriyonik tabakaların oluşması",
+                    "Organların farklılaşması ve oluşması",
+                    "Zigotun bölünmesi",
+                    "Embriyonun rahme tutunması",
+                    "Plasentanın oluşması"
+                ],
+                correct: 1,
+                explanation: "Organogenez, gastrulasyon evresinde özelleşen hücrelerin özel doku ve organları oluşturmasıdır. Organogenez hücre göçü, kümeleşme, karşılıklı etkileşim ve programlanmış hücre ölümü ile gerçekleşir."
+            },
+            {
+                question: "Embriyo dönemi hangi zaman aralığını kapsar?",
+                options: [
+                    "Döllenmeden 2. haftanın sonuna kadar",
+                    "3. haftanın başından 8. haftanın sonuna kadar",
+                    "9. haftanın başından doğuma kadar",
+                    "Sadece ilk 4 hafta",
+                    "12. haftadan doğuma kadar"
+                ],
+                correct: 1,
+                explanation: "İnsanda doğum öncesi gelişim: Zigot dönemi (döllenme-2. hafta), Embriyo dönemi (3.-8. haftalar), Fetüs dönemi (8. hafta-doğum). Embriyo dönemi organların şekillenmeye başladığı kritik dönemdir."
+            },
+            {
+                question: "Plasentanın temel işlevi nedir?",
+                options: [
+                    "Sadece hormon salgılamak",
+                    "Sadece gaz alışverişi sağlamak",
+                    "Anne ile fetüs arasında madde alışverişini sağlamak",
+                    "Fetüsü mekanik olarak korumak",
+                    "Fetüsün boşaltımını sağlamak"
+                ],
+                correct: 2,
+                explanation: "Plasentanın temel işlevi anne ile fetüs arasında madde alışverişini sağlamaktır: Gaz alışverişi (O₂, CO₂), besin transferi, atık ürünlerin atılımı. Ayrıca hormon salgılar (hCG, östrojen, progesteron) ve bağışıklık koruması sağlar."
+            },
+            {
+                question: "Fetüs dönemi ne zaman başlar?",
+                options: [
+                    "Döllenme ile",
+                    "İmplantasyon ile",
+                    "8. haftada",
+                    "12. haftada",
+                    "20. haftada"
+                ],
+                correct: 2,
+                explanation: "Fetüs dönemi gebeliğin 8. haftasında başlar ve doğuma kadar devam eder. Bu dönemde organlar büyür ve olgunlaşır. 8. haftaya kadar olan dönem embriyo dönemidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi cinsel yolla bulaşan hastalıklardan korunma yöntemlerinden biri değildir?",
+                options: [
+                    "Kondom (prezervatif) kullanmak",
+                    "Spermisit (sperm öldürücü) kremler kullanmak",
+                    "Düzenli kanser tarama testi yaptırmak",
+                    "Cinsel perhiz (abstinans)",
+                    "Partner sayısını sınırlamak"
+                ],
+                correct: 2,
+                explanation: "Düzenli kanser tarama testi yaptırmak (Pap smear, HPV testi gibi) erken teşhis için önemlidir ama cinsel yolla bulaşan hastalıklardan korunma yöntemi değildir. Korunma yöntemleri kondom kullanmak, spermisitler, cinsel perhiz, partner sayısını sınırlamak gibi önlemlerdir."
+            },
+            {
+                question: "Folik asit eksikliği hamilelikte hangi doğumsal anomali riskini artırır?",
+                options: [
+                    "Down sendromu",
+                    "Nöral tüp defektleri",
+                    "Yarık dudak/damak",
+                    "Konjenital kalp hastalıkları",
+                    "Kistik fibrozis"
+                ],
+                correct: 1,
+                explanation: "Folik asit (B9 vitamini) nöral tüpün kapanması için gereklidir. Hamilelik öncesi ve erken hamilelikte folik asit eksikliği nöral tüp defektleri (spina bifida, anensefali) riskini önemli ölçüde artırır."
+            },
+            {
+                question: "Amniyosentez işlemi genellikle hangi amaçla yapılır?",
+                options: [
+                    "Fetüsün cinsiyetini belirlemek",
+                    "Fetüsün akciğer olgunluğunu değerlendirmek",
+                    "Kromozom anomalilerini araştırmak",
+                    "Amniyon sıvısını azaltmak",
+                    "Fetüsün hareketlerini gözlemlemek"
+                ],
+                correct: 2,
+                explanation: "Amniyosentez genellikle kromozom anomalilerinin (Down sendromu, Edwards sendromu, Patau sendromu) araştırılması için yapılır. Amniyon sıvısından alınan fetal hücreler kültürde üretilir ve karyotip analizi yapılır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Üreme sistemini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

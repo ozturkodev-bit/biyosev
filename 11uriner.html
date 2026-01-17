@@ -1,0 +1,2798 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Üriner Sistem Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #9b59b6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #3498db;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Advanced Biology Section */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f9f0ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">11. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Üriner(Boşaltım) Sistemi</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-kidneys"></i> Üriner Sistem Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile üriner sistem (boşaltım sistemi) konusunu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+        <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile üriner sistemin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Üriner sistemi görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Üriner sistemin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile üriner sistem soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk test ile üriner sistem hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Üriner sistemle ilgili ilginç detaylar ve üst düzey bilgiler keşfedin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Üriner Sistem Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Üriner Sistem Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Üriner Sistemin Genel Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Böbrekler:</strong> Fasulye şeklinde, karın arkasında, omurganın iki yanında</li>
+                        <li><strong>Üreter:</strong> İdrar kanalı, böbreklerden mesaneye idrar taşır</li>
+                        <li><strong>Mesane:</strong> İdrar kesesi, idrarın depolandığı organ</li>
+                        <li><strong>Üretra:</strong> Dış idrar kanalı, mesaneden idrarın dışarı atıldığı kanal</li>
+                        <li><strong>Görev:</strong> Zararlı maddeleri ve fazla suyu vücuttan uzaklaştırmak</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Böbreğin Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kabuk bölgesi (korteks):</strong> Nefronların çoğu burada, Malpighi cisimcikleri</li>
+                        <li><strong>Öz bölgesi (medulla):</strong> Toplama kanalları, Malpighi piramitleri</li>
+                        <li><strong>Havuzcuk (pelvis):</strong> İdrarın toplandığı bölüm, üretere açılır</li>
+                        <li><strong>Nefron:</strong> Böbreğin yapısal ve işlevsel birimi (1 böbrekte ~1 milyon)</li>
+                        <li><strong>Malpighi cisimciği:</strong> Glomerulus + Bowman kapsülü</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Nefronun Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Glomerulus:</strong> Kılcal damar yumağı, süzülme burada olur</li>
+                        <li><strong>Bowman kapsülü:</strong> Glomerulusu saran yapı, süzüntüyü toplar</li>
+                        <li><strong>Proksimal tüp:</strong> Süzüntünün ilk geçtiği kanalcık</li>
+                        <li><strong>Henle kulpu:</strong> U şeklinde kıvrım, su ve tuz geri emilimi</li>
+                        <li><strong>Distal tüp:</strong> Hormonların etkili olduğu bölüm</li>
+                        <li><strong>Toplama kanalı:</strong> Nefronların açıldığı kanal, havuzcuğa bağlanır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">İdrar Oluşum Aşamaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Süzülme:</strong> Glomerulustan Bowman kapsülüne madde geçişi</li>
+                        <li><strong>Geri emilim:</strong> Yararlı maddelerin kana geri alınması</li>
+                        <li><strong>Salgılama (aktif taşıma):</strong> Bazı maddelerin kandan kanalcıklara atılması</li>
+                        <li><strong>Günde ~180 L sıvı süzülür, ~1.5 L idrar oluşur</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Homeostasiste Böbreklerin Rolü</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kan pH'sını düzenleme:</strong> H⁺ ve HCO₃⁻ derişimini ayarlar (pH 7.4)</li>
+                        <li><strong>Kan basıncı düzenleme:</strong> Su ve tuz dengesiyle ilişkili</li>
+                        <li><strong>Kan hacmi düzenleme:</strong> ADH hormonu ile su geri emilimi</li>
+                        <li><strong>Elektrolit dengesi:</strong> Na⁺, K⁺, Cl⁻, Ca²⁺ dengesini sağlar</li>
+                        <li><strong>Atık uzaklaştırma:</strong> Üre, ürik asit, kreatin atılımı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hormonlar ve Etkileri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>ADH (Vazopressin):</strong> Hipofizden salgılanır, su geri emilimini artırır</li>
+                        <li><strong>Aldosteron:</strong> Böbrek üstü bezinden, Na⁺ geri emilimi, K⁺ atılımı</li>
+                        <li><strong>Eritropoietin:</strong> Böbrekten salgılanır, alyuvar yapımını uyarır</li>
+                        <li><strong>Renin:</strong> Kan basıncı düşünce salgılanır, tansiyonu artırır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Üriner Sistem Hastalıkları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Böbrek taşı:</strong> Madensel tuz birikmesi, ağrılı idrar çıkarma</li>
+                        <li><strong>Böbrek yetmezliği:</strong> Böbreklerin görevini yapamaması</li>
+                        <li><strong>İdrar yolu enfeksiyonu:</strong> Bakterilerin neden olduğu iltihap</li>
+                        <li><strong>Nefrit:</strong> Nefron iltihabı, protein kaybına neden olur</li>
+                        <li><strong>Sistit:</strong> Mesane iltihabı, sık idrara çıkma, yanma</li>
+                        <li><strong>Üremi:</strong> Kanda üre birikmesi, zehirlenme belirtileri</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Üriner Sistem Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-kidneys"></i> ÜRİNER SİSTEMİN GENEL YAPISI VE GÖREVİ</div>
+                    <ul class="summary-list">
+                        <li>Üriner sistem (boşaltım sistemi), metabolizma sonucu oluşan zararlı atık maddelerin ve fazla suyun vücuttan uzaklaştırılmasını sağlar.</li>
+                        <li>Azotlu bileşiklerin (proteinler, nükleik asitler) parçalanması sonucu oluşan amonyak (NH₃) karaciğerde üreye dönüştürülür. Üre, idrarla atılır.</li>
+                        <li>Üriner sistemi oluşturan organlar: <strong>böbrekler, üreter (idrar kanalı), mesane (idrar kesesi), üretra (dış idrar kanalı)</strong>.</li>
+                        <li>Böbrekler fasulye şeklinde, karın boşluğunun arka tarafında, omurganın iki yanında, bel hizasında yer alır. Bir insan böbreği yaklaşık 15 cm uzunluğunda, 120-200 g ağırlığındadır.</li>
+                        <li>Böbreklerin temel görevleri: Atık maddeleri uzaklaştırmak, su ve elektrolit dengesini sağlamak, kan pH'sını düzenlemek, kan basıncını ayarlamak, eritropoietin hormonu salgılamak.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-map"></i> BÖBREĞİN YAPISI: KABUK, ÖZ, HAVUZCUK</div>
+                    <ul class="summary-list">
+                        <li><strong>Kabuk bölgesi (Korteks):</strong> Böbreğin dış kısmıdır. Nefronların çoğu buradadır. Malpighi cisimcikleri (Glomerulus + Bowman kapsülü) bu bölgede bulunur.</li>
+                        <li><strong>Öz bölgesi (Medulla):</strong> Kabuk ile havuzcuk arasındaki bölgedir. Toplama kanalları buradadır. Toplama kanalları bir araya gelerek Malpighi piramitlerini (böbrek piramitleri) oluşturur.</li>
+                        <li><strong>Havuzcuk (Pelvis):</strong> Böbreğin en içteki çukur kısmıdır. Süzülüp gelen idrar burada toplanır. Havuzcuk, üretere (idrar kanalı) bağlanır.</li>
+                        <li><strong>Nefron:</strong> Böbreğin yapısal ve işlevsel birimidir. Bir böbrekte yaklaşık 1 milyon nefron bulunur. İdrar oluşumu nefronlarda gerçekleşir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-filter"></i> NEFRONUN YAPISI VE İDRAR OLUŞUMU</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Nefron Bölümü</th>
+                            <th>Yapısı ve Özelliği</th>
+                            <th>Görevi</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Glomerulus</strong></td>
+                            <td>Kılcal damar yumağı, iki atardamar arasında, yüksek basınç</td>
+                            <td>Kanın süzülmesi (süzülme olayı)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bowman kapsülü</strong></td>
+                            <td>Glomerulusu saran kapsül, podosit hücreleri</td>
+                            <td>Süzüntüyü toplamak</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Proksimal tüp</strong></td>
+                            <td>Süzüntünün ilk geçtiği kanalcık, mikrovilluslu</td>
+                            <td>Glikoz, amino asit, su, tuz geri emilimi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Henle kulpu</strong></td>
+                            <td>U şeklinde kıvrım, inen ve çıkan kolu var</td>
+                            <td>Su ve tuz geri emilimi, idrarı yoğunlaştırma</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Distal tüp</strong></td>
+                            <td>Hormonların etkili olduğu bölüm</td>
+                            <td>Su ve iyon dengesinin hormonlarla ayarlanması</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toplama kanalı</strong></td>
+                            <td>Birden fazla nefronun açıldığı kanal</td>
+                            <td>Son su geri emilimi, idrarın havuzcuğa iletimi</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> İdrar oluşumu üç aşamada gerçekleşir: 1) <strong>Süzülme</strong> (glomerulustan Bowman kapsülüne), 2) <strong>Geri emilim</strong> (yararlı maddelerin kana geri alınması), 3) <strong>Salgılama</strong> (bazı maddelerin kandan kanalcıklara aktif taşıma ile atılması). Günde yaklaşık 180 litre sıvı süzülür, ancak bunun sadece 1-1.5 litresi idrar olarak atılır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tint"></i> İDRAR OLUŞUM AŞAMALARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Süzülme:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Kan basıncı etkisiyle glomerulus kılcallarından Bowman kapsülüne madde geçişidir.</li>
+                                <li>Su, glikoz, amino asitler, vitaminler, iyonlar (Na⁺, K⁺, Ca²⁺, Cl⁻), üre, ürik asit, kreatin geçer.</li>
+                                <li>Kan hücreleri, plazma proteinleri, yağ molekülleri gibi büyük moleküller geçemez.</li>
+                                <li>Difüzyonla gerçekleştiği için enerji (ATP) harcanmaz.</li>
+                                <li>Günde yaklaşık 180 litre sıvı süzülür.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Geri emilim:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Süzülen sıvıdaki yararlı maddelerin (glikoz, amino asit, su, iyonlar) kana geri alınmasıdır.</li>
+                                <li>Proksimal tüpte: Glikoz, amino asit, vitamin, su, Na⁺, K⁺, Cl⁻, HCO₃⁻ geri emilir.</li>
+                                <li>Henle kulpunun çıkan kolunda: Na⁺ ve Cl⁻ geri emilir.</li>
+                                <li>Distal tüpte ve toplama kanalında: ADH ve aldosteron etkisiyle su ve iyon geri emilimi.</li>
+                                <li>Çoğunlukla aktif taşıma ile gerçekleşir, enerji harcanır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Salgılama (Aktif boşaltım):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Bazı ilaçlar, asit-bazlar, zehirli maddeler, amonyak, H⁺ iyonlarının kandan kanalcıklara aktif taşıma ile atılmasıdır.</li>
+                                <li>Kan pH'sını düzenlemeye yardımcı olur.</li>
+                                <li>ATP harcanır, sadece canlı hücrelerde gerçekleşir.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> HOMEOSTASİSİN SAĞLANMASINDA BÖBREKLERİN ROLÜ</div>
+                    <ul class="summary-list">
+                        <li><strong>Kan pH'sının düzenlenmesi:</strong> Böbrekler, H⁺ (proton) ve HCO₃⁻ (bikarbonat) iyonlarının atılımını veya geri emilimini ayarlayarak kan pH'sını 7.4 seviyesinde tutar.</li>
+                        <li><strong>Kan basıncının düzenlenmesi:</strong> Su ve tuz (Na⁺) dengesini kontrol ederek kan basıncını etkiler. Su tutulması kan basıncını artırır, su atılımı azaltır.</li>
+                        <li><strong>Kan hacminin düzenlenmesi:</strong> Hipofiz bezinden salgılanan ADH (vazopressin) hormonu, böbrek toplama kanallarında su geri emilimini artırarak kan hacmini dengeler.</li>
+                        <li><strong>Elektrolit dengesi:</strong> Na⁺, K⁺, Cl⁻, Ca²⁺, Mg²⁺ gibi iyonların kandaki seviyelerini düzenler. Aldosteron hormonu Na⁺ geri emilimini ve K⁺ atılımını sağlar.</li>
+                        <li><strong>Alyuvar üretiminin düzenlenmesi:</strong> Böbrekler eritropoietin hormonu salgılar. Bu hormon kemik iliğini uyararak alyuvar yapımını artırır. Böbrek yetmezliğinde anemi (kansızlık) görülür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-hormone"></i> HORMONLAR VE BÖBREK İŞLEYİŞİNE ETKİLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Hormon</th>
+                            <th>Salgılandığı Yer</th>
+                            <th>Böbrekteki Etkisi</th>
+                            <th>Sonuç</th>
+                        </tr>
+                        <tr>
+                            <td><strong>ADH (Vazopressin)</strong></td>
+                            <td>Hipofiz bezi (arka lob)</td>
+                            <td>Toplama kanallarının suya geçirgenliğini artırır</td>
+                            <td>Su geri emilimi artar, idrar miktarı azalır, idrar yoğunlaşır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Aldosteron</strong></td>
+                            <td>Böbrek üstü bezi (kabuk)</td>
+                            <td>Distal tüpte Na⁺ geri emilimini, K⁺ atılımını artırır</td>
+                            <td>Kan Na⁺ artar, K⁺ azalır, kan basıncı yükselir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Eritropoietin</strong></td>
+                            <td>Böbrek (%90), karaciğer (%10)</td>
+                            <td>Kemik iliğini uyarır</td>
+                            <td>Alyuvar yapımı artar, oksijen taşıma kapasitesi artar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Renin</strong></td>
+                            <td>Böbrek (juxtaglomerular hücreler)</td>
+                            <td>Anjiyotensin oluşumunu başlatır</td>
+                            <td>Kan basıncı artar, aldosteron salınımı uyarılır</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-hospital"></i> ÜRİNER SİSTEM HASTALIKLARI VE TEDAVİLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Böbrek taşı:</strong> İdrardaki madensel tuzların (kalsiyum tuzları, ürik asit) birikmesiyle oluşur. İdrar çıkarma sırasında şiddetli ağrı yapar. Tedavide taş kırma (lazer, ultrason) veya cerrahi yöntemler kullanılır.</li>
+                        <li><strong>Böbrek yetmezliği:</strong> Böbreklerin süzme, geri emme ve salgılama işlevlerini tam olarak yerine getirememesidir. Nedenleri: Şeker hastalığı, yüksek tansiyon, böbrek iltihabı, zehirlenmeler.</li>
+                        <li><strong>Diyaliz:</strong> Böbrek yetmezliğinde kullanılan yapay süzme işlemidir. Hastanın kanı diyaliz makinesinden geçirilerek atık maddeler ve fazla su uzaklaştırılır. İki tipi vardır: hemodiyaliz (makineyle) ve periton diyalizi (karın zarıyla).</li>
+                        <li><strong>Böbrek nakli:</strong> Kronik böbrek yetmezliğinin kalıcı tedavisidir. Verici canlı veya kadavra olabilir. Nakil sonrası bağışıklık baskılayıcı ilaçlar kullanılır.</li>
+                        <li><strong>İdrar yolu enfeksiyonu:</strong> İdrar yoluna giren bakterilerin neden olduğu iltihaptır. Sık idrara çıkma, idrarda yanma, karın ağrısı belirtileri vardır. Antibiyotiklerle tedavi edilir.</li>
+                        <li><strong>Nefrit:</strong> Nefronların iltihaplanmasıdır. Protein (albumin) idrarla atılır (albuminüri), ödem oluşur.</li>
+                        <li><strong>Sistit:</strong> Mesane iltihabıdır. Kadınlarda daha sık görülür. İdrarda yanma, sık idrara çıkma, karın altında ağrı belirtileri vardır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heartbeat"></i> BÖBREĞİN ALYUVAR ÜRETİMİNE ETKİSİ</div>
+                    <ul class="summary-list">
+                        <li>Alyuvarların (eritrositler) yapım yeri kırmızı kemik iliğidir.</li>
+                        <li>Alyuvar yapımını uyaran en önemli hormon <strong>eritropoietin</strong>dir.</li>
+                        <li>Eritropoietinin %90'ı böbrekte, %10'u karaciğerde üretilir.</li>
+                        <li>Böbrek dokusuna gelen oksijen miktarı azaldığında (kansızlık, yüksek rakım, akciğer hastalığı) böbrek hücreleri daha fazla eritropoietin salgılar.</li>
+                        <li>Eritropoietin kemik iliğini uyararak alyuvar yapımını artırır.</li>
+                        <li>Artış alyuvar sayısı arttıkça hemoglobin miktarı ve oksijen taşıma kapasitesi artar, böbreğe gelen oksijen normale döner (negatif geri bildirim).</li>
+                        <li><strong>Böbrek yetmezliğinde:</strong> Eritropoietin üretimi azalır → alyuvar yapımı azalır → anemi (kansızlık) oluşur. Bu nedenle böbrek hastalarında anemi sık görülür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shield-alt"></i> ÜRİNER SİSTEM SAĞLIĞINI KORUMAK İÇİN ÖNERİLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Bol su için:</strong> Günde en az 2 litre (8-10 bardak) su tüketin. Böbreklerin rahat çalışması ve atık maddelerin atılması için su şarttır.</li>
+                        <li><strong>Tuzu azaltın:</strong> Fazla tuz, böbrekleri yorar, tansiyonu yükseltir, böbrek taşı riskini artırır.</li>
+                        <li><strong>Dengeli beslenin:</strong> Protein, yağ, karbonhidrat dengesine dikkat edin. Aşırı protein tüketimi böbrekleri yorar.</li>
+                        <li><strong>İdrarınızı tutmayın:</strong> İdrar tutmak mesane ve böbreklerde enfeksiyon riskini artırır.</li>
+                        <li><strong>Hijyene dikkat edin:</strong> Özellikle kadınlarda idrar yolu enfeksiyonlarını önlemek için temizlik önemlidir.</li>
+                        <li><strong>Düzenli egzersiz yapın:</strong> Egzersiz kan dolaşımını düzenler, böbrek sağlığını olumlu etkiler.</li>
+                        <li><strong>Sigarayı bırakın:</strong> Sigara böbrek damarlarını daraltır, böbrek hastalığı riskini artırır.</li>
+                        <li><strong>İlaçları bilinçli kullanın:</strong> Ağrı kesiciler ve bazı ilaçlar böbreklere zarar verebilir. Doktor kontrolünde kullanın.</li>
+                        <li><strong>Düzenli check-up yaptırın:</strong> Özellikle ailesinde böbrek hastalığı olanlar, şeker ve tansiyon hastaları düzenli kontrol yaptırmalıdır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Üriner Sistem Soruları (15 Soru)
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Ali, uzun bir araba yolculuğu sırasında tuvalete gitmek için mola vermedi. Yolculuk boyunca çok az su içti. Eve vardığında idrarının normalden daha koyu sarı ve yoğun kokulu olduğunu fark etti. Bu durum üriner sistem açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İdrar rengi ve yoğunluğu, vücuttaki su miktarı ve böbreklerin konsantre etme yeteneği ile ilgilidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Bu durum, vücutta su azlığı (dehidrasyon) ve ADH hormonu etkisiyle açıklanır.</p>
+                        <p><strong>Açıklama:</strong> Ali az su içtiği için vücut suyu korumaya çalışır. Hipofiz bezinden salgılanan ADH (vazopressin) hormonu, böbrek toplama kanallarında su geri emilimini artırır. Daha fazla su kana geri emilir, daha az su idrarla atılır. Bu nedenle idrar miktarı azalır, idrar daha yoğun (konsantre) hale gelir. Yoğun idrar daha koyu sarı renkte ve daha keskin kokulu olur. Ayrıca idrar tutma mesaneyi zorlar ve idrar yolu enfeksiyonu riskini artırabilir.</p>
+                        <p><strong>Önlem:</strong> Uzun yolculuklarda düzenli molalar verip su içmek, idrarı tutmamak gerekir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Ayşe, şeker hastası (diyabet) olduğunu öğrenir. Doktoru, idrar testinde glikoz (şeker) çıktığını söyler. Normalde idrarda glikoz bulunmaz. Peki, şeker hastalarının idrarında neden glikoz çıkar? Bu durum böbrek işleyişindeki hangi mekanizma ile ilgilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Normalde böbrekler süzülen glikozun tamamını geri emer. İdrarda glikoz çıkması patolojik bir durumdur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Şeker hastalarında kandaki glikoz seviyesi çok yüksek olduğu için böbrekler süzülen glikozun tamamını geri ememez. Fazla glikoz idrarla atılır.</p>
+                        <p><strong>Açıklama:</strong> Nefronlarda geri emilim aktif taşıma ile olur ve her madde için bir "taşıma kapasitesi" (eşik değer) vardır. Normalde kanda glikoz konsantrasyonu ~100 mg/dL'dir ve böbrekler süzülen glikozun tamamını geri emer. Şeker hastalığında kan glikozu 180 mg/dL'yi aşar. Bu, böbrek taşıyıcı proteinlerin kapasitesini aşar. Süzülen glikozun bir kısmı geri emilemez ve idrarla atılır (glikozüri).</p>
+                        <p><strong>Sonuç:</strong> İdrarda glikoz olması şeker hastalığının klasik belirtilerinden biridir. Ayrıca idrarda glikoz olunca ozmotik olarak su da idrara çekilir, bu nedenle şeker hastaları çok idrara çıkar (poliüri) ve çok su içer (polidipsi).</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Mehmet, böbrek nakli olan bir hastadır. Ameliyattan sonra ömür boyu bağışıklık baskılayıcı ilaçlar kullanması gerektiği söylenir. Neden böbrek naklinde bağışıklık sistemini baskılayan ilaçlar kullanılır? Bu ilaçların riskleri nelerdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bağışıklık sistemi vücuda giren yabancı maddelere (bakteri, virüs, nakledilen organ) saldırır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Bağışıklık baskılayıcı ilaçlar, vücudun nakledilen böbreği "yabancı" görüp reddetmesini önlemek için kullanılır.</p>
+                        <p><strong>Açıklama:</strong> Her insanın hücrelerinde kendine özgü yüzey proteinleri (doku uygunluk antijenleri) vardır. Bağışıklık sistemi bu proteinleri tanır; kendinden olmayanı (nakledilen organ) yabancı kabul eder ve saldırır (red reaksiyonu). Red reaksiyonu nakledilen böbreğin hasar görmesine ve çalışmamasına neden olur.</p>
+                        <p><strong>Bağışıklık baskılayıcı ilaçlar:</strong> Bağışıklık hücrelerinin (lenfositler) aktivitesini azaltır, organ reddini engeller. Ancak bu ilaçlar bağışıklık sistemini zayıflattığı için hastanın enfeksiyonlara (bakteri, virüs, mantar) karşı direnci azalır. Bu nedenle nakil hastaları enfeksiyonlara karşı daha savunmasızdır.</p>
+                        <p><strong>Riskler:</strong> Sık enfeksiyon geçirme, bazı kanser türlerine yatkınlık, ilaç yan etkileri (böbrek hasarı, yüksek tansiyon, şeker hastalığı).</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Böbrek yetmezliği olan bir hasta haftada üç kez diyaliz makinesine bağlanmaktadır. Diyaliz makinesi, böbreklerin hangi işlevlerini yerine getirir? Diyaliz, böbreklerin tüm işlevlerini tam olarak karşılayabilir mi?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Diyaliz, yarı geçirgen bir zardan difüzyon ile atık maddelerin kandan uzaklaştırılması işlemidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Diyaliz, böbreklerin süzme işlevini kısmen yerine getirir, ancak hormon salgılama ve ince ayar yapma gibi işlevleri karşılayamaz.</p>
+                        <p><strong>Açıklama:</strong> Diyaliz makinesi, hastanın kanını yarı geçirgen bir zardan geçirir. Bu zardan küçük moleküller (üre, ürik asit, fazla tuz, fazla su) difüzyonla diyaliz sıvısına geçer. Böylece kan temizlenir. Ancak diyaliz:
+                        <ul>
+                            <li><strong>Hormon salgılamaz:</strong> Böbrekler eritropoietin (alyuvar yapımı), renin (tansiyon düzenleme) salgılar. Diyaliz bunu yapmaz, bu nedenle diyaliz hastalarında anemi sık görülür.</li>
+                            <li><strong>İnce ayar yapamaz:</strong> Böbrekler, anlık olarak su, tuz, asit-baz dengesini sürekli ayarlar. Diyaliz haftada 2-3 kez yapılır, bu sürekli dengeyi sağlayamaz.</li>
+                            <li><strong>Sadece atık uzaklaştırma ve su-tuz dengesini kısmen sağlar.</strong></li>
+                        </ul>
+                        Bu nedenle diyaliz tam bir böbrek yerine koyma tedavisi değildir; yaşam kalitesini artıran ama sınırlı bir tedavidir. Kalıcı çözüm böbrek naklidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir kişi çok tuzlu yemek yediğinde neden daha çok susar ve daha sonra daha çok idrara çıkar? Bu süreçte böbrekler ve hormonlar nasıl rol oynar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Tuz (NaCl) vücutta su tutulmasına neden olur. Böbrekler su ve tuz dengesini sağlamak için hormonlar aracılığıyla çalışır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Tuzlu yemek, kandaki Na⁺ konsantrasyonunu artırır. Bu, susama hissine neden olur ve ADH salınımını azaltarak daha fazla su atılımına yol açar.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ol>
+                            <li><strong>Tuz alımı:</strong> Çok tuzlu yemek → kanda Na⁺ artar → kanın ozmotik basıncı artar.</li>
+                            <li><strong>Susama:</strong> Beyindeki susama merkezi uyarılır → kişi su içmek ister.</li>
+                            <li><strong>ADH (Vazopressin) azalır:</strong> Hipofiz bezi, ADH salgısını azaltır (çünkü vücut fazla tuzu atmak için suyu da atmalıdır).</li>
+                            <li><strong>Su geri emilimi azalır:</strong> ADH azalınca böbrek toplama kanalları suya daha az geçirgen olur → daha az su geri emilir → daha fazla su idrarla atılır.</li>
+                            <li><strong>İdrar artışı:</strong> Fazla su atılımı ile birlikte fazla Na⁺ da idrarla atılır. Böylece kan Na⁺ seviyesi normale döner.</li>
+                            <li><strong>Aldosteron etkisi:</strong> Kanda Na⁺ azaldıkça böbrek üstü bezinden aldosteron salgılanır, bu da Na⁺ geri emilimini artırır, K⁺ atılımını artırır.</li>
+                        </ol>
+                        Sonuç: Tuzlu yemek → susama → su içme → ADH azalması → idrar artışı → fazla tuz ve su atılımı → denge sağlanır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Yüksek rakımlı bir bölgeye (örneğin dağa) tırmanan bir kişinin vücudu, daha az oksijen olan bu ortama nasıl uyum sağlar? Bu uyum sürecinde böbreklerin rolü nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yüksekte hava basıncı düşüktür, havadaki oksijen miktarı azdır. Vücut daha az oksijenle nasıl başa çıkacağını bilmelidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Yüksek rakımda böbrekler daha fazla eritropoietin hormonu salgılar. Bu hormon kemik iliğini uyararak alyuvar yapımını artırır. Artan alyuvar sayısı oksijen taşıma kapasitesini yükseltir.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li>Yüksek rakım → havada oksijen basıncı azalır → kandaki oksijen seviyesi düşer → dokulara giden oksijen azalır.</li>
+                            <li>Böbrek dokusu da daha az oksijen alır → böbrek hücreleri hipoksi (oksijen azlığı) hisseder.</li>
+                            <li>Böbrek hücreleri, hipoksiye yanıt olarak <strong>eritropoietin (EPO)</strong> hormonu salgısını artırır.</li>
+                            <li>EPO kemik iliğine gider → kök hücreleri uyarır → alyuvar yapımı artar.</li>
+                            <li>Artış alyuvar sayısı artar → kanın oksijen taşıma kapasitesi artar → dokulara daha fazla oksijen ulaşır.</li>
+                            <li>Bu uyum birkaç gün içinde başlar, tam etkisi haftalar alır. Dağcılar yüksek irtifaya çıkmadan önce kamp yaparak vücudun bu uyumu yapmasını bekler.</li>
+                        </ul>
+                        <strong>Not:</strong> Bu nedenle yüksek rakımda yaşayan insanların (And Dağları, Tibet) kanlarında alyuvar sayısı daha yüksektir. Ayrıca doping olarak kullanılan sentetik EPO da bu mekanizmayı taklit eder.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir hasta, uzun süreli ve yüksek dozda ağrı kesici (örneğin ibuprofen) kullanmıştır. Zamanla böbrek yetmezliği gelişir. Neden bazı ağrı kesiciler böbreklere zarar verir? Hangi mekanizma ile hasar oluşur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ağrı kesiciler (NSAID'ler) böbrek damarlarını daraltabilir ve böbreğin kanlanmasını azaltabilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> NSAID grubu ağrı kesiciler (ibuprofen, naproksen, aspirin) böbreklerdeki prostaglandin sentezini engelleyerek böbrek damarlarının daralmasına ve böbrek kan akımının azalmasına neden olur. Bu da böbrek hasarına yol açar.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li>Böbrekler, özellikle stres, ağrı, düşük kan basıncı durumlarında damarlarını genişleterek yeterli kan akımını sağlamak için prostaglandin adlı maddeler salgılar.</li>
+                            <li>Prostaglandinler, böbrek atardamarlarını genişleterek böbreğe giden kanı artırır.</li>
+                            <li>NSAID ağrı kesiciler, prostaglandin sentezini engelleyen enzimleri (COX) bloke eder.</li>
+                            <li>Prostaglandin azalınca → böbrek damarları daralır → böbreğe giden kan azalır → böbrek hücreleri oksijensiz kalır (iskemi) → hücre ölümü → böbrek yetmezliği.</li>
+                            <li>Risk özellikle yaşlılarda, susuz kalanlarda, kalp yetmezliği olanlarda, zaten böbrek hastalığı olanlarda daha yüksektir.</li>
+                        </ul>
+                        <strong>Önlem:</strong> Ağrı kesiciler doktor önerisiyle, kısa süreli, düşük dozda kullanılmalı, bol su içilmeli, uzun süreli kullanımdan kaçınılmalıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Hamile bir kadın, sık sık idrara çıkmaktan şikayet eder. Bu durumun fizyolojik nedeni nedir? Hamilelikte üriner sistemde başka ne gibi değişiklikler olur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hamilelikte rahim büyür, vücut sıvı hacmi artar, hormon seviyeleri değişir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Hamilelikte sık idrara çıkmanın iki ana nedeni vardır: 1) Büyüyen rahmin mesaneye baskı yapması, 2) Artan kan hacmi nedeniyle böbreklerin daha fazla sıvı süzmesi.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ol>
+                            <li><strong>Mekanik baskı:</strong> Rahim büyüdükçe mesaneye baskı yapar. Mesane hacmi azalır, daha çabuk dolar → sık idrara çıkma. Özellikle ilk ve son üç aylık dönemde belirgindir.</li>
+                            <li><strong>Kan hacmi artışı:</strong> Hamilelikte kan hacmi %30-50 artar. Daha fazla kan → böbrekler daha fazla süzme yapar → daha fazla idrar oluşur.</li>
+                            <li><strong>Hormonal değişiklikler:</strong> Progesteron hormonu artar, bu da üreter ve mesane kaslarını gevşetir, idrar akışını yavaşlatabilir. Ayrıca böbrek kan akımı artar.</li>
+                            <li><strong>Diğer değişiklikler:</strong>
+                                <ul>
+                                    <li>Böbrekler büyüyebilir (hamilelik böbreği).</li>
+                                    <li>İdrarda glikoz görülebilir (gebelik diyabeti olmasa bile).</li>
+                                    <li>İdrar yolu enfeksiyonu riski artar (hormonlar ve mekanik baskı nedeniyle).</li>
+                                    <li>Proteinüri (idrarda protein) hafif artabilir, ancak fazla ise preeklampsi (gebelik zehirlenmesi) belirtisi olabilir.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        Bu değişiklikler geçicidir, doğumdan sonra normale döner.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Aşırı terleyen bir sporcu, sadece su içerek kaybettiği sıvıyı yerine koymaya çalışır. Bu durumda vücudunda ne gibi bir dengesizlik oluşabilir? Bu dengesizliğe "hiponatremi" denir. Hiponatremi nedir ve nasıl önlenir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Terle ile sadece su değil, tuz (NaCl) da kaybedilir. Sadece su içmek kandaki tuz konsantrasyonunu düşürür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Sadece su içmek, terle kaybedilen tuzu yerine koymaz. Bu durumda kandaki sodyum (Na⁺) konsantrasyonu düşer. Buna hiponatremi (düşük sodyum) denir.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>Terleme:</strong> Ter, su ve tuz (Na⁺, Cl⁻) içerir. Aşırı terleme ile hem su hem tuz kaybedilir.</li>
+                            <li><strong>Sadece su içmek:</strong> Kaybedilen su yerine konur ama tuz konmaz → kandaki Na⁺ konsantrasyonu düşer (suyun seyrelmesi).</li>
+                            <li><strong>Hiponatremi:</strong> Kandaki Na⁺ 135 mEq/L'nin altına düşer. Na⁺, hücre dışı sıvının ana elektrolitidir. Düşük Na⁺ → hücre dışı sıvının ozmotik basıncı azalır → su hücre içine geçer → hücreler şişer (özellikle beyin hücreleri).</li>
+                            <li><strong>Belirtileri:</strong> Baş ağrısı, bulantı, kusma, halsizlik, bilinç bulanıklığı, nöbet, koma. Ciddi hiponatremi ölümcül olabilir.</li>
+                            <li><strong>Önlem:</strong> Aşırı terleyen sporcular sadece su değil, elektrolit içeren içecekler (sporcu içecekleri) veya tuzlu ayran içmeli, tuzlu gıdalar tüketmelidir.</li>
+                            <li><strong>Böbreklerin rolü:</strong> Hiponatremide ADH salınımı baskılanır, böbrekler su atılımını artırır. Aldosteron artar, Na⁺ geri emilimi artar. Ancak aşırı su yükü olduğunda bu mekanizmalar yetersiz kalabilir.</li>
+                        </ul>
+                        Bu nedenle maraton koşucularına "gereğinden fazla su içmeyin" uyarısı yapılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">İdrar yolu enfeksiyonu geçiren bir hastada, idrar yaparken yanma ve sık idrara çıkma şikayetleri olur. Bu belirtilerin nedenini açıklayın. Neden kadınlarda idrar yolu enfeksiyonu daha sık görülür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İdrar yolu enfeksiyonuna genellikle bakteriler (E. coli) neden olur. Bu bakteriler mesaneye yerleşir ve iltihaba yol açar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> İdrar yolu enfeksiyonunda bakteriler mesane duvarını tahriş eder, iltihaba neden olur. Bu da mesanenin hassaslaşmasına, daha az idrarla dolunca kasılmasına (sık idrara çıkma) ve iltihap nedeniyle yanma hissine yol açar.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>Yanma hissi:</strong> Bakteriler mesane mukozasını tahriş eder, iltihap oluşturur. İltihap hücreleri (lökositler) ve bakteriyel toksinler idrarda bulunur. İdrar yaparken bu iltihaplı idrar üretradan geçer, tahrişe ve yanma hissine neden olur.</li>
+                            <li><strong>Sık idrara çıkma:</strong> İltihaplı mesane normalden daha hassastır. Az miktarda idrar birikince bile mesane kasları kasılır ve idrara çıkma hissi uyanır. Ayrıca mesane tam boşalmayabilir, bu da sık idrara çıkmaya neden olur.</li>
+                            <li><strong>Kadınlarda daha sık görülme nedenleri:</strong>
+                                <ol>
+                                    <li><strong>Üretranın kısa olması:</strong> Kadınlarda üretra ~4 cm, erkeklerde ~20 cm'dir. Kısa üretra bakterilerin mesaneye daha kolay ulaşmasını sağlar.</li>
+                                    <li><strong>Üretranın anüse yakın olması:</strong> Kadınlarda üretra açıklığı vajina ve anüs arasındadır. Bağırsak bakterileri (E. coli) kolayca üretraya bulaşabilir.</li>
+                                    <li><strong>Cinsel ilişki:</strong> İlişki sırasında bakteriler üretraya itilebilir.</li>
+                                    <li><strong>Menopoz:</strong> Östrojen azalması idrar yolu dokusunu inceltir, koruyucu özelliği azaltır.</li>
+                                    <li><strong>Gebelik:</strong> Hormonlar ve mekanik baskı idrar akışını yavaşlatır, bakterilerin çoğalmasını kolaylaştırır.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                        <strong>Önlemler:</strong> Bol su içmek, idrarı tutmamak, tuvalet temizliğini önden arkaya doğru yapmak, pamuklu iç çamaşırı giymek, cinsel ilişkiden sonra idrara çıkmak.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Böbrek taşı olan bir hasta, idrar yaparken şiddetli ağrı hisseder. Neden böbrek taşı bu kadar ağrıya neden olur? Taş oluşumunu önlemek için neler yapılabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Böbrek taşları idrar yollarını tıkayabilir, idrar akışını engelleyebilir ve kas spazmlarına neden olabilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Böbrek taşları idrar yollarını (üreter) tıkayarak idrar akışını engeller. Arkada biriken idrar basıncı artar, böbrek şişer (hidronefroz) ve şiddetli ağrıya neden olur. Ayrıca taşın idrar yolunu çizmesi ve kas spazmları da ağrı yapar.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>Ağrı mekanizması:</strong> Taş üreter (idrar kanalı) içine düşer ve sıkışır. İdrar akışı engellenir → taşın üst tarafında idrar birikir → basınç artar → böbrek kapsülü gerilir → şiddetli, kramp tarzında ağrı (renal kolik) olur. Ağrı genellikle böbrekten kasığa, testislere veya vulvaya yayılır.</li>
+                            <li><strong>Diğer belirtiler:</strong> Bulantı, kusma, idrarda kan (taşın idrar yolunu çizmesi), sık idrara çıkma.</li>
+                            <li><strong>Taş oluşumunu önleme yolları:</strong>
+                                <ol>
+                                    <li><strong>Bol su içmek:</strong> Günde 2-3 litre su, idrarı seyreltir, taş oluşumunu azaltır.</li>
+                                    <li><strong>Tuzu azaltmak:</strong> Fazla tuz, idrarda kalsiyum atılımını artırır, taş riskini yükseltir.</li>
+                                    <li><strong>Hayvansal proteini azaltmak:</strong> Fazla protein idrarda ürik asit ve kalsiyumu artırır.</li>
+                                    <li><strong>Limonata içmek:</strong> Sitrat içerir, taş oluşumunu engeller.</li>
+                                    <li><strong>Oksalatlı gıdaları sınırlamak:</strong> Ispanak, çikolata, fındık, çay (oksalat taşları için).</li>
+                                    <li><strong>Kalsiyum alımı:</strong> Yeterli kalsiyum almak önemlidir, çok az almak da taş riskini artırabilir.</li>
+                                    <li><strong>Hareketsiz kalmamak:</strong> Hareketsizlik kemiklerden kalsiyum salınımını artırabilir.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                        Taşın cinsine göre (kalsiyum oksalat, ürik asit, sistin) diyet değişiklikleri önerilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Bir hasta, uzun süreli ishal nedeniyle hastaneye yatırılır. Kan testlerinde asidoz (kan pH'sının düşmesi) ve potasyum (K⁺) düşüklüğü saptanır. Bu durumda böbrekler nasıl bir tepki verir? Hangi mekanizmalarla asit-baz ve elektrolit dengesini düzeltmeye çalışır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İshal ile su, elektrolit (Na⁺, K⁺, Cl⁻, HCO₃⁻) kaybı olur. HCO₃⁻ kaybı asidoza, K⁺ kaybı hipokalemiye neden olur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Böbrekler, asidozu düzeltmek için H⁺ atılımını artırır ve HCO₃⁻ geri emilimini artırır. Hipokalemiyi düzeltmek için K⁺ atılımını azaltır.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>İshalin etkileri:</strong> İshal ile bağırsaktan su, sodyum (Na⁺), potasyum (K⁺), klor (Cl⁻) ve bikarbonat (HCO₃⁻) kaybı olur.
+                                <ul>
+                                    <li>HCO₃⁻ kaybı → metabolik asidoz (kan pH'sı düşer).</li>
+                                    <li>K⁺ kaybı → hipokalemi (kanda K⁺ düşüklüğü).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Böbreklerin asidoza yanıtı:</strong>
+                                <ol>
+                                    <li>Proksimal tüpte H⁺ salgılanması artar, HCO₃⁻ geri emilimi artar.</li>
+                                    <li>Distal tüpte H⁺ atılımı artar (H⁺-ATPaz pompaları çalışır).</li>
+                                    <li>Amonyak (NH₃) sentezi artar, NH₃ idrarla atılan H⁺'ı bağlar (amonyum iyonu, NH₄⁺ şeklinde).</li>
+                                </ol>
+                                Böylece kandan H⁺ uzaklaştırılır, HCO₃⁻ yeniden yapılır, kan pH'sı yükselir.
+                            </li>
+                            <li><strong>Böbreklerin hipokalemiye yanıtı:</strong>
+                                <ol>
+                                    <li>Aldosteron salınımı artar (K⁺ düşüklüğü aldosteronu artırır).</li>
+                                    <li>Aldosteron, distal tüpte Na⁺ geri emilimini ve K⁺ atılımını artırır. Ancak hipokalemide vücut K⁺'ı korumak ister, bu nedenle aldosteron etkisine rağmen böbrekler K⁺ atılımını sınırlar (adaptasyon).</li>
+                                    <li>Distal tüpte H⁺-K⁺ ATPaz pompası aktivitesi artar, H⁺ atılıp K⁺ geri emilir.</li>
+                                </ol>
+                                Böylece idrarla K⁺ kaybı azaltılır, kan K⁺ seviyesi yükseltilmeye çalışılır.
+                            </li>
+                        </ul>
+                        Bu mekanizmalar böbreklerin homeostazı korumadaki karmaşık ve hassas işlevini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Böbrek yetmezliği olan bir hastada neden anemi (kansızlık) görülür? Bu anemi, demir eksikliği anemisine benzer mi? Tedavisi nasıldır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Anemi, kandaki alyuvar sayısının veya hemoglobin miktarının azalmasıdır. Böbrek yetmezliğinde anemi sık görülür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Böbrek yetmezliğinde aneminin ana nedeni, böbreklerin yeterli eritropoietin (EPO) hormonu üretememesidir. Bu, demir eksikliği anemisine benzemez; demir eksikliği anemisi demir yokluğundan, böbrek anemisi ise EPO yokluğundan kaynaklanır.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>Eritropoietin (EPO) eksikliği:</strong> Sağlıklı böbrekler, dokulara giden oksijen azaldığında EPO salgılar. EPO kemik iliğini uyararak alyuvar yapımını artırır. Böbrek yetmezliğinde böbrek dokusu hasarlıdır, EPO üretimi azalır → kemik iliği uyarılmaz → alyuvar yapımı azalır → anemi gelişir.</li>
+                            <li><strong>Diğer nedenler:</strong>
+                                <ul>
+                                    <li>Böbrek yetmezliğinde idrarla kan kaybı (mikroskobik) olabilir.</li>
+                                    <li>Diyaliz sırasında kan kaybı olabilir.</li>
+                                    <li>Böbrek hastalarında beslenme bozukluğu, demir, folat, B12 eksikliği görülebilir.</li>
+                                    <li>Üremik toksinler alyuvar ömrünü kısaltabilir.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Demir eksikliği anemisi ile farkı:</strong>
+                                <table style="width:100%; margin: 10px 0; border-collapse: collapse;">
+                                    <tr><th>Özellik</th><th>Demir Eksikliği Anemisi</th><th>Böbrek Anemisi</th></tr>
+                                    <tr><td>Neden</td><td>Demir eksikliği</td><td>EPO eksikliği</td></tr>
+                                    <tr><td>Alyuvar boyutu</td><td>Küçük (mikrositik)</td><td>Normal (normositik)</td></tr>
+                                    <tr><td>Hemoglobin içeriği</td><td>Düşük (hipokrom)</td><td>Normal</td></tr>
+                                    <tr><td>Retikülosit sayısı</td><td>Düşük veya normal</td><td>Düşük</td></tr>
+                                    <tr><td>Serum demiri</td><td>Düşük</td><td>Normal veya düşük</td></tr>
+                                    <tr><td>Ferritin</td><td>Düşük</td><td>Normal veya yüksek</td></tr>
+                                </table>
+                            </li>
+                            <li><strong>Tedavi:</strong>
+                                <ol>
+                                    <li><strong>Rekombinant insan EPO (epoetin alfa/beta):</strong> Enjeksiyon şeklinde verilir, alyuvar yapımını uyarır.</li>
+                                    <li><strong>Demir tedavisi:</strong> EPO'ya cevap için yeterli demir gerekir, demir eksikliği varsa demir preparatları verilir.</li>
+                                    <li><strong>Kan nakli:</strong> Ciddi anemi ve semptomlarda.</li>
+                                    <li><strong>Böbrek nakli:</strong> Böbrek fonksiyonları düzelince EPO üretimi normale döner, anemi düzelir.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                        Böbrek anemisi, böbrek yetmezliğinin önemli bir komplikasyonudur, yorgunluk, halsizlik, kalp yetmezliğine neden olabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Hipertansiyon (yüksek tansiyon) ve böbrek hastalıkları arasında nasıl bir ilişki vardır? Yüksek tansiyon böbreklere nasıl zarar verir? Böbrek hastalıkları da tansiyonu nasıl yükseltir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hipertansiyon hem böbrek hastalığının nedeni, hem de sonucu olabilir. Bu ilişkiye "nefroskleroz" ve "renovasküler hipertansiyon" örnek verilebilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Hipertansiyon ve böbrek hastalıkları bir kısır döngü oluşturur: Hipertansiyon böbrek damarlarını hasarlayarak böbrek yetmezliğine yol açar; böbrek yetmezliği de tuz-su tutulumu ve renin salınımı ile hipertansiyonu şiddetlendirir.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ul>
+                            <li><strong>Hipertansiyon → Böbrek hasarı (Nefroskleroz):</strong>
+                                <ul>
+                                    <li>Yüksek kan basıncı, böbreklerdeki küçük damarları (arteriyoller) zorlar, duvarlarını kalınlaştırır, daraltır.</li>
+                                    <li>Daralan damarlar böbreğe daha az kan götürür → böbrek dokusu beslenemez → hücre ölümü, skar dokusu (nefroskleroz) oluşur.</li>
+                                    <li>Hasarlı nefronlar süzme yapamaz → böbrek yetmezliği gelişir.</li>
+                                    <li>Bu süreç yavaş ilerler (kronik böbrek hastalığı).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Böbrek hastalığı → Hipertansiyon:</strong>
+                                <ul>
+                                    <li><strong>Sodyum ve su tutulumu:</strong> Böbrekler süzme yapamayınca vücutta tuz ve su birikir → kan hacmi artar → tansiyon yükselir.</li>
+                                    <li><strong>Renin-anjiyotensin-aldosteron sistemi (RAAS):</strong> Böbrek kan akımı azalınca böbrekler renin hormonu salgılar. Renin, anjiyotensin I → anjiyotensin II'ye dönüşümü başlatır. Anjiyotensin II:
+                                        <ol>
+                                            <li>Damarları daraltır → tansiyon yükselir.</li>
+                                            <li>Aldosteron salgılatır → Na⁺ ve su tutulur → tansiyon yükselir.</li>
+                                            <li>Susama hissi ve ADH salınımını artırır → su tutulur.</li>
+                                        </ol>
+                                    </li>
+                                    <li><strong>Sempatik sinir sistemi aktivasyonu:</strong> Böbrek hasarı sempatik sinir sistemini uyarır, damarları daraltır, tansiyonu yükseltir.</li>
+                                    <li><strong>Azalmış vazodilatör maddeler:</strong> Böbrekler normalde damar genişletici maddeler (prostaglandin, nitrik oksit) salgılar. Böbrek hasarında bu maddeler azalır, damarlar daralır.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <strong>Sonuç:</strong> Hipertansiyon böbrek hastalığına, böbrek hastalığı hipertansiyona neden olur. Bu nedenle hipertansiyon hastaları böbrek fonksiyonlarını düzenli kontrol ettirmeli, böbrek hastaları da tansiyonlarını kontrol altında tutmalıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">"Diüretik" ilaçlar (idrar söktürücüler) yüksek tansiyon ve kalp yetmezliği tedavisinde kullanılır. Bu ilaçlar nasıl çalışır? Diüretikler böbreklerin hangi bölümlerini etkileyerek etki gösterir? Yan etkileri neler olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Diüretikler böbrek tübüllerinde su ve tuz geri emilimini engelleyerek idrar miktarını artırır, vücuttan su ve tuz atılımını sağlar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Diüretikler, böbrek tübüllerindeki iyon taşıma proteinlerini bloke ederek su ve tuzun (Na⁺) geri emilimini azaltır. Daha fazla su ve tuz idrarla atılır, vücut sıvısı azalır, kan hacmi düşer, tansiyon düşer.</p>
+                        <p><strong>Açıklama (Etki yerlerine göre):</strong>
+                        <ul>
+                            <li><strong>1. Loop diüretikleri (Furosemid):</strong> Henle kulpunun çıkan kolundaki Na⁺-K⁺-2Cl⁻ kotransporterini bloke eder. Çok güçlü diüretiklerdir. Na⁺, K⁺, Cl⁻, Ca²⁺, Mg²⁺ atılımını artırır.
+                                <ul>
+                                    <li><strong>Kullanım:</strong> Akut kalp yetmezliği (akciğer ödemi), şiddetli hipertansiyon, böbrek yetmezliği.</li>
+                                    <li><strong>Yan etkiler:</strong> Hipokalemi (K⁺ düşüklüğü), hiponatremi (Na⁺ düşüklüğü), dehidrasyon, işitme bozukluğu, ürik asit yükselmesi (gut atağı).</li>
+                                </ul>
+                            </li>
+                            <li><strong>2. Tiyazid diüretikleri (Hidroklorotiyazid):</strong> Distal tübülün başlangıcında Na⁺-Cl⁻ kotransporterini bloke eder. Orta güçlü diüretiklerdir.
+                                <ul>
+                                    <li><strong>Kullanım:</strong> Kronik hipertansiyon, kalp yetmezliği, böbrek taşı önleme.</li>
+                                    <li><strong>Yan etkiler:</strong> Hipokalemi, hiperglisemi (şeker yükselmesi), hiperkolesterolemi, hiperürisemi.</li>
+                                </ul>
+                            </li>
+                            <li><strong>3. Potasyum koruyucu diüretikler (Spironolakton, Amilorid):</strong> Distal tübül ve toplama kanalında Na⁺ geri emilimini bloke eder, K⁺ atılımını azaltır (K⁺ korur).
+                                <ul>
+                                    <li><strong>Kullanım:</strong> Loop veya tiyazid diüretikleri ile birlikte hipokalemiyi önlemek, kalp yetmezliği, primer hiperaldosteronizm.</li>
+                                    <li><strong>Yan etkiler:</strong> Hiperkalemi (K⁺ yükselmesi), erkeklerde jinekomasti (meme büyümesi - spironolakton).</li>
+                                </ul>
+                            </li>
+                            <li><strong>4. Osmotik diüretikler (Mannitol):</strong> Glomerülden süzülür, tübülde geri emilmez, ozmotik olarak suyu çeker, idrar miktarını artırır.
+                                <ul>
+                                    <li><strong>Kullanım:</strong> Beyin ödemi, göz içi basınç artışı (glokom), akut böbrek yetmezliğini önleme.</li>
+                                    <li><strong>Yan etkiler:</strong> Sıvı yüklenmesi, hipernatremi, baş ağrısı, bulantı.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <strong>Özet:</strong> Diüretikler vücutta fazla sıvıyı uzaklaştırarak kalbin yükünü hafifletir, tansiyonu düşürür. Ancak elektrolit dengesizliklerine (K⁺, Na⁺) neden olabilir, bu nedenle düzenli kan tahlili ile takip gerekir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Üriner Sistem Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden böbreklerde süzülme için yüksek basınç gereklidir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Süzülme pasif bir işlemdir (difüzyon). Moleküllerin kılcal damardan Bowman kapsülüne geçebilmesi için bir itici güce ihtiyaç vardır.</p>
+                        <p><strong>Mantık:</strong> Glomerulus kılcalları, diğer kılcallardan farklı olarak iki atardamar arasında yer alır: getirici atardamar → glomerulus → götürücü atardamar. Bu yapı, kılcallarda basıncın yüksek kalmasını sağlar (~55 mmHg). Diğer kılcallarda basınç ~15 mmHg'dir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Neden yüksek basınç gerekli?</strong>
+                            <ul>
+                                <li><strong>İtici güç:</strong> Yüksek hidrostatik basınç (kan basıncı), su ve küçük moleküllerin zarı itmesini sağlar.</li>
+                                <li><strong>Karşıt kuvvetler:</strong> Kanda bulunan proteinlerin oluşturduğu ozmotik basınç (~30 mmHg) ve Bowman kapsülündeki hidrostatik basınç (~15 mmHg) süzülmeye karşı koyar.</li>
+                                <li><strong>Net filtreleme basıncı:</strong> 55 mmHg - (30 mmHg + 15 mmHg) = ~10 mmHg net basınç süzülmeyi sağlar.</li>
+                                <li><strong>Enerji tasarrufu:</strong> Yüksek basınç sayesinde süzülme pasif olarak gerçekleşir, ATP harcanmaz. Eğer basınç düşük olsaydı, süzülme için aktif taşıma gerekirdi, bu da çok fazla enerji harcanması demekti.</li>
+                            </ul>
+                            <p><strong>Analoji:</strong> Bir süzgeçten suyu geçirmek için suyu yukarıdan bastırmanız gerekir. Bastırma gücünüz (basınç) ne kadar yüksekse, su o kadar hızlı geçer. Glomerulus basıncı da bu "bastırma gücü"nü sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden günde 180 litre sıvı süzülür de sadece 1.5 litre idrar oluşur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Böbreklerin asıl amacı atıkları uzaklaştırmak, yararlı maddeleri geri kazanmaktır. Sürekli ve bol miktarda süzme, yararlı maddelerin seçici olarak geri alınmasına olanak tanır.</p>
+                        <p><strong>Mantık:</strong> Eğer süzme miktarı az olsaydı:
+                        <ul>
+                            <li>Atıklar yeterince uzaklaştırılamazdı.</li>
+                            <li>Yararlı maddelerin geri emilimi için yeterli "seçim şansı" olmazdı.</li>
+                        </ul>
+                        </p>
+                        <div class="reasoning-answer">
+                            <p><strong>Büyük süzme hacminin avantajları:</strong>
+                            <ol>
+                                <li><strong>Etkin atık uzaklaştırma:</strong> Sürekli ve bol süzme, atık maddelerin (üre, ürik asit) kanda birikmesini önler. Atıklar sürekli olarak süzüntüye geçer.</li>
+                                <li><strong>Seçici geri emilim:</strong> Süzüntüde hem atıklar hem yararlı maddeler (glikoz, amino asit, iyonlar) vardır. Nefron kanalları, yararlı maddeleri aktif taşıma ile geri alır, atıkları bırakır. Büyük hacim, bu seçicilik için "hammadde" sağlar.</li>
+                                <li><strong>Esneklik:</strong> Vücudun ihtiyacına göre geri emilim miktarı ayarlanabilir. Örneğin su kıtlığında daha fazla su geri emilir, su fazlalığında daha az su geri emilir. Bu ayarlama, büyük bir süzme hacmi üzerinden yapılınca daha hassas olur.</li>
+                            </ol>
+                            <p><strong>180 L süzülür, 1.5 L idrar oluşur:</strong>
+                            <ul>
+                                <li>Günde ~180 L süzülür.</li>
+                                <li>~178.5 L geri emilir (çoğunlukla su).</li>
+                                <li>~1.5 L idrar olarak atılır.</li>
+                            </ul>
+                            <p><strong>Örnek:</strong> Bir altın madeninde, toprağın büyük bir kısmı elenir, içindeki az miktardaki altın tanecikleri toplanır. Bol miktarda toprak işlemek, altını daha etkin bulmayı sağlar. Böbrekler de bol süzme yaparak "altın değerindeki" yararlı maddeleri geri kazanır, "toprak gibi" atıkları atar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden böbrekler hem atık uzaklaştırır hem de hormon salgılar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Böbrekler sadece bir "arıtma tesisi" değil, aynı zamanda bir "endokrin organ"dır. Salgıladığı hormonlar, böbreklerin işlevlerini destekler ve vücut dengesini sağlar.</p>
+                        <p><strong>Mantık:</strong> Hormon salgılamak, böbreklerin işlevlerini uzaktan ve sistemik olarak düzenlemesini sağlar. Örneğin eritropoietin kemik iliğini uyarır, bu da böbreğe daha fazla oksijen taşınmasını sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Böbreklerin salgıladığı hormonlar ve mantıkları:</strong>
+                            <ul>
+                                <li><strong>Eritropoietin (EPO):</strong> Böbrek dokusuna giden oksijen azalınca salgılanır. Oksijen azlığını algılayan böbrek, "daha fazla oksijen taşıyıcısı (alyuvar) yapılmalı" mesajını kemik iliğine iletir. Kemik iliği daha çok alyuvar yapar → kandaki oksijen taşıma kapasitesi artar → böbreğe daha fazla oksijen gelir. Bu bir <strong>negatif geri bildirim</strong> döngüsüdür.</li>
+                                <li><strong>Renin:</strong> Böbrek kan akımı azalınca (düşük tansiyon, kanama, dehidrasyon) salgılanır. Renin, anjiyotensin-aldosteron sistemini (RAAS) aktive eder → damarlar daralır, tuz ve su tutulur → tansiyon yükselir → böbrek kan akımı normale döner. Yine bir <strong>negatif geri bildirim</strong>.</li>
+                                <li><strong>Kalsitriol (aktif D vitamini):</strong> Böbrekler, D vitamininin aktif formunu üretir. D vitamini bağırsaktan kalsiyum emilimini artırır. Kalsiyum, kemik sağlığı, kas kasılması, sinir iletimi için gereklidir. Böbrekler, kalsiyum-fosfor dengesini düzenleyerek kemik ve böbrek taşı oluşumunu kontrol eder.</li>
+                            </ul>
+                            <p><strong>Özet:</strong> Böbrekler, sadece atıkları atmakla kalmaz, aynı zamanda "vücudun durumunu izleyen" ve "gerekli ayarlamaları yapan" bir kontrol merkezi gibi çalışır. Salgıladığı hormonlarla kan yapımını, tansiyonu, mineral dengesini düzenler. Bu da böbreklerin homeostasisteki merkezi rolünü gösterir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden Henle kulpu U şeklindedir? Bu yapı ne işe yarar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Henle kulpunun U şekli, idrarın konsantre edilmesi (suyun geri emilmesi) için bir "karşı akım çoğaltıcı sistemi" oluşturur.</p>
+                        <p><strong>Mantık:</strong> İdrarı konsantre etmek, suyu geri emmek demektir. Ancak su pasif olarak ozmozla hareket eder. Ozmoz için bir konsantrasyon gradyanı (yoğunluk farkı) gerekir. Henle kulpu, nefronun derinliklerinde yüksek bir tuz konsantrasyonu (hipertonik ortam) oluşturarak suyun geri emilimini sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Karşı akım çoğaltıcı sistem nasıl çalışır?</strong>
+                            <ol>
+                                <li><strong>İnen kol:</strong> Suya geçirgendir, tuza değil. Süzüntü aşağı indikçe, etraftaki hipertonik öz bölgesi nedeniyle su ozmozla dışarı çıkar. Süzüntü giderek daha konsantre olur (hipertonik).</li>
+                                <li><strong>Çıkan kol:</strong> Suya geçirgen değildir, tuz (Na⁺, Cl⁻) aktif olarak dışarı pompalanır. Tuz çıkarıldıkça süzüntü seyrelir (hipotonik hale gelir).</li>
+                                <li><strong>Öz bölgesinde tuz gradiyenti:</strong> Çıkan kolun pompaladığı tuz, öz bölgesinde birikir ve burayı hipertonik yapar. Bu hipertonik ortam, inen koldan suyun çekilmesini sağlar.</li>
+                                <li><strong>Döngü:</strong> Bu işlem sürekli devam eder, öz bölgesinin derinliklerinde çok yüksek tuz konsantrasyonu (1200 mOsm/L) oluşur. Bu, suyun toplama kanallarından geri emilmesi için gerekli gradiyenttir.</li>
+                            </ol>
+                            <p><strong>U şeklinin önemi:</strong> İnen ve çıkan kolların birbirine paralel ve zıt yönlü olması, enerji verimliliğini artırır. Tuz gradiyenti bir "tepe" oluşturmak yerine bir "rampa" oluşturur, böylece daha az enerji ile daha büyük konsantrasyon farkı elde edilir.</p>
+                            <p><strong>Analoji:</strong> Bir dağa tırmanmak için düz bir yol yerine virajlı bir yol (switchback) kullanmak gibidir. Virajlı yol daha az eğimlidir, tırmanmak daha kolaydır. Henle kulpu da suyu geri kazanmak için "virajlı" bir yol kullanır.</p>
+                            <p><strong>Sonuç:</strong> Henle kulpu sayesinde böbrekler, vücut susuz kaldığında çok konsantre idrar (az su, çok atık) üretebilir. Bu adaptasyon, özellikle çölde yaşayan memelilerde çok gelişmiştir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden böbrek yetmezliğinde hem diyaliz hem de böbrek nakli gerekebilir? Diyaliz neden kalıcı çözüm değildir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Diyaliz, böbreklerin sadece mekanik süzme işlevini taklit edebilir. Biyolojik, hormonal ve metabolik işlevleri yerine getiremez. Böbrek nakli ise canlı bir organın tüm işlevlerini sağlar.</p>
+                        <p><strong>Mantık:</strong> Böbrek sadece bir filtre değildir; aynı zamanda bir endokrin organ, bir metabolik düzenleyici ve bir asit-baz dengeleyicidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Diyalizin sınırları:</strong>
+                            <ul>
+                                <li><strong>Kesikli tedavi:</strong> Diyaliz haftada 2-3 kez, 3-5 saat süreyle yapılır. Böbrekler ise 7/24 çalışır. Diyaliz aralarında atıklar birikir, sıvı yüklenmesi olur.</li>
+                                <li><strong>Hormon üretimi yok:</strong> Diyaliz makinesi eritropoietin, renin, kalsitriol üretmez. Bu nedenle diyaliz hastalarında anemi, kemik hastalığı (renal osteodistrofi), tansiyon düzensizliği görülür.</li>
+                                <li><strong>İnce ayar yok:</strong> Böbrekler anlık olarak su, tuz, asit-baz dengesini ayarlar. Diyaliz bu ince ayarı yapamaz, sadece genel dengeyi sağlamaya çalışır.</li>
+                                <li><strong>Yaşam kalitesi:</strong> Diyaliz merkezine bağımlılık, diyet kısıtlamaları, yorgunluk yaşam kalitesini düşürür.</li>
+                                <li><strong>Uzun dönem komplikasyonlar:</strong> Damar sorunları, enfeksiyon riski, amiloidoz (protein birikimi), kardiyovasküler hastalık riski artar.</li>
+                            </ul>
+                            <p><strong>Böbrek naklinin avantajları:</strong>
+                            <ul>
+                                <li><strong>Sürekli işlev:</strong> Nakledilen böbrek 7/24 çalışır, sürekli denge sağlar.</li>
+                                <li><strong>Hormon üretimi:</strong> Nakil böbreği eritropoietin, renin, kalsitriol üretir. Anemi düzelir, kemik sağlığı iyileşir.</li>
+                                <li><strong>Diyet kısıtlaması azalır:</strong> Sıvı, tuz, potasyum, fosfor kısıtlamaları gevşer.</li>
+                                <li><strong>Yaşam beklentisi ve kalitesi artar:</strong> Nakil hastalarının yaşam süresi diyaliz hastalarından daha uzundur, yaşam kalitesi daha yüksektir.</li>
+                                <li><strong>Ekonomik:</strong> Uzun vadede nakil, diyalizden daha ucuzdur.</li>
+                            </ul>
+                            <p><strong>Ancak naklin de zorlukları:</strong>
+                            <ul>
+                                <li>Verici bulma sorunu (kadavra veya canlı).</li>
+                                <li>Ameliyat riski.</li>
+                                <li>Ömür boyu bağışıklık baskılayıcı ilaçlar (enfeksiyon ve kanser riski).</li>
+                                <li>Organ reddi riski.</li>
+                            </ul>
+                            <p><strong>Sonuç:</strong> Diyaliz hayat kurtaran bir köprü tedavisidir, ancak kalıcı çözüm değildir. Böbrek nakli, kronik böbrek yetmezliğinin tedavisinde altın standarttır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden bazı ilaçlar böbrek yetmezliğinde doz ayarlaması gerektirir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Birçok ilaç ve metaboliti böbrekler yoluyla atılır. Böbrek yetmezliğinde bu atılım azalır, ilaç ve metabolitleri kanda birikir, toksik seviyelere ulaşabilir.</p>
+                        <p><strong>Mantık:</strong> İlaç dozları, normal böbrek fonksiyonuna sahip kişilerde belirlenir. Böbrek yetmezliğinde ilacın vücuttan uzaklaştırılma hızı (klerensi) azalır. Bu nedenle doz azaltılmalı veya doz aralığı uzatılmalıdır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>İlaçların böbrekten atılım şekilleri:</strong>
+                            <ul>
+                                <li><strong>Glomerüler süzülme:</strong> Küçük moleküllü ilaçlar süzülür.</li>
+                                <li><strong>Tübüler salgılama:</strong> Bazı ilaçlar aktif taşıma ile kanalcıklara salgılanır.</li>
+                                <li><strong>Tübüler geri emilim:</strong> Bazı ilaçlar pasif olarak geri emilebilir.</li>
+                            </ul>
+                            <p><strong>Böbrek yetmezliğinde ilaç birikiminin sonuçları:</strong>
+                            <ul>
+                                <li><strong>Artmış toksisite:</strong> İlaç kan seviyesi yükselir, yan etkiler artar. Örneğin:
+                                    <ul>
+                                        <li><strong>Aminoglikozit antibiyotikler (gentamisin):</strong> Böbrek yetmezliğinde birikir → böbrek hasarını daha da kötüleştirir (nefrotoksisite) ve işitme kaybı (ototoksisite) yapar.</li>
+                                        <li><strong>Digoksin (kalp ilacı):</strong> Birikir → bulantı, kusma, görme bozukluğu, hayatı tehdit eden kalp ritim bozuklukları.</li>
+                                        <li><strong>Opioid ağrı kesiciler (morfin):</strong> Metabolitleri birikir → solunum depresyonu, aşırı sedasyon.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Etkinin uzaması:</strong> İlaç vücutta daha uzun kalır, etkisi uzar.</li>
+                            </ul>
+                            <p><strong>Doz ayarlama yöntemleri:</strong>
+                            <ol>
+                                <li><strong>Dozu azaltmak:</strong> Normal dozun %25-50'si verilir.</li>
+                                <li><strong>Doz aralığını uzatmak:</strong> Örneğin günde 3 kez yerine günde 1 kez veya 2 günde 1 kez verilir.</li>
+                                <li><strong>İlaç seviyesi takibi:</strong> Kan düzeyi ölçülür (örneğin gentamisin, digoksin).</li>
+                                <li><strong>Alternatif ilaç kullanmak:</strong> Böbrekten atılmayan veya daha az atılan ilaçlar seçilir (örneğin sefalosporin yerine makrolid antibiyotik).</li>
+                            </ol>
+                            <p><strong>Böbrek fonksiyonunu tahmin etmek:</strong> Glomerüler filtrasyon hızı (GFR) veya kreatinin klerensi hesaplanır. Bu değerlere göre doz ayarlanır.</p>
+                            <p><strong>Özet:</strong> Böbrek yetmezliğinde "bir size uyan ilaç dozu, başkasına uymaz". İlaç dozları kişiselleştirilmelidir. Bu nedenle böbrek hastaları ilaç kullanırken mutlaka doktor ve eczacıya danışmalıdır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Neden idrar steril (mikropsuz) değildir? Normalde idrarda bakteri olmaz mı?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Normalde idrar yolları (böbrekler, üreter, mesane) sterildir. Ancak idrar, vücuttan atılırken son kısımda (üretra) normal flora bakterileri ile kontamine olabilir. Ayrıca asemptomatik bakteriüri durumu da vardır.</p>
+                        <p><strong>Mantık:</strong> İdrar yollarının üst kısımları (böbrek, üreter, mesane) bakterilere karşı korunmalıdır. Ancak dış açıklığa yakın kısımlar (üretra) normal bakteriyel floraya sahiptir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Normal idrar özellikleri:</strong>
+                            <ul>
+                                <li><strong>Steril üst idrar yolları:</strong> Böbreklerde, üreterde ve mesanede normalde bakteri bulunmaz. Bunu sağlayan mekanizmalar:
+                                    <ul>
+                                        <li>İdrar akışı (mekanik yıkama).</li>
+                                        <li>Mesane epitelindeki koruyucu mukus.</li>
+                                        <li>İdrarın asidik pH'sı (bakteri üremesini engeller).</li>
+                                        <li>İmmünoglobülinler (IgA).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Üretra florası:</strong> Dış idrar kanalının (üretra) son 1-2 cm'lik kısmında normal flora bakterileri bulunur (örneğin Staphylococcus epidermidis, diphteroidler). Bu bakteriler patojen (hastalık yapıcı) değildir.</li>
+                                <li><strong>İdrar örneği alımı:</strong> İdrar tahlili için "orta akım" idrar örneği istenir. İdrarın ilk kısmı üretra florasını yıkar, orta kısım daha temizdir.</li>
+                            </ul>
+                            <p><strong>Asemptomatik bakteriüri:</strong> Bazı kişilerde (özellikle yaşlı kadınlarda) idrarda bakteri olmasına rağmen hiçbir şikayet yoktur. Bu durum genellikle tedavi gerektirmez, çünkü bakteriler mesane duvarına yapışmamıştır, sadece idrarda yüzmektedir. Ancak gebelerde ve böbrek nakli hastalarında tedavi edilir.</p>
+                            <p><strong>İdrar yolu enfeksiyonu (İYE):</strong> Bakteriler mesane duvarına yapışır, çoğalır ve iltihaba neden olur. Bu durumda idrarda lökosit (iltihap hücresi), bakteri, bazen eritrosit (kan) görülür. Hastada şikayetler vardır.</p>
+                            <p><strong>Neden kadınlarda İYE daha sık?</strong>
+                            <ul>
+                                <li>Üretra kısa (4 cm vs 20 cm).</li>
+                                <li>Üretra anüse yakın (E. coli bulaşması kolay).</li>
+                                <li>Cinsel ilişki bakterileri itebilir.</li>
+                            </ul>
+                            <p><strong>Özet:</strong> Normalde idrar sterildir diye bilinir, ancak pratikte üretral kontaminasyon nedeniyle kültürde az sayıda bakteri üreyebilir. Önemli olan, bu bakterilerin enfeksiyona neden olup olmadığıdır. İdrar tahlilinde "lökosit esteraz" ve "nitrit" pozitifliği enfeksiyonu düşündürür.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden bazı böbrek hastalarında kemik ağrısı ve kırık riski artar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Kronik böbrek yetmezliğinde mineral ve kemik bozukluğu (renal osteodistrofi) gelişir. Bunun ana nedeni, böbreklerin aktif D vitamini (kalsitriol) üretememesi ve fosfor atılımının azalmasıdır.</p>
+                        <p><strong>Mantık:</strong> Kemik sağlığı için kalsiyum-fosfor dengesi ve D vitamini gereklidir. Böbrek yetmezliğinde bu dengeler bozulur.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mekanizma:</strong>
+                            <ol>
+                                <li><strong>Azalmış D vitamini aktivasyonu:</strong> Böbrekler, D vitamininin aktif formu olan kalsitriolü üretir. Böbrek yetmezliğinde bu üretim azalır.
+                                    <ul>
+                                        <li>Kalsitriol eksikliği → bağırsaktan kalsiyum emilimi azalır → kandaki kalsiyum düşer (hipokalsemi).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Fosfor birikimi:</strong> Böbrekler fosforu atamaz → kandaki fosfor yükselir (hiperfosfatemi).
+                                    <ul>
+                                        <li>Yüksek fosfor, kalsiyumu bağlar → kan kalsiyumu daha da düşer.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Paratiroid hormon (PTH) artışı:</strong> Düşük kalsiyum ve yüksek fosfor, paratiroid bezlerini uyarır → PTH salgısı artar (sekonder hiperparatiroidizm).
+                                    <ul>
+                                        <li>PTH, kemiklerden kalsiyumu çözer (rezorpsiyon) → kemikler zayıflar, ağrılı hale gelir, kırık riski artar.</li>
+                                        <li>PTH ayrıca fosfor atılımını artırmaya çalışır ama böbrekler çalışmadığı için bu etkisiz kalır.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Kemik hastalıkları:</strong>
+                                    <ul>
+                                        <li><strong>Osteitis fibrosa cystica:</strong> Yüksek PTH'nin neden olduğu kemik rezorpsiyonu, kemik ağrısı, kırık.</li>
+                                        <li><strong>Osteomalazi:</strong> D vitamini eksikliğine bağlı kemik yumuşaması (erişkinlerde).</li>
+                                        <li><strong>Adinamik kemik hastalığı:</strong> PTH'nin aşırı baskılanması sonucu kemik yapımının durması.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Ekstraosseöz kalsifikasyon:</strong> Yüksek kalsiyum-fosfor çarpımı (>55 mg²/dL²) nedeniyle kalsiyum fosfat damarlarda, eklemlerde, yumuşak dokularda birikir. Damar kireçlenmesi kalp krizi ve inme riskini artırır.</li>
+                            </ol>
+                            <p><strong>Tedavi:</strong>
+                            <ul>
+                                <li><strong>Fosfor bağlayıcılar:</strong> Yemeklerle alınır, bağırsakta fosforu bağlar, atılımını sağlar (kalsiyum karbonat, sevelamer).</li>
+                                <li><strong>Aktif D vitamini (kalsitriol) veya analogları:</strong> Kemik ve mineral metabolizmasını düzeltir.</li>
+                                <li><strong>Kalsimimetikler (sinakalset):</strong> PTH salgısını azaltır.</li>
+                                <li><strong>Diyet:</strong> Fosfordan kısıtlı diyet.</li>
+                                <li><strong>Diyaliz:</strong> Fosforu uzaklaştırır, ancak yetersiz kalabilir.</li>
+                            </ul>
+                            <p><strong>Sonuç:</strong> Böbrek yetmezliği sadece böbrekleri değil, kemikleri de etkiler. Bu nedenle böbrek hastalarında kemik dansitometresi ve mineral düzeyleri takip edilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Biology Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji: Üriner Sistem
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-dna"></i> 1. Nefron Tipleri: Kortikal ve Jukstamedüller Nefronlar</div>
+                    <div class="advanced-content">
+                        <p>İnsan böbreğinde iki tür nefron vardır ve bunların yapısı ve işlevi farklıdır:</p>
+                        <ul>
+                            <li><strong>Kortikal Nefronlar (%85):</strong>
+                                <ul>
+                                    <li>Glomerulusları kabuk bölgesinin (korteks) dış kısımlarında yer alır.</li>
+                                    <li>Henle kulpu kısadır, sadece öz bölgesinin (medulla) dış kısmına uzanır veya hiç uzanmaz.</li>
+                                    <li>Görevleri: Filtrasyon, geri emilim ve salgılama. Suyun geri emiliminde önemli ancak idrarı çok konsantre edemezler.</li>
+                                    <li>Eferent (götürücü) arteriöl, peritübüler kapiller ağ oluşturur (vasa recta yok).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Jukstamedüller Nefronlar (%15):</strong>
+                                <ul>
+                                    <li>Glomerulusları korteks-medulla sınırına yakındır (jukstamedüller = medullaya yakın).</li>
+                                    <li>Henle kulpu çok uzundur, medullanın derinliklerine (papilla) kadar uzanır.</li>
+                                    <li>Görevleri: İdrarın konsantrasyonunu ayarlamak (karşı akım çoğaltıcı sistem). Su kıtlığında çok konsantre idrar üretilmesini sağlarlar.</li>
+                                    <li>Eferent arteriöl, uzun düz damarlar (vasa recta) oluşturur. Vasa recta, Henle kulpunun yanından paralel uzanır ve karşı akım değişimine katılır.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p><strong>Evolüsyonel bakış:</strong> Çölde yaşayan memelilerde (deve, çöl faresinde) jukstamedüller nefron oranı daha yüksektir, Henle kulpları daha uzundur. Bu sayede çok konsantre idrar üreterek suyu korurlar. Su ortamında yaşayan memelilerde (balina, yunus) ise Henle kulpu kısadır veya yoktur, çünkü suyu atma sorunları vardır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-water"></i> 2. Vasa Recta: Karşı Akım Değişim Sistemi</div>
+                    <div class="advanced-content">
+                        <p>Vasa recta, jukstamedüller nefronların eferent arteriölünden çıkan, U şeklinde uzun düz kılcal damarlardır. Henle kulpunun yanından medullanın derinliklerine iner ve çıkar.</p>
+                        <p><strong>Görevi:</strong> Medullada oluşan yüksek tuz konsantrasyonunu (hipertonisiteyi) korumak ve oksijen-nütrien taşımak.</p>
+                        <p><strong>Nasıl çalışır?</strong> Karşı akım değişim sistemi olarak işlev görür:
+                        <ul>
+                            <li>Vasa recta, medullaya inerken çevredeki hipertonik interstisyumdan tuz ve üreyi alır (konsantre olur).</li>
+                            <li>Medullanın dip kısmında, damar içi de hipertonik hale gelir.</li>
+                            <li>Vasa recta yukarı çıkarken, tuz ve üreyi interstisyuma geri verir (seyrelir).</li>
+                            <li>Bu "al-ver" döngüsü, medullanın hipertonik kalmasını sağlar, tuz gradiyentini yıkamaz.</li>
+                        </ul>
+                        Eğer vasa recta olmasaydı, medullaya gelen kan, tuz gradiyentini yıkar, Henle kulpunun oluşturduğu hipertonik ortamı bozardı. Bu da idrar konsantrasyon yeteneğini kaybettirirdi.</p>
+                        <p><strong>İlginç bilgi:</strong> Vasa recta, soğuk iklimlerdeki hayvanların bacaklarındaki "karşı akım ısı değişim sistemine" benzer. Kan, atardamardan aşağı inerken toplardamardan yukarı çıkan kanı ısıtır, böylece vücut ısısı korunur. Vasa recta da benzer şekilde, tuz konsantrasyonunu korur.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-hormone"></i> 3. Ürokorin ve Ürodilatin: Kalp-Böbrek Aksı</div>
+                    <div class="advanced-content">
+                        <p>Kalp ve böbrekler arasında hormonal bir iletişim vardır. Atriyal natriüretik peptid (ANP) ve beyin natriüretik peptid (BNP) kalpten salgılanır. Bunlara benzer, böbrekte üretilen peptidler de vardır:</p>
+                        <ul>
+                            <li><strong>Ürodilatin:</strong> Böbrekteki distal tübül ve toplama kanalı hücrelerinden salgılanır. Yapısal olarak ANP'ye benzer.</li>
+                            <li><strong>Ürokorin:</strong> Benzer bir peptiddir.</li>
+                        </ul>
+                        <p><strong>Etkileri:</strong>
+                        <ul>
+                            <li><strong>Natriürez (idrarla sodyum atılımı):</strong> Glomerüler filtrasyon hızını (GFR) artırır, meduller kan akımını artırır, Henle kulbunda Na⁺ geri emilimini inhibe eder.</li>
+                            <li><strong>Diürez (idrar artışı):</strong> Toplama kanalında su geri emilimini inhibe eder (ADH'ye antagonist).</li>
+                            <li><strong>Vazodilatasyon:</strong> Böbrek damarlarını genişletir.</li>
+                            <li><strong>Renin inhibisyonu:</strong> Renin salgısını baskılar.</li>
+                        </ul>
+                        <p><strong>Fizyolojik önemi:</strong> Vücutta sıvı ve tuz fazlalığı olduğunda, kalpten ANP/BNP salgılanır, böbrekten ürodilatin salgılanır. Bunlar böbrekleri etkileyerek fazla sodyum ve suyun atılmasını sağlar, kan basıncını düşürür. Bu, RAAS (renin-anjiyotensin-aldosteron sistemi) ile ters çalışan bir sistemdir. RAAS tuz-su tutar, tansiyonu yükseltir; natriüretik peptidler tuz-su atar, tansiyonu düşürür.</p>
+                        <p><strong>Klinik ilgi:</strong> Kalp yetmezliğinde ANP/BNP düzeyleri yükselir, bu bir teşhis marker'ıdır. Ürodilatin, hipertansiyon ve kalp yetmezliği tedavisinde potansiyel bir ilaç hedefidir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-biohazard"></i> 4. Üremik Toksinler: Böbrek Yetmezliğinde Biriken Moleküller</div>
+                    <div class="advanced-content">
+                        <p>Üremi, sadece üre yüksekliği değildir. Böbrek yetmezliğinde onlarca "üremik toksin" birikir. Bunlar üç grupta sınıflandırılır:</p>
+                        <ol>
+                            <li><strong>Küçük suda çözünen moleküller (Moleküler ağırlık < 500 Da):</strong>
+                                <ul>
+                                    <li><strong>Üre:</strong> Protein metabolizması son ürünü. Kendisi çok toksik değildir, ancak ürenin parçalanma ürünleri (siyanat) toksiktir.</li>
+                                    <li><strong>Kreatinin:</strong> Kas metabolizması ürünü, toksisitesi düşük.</li>
+                                    <li><strong>Guanidin bileşikleri (metilguanidin, guanidinosüksinik asit):</strong> Nörotoksin, nöbet, ensefalopati.</li>
+                                    <li><strong>Oksalat:</strong> Böbrek taşı yapar, dokularda çökerek inflamasyona neden olur.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Orta moleküller (500-60,000 Da):</strong>
+                                <ul>
+                                    <li><strong>β2-mikroglobulin:</strong> Diyaliz amiloidozuna neden olur. Özellikle uzun süreli hemodiyaliz hastalarında eklemlerde, tendonlarda birikir, karpal tünel sendromu, kemik kistleri yapar.</li>
+                                    <li><strong>Paratiroid hormon (PTH):</strong> Sekonder hiperparatiroidizmde yükselir, kemik erimesi, kaşıntı, ensefalopati.</li>
+                                    <li><strong>İnflamatuar sitokinler (IL-1, IL-6, TNF-α):</strong> Kronik inflamasyon, kardiyovasküler hastalık, kaşıntı.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Protein bağlı toksinler:</strong>
+                                <ul>
+                                    <li><strong>İndoksil sülfat:</strong> Triptofan metabolizması ürünü, albumin'e bağlanır. Endotel disfonksiyonu, ateroskleroz, progresif böbrek hasarı yapar. Geleneksel diyalizle uzaklaştırılamaz (albumin'e bağlı olduğu için).</li>
+                                    <li><strong>p-Krezil sülfat:</strong> Tirozin ve fenilalanin metabolizması ürünü. Benzer toksik etkiler.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p><strong>Klinik sonuçlar:</strong> Bu toksinler, üremik sendromun çeşitli belirtilerinden sorumludur: kaşıntı, halsizlik, iştahsızlık, bulantı, perikardit, nöropati, ensefalopati, kemik hastalığı, anemi, immün yetmezlik, ateroskleroz.</p>
+                        <p><strong>Diyaliz yetersizliği:</strong> Konvansiyonel diyaliz, küçük suda çözünen molekülleri (üre, kreatinin) temizler, ancak orta molekülleri ve protein bağlı toksinleri yeterince uzaklaştıramaz. Yüksek akımlı diyaliz, hemodiyafiltrasyon, adsorpsiyon teknikleri (karbon, reçine) bu toksinleri daha iyi temizlemek için geliştirilmiştir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-robot"></i> 5. Yapay Böbrek ve Biyoyapay Böbrek Geliştirmeleri</div>
+                    <div class="advanced-content">
+                        <p>Diyaliz teknolojisi sürekli gelişmektedir. Hedef, taşınabilir, daha etkin ve böbreğin tüm işlevlerini taklit eden bir cihaz yapmaktır.</p>
+                        <ul>
+                            <li><strong>Taşınabilir ve giyilebilir diyaliz cihazları:</strong> Küçültülmüş, bataryalı, sürekli çalışan (24/7) cihazlar. Hastalar diyalize bağlı kalmadan normal yaşamlarını sürdürebilir. Sürekli diyaliz, geleneksel kesikli diyalize göre daha fizyolojiktir, atık birikimi ve sıvı yüklenmesi olmaz.</li>
+                            <li><strong>Biyoyapay böbrek:</strong> Mühendislik ve hücre biyolojisini birleştiren bir yaklaşımdır. İki bileşenden oluşur:
+                                <ol>
+                                    <li><strong>Hemofiltrasyon modülü:</strong> Yarı geçirgen silikon nanotüplerden oluşur, kanı süzer.</li>
+                                    <li><strong>Biyoreaktör modülü:</strong> İnsan böbrek tübül epitel hücreleri ile kaplanmıştır. Bu hücreler, geri emilim, salgılama ve hormon üretimi yapar. Yani sadece süzme değil, biyolojik işlevler de yerine getirilir.</li>
+                                </ol>
+                                Bu cihaz, vücuda implante edilebilir veya taşınabilir olacak şekilde tasarlanmaktadır. Henüz klinik kullanımda değildir, hayvan deneyleri aşamasındadır.
+                            </li>
+                            <li><strong>Kök hücre tedavisi ve doku mühendisliği:</strong>
+                                <ul>
+                                    <li>Kök hücrelerden (embriyonik, indüklenmiş pluripotent) böbrek hücreleri üretilmesi.</li>
+                                    <li>3D biyoyazıcı ile böbrek dokusu basılması.</li>
+                                    <li>Hayvan böbreklerinin (domuz) hücreleri temizlenip insan hücreleri ile kaplanması (deselülarizasyon ve reselülarizasyon).</li>
+                                </ul>
+                                Bu yaklaşımlar uzun vadeli çözümlerdir, ancak böbreğin karmaşık yapısı (1 milyon nefron, damar ağı) nedeniyle zorluklar vardır.
+                            </li>
+                            <li><strong>Xenotransplantasyon (hayvandan organ nakli):</strong> Domuz böbreklerinin genetik modifikasyonu (örneğin alfa-gal epitopunun silinmesi) ve immün baskılama ile insana nakli. 2021-2022'de beyin ölümü gerçekleşmiş insanlara domuz böbreği nakli denemeleri yapılmış, böbreklerin bir süre çalıştığı gösterilmiştir.</li>
+                        </ul>
+                        <p><strong>Gelecek vizyonu:</strong> Kişiselleştirilmiş, taşınabilir, biyolojik işlevlere sahip yapay böbrekler veya xenotransplantasyon, diyaliz ve insandan insana nakil sıkıntısını çözebilir. Ancak etik, güvenlik ve maliyet sorunları vardır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-seedling"></i> 6. Bitkilerde Boşaltım: Stoma, Hidatodlar ve Diğer Mekanizmalar</div>
+                    <div class="advanced-content">
+                        <p>Bitkilerde üriner sistem gibi özelleşmiş bir boşaltım organı yoktur. Ancak metabolik atıklarını uzaklaştırmak için çeşitli mekanizmalar kullanırlar:</p>
+                        <ul>
+                            <li><strong>Gaz alışverişi ve terleme (transpirasyon):</strong> Stomalar (yapraktaki gözenekler) ile CO₂ atılır, O₂ alınır. Aynı zamanda su buharı atılır (terleme). Terleme, su ve mineral taşınmasını sağlar, bitkiyi serinletir, ancak bir atık uzaklaştırma yolu değildir.</li>
+                            <li><strong>Hidatodlar (su savakları):</strong> Yaprak kenarlarında bulunan özel açıklıklar. Kök basıncı yüksek olduğunda (gece, nemli hava) fazla su ve içindeki çözünmüş tuzlar damlacıklar halinde dışarı atılır. Buna "gutasyon" denir. Bu, bitkilerin fazla su ve tuzu atma yoludur.</li>
+                            <li><strong>Depolama:</strong> Bazı atıklar (örn. oksalat) kalsiyum oksalat kristallerine dönüştürülür ve vakuollerde depolanır. Bu kristaller zehirsizleştirilmiş atıklardır, bitki ölünce toprağa karışır.</li>
+                            <li><strong>Kabuk (periderm) atma:</strong> Yaşlı kabukların dökülmesi ile birlikte birikmiş atıklar da atılır.</li>
+                            <li><strong>Yaprak dökümü:</strong> Sonbaharda yaprakların dökülmesi, birçok metabolik atığın (örneğin sarı-turuncu pigmentler karotenoidler, ürik asit) uzaklaştırılmasını sağlar. Yaprak dökümünden önce yararlı maddeler (azot, fosfor, potasyum) geri emilir, atıklar yaprakta kalır.</li>
+                            <li><strong>Özelleşmiş salgı yapıları:</strong> Reçine kanalları, lateks kanalları, nektar bezleri bazı atık veya sekonder metabolitleri salgılar. Reçine (çam), lateks (kauçuk ağacı) savunma ve yara kapatma için kullanılır, ancak atık ürünler de içerebilir.</li>
+                            <li><strong>Metabolik atıklar:</strong> Bitkiler azotlu atıkları üreye dönüştürmezler (üreaz enzimi yok). Bunun yerine:
+                                <ul>
+                                    <li>Amonyak doğrudan amino asit sentezinde yeniden kullanılır.</li>
+                                    <li>Fazla azot, glutamin, asparagin gibi amino asitlerde depolanır.</li>
+                                    <li>Bazı bitkiler ürik asit veya üre biriktirebilir (örneğin kahve, çayda kafein bir alkaloittir).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p><strong>Evrimsel bakış:</strong> Hayvanlar hareketli olduğu için atıkları hızla uzaklaştırmak zorundadır, bu nedenle özelleşmiş boşaltım organları (böbrek, malpighi tüpleri, nefridyum) gelişmiştir. Bitkiler sabit olduğu için atıkları depolayabilir, yavaş uzaklaştırabilir veya yeniden kullanabilir. Bu nedenle bitkilerde merkezi bir boşaltım sistemi yoktur.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Üriner Sistem Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/11bosaltimsistemi.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            updateProgress('advanced');
+        });
+
+        // Back buttons
+        const backButtons = [
+            ['back-from-flashcards', 'flashcard-section'],
+            ['back-from-mindmap', 'mindmap-section'],
+            ['back-from-summary', 'summary-section'],
+            ['back-from-contextual', 'contextual-section'],
+            ['back-from-test', 'test-section'],
+            ['back-from-reasoning', 'reasoning-section'],
+            ['back-from-advanced', 'advanced-section']
+        ];
+
+        backButtons.forEach(([btnId, sectionId]) => {
+            document.getElementById(btnId).addEventListener('click', () => {
+                document.getElementById(sectionId).classList.remove('active');
+                document.getElementById('dashboard').style.display = 'grid';
+                if (sectionId === 'test-section') {
+                    document.getElementById('test-result').style.display = 'none';
+                }
+            });
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Üriner Sistem Sorusu
+        const flashcards = [
+            { question: "Üriner sistemin görevi nedir?", answer: "Metabolizma sonucu oluşan zararlı atık maddeleri (üre, ürik asit, kreatin) ve fazla suyu vücuttan uzaklaştırmak. Ayrıca kan pH'sını, elektrolit dengesini, kan basıncını ve alyuvar yapımını düzenler." },
+            { question: "Üriner sistemi oluşturan organlar nelerdir?", answer: "Böbrekler (2 adet), üreter (idrar kanalı, 2 adet), mesane (idrar kesesi), üretra (dış idrar kanalı)." },
+            { question: "Böbreğin yapısı nasıldır? Hangi bölgelerden oluşur?", answer: "Fasulye şeklindedir. Dıştan içe: 1) Kabuk bölgesi (korteks): Nefronların çoğu burada. 2) Öz bölgesi (medulla): Toplama kanalları, piramitler. 3) Havuzcuk (pelvis): İdrarın toplandığı bölüm, üretere açılır." },
+            { question: "Nefron nedir? Böbrekteki önemi nedir?", answer: "Böbreğin yapısal ve işlevsel birimidir. İdrar oluşumu nefronlarda gerçekleşir. Bir böbrekte yaklaşık 1 milyon nefron vardır. Nefron; glomerulus, Bowman kapsülü, proksimal tüp, Henle kulpu, distal tüp ve toplama kanalından oluşur." },
+            { question: "Glomerulus ve Bowman kapsülü nedir? Birlikte oluşturdukları yapının adı nedir?", answer: "Glomerulus: Kılcal damar yumağıdır, süzülme burada olur. Bowman kapsülü: Glomerulusu saran çift duvarlı kese. İkisi birlikte Malpighi cisimciğini oluşturur." },
+            { question: "İdrar oluşumunun üç aşaması nedir?", answer: "1) Süzülme: Glomerulustan Bowman kapsülüne geçiş. 2) Geri emilim: Yararlı maddelerin (su, glikoz, amino asit, iyonlar) kana geri alınması. 3) Salgılama (aktif boşaltım): Bazı maddelerin (H⁺, K⁺, ilaçlar) kandan kanalcıklara atılması." },
+            { question: "Süzülme nasıl gerçekleşir? Neden enerji harcanmaz?", answer: "Kan basıncı (hidrostatik basınç) ile glomerulus kılcallarından Bowman kapsülüne su ve küçük moleküllerin geçişidir. Difüzyon ve osmoz ile gerçekleştiği için enerji (ATP) harcanmaz." },
+            { question: "Geri emilim ne demektir? Nerede ve nasıl olur?", answer: "Süzülen sıvıdaki yararlı maddelerin kana geri alınmasıdır. Proksimal tüpte, Henle kulpunda, distal tüpte ve toplama kanalında olur. Çoğunlukla aktif taşıma ile gerçekleşir, ATP harcanır." },
+            { question: "Salgılama (aktif boşaltım) nedir? Hangi maddeler salgılanır?", answer: "Bazı maddelerin kandan nefron kanalcıklarına aktif taşıma ile atılmasıdır. H⁺ iyonları (asit atılımı), K⁺, NH₃ (amonyak), bazı ilaçlar, toksinler salgılanır. Kan pH'sının düzenlenmesine yardımcı olur." },
+            { question: "ADH (Vazopressin) hormonu nedir? Nereden salgılanır? Böbrekte ne yapar?", answer: "Hipofiz bezinin arka lobundan salgılanır. Böbrek toplama kanallarının suya geçirgenliğini artırır. Suyun geri emilimini artırır, idrar miktarını azaltır, idrarı konsantre eder. Vücut susuz kaldığında salgılanır." },
+            { question: "Aldosteron hormonu nedir? Nereden salgılanır? Böbrekte ne yapar?", answer: "Böbrek üstü bezinin kabuk kısmından salgılanır. Distal tüpte Na⁺ (sodyum) geri emilimini ve K⁺ (potasyum) atılımını artırır. Su da Na⁺ ile birlikte geri emildiği için kan basıncını yükseltir." },
+            { question: "Eritropoietin (EPO) nedir? Nereden salgılanır? Görevi nedir?", answer: "Böbreklerden (%90) ve karaciğerden (%10) salgılanan hormondur. Kemik iliğini uyararak alyuvar (eritrosit) yapımını artırır. Böbrek yetmezliğinde EPO azalır, anemi (kansızlık) gelişir." },
+            { question: "Böbrek taşı nedir? Nasıl oluşur?", answer: "İdrardaki madensel tuzların (kalsiyum oksalat, kalsiyum fosfat, ürik asit) kristalleşip birikmesiyle oluşan sert yapılardır. İdrar yollarını tıkayarak şiddetli ağrıya (renal kolik) neden olur." },
+            { question: "Böbrek yetmezliği nedir? Tedavi yöntemleri nelerdir?", answer: "Böbreklerin süzme, geri emme, salgılama ve hormon üretme işlevlerini yeterince yerine getirememesidir. Tedaviler: 1) Diyaliz (hemodiyaliz veya periton diyalizi), 2) Böbrek nakli." },
+            { question: "Diyaliz nedir? Nasıl çalışır?", answer: "Böbrek yetmezliğinde kullanılan yapay süzme işlemidir. Hastanın kanı, yarı geçirgen bir zardan geçirilir. Zarın bir tarafında kan, diğer tarafında diyaliz sıvısı vardır. Atık maddeler ve fazla su difüzyonla diyaliz sıvısına geçer, kan temizlenir." },
+            { question: "İdrar yolu enfeksiyonu nedir? Belirtileri nelerdir?", answer: "İdrar yollarına (üretra, mesane, böbrek) bakterilerin yerleşip iltihap yapmasıdır. Belirtiler: Sık idrara çıkma, idrarda yanma, karın altında ağrı, bulanık veya kanlı idrar, ateş, halsizlik." },
+            { question: "Nefrit nedir?", answer: "Nefronların iltihaplanmasıdır. Genellikle bağışıklık sistemi kaynaklıdır. İdrarda protein (albuminüri) ve kan (hematüri) görülür, ödem oluşur." },
+            { question: "Homeostasinin sağlanmasında böbreklerin rolleri nelerdir?", answer: "1) Atık uzaklaştırma, 2) Su ve elektrolit dengesini sağlama, 3) Kan pH'sını (asit-baz dengesini) düzenleme, 4) Kan basıncını düzenleme (renin hormonu, su-tuz dengesi), 5) Alyuvar yapımını düzenleme (eritropoietin), 6) Kalsiyum-fosfor dengesini düzenleme (D vitamini aktivasyonu)." },
+            { question: "Böbrekler kan pH'sını nasıl düzenler?", answer: "Asit (H⁺) atılımını artırır, baz (HCO₃⁻) geri emilimini artırır. Ayrıca amonyak (NH₃) sentezleyerek H⁺'ı amonyum (NH₄⁺) şeklinde atar. Böylece kan pH'sını 7.4 seviyesinde tutar." },
+            { question: "Böbrek nakli nedir? Kaç türlüdür?", answer: "Böbrek yetmezliği olan bir hastaya sağlıklı bir böbreğin nakledilmesidir. İki türlüdür: 1) Canlı vericili böbrek nakli (akraba veya duygusal bağlı verici), 2) Kadavra böbrek nakli (beyin ölümü gerçekleşmiş kişiden)." },
+            { question: "Üriner sistem sağlığı için neler yapılmalıdır?", answer: "Bol su içmek (günde 2-3 litre), tuzu azaltmak, idrarı tutmamak, hijyene dikkat etmek, düzenli egzersiz, sigara içmemek, ağrı kesicileri bilinçli kullanmak, düzenli check-up yaptırmak." },
+            { question: "İdrarın normal bileşiminde neler bulunur, neler bulunmaz?", answer: "Bulunur: Su, üre, ürik asit, kreatin, Na⁺, K⁺, Cl⁻, fosfat, amonyak, B ve C vitaminleri. Bulunmaz: Glikoz, amino asit, kan proteinleri (albumin), kan hücreleri (alyuvar, akyuvar), A, D, E, K vitaminleri (ancak hastalık durumunda idrarda görülebilirler)." },
+            { question: "Renin-anjiyotensin-aldosteron sistemi (RAAS) nedir? Böbreklerle ilişkisi?", answer: "Kan basıncını ve sıvı dengesini düzenleyen hormonal sistemdir. Böbrek kan akımı azalınca böbrekler renin salgılar. Renin, anjiyotensin I → anjiyotensin II'ye dönüşümü başlatır. Anjiyotensin II damarları daraltır, aldosteron salgılatır, susama ve ADH salınımını artırır. Sonuç: Tansiyon yükselir, su-tuz tutulur." },
+            { question: "Böbreklerdeki kan dolaşımı nasıldır?", answer: "Böbrek atardamarı → dallanır → getirici arteriyol → glomerulus kılcalları → götürücü arteriyol → peritübüler kılcallar / vasa recta → venüller → böbrek toplardamarı → alt ana toplardamar → kalp." },
+            { question: "Henle kulpunun görevi nedir?", answer: "İdrarı konsantre etmek için karşı akım çoğaltıcı sistem oluşturur. İnen kolu suya geçirgen, tuz geçirgen değil; çıkan kolu suya geçirgen değil, tuz aktif olarak pompalanır. Bu sayede öz bölgesinde hipertonik bir ortam oluşur, toplama kanallarından su geri emilir." }
+        ];
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Üriner sistemin temel görevi nedir?",
+                options: [
+                    "Oksijen taşımak",
+                    "Sindirim enzimleri salgılamak",
+                    "Zararlı atık maddeleri ve fazla suyu vücuttan uzaklaştırmak",
+                    "Kasları hareket ettirmek",
+                    "Vücut ısısını düzenlemek"
+                ],
+                correct: 2,
+                explanation: "Üriner sistemin (boşaltım sisteminin) temel görevi, metabolizma sonucu oluşan zararlı atık maddeleri (üre, ürik asit, kreatin) ve fazla suyu vücuttan uzaklaştırmaktır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi üriner sistemi oluşturan organlardan biri değildir?",
+                options: [
+                    "Böbrek",
+                    "Üreter",
+                    "Mesane",
+                    "Üretra",
+                    "Karaciğer"
+                ],
+                correct: 4,
+                explanation: "Karaciğer, sindirim sistemi organıdır, üriner sistem organı değildir. Üriner sistemi böbrekler, üreterler (idrar kanalları), mesane (idrar kesesi) ve üretra (dış idrar kanalı) oluşturur."
+            },
+            {
+                question: "Böbreğin yapısal ve işlevsel birimi nedir?",
+                options: [
+                    "Nöron",
+                    "Nefron",
+                    "Alveol",
+                    "Nodül",
+                    "Folikül"
+                ],
+                correct: 1,
+                explanation: "Böbreğin yapısal ve işlevsel birimi nefrondur. Bir böbrekte yaklaşık 1 milyon nefron bulunur. İdrar oluşumu nefronlarda gerçekleşir."
+            },
+            {
+                question: "Glomerulus ve Bowman kapsülünün birlikte oluşturduğu yapıya ne ad verilir?",
+                options: [
+                    "Henle kulpu",
+                    "Malpighi cisimciği",
+                    "Vasa recta",
+                    "Juxtaglomerular aparat",
+                    "Renal piramit"
+                ],
+                correct: 1,
+                explanation: "Glomerulus (kılcal damar yumağı) ve onu saran Bowman kapsülü birlikte Malpighi cisimciğini oluşturur. Bu yapı, nefronun başlangıcıdır ve süzülme burada gerçekleşir."
+            },
+            {
+                question: "İdrar oluşumunun aşamaları sırasıyla hangi seçenekte doğru verilmiştir?",
+                options: [
+                    "Süzülme - Salgılama - Geri emilim",
+                    "Geri emilim - Süzülme - Salgılama",
+                    "Süzülme - Geri emilim - Salgılama",
+                    "Salgılama - Geri emilim - Süzülme",
+                    "Geri emilim - Salgılama - Süzülme"
+                ],
+                correct: 2,
+                explanation: "İdrar oluşumu üç aşamada gerçekleşir: 1) Süzülme (glomerulustan Bowman kapsülüne), 2) Geri emilim (yararlı maddelerin kana geri alınması), 3) Salgılama (bazı maddelerin kandan kanalcıklara aktif taşıma ile atılması)."
+            },
+            {
+                question: "Süzülme olayı ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Glomerulus kılcallarında gerçekleşir",
+                    "Kan basıncı etkilidir",
+                    "ATP enerjisi harcanmaz",
+                    "Büyük proteinler ve kan hücreleri süzülür",
+                    "Günde yaklaşık 180 litre sıvı süzülür"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Süzülme sırasında büyük proteinler (albumin gibi) ve kan hücreleri (alyuvar, akyuvar) glomerulus zarından geçemez, kanda kalır. Süzülenler: su, glikoz, amino asitler, iyonlar, üre, ürik asit gibi küçük moleküllerdir."
+            },
+            {
+                question: "Hangisi geri emilimin özelliklerinden biri değildir?",
+                options: [
+                    "Yararlı maddeler kana geri alınır",
+                    "Çoğunlukla aktif taşıma ile gerçekleşir",
+                    "ATP harcanır",
+                    "Sadece proksimal tüpte olur",
+                    "Glikoz, amino asit, su, iyonlar geri emilir"
+                ],
+                correct: 3,
+                explanation: "Geri emilim sadece proksimal tüpte değil, proksimal tüp, Henle kulpu, distal tüp ve toplama kanalında gerçekleşir. Her bölgede farklı maddeler geri emilir."
+            },
+            {
+                question: "Aşağıdaki hormonlardan hangisi hipofiz bezinden salgılanır ve böbreklerde suyun geri emilimini artırır?",
+                options: [
+                    "Aldosteron",
+                    "Eritropoietin",
+                    "ADH (Vazopressin)",
+                    "Renin",
+                    "İnsülin"
+                ],
+                correct: 2,
+                explanation: "ADH (Antidiüretik hormon, Vazopressin) hipofiz bezinin arka lobundan salgılanır. Böbrek toplama kanallarının suya geçirgenliğini artırarak suyun geri emilimini artırır, idrar miktarını azaltır."
+            },
+            {
+                question: "Aldosteron hormonunun böbrekteki etkisi nedir?",
+                options: [
+                    "Na⁺ geri emilimini azaltır, K⁺ atılımını azaltır",
+                    "Na⁺ geri emilimini artırır, K⁺ atılımını artırır",
+                    "Su geri emilimini azaltır",
+                    "Alyuvar yapımını uyarır",
+                    "Kan basıncını düşürür"
+                ],
+                correct: 1,
+                explanation: "Aldosteron, böbrek üstü bezinden salgılanır. Distal tüpte Na⁺ (sodyum) geri emilimini ve K⁺ (potasyum) atılımını artırır. Na⁺ ile birlikte su da geri emildiği için kan basıncını yükseltir."
+            },
+            {
+                question: "Eritropoietin (EPO) hormonu ile ilgili hangisi doğrudur?",
+                options: [
+                    "Karaciğerden salgılanır, alyuvar yapımını azaltır",
+                    "Böbrekten salgılanır, alyuvar yapımını uyarır",
+                    "Hipofizden salgılanır, su geri emilimini artırır",
+                    "Pankreastan salgılanır, kan şekerini düzenler",
+                    "Mideden salgılanır, sindirimi kolaylaştırır"
+                ],
+                correct: 1,
+                explanation: "Eritropoietin (EPO) böbreklerden (%90) ve karaciğerden (%10) salgılanır. Kemik iliğini uyararak alyuvar (eritrosit) yapımını artırır. Böbrek yetmezliğinde EPO azalır, anemi (kansızlık) gelişir."
+            },
+            {
+                question: "Böbrek taşı oluşumunu önlemek için aşağıdakilerden hangisi önerilmez?",
+                options: [
+                    "Bol su içmek",
+                    "Tuzu azaltmak",
+                    "Hayvansal proteini sınırlamak",
+                    "Az su içip idrarı konsantre etmek",
+                    "Limonata gibi sitratlı içecekler tüketmek"
+                ],
+                correct: 3,
+                explanation: "Az su içmek idrarı konsantre eder, içindeki minerallerin kristalleşme ve taş oluşturma riskini artırır. Taş oluşumunu önlemek için bol su içmek (günde 2-3 litre) önerilir."
+            },
+            {
+                question: "Böbrek yetmezliğinde kullanılan diyaliz işlemi ile ilgili hangisi doğrudur?",
+                options: [
+                    "Böbreklerin tüm işlevlerini tam olarak yerine getirir",
+                    "Hormon (EPO, renin) üretir",
+                    "Atık maddeleri ve fazla suyu kandan uzaklaştırır",
+                    "Kalıcı bir tedavi yöntemidir",
+                    "Haftada bir kez yapılır"
+                ],
+                correct: 2,
+                explanation: "Diyaliz, böbreklerin süzme işlevini kısmen taklit eder. Atık maddeleri (üre, kreatinin) ve fazla suyu kandan uzaklaştırır. Ancak hormon üretmez, ince ayar yapamaz. Kalıcı tedavi değildir, genellikle haftada 3 kez yapılır."
+            },
+            {
+                question: "İdrar yolu enfeksiyonu ile ilgili hangisi yanlıştır?",
+                options: [
+                    "Kadınlarda daha sık görülür",
+                    "Sık idrara çıkma, yanma, karın ağrısı belirtileri vardır",
+                    "Bol su içmek ve idrarı tutmamak korunmada önemlidir",
+                    "Sadece erkeklerde görülür",
+                    "Bakteriler (E. coli) genellikle nedenidir"
+                ],
+                correct: 3,
+                explanation: "İdrar yolu enfeksiyonu hem kadınlarda hem erkeklerde görülür, ancak kadınlarda daha sıktır (üretranın kısa olması nedeniyle). Erkeklerde daha az görülmesine rağmen, özellikle yaşlı erkeklerde prostat sorunları ile birlikte olabilir."
+            },
+            {
+                question: "Homeostasizin sağlanmasında böbreklerin rolleri arasında hangisi yer almaz?",
+                options: [
+                    "Kan pH'sını düzenlemek",
+                    "Kan basıncını düzenlemek",
+                    "Vücut sıcaklığını düzenlemek",
+                    "Elektrolit (iyon) dengesini sağlamak",
+                    "Alyuvar yapımını düzenlemek"
+                ],
+                correct: 2,
+                explanation: "Vücut sıcaklığını düzenlemek (termoregülasyon) böbreklerin görevi değildir; bu hipotalamus, deri, ter bezleri, damarların görevidir. Böbrekler kan pH'sını, basıncını, elektrolit dengesini düzenler ve eritropoietin ile alyuvar yapımını uyarır."
+            },
+            {
+                question: "Normal idrarda aşağıdakilerden hangisi bulunmaz?",
+                options: [
+                    "Su",
+                    "Üre",
+                    "Glikoz",
+                    "Ürik asit",
+                    "Sodyum iyonu (Na⁺)"
+                ],
+                correct: 2,
+                explanation: "Normalde idrarda glikoz bulunmaz. Glikoz, nefronlarda tamamen geri emilir. İdrarda glikoz görülmesi (glikozüri), genellikle kan şekerinin çok yüksek olduğu (diyabet) durumlarında olur."
+            },
+            {
+                question: "Renin-anjiyotensin-aldosteron sisteminin (RAAS) başlatıcısı hangi organdır?",
+                options: [
+                    "Karaciğer",
+                    "Böbrek",
+                    "Akciğer",
+                    "Kalp",
+                    "Hipofiz"
+                ],
+                correct: 1,
+                explanation: "RAAS sisteminin başlatıcısı böbreklerdir. Böbrek kan akımı azalınca böbrekler renin hormonu salgılar. Renin, anjiyotensin oluşumunu başlatarak tansiyonu yükseltmeye çalışır."
+            },
+            {
+                question: "Böbrek nakli ile ilgili hangisi doğrudur?",
+                options: [
+                    "Nakilden sonra bağışıklık baskılayıcı ilaçlara gerek yoktur",
+                    "Sadece kadavradan (ölü donör) yapılabilir",
+                    "Canlı vericiden veya kadavradan yapılabilir",
+                    "Nakil böbrek sadece 1-2 yıl çalışır",
+                    "Nakil sonrası diyalize devam edilir"
+                ],
+                correct: 2,
+                explanation: "Böbrek nakli canlı vericiden (akraba, eş, duygusal bağlı verici) veya kadavradan (beyin ölümü gerçekleşmiş donör) yapılabilir. Nakilden sonra organ reddini önlemek için ömür boyu bağışıklık baskılayıcı ilaç kullanılır. Başarılı nakillerde böbrek onlarca yıl çalışabilir, diyalize gerek kalmaz."
+            },
+            {
+                question: "Henle kulpunun görevi nedir?",
+                options: [
+                    "Kanı süzmek",
+                    "İdrarı depolamak",
+                    "İdrarı konsantre etmek için karşı akım çoğaltıcı sistem oluşturmak",
+                    "Hormon salgılamak",
+                    "Alyuvar yapmak"
+                ],
+                correct: 2,
+                explanation: "Henle kulpu, U şeklinde bir kıvrımdır. Görevi, idrarı konsantre etmek için bir 'karşı akım çoğaltıcı sistemi' oluşturmaktır. Bu sayede öz bölgesinde hipertonik bir ortam oluşur ve toplama kanallarından su geri emilir."
+            },
+            {
+                question: "Üriner sistem sağlığı için aşağıdakilerden hangisi önerilmez?",
+                options: [
+                    "Günde 2-3 litre su içmek",
+                    "İdrarı uzun süre tutmamak",
+                    "Tuz tüketimini artırmak",
+                    "Hijyene dikkat etmek",
+                    "Düzenli egzersiz yapmak"
+                ],
+                correct: 2,
+                explanation: "Fazla tuz tüketimi böbrekleri yorar, tansiyonu yükseltir, böbrek taşı riskini artırır. Üriner sistem sağlığı için tuz tüketimini azaltmak önerilir."
+            },
+            {
+                question: "Böbreklerde süzülen sıvı miktarı günde yaklaşık kaç litredir?",
+                options: [
+                    "1.5 litre",
+                    "5 litre",
+                    "50 litre",
+                    "180 litre",
+                    "500 litre"
+                ],
+                correct: 3,
+                explanation: "Böbreklerde günde yaklaşık 180 litre sıvı süzülür. Bunun büyük kısmı (178.5 litre) geri emilir, sadece 1.5 litre kadar idrar olarak atılır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi böbrek yetmezliğinde biriken üremik toksinlerden biri değildir?",
+                options: [
+                    "Üre",
+                    "Kreatinin",
+                    "Glikoz",
+                    "Ürik asit",
+                    "Guanidin bileşikleri"
+                ],
+                correct: 2,
+                explanation: "Glikoz, normalde idrarda bulunmaz, böbrek yetmezliğinde de birikmez. Üre, kreatinin, ürik asit, guanidin bileşikleri ise böbrek yetmezliğinde atılamayıp kanda biriken (biriken) toksinlerdir."
+            },
+            {
+                question: "Böbrek üstü bezinden salgılanan ve Na⁺ geri emilimini artıran hormon hangisidir?",
+                options: [
+                    "ADH",
+                    "Eritropoietin",
+                    "Aldosteron",
+                    "İnsülin",
+                    "Glukagon"
+                ],
+                correct: 2,
+                explanation: "Aldosteron, böbrek üstü bezinin kabuk kısmından salgılanır. Distal tüpte Na⁺ geri emilimini ve K⁺ atılımını artırır."
+            },
+            {
+                question: "İdrarın mesaneden dışarı atıldığı kanala ne ad verilir?",
+                options: [
+                    "Üreter",
+                    "Üretra",
+                    "Ürinifer tübül",
+                    "Vasa recta",
+                    "Renal arter"
+                ],
+                correct: 1,
+                explanation: "Üretra, mesaneden idrarın dışarı atıldığı kanaldır. Kadınlarda 4 cm, erkeklerde 20 cm uzunluğundadır. Üreter ise böbrekten mesaneye idrar taşıyan kanaldır."
+            },
+            {
+                question: "Böbreğin havuzcuk (pelvis) bölgesinin görevi nedir?",
+                options: [
+                    "İdrar oluşturmak",
+                    "İdrarı toplamak ve üretere iletmek",
+                    "Kanı süzmek",
+                    "Hormon salgılamak",
+                    "Alyuvar yapmak"
+                ],
+                correct: 1,
+                explanation: "Havuzcuk (pelvis), böbreğin en içteki çukur kısmıdır. Toplama kanallarından gelen idrar burada toplanır ve üreter (idrar kanalı) ile mesaneye iletilir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Üriner sistemi tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+
+        // Initialize test questions on page load for test section
+        window.addEventListener('DOMContentLoaded', () => {
+            // Already initialized
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

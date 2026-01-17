@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Dolaşım Sistemi Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #e74c3c;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e74c3c;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #e74c3c;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #ffeaea;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #fef2f2;
+            border-color: #e74c3c;
+        }
+
+        .option.selected {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #e74c3c;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #e74c3c;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #e74c3c;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #ffeaea;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #e74c3c);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Curiosity Section Styles */
+        .curiosity-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .curiosity-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .curiosity-section:hover {
+            transform: translateX(5px);
+        }
+
+        .curiosity-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .curiosity-title i {
+            color: #9b59b6;
+        }
+
+        .curiosity-content {
+            background: #f5f0fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">11. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Dolaşım Sistemi Sistemi</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-heartbeat"></i> Dolaşım Sistemi Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile dolaşım sistemini (Kalp, Damarlar, Kan ve Kan Grupları) keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+        <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile dolaşım sisteminin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Dolaşım sistemini görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Dolaşım sisteminin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile dolaşım sistemi soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile dolaşım sistemi hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="curiosity-btn">
+                <i class="fas fa-search-plus"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Dolaşım sistemi ile ilgili ilginç detaylar ve üst düzey bilgileri keşfedin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Dolaşım Sistemi Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Dolaşım Sistemi Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Dolaşım Sisteminin Genel Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>İki çeşit dolaşım:</strong> Kan dolaşımı ve lenf dolaşımı</li>
+                        <li><strong>Kan dolaşım sistemi:</strong> Kalp, damarlar ve kan olmak üzere üç temel kısım</li>
+                        <li><strong>Görevi:</strong> Besin ve oksijeni hücrelere ulaştırmak, atıkları hücrelerden uzaklaştırmak</li>
+                        <li><strong>İnsanda:</strong> Kapalı dolaşım sistemi (kan damarlar içinde dolaşır)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kalbin Yapısı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Dört odacık:</strong> İki kulakçık (atriyum), iki karıncık (ventrikül)</li>
+                        <li><strong>Sağ ve sol bölümler:</strong> Birbirinden tamamen ayrılmış</li>
+                        <li><strong>Kapakçıklar:</strong> Üçlü (triküspit), ikili (biküspit), yarım ay (semilunar)</li>
+                        <li><strong>Tabakaları:</strong> Perikart (dış), miyokart (kas), endokart (iç)</li>
+                        <li><strong>Koroner damarlar:</strong> Kalbin kendi beslenmesini sağlar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kalbin Çalışması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kasılma aşaması:</strong> Sistol (kan pompalanır)</li>
+                        <li><strong>Gevşeme aşaması:</strong> Diastol (kalbe kan dolar)</li>
+                        <li><strong>Kalp döngüsü:</strong> Bir kalp atışının başlangıcından diğerine kadar geçen süre</li>
+                        <li><strong>Yetişkin nabzı:</strong> Dakikada 70-80 arası (bebeklerde daha fazla)</li>
+                        <li><strong>Bir pompalama:</strong> Yaklaşık 200 cc kan, 23 saniyede tam dolaşım</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Elektriksel İletim Sistemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sinoatrial düğüm (SA):</strong> Kalbin doğal pacemaker'ı, uyarıyı başlatır</li>
+                        <li><strong>Atriyoventriküler düğüm (AV):</strong> Kulakçıklarla karıncıklar arasında</li>
+                        <li><strong>His demetleri ve Purkinje lifleri:</strong> Uyarıyı karıncıklara iletir</li>
+                        <li><strong>Kendi kendine uyarı:</strong> Kalp çalışması için gerekli uyarıyı kendi üretir</li>
+                        <li><strong>Uyarı iletimi:</strong> SA → kulakçıklar → AV düğüm → His demetleri → Purkinje lifleri</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Damarların Yapısı ve Çeşitleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Atardamarlar (arter):</strong> Kalpten organlara kan götürür, duvar kalın, basınç yüksek</li>
+                        <li><strong>Toplardamarlar (vena):</strong> Organlardan kalbe kan getirir, kapakçıklı, basınç düşük</li>
+                        <li><strong>Kılcal damarlar:</strong> Atardamarla toplardamarı bağlar, madde alışverişi yeri</li>
+                        <li><strong>Yapı:</strong> Endotel tabakası, düz kas dokusu, bağ dokusu (kılcallarda sadece endotel)</li>
+                        <li><strong>Ana damarlar:</strong> Aort, akciğer atardamarı, ana toplardamarlar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kanın Yapısı ve Görevleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Plazma (%55):</strong> Su, tuzlar, proteinler, hormonlar, besinler, atıklar</li>
+                        <li><strong>Kan hücreleri (%45):</strong> Alyuvarlar, akyuvarlar, kan pulcukları</li>
+                        <li><strong>Alyuvarlar (eritrosit):</strong> O₂ ve CO₂ taşır, hemoglobin içerir, çekirdeksiz</li>
+                        <li><strong>Akyuvarlar (lökosit):</strong> Bağışıklık, fagositoz, antikor üretimi, çekirdekli</li>
+                        <li><strong>Kan pulcukları (trombosit):</strong> Pıhtılaşma, çekirdeksiz, sitoplazmik parçalar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kan Dolaşımının Fizyolojisi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Büyük kan dolaşımı:</strong> Kalp → vücut → kalp (O₂'li kan → O₂'siz kan)</li>
+                        <li><strong>Küçük kan dolaşımı:</strong> Kalp → akciğer → kalp (O₂'siz kan → O₂'li kan)</li>
+                        <li><strong>Nabız:</strong> Kalp kasılmasının atardamarlarda hissedilmesi</li>
+                        <li><strong>Tansiyon:</strong> Kanın atardamar duvarına yaptığı basınç (büyük 120, küçük 80 mm Hg)</li>
+                        <li><strong>Kılcal damarlarda madde alışverişi:</strong> Kan basıncı ve osmotik basınç farkı ile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Dolaşım Sistemi Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heart"></i> KALBİN YAPISI VE GÖREVLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Konum:</strong> Göğüs boşluğunun merkezinde, iki akciğer arasında yer alır.</li>
+                        <li><strong>Temel görevi:</strong> Kanı damarlar yardımıyla tüm vücuda pompalamaktır.</li>
+                        <li><strong>Dört odacık:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kulakçıklar (Atriyum):</strong> Üstte, ince duvarlı, kanı toplardamarlardan alır</li>
+                                <li><strong>Karıncıklar (Ventrikül):</strong> Altta, kalın duvarlı, kanı atardamarlara pompalar</li>
+                                <li>Sağ kulakçık ↔ sağ karıncık (üçlü kapakçık/triküspit)</li>
+                                <li>Sol kulakçık ↔ sol karıncık (ikili kapakçık/biküspit/mitral)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kalbin tabakaları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Perikart:</strong> Kalbi dıştan saran iki katlı zar, sürtünmeyi azaltır</li>
+                                <li><strong>Miyokart:</strong> Kalp kası, kasılmayı sağlar, karıncıklarda daha kalındır</li>
+                                <li><strong>Endokart:</strong> Kalbin iç yüzeyini saran tek tabakalı yassı epitel</li>
+                            </ul>
+                        </li>
+                        <li><strong>Koroner damarlar:</strong> Kalbi besleyen damarlar, aorttan çıkar, tıkanırsa kalp krizi (enfarktüs) oluşur.</li>
+                        <li><strong>Yarım ay kapakçıkları:</strong> Karıncıklardan çıkan atardamarların başlangıcında, kanın geri dönmesini engeller.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heartbeat"></i> KALBİN ÇALIŞMA MEKANİZMASI</div>
+                    <ul class="summary-list">
+                        <li><strong>Kan akış yolu:</strong> Vücut → ana toplardamarlar → sağ kulakçık → sağ karıncık → akciğer atardamarı → akciğerler → akciğer toplardamarı → sol kulakçık → sol karıncık → aort → vücut</li>
+                        <li><strong>Kalp döngüsü:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Sistol:</strong> Kasılma aşaması (kan pompalanır)</li>
+                                <li><strong>Diastol:</strong> Gevşeme aşaması (kalbe kan dolar)</li>
+                                <li>Kulakçıklar kasılırken karıncıklar gevşer, tersi de geçerlidir</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kalp atış süreleri (erişkin):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Toplam kalp atışı: 0,85 saniye</li>
+                                <li>Kulakçık kasılması: 0,15 saniye</li>
+                                <li>Karıncık kasılması: 0,30 saniye</li>
+                                <li>Dinlenme: 0,40 saniye</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kalp atım sayısı (nabız):</strong> Yetişkinlerde dakikada 70-80, çocuk ve bebeklerde daha fazla</li>
+                        <li><strong>Pompalama miktarı:</strong> Her kasılmada yaklaşık 200 cc kan, tam dolaşım yaklaşık 23 saniye</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> KALBİN ELEKTRİKSEL İLETİM SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Sinoatrial düğüm (SA düğümü):</strong> Sağ kulakçık duvarında, kalbin doğal pacemaker'ı, uyarıyı başlatır</li>
+                        <li><strong>Atriyoventriküler düğüm (AV düğümü):</strong> Kulakçıklarla karıncıklar arasında, uyarıyı 0,10 saniye bekletir</li>
+                        <li><strong>His demetleri ve Purkinje lifleri:</strong> Uyarıyı karıncık duvarına ve kalbin uç noktalarına iletir</li>
+                        <li><strong>Uyarı iletim sırası:</strong> SA düğümü → kulakçıklar (kasılır) → AV düğümü → His demetleri → Purkinje lifleri → karıncıklar (kasılır)</li>
+                        <li><strong>Kapakçıkların hareketi:</strong> Karıncıklar kasılınca yarım ay kapakçıkları açılır, ikili/üçlü kapakçıklar kapanır</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Kalp, çalışması için gerekli uyarıyı kendi üretir. Embriyo gelişiminin 4. haftasından itibaren kasılıp gevşemeye başlar ve yaşam boyu devam eder.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tachometer-alt"></i> KALBİN ÇALIŞMASINI ETKİLEYEN FAKTÖRLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Hızlandırıcı faktörler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Sempatik sinir sistemi</li>
+                                <li>Adrenalin hormonu</li>
+                                <li>Tiroksin hormonu</li>
+                                <li>Kandaki CO₂ yoğunluğunun artması</li>
+                                <li>Kafein, tein, nikotin</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yavaşlatıcı faktörler:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Vagus siniri (parasempatik)</li>
+                                <li>Asetilkolin hormonu</li>
+                            </ul>
+                        </li>
+                        <li><strong>Mekanizma:</strong> Bu faktörler SA düğümü üzerinde etkili olarak kalp atış hızını değiştirir.</li>
+                        <li><strong>Kan miktarının düzenlenmesi:</strong> Sistol ve diastol durumu, yavaşlatıcı ve hızlandırıcı sinirlerle düzenlenir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-road"></i> DAMARLARIN YAPISI VE ÇEŞİTLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Atardamarlar (Arter)</th>
+                            <th>Toplardamarlar (Vena)</th>
+                            <th>Kılcal Damarlar</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Görevi</strong></td>
+                            <td>Kalpten organlara kan taşır</td>
+                            <td>Organlardan kalbe kan getirir</td>
+                            <td>Atardamar ve toplardamarı bağlar, madde alışverişi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kan basıncı</strong></td>
+                            <td>Yüksek</td>
+                            <td>Düşük</td>
+                            <td>Orta (atardamar ucunda yüksek, toplardamar ucunda düşük)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kan akış hızı</strong></td>
+                            <td>Hızlı</td>
+                            <td>Yavaş</td>
+                            <td>Çok yavaş ve sabit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Duvar kalınlığı</strong></td>
+                            <td>Kalın (düz kas ve bağ dokusu fazla)</td>
+                            <td>İnce (düz kas ve bağ dokusu az)</td>
+                            <td>Çok ince (sadece endotel tabakası)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kapakçık</strong></td>
+                            <td>Yok (sadece başlangıçta yarım ay kapakçıkları)</td>
+                            <td>Var (özellikle kalp seviyesinin altında)</td>
+                            <td>Yok</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toplam kesit alanı</strong></td>
+                            <td>En az</td>
+                            <td>Orta</td>
+                            <td>En fazla</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Damar Yapısı:</strong> Atardamar ve toplardamarlar üç tabakadan oluşur: endotel tabakası (iç), düz kas dokusu (orta), bağ dokusu (dış). Kılcal damarlar sadece endotel tabakasından oluşur.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> KILCAL DAMARLARDA MADDE ALIŞVERİŞİ (STARLING HİPOTEZİ)</div>
+                    <ul class="summary-list">
+                        <li><strong>Madde alışverişi:</strong> Kan ile doku hücreleri arasındaki madde alışverişi sadece kılcal damarlarda gerçekleşir.</li>
+                        <li><strong>İki basınç etkisi:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kan basıncı (KB):</strong> Kalbin pompalama gücüyle oluşan basınç</li>
+                                <li><strong>Ozmotik basınç (OB):</strong> Kandaki proteinlerin oluşturduğu sabit basınç (~28 mm Hg)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Atardamar ucunda (KB ~40 mm Hg):</strong> KB > OB olduğu için kandaki su, besinler, O₂ doku sıvısına geçer.</li>
+                        <li><strong>Toplardamar ucunda (KB ~15 mm Hg):</strong> KB < OB olduğu için doku sıvısındaki atıklar (CO₂, NH₃), su kana geçer.</li>
+                        <li><strong>Starling Hipotezi:</strong> Bu basınç farkları madde alışverişini sağlar.</li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Kılcal Damarların Önemi:</strong> Kılcal damarlar o kadar incedir ki tek sıra halinde dizilmiş yassı epitel hücrelerinden oluşur. Bu ince yapı ve yavaş kan akışı, madde alışverişi için ideal ortam sağlar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tint"></i> KANIN YAPISI VE KAN HÜCRELERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Kan Bileşeni</th>
+                            <th>Oran</th>
+                            <th>Görevleri</th>
+                            <th>Özellikler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Plazma</strong></td>
+                            <td>%55</td>
+                            <td>Taşıyıcı sıvı, besin, hormon, atık taşınması</td>
+                            <td>Su, tuzlar, proteinler (albumin, globulin, fibrinojen), besinler, hormonlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alyuvarlar (Eritrosit)</strong></td>
+                            <td>~%44</td>
+                            <td>O₂ ve CO₂ taşınması</td>
+                            <td>Çekirdeksiz, hemoglobin içerir, disk şeklinde, 120 gün yaşar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Akyuvarlar (Lökosit)</strong></td>
+                            <td>~%1</td>
+                            <td>Bağışıklık, savunma</td>
+                            <td>Çekirdekli, hareketli, fagositoz yapar, antikor üretir</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kan Pulcukları (Trombosit)</strong></td>
+                            <td>~%1</td>
+                            <td>Kan pıhtılaşması</td>
+                            <td>Çekirdeksiz, renksiz, kemik iliği hücrelerinden kopan parçalar</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Alyuvar Sayıları:</strong> Yetişkin bir insanda 1 mm³ kanda 5-6 milyon alyuvar bulunur. Erkeklerde kadınlardan daha fazladır. Deniz seviyesinden yükseklere çıkıldıkça artar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-heart"></i> KAN PIHTILAŞMA MEKANİZMASI</div>
+                    <ul class="summary-list">
+                        <li><strong>Pıhtılaşma:</strong> Yaralanmalarda kanın damarlardan akmasını önleyen reaksiyonlar bütünüdür.</li>
+                        <li><strong>Kan pulcuklarının görevi:</strong> Hasarlı bölgeye yapışır, trombosit tıkacı oluşturur, tromboplastin salgılar.</li>
+                        <li><strong>Pıhtılaşma basamakları:</strong>
+                            <ol style="margin-left: 20px;">
+                                <li>Damar hasarı → kan pulcukları hasarlı bölgeye yapışır</li>
+                                <li>Kan pulcukları tromboplastin salgılar</li>
+                                <li>Tromboplastin + Ca²⁺ iyonları + K vitamini → protrombini trombine çevirir</li>
+                                <li>Trombin, fibrinojeni fibrine dönüştürür</li>
+                                <li>Fibrin iplikçikleri kan hücrelerini tutarak pıhtıyı oluşturur</li>
+                            </ol>
+                        </li>
+                        <li><strong>Pıhtının görevi:</strong> Yaralanan damarda tıkaç görevi yaparak kan akışını durdurur, mikroorganizma girişini engeller.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-stethoscope"></i> NABIZ, TANSİYON VE DOLAŞIMLA İLGİLİ KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Nabız:</strong> Kalbin ritmik kasılıp gevşemesinin atardamarlarda hissedilmesidir.</li>
+                        <li><strong>Tansiyon (Kan basıncı):</strong> Kalbin kasılıp gevşemesi sırasında kanın atardamar duvarına yaptığı basınçtır.</li>
+                        <li><strong>Büyük tansiyon (Sistolik):</strong> Karıncıkların kasılması sırasındaki basınç (~120 mm Hg)</li>
+                        <li><strong>Küçük tansiyon (Diyastolik):</strong> Karıncıkların gevşemesi sırasındaki basınç (~80 mm Hg)</li>
+                        <li><strong>Toplardamarlarda kanın ilerlemesi:</strong> Çevre kasların kasılmasıyla damar sıkıştırılır, tek yönlü kapakçıklar geri dönüşü engeller.</li>
+                        <li><strong>Uzun süre hareketsiz ayakta durma:</strong> Toplardamarlardaki kan kalbe iletilemez, kan basıncı düşer, bayılma olabilir (nöbet tutan askerlerde sık görülür).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Dolaşım Sistemi Soruları (15 Adet)
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Hastanede kalp krizi geçiren bir hastaya anjiyo yapılıyor. Doktor, "koroner damarlarda daralma var" diyor. Koroner damarların görevi nedir ve neden tıkanmaları kalp krizine neden olur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kalbin kendi beslenmesini sağlayan damarlar koroner damarlardır. Bu damarlar aorttan çıkarak kalp kasını besler.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Koroner damarlar, kalbin kendi beslenmesini sağlayan damarlardır.</p>
+                        <p><strong>Açıklama:</strong> Kalp, içindeki kandan değil, aorttan çıkan koroner damarlardan besin ve oksijen alır. Koroner damarlar tıkanır veya daralırsa, kalp kası yeterli oksijen ve besin alamaz. Oksijen alamayan kalp kası hücreleri zarar görür veya ölür. Bu duruma kalp krizi (enfarktüs) denir. Anjiyo yöntemiyle bu daralmalar tespit edilir ve gerekirse stent takılır veya bypass ameliyatı yapılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir atlet, antrenman sırasında nabzının hızlandığını fark ediyor. Antrenmandan bir saat sonra ise nabzı normale dönüyor. Bu değişim hangi faktörlerle açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kalbin çalışması sempatik sinir sistemi, adrenalin, kandaki CO₂ yoğunluğu gibi faktörlerden etkilenir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Antrenman sırasında adrenalin salgılanması, sempatik sinir sisteminin etkinleşmesi ve kandaki CO₂ artışı nabzı hızlandırır.</p>
+                        <p><strong>Açıklama:</strong> Egzersiz sırasında kaslar daha fazla oksijen tüketir ve daha fazla CO₂ üretir. Kandaki CO₂ yoğunluğunun artması, solunum merkezini uyarır ve dolaylı olarak kalp atışını hızlandırır. Ayrıca sempatik sinir sistemi aktive olur ve adrenalin salgılanır. Adrenalin, SA düğümü üzerinde hızlandırıcı etki yapar. Antrenman bittikten sonra parasempatik sinir sistemi (vagus siniri) devreye girer ve nabız yavaşlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Kan bağışı merkezinde, bağış yapan kişinin kanında alyuvar sayısının normalden düşük olduğu tespit ediliyor. Alyuvar sayısı neden önemlidir ve düşük olması kişiyi nasıl etkiler?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Alyuvarlar (eritrositler) kanda en fazla bulunan hücrelerdir ve oksijen taşımakla görevlidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Alyuvar sayısının düşük olması anemi (kansızlık) belirtisidir ve vücuda yeterli oksijen taşınamamasına neden olur.</p>
+                        <p><strong>Açıklama:</strong> Alyuvarlar hemoglobin pigmentini içerir ve oksijenin akciğerlerden dokulara, karbondioksitin ise dokulardan akciğerlere taşınmasını sağlar. Normalde 1 mm³ kanda 5-6 milyon alyuvar bulunur. Sayı düşükse (anemi):
+                        <ul>
+                            <li>Dokulara yeterli oksijen taşınamaz</li>
+                            <li>Kişide halsizlik, yorgunluk, baş dönmesi görülür</li>
+                            <li>Cilt solgunlaşır</li>
+                            <li>Nefes darlığı olabilir</li>
+                        </ul>
+                        Alyuvar üretimi kırmızı kemik iliğinde gerçekleşir. Demir, B12 vitamini ve folik asit eksikliği anemiye neden olabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Bir kişi kesik sonucu kanayan parmağını suyun altında yıkıyor. Bir süre sonra kanamanın durduğunu ve kesik üzerinde kabuk oluştuğunu görüyor. Bu kabuk nasıl oluşur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kanın pıhtılaşması, kan pulcukları (trombositler), fibrinojen ve tromboplastin gibi faktörlerin rol oynadığı bir süreçtir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Kabuk, kan pıhtılaşma mekanizması sonucu oluşan fibrinden oluşur.</p>
+                        <p><strong>Açıklama:</strong> Kan pıhtılaşması şu şekilde gerçekleşir:
+                        <ol>
+                            <li>Damar hasar görünce kan pulcukları hasarlı bölgeye yapışır ve trombosit tıkacı oluşturur.</li>
+                            <li>Kan pulcukları tromboplastin salgılar.</li>
+                            <li>Tromboplastin, Ca²⁺ iyonları ve K vitamini varlığında protrombini trombine dönüştürür.</li>
+                            <li>Trombin, fibrinojeni fibrine çevirir.</li>
+                            <li>Fibrin iplikçikleri bir ağ oluşturarak kan hücrelerini içine alır ve pıhtıyı oluşturur.</li>
+                        </ol>
+                        Bu pıhtı kuruyarak kabuk halini alır ve hem kanamayı durdurur hem de mikroorganizmaların girişini engeller. Kabuk altında doku onarımı gerçekleşir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Yüksek rakımlı bir bölgeye tırmanan dağcılar, bir süre sonra vücutlarının daha fazla alyuvar ürettiğini biliyor. Neden yüksek rakımda alyuvar sayısı artar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yüksek rakımlarda atmosfer basıncı düşer ve havadaki oksijen miktarı azalır. Vücut bu duruma adapte olmaya çalışır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Yüksek rakımda havadaki oksijen miktarı azaldığı için vücut daha fazla oksijen taşıyabilmek için daha fazla alyuvar üretir.</p>
+                        <p><strong>Açıklama:</strong> Alyuvarların temel görevi oksijen taşımaktır. Yüksek rakımlarda atmosfer basıncı düşer ve havadaki oksijen parsiyel basıncı azalır. Bu da akciğerlere giren oksijen miktarını düşürür. Vücut bu hipoksik (oksijen azlığı) duruma adapte olmak için böbreklerden eritropoetin (EPO) hormonu salgılanır. EPO, kemik iliğini uyararak alyuvar üretimini artırır. Daha fazla alyuvar, daha fazla hemoglobin demektir, bu da kana daha fazla oksijen bağlanmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Kalp kapakçıklarından biri tam kapanmadığında "kalp üfürümü" denen ses duyulur. Neden kapakçıkların tam kapanması önemlidir ve tam kapanmazsa ne olur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kalpte ikili (biküspit), üçlü (triküspit) ve yarım ay (semilunar) kapakçıklar bulunur. Bunlar kanın tek yönlü akışını sağlar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Kapakçıklar kanın tek yönde ilerlemesini sağlar. Tam kapanmazsa kan geri kaçar (rejürjitasyon), bu da kalbin verimini düşürür ve üfürüm sesine neden olur.</p>
+                        <p><strong>Açıklama:</strong> Kalp kapakçıkları, kanın sadece ileri yönde (kulakçıklardan karıncıklara, karıncıklardan atardamarlara) akmasını sağlar. Örneğin, sol karıncık kasılınca biküspit kapak kapanır, yarım ay kapak açılır ve kan aortaya pompalanır. Eğer biküspit kapak tam kapanmazsa, karıncık kasılırken bir miktar kan geriye (sol kulakçığa) kaçar. Bu:
+                        <ul>
+                            <li>Kalbin pompalama verimini düşürür (aynı kanı tekrar pompalar)</li>
+                            <li>Geri kaçan kan türbülans yaratır ve üfürüm sesi oluşur</li>
+                            <li>Zamanla kulakçık genişler ve kalp yetersizliği gelişebilir</li>
+                        </ul>
+                        Kapakçık problemleri doğuştan olabilir veya romatizmal ateş gibi hastalıklarla sonradan gelişebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Uzun süre ayakta duran bir asker bayılıyor. Neden uzun süre hareketsiz ayakta durmak bayılmaya neden olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Toplardamarlarda kanın kalbe dönüşü, çevre kasların kasılmasıyla sağlanır. Kalp seviyesinin altındaki toplardamarlarda tek yönlü kapakçıklar bulunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Uzun süre hareketsiz ayakta durunca bacak toplardamarlarındaki kan kalbe geri dönemez, bu da beyne giden kan akışının azalmasına ve bayılmaya neden olur.</p>
+                        <p><strong>Açıklama:</strong> Toplardamarlarda kan basıncı düşüktür. Bacaklardaki kanın kalbe dönüşü için baldır kaslarının kasılması gereklidir (kas pompası). Kaslar kasılınca toplardamarlar sıkışır ve kan yukarı itilir. Tek yönlü kapakçıklar kanın geri kaçmasını engeller. Uzun süre hareketsiz ayakta durunca:
+                        <ul>
+                            <li>Kas pompası çalışmaz</li>
+                            <li>Kan bacaklarda birikir (venöz birikim)</li>
+                            <li>Kalbe dönen kan miktarı azalır</li>
+                            <li>Kalbin pompaladığı kan azalır</li>
+                            <li>Beyne giden kan azalır (hipotansiyon)</li>
+                            <li>Bayılma (senkop) gerçekleşir</li>
+                        </ul>
+                        Bu durum "asker bayılması" veya "nöbetçi bayılması" olarak bilinir. Hareket etmek, bacakları sıkmak veya oturmak önleyebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Kılcal damarlar neden atardamar ve toplardamarlardan daha incedir? Bu ince yapının madde alışverişi açısından önemi nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kılcal damarlar sadece endotel adı verilen tek sıralı yassı epitel dokudan oluşur. Atardamar ve toplardamarların ise üç tabakası vardır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Kılcal damarlar ince yapılıdır çünkü madde alışverişi için geçirgen olmaları gerekir. Bu ince yapı, kan ile doku sıvısı arasında hızlı madde değişimine olanak sağlar.</p>
+                        <p><strong>Açıklama:</strong> Kılcal damarların duvarı sadece tek kat yassı epitel hücrelerinden (endotel) oluşur. Bu ince yapı:
+                        <ul>
+                            <li>Oksijen, karbondioksit, su, glikoz, amino asitler, vitaminler, mineraller gibi maddelerin kolayca geçişine izin verir</li>
+                            <li>Kan ile doku hücreleri arasındaki mesafeyi en aza indirir (difüzyon mesafesi kısalır)</li>
+                            <li>Kan akış hızını yavaşlatır, böylece madde alışverişi için daha fazla zaman sağlar</li>
+                            <li>Toplam kesit alanı en büyük olduğu için basınç düşer ve yavaş akış sağlanır</li>
+                        </ul>
+                        Atardamar ve toplardamarların kalın duvarları (düz kas ve bağ dokusu) ise basınca dayanıklılık ve şekil koruma içindir, madde geçirgenliği düşüktür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Doktor, bir hastanın tansiyonunu "120/80 mm Hg" olarak ölçüyor. Bu sayılar ne anlama gelir? Neden iki farklı değer vardır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Tansiyon ölçümünde büyük (sistolik) ve küçük (diyastolik) tansiyon olmak üzere iki değer ölçülür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> 120/80 mm Hg ölçümünde 120 büyük tansiyon (sistolik), 80 küçük tansiyondur (diyastolik).</p>
+                        <p><strong>Açıklama:</strong> Kalp sürekli kasılıp gevşediği için atardamarlardaki basınç sabit değildir, iki uç değer vardır:
+                        <ul>
+                            <li><strong>Büyük tansiyon (120 mm Hg):</strong> Karıncıkların kasılması (sistol) sırasında kanın atardamar duvarına yaptığı maksimum basınçtır. Bu sırada kan aortaya pompalanır.</li>
+                            <li><strong>Küçük tansiyon (80 mm Hg):</strong> Karıncıkların gevşemesi (diastol) sırasında kanın atardamar duvarına yaptığı minimum basınçtır. Bu sırada kalp kanla dolmaktadır.</li>
+                        </ul>
+                        Sağlıklı bir insanda dinlenme anında büyük tansiyon 120, küçük tansiyon 80 mm Hg civarındadır. Bu değerlerin sürekli yüksek olması hipertansiyon, düşük olması hipotansiyon olarak adlandırılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Alyuvarların çekirdeği olmamasının oksijen taşınması açısından bir avantajı var mıdır? Neden memeli alyuvarları çekirdeksizdir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Memeli hayvanlarda olgun alyuvarların çekirdeği yoktur. Alyuvarların içinde hemoglobin molekülleri bulunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Alyuvarların çekirdeksiz olması, daha fazla hemoglobin taşımalarını ve daha esnek olmalarını sağlar, bu da oksijen taşıma kapasitesini artırır.</p>
+                        <p><strong>Açıklama:</strong> Memeli alyuvarları olgunlaşırken çekirdeklerini kaybeder. Bu şekilde:
+                        <ul>
+                            <li>Hücre içinde daha fazla yer açılır ve daha çok hemoglobin taşınabilir (bir alyuvarda ~280 milyon hemoglobin molekülü)</li>
+                            <li>Hücre daha küçük ve daha esnek olur, bu sayede en dar kılcal damarlardan bile geçebilir</li>
+                            <li>Oksijen taşımak için özelleşmiş olduklarından, çekirdek gibi diğer organellere ihtiyaç duymazlar</li>
+                            <li>Enerji üretimi için mitokondri yerine oksijensiz solunum (glikoliz) kullanırlar</li>
+                        </ul>
+                        Çekirdek olmayınca alyuvarlar bölünemez ve ömürleri kısadır (~120 gün). Yaşlı alyuvarlar dalak ve karaciğerde parçalanır. Bu özellik memelilere özgüdür; kuş, sürüngen ve balıkların alyuvarları çekirdeklidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">İnsan vücudunda kan dolaşımı 23 saniyede tamamlanıyor. Bu hızlı dolaşım neden önemlidir? Kanın yavaş dolaşması ne gibi sorunlara yol açar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kalbin her pompalayışında yaklaşık 200 cc kan vücuda pompalanır ve kanın tüm vücudu dolaşması yaklaşık 23 saniye sürer.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Hızlı kan dolaşımı, hücrelere sürekli oksijen ve besin sağlanması, atıkların hızla uzaklaştırılması için gereklidir.</p>
+                        <p><strong>Açıklama:</strong> Kanın hızlı dolaşımı şu nedenlerle hayati önem taşır:
+                        <ul>
+                            <li><strong>Oksijen temini:</strong> Hücreler sürekli oksijene ihtiyaç duyar, özellikle beyin hücreleri oksijensizliğe birkaç dakika dayanabilir</li>
+                            <li><strong>Besin dağıtımı:</strong> Sindirilen besinler hızla tüm hücrelere ulaştırılmalıdır</li>
+                            <li><strong>Atık uzaklaştırma:</strong> Hücrelerde üretilen CO₂, üre, amonyak gibi atıklar hızla böbrek, akciğer gibi organlara taşınmalıdır</li>
+                            <li><strong>Hormon taşınması:</strong> Hormonlar hızla hedef organlara ulaşmalıdır</li>
+                            <li><strong>Isı düzenlenmesi:</strong> Vücut ısısı kan dolaşımıyla dengelenir</li>
+                            <li><strong>Bağışıklık:</strong> Akyuvarlar ve antikorlar enfeksiyon bölgelerine hızla taşınır</li>
+                        </ul>
+                        Kan dolaşımı yavaşlarsa (örneğin kalp yetmezliğinde) dokulara yeterli oksijen gitmez, atıklar birikir, ödem oluşur ve organ yetmezlikleri gelişir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Kanda akyuvar sayısının enfeksiyon durumunda geçici olarak artmasının nedeni nedir? Bu artış nasıl gerçekleşir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Normalde 1 mm³ kanda 5.000-10.000 akyuvar bulunur. Enfeksiyon durumunda bu sayı artar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Enfeksiyon durumunda vücut daha fazla savunma hücresine ihtiyaç duyduğu için akyuvar sayısı artar.</p>
+                        <p><strong>Açıklama:</strong> Akyuvarlar (lökositler) vücudun savunma hücreleridir. Enfeksiyon durumunda:
+                        <ol>
+                            <li>Bakteri, virüs gibi patojenler vücuda girdiğinde, bağışıklık sistemi aktive olur.</li>
+                            <li>Kemik iliği daha fazla akyuvar üretmeye başlar (lökopoiezis).</li>
+                            <li>Depolardaki (dalak, lenf düğümleri) akyuvarlar kana salınır.</li>
+                            <li>Bazı hormonlar ve sitokinler akyuvar üretimini ve salınımını uyarır.</li>
+                        </ol>
+                        Akyuvarların görevleri:
+                        <ul>
+                            <li><strong>Fagositoz:</strong> Bazı akyuvarlar (nötrofiller, monositler) bakterileri yutar ve sindirir</li>
+                            <li><strong>Antikor üretimi:</strong> B lenfositleri antikor üreterek patojenleri etkisiz hale getirir</li>
+                            <li><strong>Hücresel bağışıklık:</strong> T lenfositleri virüsle enfekte olmuş hücreleri yok eder</li>
+                        </ul>
+                        Enfeksiyon geçtikten sonra akyuvar sayısı normale döner. Sürekli yüksek olması lösemi gibi hastalıklara işaret edebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Sol karıncığın kas tabakası neden sağ karıncıktan daha kalındır? Bu farkın işlevsel bir açıklaması var mıdır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Miyokart tabakası karıncıklarda kulakçıklara göre daha kalındır. Ayrıca sol karıncıktaki miyokart sağ karıncıktakinden daha kalındır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Sol karıncık, kanı tüm vücuda pompaladığı için daha fazla kuvvet gerektirir. Bu nedenle kas tabakası daha kalındır.</p>
+                        <p><strong>Açıklama:</strong> Kalbin odacıklarının duvar kalınlıkları, yaptıkları işe göre farklılık gösterir:
+                        <ul>
+                            <li><strong>Sol karıncık:</strong> Kanı aortaya pompalar ve tüm vücuda gönderir. Bu uzun mesafeli ve yüksek dirençli bir pompalama gerektirir (sistemik dolaşım). Bu nedenle en kalın kas tabakasına sahiptir.</li>
+                            <li><strong>Sağ karıncık:</strong> Kanı sadece akciğerlere pompalar (pulmoner dolaşım). Akciğerler kalbe yakındır ve pulmoner arterde basınç düşüktür. Daha az kuvvet gerektirdiği için kas tabakası daha incedir.</li>
+                            <li><strong>Kulakçıklar:</strong> Sadece karıncıklara kan boşaltır. Pompalama yapmaz, sadece kanı karıncıklara iletir. Bu nedenle kas tabakaları en ince olanlardır.</li>
+                        </ul>
+                        Bu yapısal fark, enerji tasarrufu sağlar. Sol karıncık daha güçlü kasılarak yüksek basınç oluşturur, sağ karıncık ise daha az enerji harcar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Kan plazmasında bulunan albumin, globulin ve fibrinojen proteinlerinin görevleri nelerdir? Bu proteinler olmasaydı ne olurdu?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kan plazmasında %90-92 su, %7-8 proteinler (albumin, globulin, fibrinojen) ve %1-2 diğer maddeler bulunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Albumin osmotik basıncı sağlar, globulin bağışıklıkta görev alır, fibrinojen pıhtılaşmada rol oynar.</p>
+                        <p><strong>Açıklama:</strong> Plazma proteinlerinin görevleri:
+                        <ol>
+                            <li><strong>Albumin:</strong>
+                                <ul>
+                                    <li>Kanın osmotik basıncını sağlar (su tutar)</li>
+                                    <li>Yağ asitleri, hormonlar, ilaçlar gibi maddeleri taşır</li>
+                                    <li>Eksikliğinde ödem (dokularda su birikmesi) oluşur</li>
+                                </ul>
+                            </li>
+                            <li><strong>Globulin:</strong>
+                                <ul>
+                                    <li>Bağışıklıkta görev alır (antikorlar = immünoglobülinler)</li>
+                                    <li>Hormon ve mineral taşınması</li>
+                                    <li>Eksikliğinde enfeksiyonlara yatkınlık artar</li>
+                                </ul>
+                            </li>
+                            <li><strong>Fibrinojen:</strong>
+                                <ul>
+                                    <li>Kan pıhtılaşmasında görev alır (trombinle fırîne dönüşür)</li>
+                                    <li>Eksikliğinde kanama bozuklukları görülür (hemofili benzeri)</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        Bu proteinler karaciğerde sentezlenir. Karaciğer hastalıklarında plazma proteinleri azalır ve bu sorunlar ortaya çıkar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Kalp kası (miyokart) iskelet kasından farklı olarak ritmik kasılıp gevşer ve yorulmaz. Bu özellik nasıl sağlanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kalp kası özel bir çizgili kas türüdür. Kendi uyarısını üretir ve yaşam boyu kasılıp gevşemeye devam eder.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Kalp kası, kendi uyarısını üreten özel hücrelere (pacemaker hücreleri) sahiptir, bol mitokondri içerir ve dinlenme periyotları sayesinde yorulmaz.</p>
+                        <p><strong>Açıklama:</strong> Kalp kasının sürekli çalışabilmesini sağlayan özellikler:
+                        <ul>
+                            <li><strong>Otonom uyarı:</strong> SA düğümü kalbin doğal pacemaker'ıdır. Dış sinirlerden bağımsız olarak ritmik uyarı üretir.</li>
+                            <li><strong>İletim sistemi:</strong> Özelleşmiş hücreler (Purkinje lifleri) uyarıyı hızla ileterek tüm kalbin senkronize kasılmasını sağlar.</li>
+                            <li><strong>Bol mitokondri:</strong> Kalp kası hücrelerinde çok sayıda mitokondri bulunur, bu da sürekli ATP üretimini sağlar.</li>
+                            <li><strong>Dinlenme periyotları:</strong> Her kasılma döngüsünde dinlenme fazı vardır (0,85 saniyelik döngüde 0,40 saniye dinlenme). Bu yorulmayı önler.</li>
+                            <li><strong>Bol kılcal damar:</strong> Koroner damarlar kalp kasını yoğun şekilde besler.</li>
+                            <li><strong>Tek uyarı-yanıt kuralı:</strong> Kalp kası bir uyarıya ya tam yanıt verir ya da hiç vermez (ya hep ya hiç kuralı).</li>
+                        </ul>
+                        İskelet kası ise sinir uyarısı olmadan kasılamaz, hızlı yorulur ve dinlenme periyotları kalp kası kadar düzenli değildir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Dolaşım Sistemi Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #e74c3c; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden kalp kendi beslenmesi için koroner damarlara ihtiyaç duyar? Neden içindeki kandan beslenmez?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Kalp kası (miyokart) kalın bir kas tabakasıdır ve sürekli çalışır, bu da çok fazla enerji ve oksijen gerektirir.</p>
+                        <p><strong>Mantık:</strong> Kalbin içindeki kan, kalbin pompaladığı kandır ama bu kan kalp kası hücrelerine doğrudan ulaşamaz çünkü:</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Yapısal neden:</strong> Kalp kası hücreleri sıkı paketlenmiştir ve kalp boşluğundaki kanla doğrudan temas etmezler. Kan, kalbin iç yüzeyini saran endokart tabakası ile ayrılır.</p>
+                            <p><strong>Fizyolojik neden:</strong> Kalp kasının ihtiyaçları çok yüksektir. Sürekli kasılıp gevşediği için sürekli oksijen ve besin alması gerekir. Koroner damarlar doğrudan aorttan çıkarak kalp kasının her noktasına ulaşır ve yoğun bir kılcal ağ oluşturur.</p>
+                            <p><strong>Karşılaştırma:</strong> İskelet kasları dinlenir ve kan ihtiyacı azalır, ama kalp asla durmaz. Bu nedenle özel bir beslenme sistemine ihtiyaç duyar.</p>
+                            <p><strong>Sonuç:</strong> Koroner damarlar tıkanırsa, kalp kası hücreleri ölür (enfarktüs). Bu da kalbin pompalama gücünü azaltır veya ölüme neden olur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden atardamarların duvarı toplardamarlardan daha kalındır? Bu kalınlık farkının işlevsel nedeni nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Atardamarlar yüksek basınçlı kan taşır, toplardamarlar düşük basınçlı kan taşır.</p>
+                        <p><strong>Mantık yürütme:</strong> Kalp, kanı yüksek basınçla atardamarlara pompalar (büyük tansiyon ~120 mm Hg). Bu basınca dayanmak için atardamarların güçlü duvarlara ihtiyacı vardır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Atardamarların yapısı:</strong>
+                            <ul>
+                                <li><strong>Kalın düz kas tabakası:</strong> Basıncı dengelemek ve damar çapını ayarlamak için</li>
+                                <li><strong>Elastik lifler:</strong> Kalp atımı sırasında genişleyip, atım arasında daralarak kan akışını sürekli hale getirmek için (yamuk pompa etkisi)</li>
+                                <li><strong>Kalın bağ doku:</strong> Dayanıklılık ve şekil koruma için</li>
+                            </ul>
+                            <p><strong>Toplardamarların yapısı:</strong>
+                            <ul>
+                                <li><strong>İnce düz kas tabakası:</strong> Basınç düşük olduğu için kalın kas gerekmez</li>
+                                <li><strong>Kapakçıklar:</strong> Kanın geri kaçmasını önlemek için (özellikle kalp seviyesinin altında)</li>
+                                <li><strong>Daha geniş çap:</strong> Aynı miktardaki kanı daha düşük hızla taşımak için</li>
+                            </ul>
+                            <p><strong>Analoji:</strong> Atardamarlar yüksek basınçlı su borusu gibidir (kalın duvarlı), toplardamarlar ise drenaj borusu gibidir (geniş, ince duvarlı, geri akışı engelleyen kapakçıklı).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden kılcal damarlarda kan akış hızı çok yavaştır? Hızlı aksa ne olurdu?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Kılcal damarlar madde alışverişi bölgesidir. Alışveriş için zaman gerekir.</p>
+                        <p><strong>Mantık:</strong> Madde alışverişi (O₂, CO₂, besin, atık) difüzyonla gerçekleşir. Difüzyon belirli bir zaman alır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Yavaş akışın nedenleri:</strong>
+                            <ol>
+                                <li><strong>Toplam kesit alanı en büyük:</strong> Milyonlarca kılcal damar yan yana geldiğinde toplam kesit alanı atardamar ve toplardamardan çok daha büyüktür. Aynı miktar kan daha geniş alana yayılınca hız düşer (süreklilik denklemi).</li>
+                                <li><strong>Çap küçük ama sayı çok fazla:</strong> Tek bir kılcal damar çok küçüktür (~8 mikron), ama sayıları o kadar fazladır ki toplam alan çok büyüktür.</li>
+                            </ol>
+                            <p><strong>Hızlı aksaydı ne olurdu?</strong>
+                            <ul>
+                                <li>Madde alışverişi için yeterli zaman olmazdı</li>
+                                <li>Hücrelere yeterli oksijen ve besin ulaşamazdı</li>
+                                <li>Atıklar (CO₂, üre) uzaklaştırılamazdı</li>
+                                <li>Dokular beslenemez, atıklar birikir, hücreler ölürdü</li>
+                            </ul>
+                            <p><strong>Örnekle açıklama:</strong> Bir alışveriş merkezine giren kalabalık bir grup düşünün. Eğer kapı dar ve tek ise insanlar hızlı geçer ama kimse alışveriş yapamaz. Eğer çok sayıda geniş kapı varsa, insanlar yavaşça dağılır ve herkes rahatça alışveriş yapar. Kılcal damarlar da bu geniş kapılar gibidir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden sol karıncık sağ karıncıktan daha kalın kaslıdır? Bu fark ne işe yarar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Sol karıncık kanı tüm vücuda, sağ karıncık sadece akciğerlere pompalar.</p>
+                        <p><strong>Fizyolojik neden:</strong> Sistemik dolaşım (tüm vücut) pulmoner dolaşımdan (akciğerler) çok daha uzun ve dirençlidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sol karıncığın zorlu görevi:</strong>
+                            <ul>
+                                <li>Kanı aortaya pompalar</li>
+                                <li>Tüm vücudu (trilyonlarca hücreyi) beslemek için kanı uzak mesafelere gönderir</li>
+                                <li>Yüksek basınca karşı pompalama yapar (sistemik direnç yüksek)</li>
+                                <li>Bu nedenle güçlü kasılmalar için kalın kas tabakası gerekir</li>
+                            </ul>
+                            <p><strong>Sağ karıncığın göreceli kolay görevi:</strong>
+                            <ul>
+                                <li>Kanı sadece akciğerlere pompalar</li>
+                                <li>Akciğerler kalbe yakındır</li>
+                                <li>Pulmoner arterde basınç düşüktür (sistemik basıncın yaklaşık 1/6'sı)</li>
+                                <li>Bu nedenle daha az kuvvet yeterlidir, ince kas tabakası yeterlidir</li>
+                            </ul>
+                            <p><strong>Enerji tasarrufu:</strong> Eğer sağ karıncık da sol kadar kalın olsaydı, gereksiz enerji harcardı. Doğa, her yapıyı ihtiyaca göre optimize etmiştir.</p>
+                            <p><strong>İlginç gerçek:</strong> Sol karıncık o kadar güçlüdür ki, kesildiğinde kanı 1,5 metre yüksekliğe fışkırtabilir!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden alyuvarlar çekirdeksizdir? Çekirdek olsa ne değişirdi?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Evrimsel mantık:</strong> Alyuvarların tek görevi oksijen taşımaktır. Bu görev için çekirdek gerekli değildir, hatta engelleyicidir.</p>
+                        <p><strong>Yapısal mantık:</strong> Çekirdek, hücrede çok yer kaplar ve hücreyi daha az esnek yapar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Çekirdeksiz olmanın avantajları:</strong>
+                            <ol>
+                                <li><strong>Daha fazla hemoglobin:</strong> Çekirdek olmayınca hücre içinde daha fazla boşluk kalır. Bu boşluğa daha fazla hemoglobin molekülü sığar. Bir alyuvarda yaklaşık 280 milyon hemoglobin molekülü bulunur.</li>
+                                <li><strong>Daha esnek yapı:</strong> Çekirdek hücreyi sertleştirir. Çekirdeksiz alyuvarlar bükülüp en dar kılcal damarlardan (8 mikron çapından daha dar) bile geçebilir. Alyuvar çapı 7-8 mikrondur ama bazı kılcallar 5 mikron kadar dardır.</li>
+                                <li><strong>Bikonkav disk şekli:</strong> Çekirdek olmayınca hücre ortadan basık, kenarları kalın bir disk şeklini alabilir. Bu şekil, yüzey alanını artırır ve gaz difüzyonunu hızlandırır.</li>
+                                <li><strong>Enerji tasarrufu:</strong> Çekirdek olmayınca DNA replikasyonu, transkripsiyon gibi enerji gerektiren işlemler yapılmaz.</li>
+                            </ol>
+                            <p><strong>Çekirdek olsaydı:</strong>
+                            <ul>
+                                <li>Daha az hemoglobin taşınırdı</li>
+                                <li>Alyuvarlar daha az esnek olurdu</li>
+                                <li>Kılcal damarlardan geçiş zorlaşırdı</li>
+                                <li>Oksijen taşıma kapasitesi düşerdi</li>
+                                <li>Memeliler bu kadar aktif olamazdı (çünkü yüksek metabolizma için çok oksijen gerekir)</li>
+                            </ul>
+                            <p><strong>Not:</strong> Memeli olmayan omurgalılarda (kuş, balık, sürüngen) alyuvarlar çekirdeklidir ama daha büyüktür ve daha az verimli oksijen taşır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden kalbin elektriksel iletim sisteminde AV düğümü uyarıyı 0,10 saniye bekletir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Fizyolojik mantık:</strong> Kulakçıkların kasılması ile karıncıkların kasılması arasında zaman farkı olmalıdır.</p>
+                        <p><strong>İşlevsel neden:</strong> Kanın kulakçıklardan karıncıklara tamamen boşalması için zaman gerekir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sürecin mantığı:</strong>
+                            <ol>
+                                <li>SA düğümü uyarı çıkarır → kulakçıklar kasılır (0,15 saniye)</li>
+                                <li>Kulakçıklardaki kan karıncıklara boşalır</li>
+                                <li>AV düğümü uyarıyı 0,10 saniye bekletir → bu sırada kulakçıklardaki kanın tamamı karıncıklara boşalır</li>
+                                <li>AV düğümünden uyarı His demetleri ve Purkinje liflerine iletilir → karıncıklar kasılır (0,30 saniye)</li>
+                            </ol>
+                            <p><strong>Eğer AV düğümü beklemeseydi:</strong>
+                            <ul>
+                                <li>Kulakçıklar ve karıncıklar aynı anda kasılırdı</li>
+                                <li>Kan kulakçıklardan tam boşalamazdı (çünkü karıncıklar kasılınca kapakçıklar kapanır)</li>
+                                <li>Karıncıklara daha az kan dolar, bu da pompalama verimini düşürürdü</li>
+                                <li>Kalp debisi azalırdı</li>
+                            </ul>
+                            <p><strong>Analoji:</strong> Bir pompa sistemi düşünün. Önce üst hazne (kulakçık) alt hazneye (karıncık) su boşaltır, sonra alt hazne suyu dışarı pompalar. Eğer alt hazne üst hazne boşalmadan pompalarsa, hem yeterli su pompalayamaz hem de sistem verimsiz çalışır.</p>
+                            <p><strong>Klinik önemi:</strong> AV blok (iletim bozukluğu) durumunda bu bekleme süresi uzar veya iletim kesilir. Bu da kalp atışlarında düşüşe (bradikardi) veya kulakçık-karıncık senkronizasyonunun bozulmasına neden olur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Neden toplardamarlarda kapakçık varken atardamarlarda yoktur (sadece kalpten çıkışta yarım ay kapakçıkları var)?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Hidrodinamik mantık:</strong> Atardamarlarda kan yüksek basınçla ileri doğru akar, geri dönüş ihtimali düşüktür. Toplardamarlarda ise basınç düşüktür ve geri akış ihtimali yüksektir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Atardamarlarda neden kapakçık yok?</strong>
+                            <ul>
+                                <li><strong>Yüksek basınç:</strong> Kalbin pompalama gücüyle kan sürekli ileri doğru itilir.</li>
+                                <li><strong>Elastik yapı:</strong> Atardamarlar elastiktir, kalp atımı arasında daralarak kanı ileri iter (yamuk pompa etkisi).</li>
+                                <li><strong>Direnç:</strong> Periferik direnç (kılcal damarlar) geri akışı engeller.</li>
+                                <li><strong>Sadece kalpten çıkışta:</strong> Aort ve pulmoner arterin başlangıcında yarım ay kapakçıkları vardır. Bunlar karıncıklar gevşerken kanın geri kalbe dönmesini engeller.</li>
+                            </ul>
+                            <p><strong>Toplardamarlarda neden kapakçık var?</strong>
+                            <ul>
+                                <li><strong>Düşük basınç:</strong> Kan basıncı çok düşüktür (~15 mm Hg). Yerçekimi ve kas hareketleriyle kolayca geri akabilir.</li>
+                                <li><strong>Yerçekimi:</strong> Özellikle bacaklarda kanın yukarı (kalbe) gitmesi için yerçekimine karşı çıkması gerekir.</li>
+                                <li><strong>Kapakçık mekanizması:</strong> Kapakçıklar kanın sadece kalbe doğru gitmesine izin verir, geri dönüşü engeller.</li>
+                                <li><strong>Kas pompası:</strong> Çevre kaslar kasılınca toplardamarlar sıkışır, kan yukarı itilir, kapakçıklar geri dönüşü engeller.</li>
+                            </ul>
+                            <p><strong>Özellikle kalp seviyesinin altında:</strong> Bacak toplardamarlarında kapakçıklar çok önemlidir. Kalp seviyesinin üstündeki (beyin, kollar) toplardamarlarda kapakçık yoktur veya azdır çünkü yerçekimi kanı zaten kalbe doğru çeker.</p>
+                            <p><strong>Klinik önemi:</strong> Kapakçıklar bozulursa (venöz yetmezlik), kan bacaklarda birikir, varisler oluşur, ödem gelişir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden hemoglobin demir içerir? Bakır veya başka bir metal olsa olmaz mıydı?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Kimyasal mantık:</strong> Demir, oksijenle tersinir bağlanma özelliğine sahiptir. Yani akciğerde oksijeni alır, dokularda bırakır.</p>
+                        <p><strong>Biyokimyasal neden:</strong> Demir, hem grubunun merkezinde bulunur ve oksijenle koordinasyon bağı yapar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Demirin özellikleri:</strong>
+                            <ul>
+                                <li><strong>Tersinir oksijen bağlanması:</strong> Demir +2 yükseltgenme basamağındayken (Fe²⁺) oksijeni bağlar, Fe³⁺'e yükseltgenmez (oksitlenmez). Eğer yükseltgenirse (methemoglobin), oksijen taşıyamaz.</li>
+                                <li><strong>Uygun afinite:</strong> Demirin oksijene afinitesi ne çok düşük ne de çok yüksektir. Çok düşük olsaydı oksijeni alamazdı, çok yüksek olsaydı dokularda bırakamazdı.</li>
+                                <li><strong>Globin koruması:</strong> Hemoglobinin protein kısmı (globin), demiri oksidasyondan korur.</li>
+                                <li><strong>Verimlilik:</strong> Bir hemoglobin 4 oksijen molekülü taşır (her hem grubu bir oksijen). Bir alyuvarda ~280 milyon hemoglobin olduğundan, bir alyuvar ~1 milyar oksijen atomu taşır.</li>
+                            </ul>
+                            <p><strong>Diğer metaller neden uygun değil?</strong>
+                            <ul>
+                                <li><strong>Bakır:</strong> Hemositrin adlı bir protein bakır içerir ama sadece bazı omurgasızlarda bulunur, verimliliği düşüktür.</li>
+                                <li><strong>Kobalt:</strong> B12 vitamininde bulunur ama oksijen taşımaz.</li>
+                                <li><strong>Magnezyum:</strong> Klorofilde bulunur, fotosentezde rol alır ama oksijen taşımaz.</li>
+                            </ul>
+                            <p><strong>Alternatif oksijen taşıyıcılar:</strong>
+                            <ul>
+                                <li><strong>Hemosiyanin:</strong> Bazı eklembacaklılarda ve yumuşakçalarda bulunur, bakır içerir, mavi renklidir.</li>
+                                <li><strong>Klorokruorin:</strong> Bazı deniz solucanlarında bulunur, demir içerir ama yeşil renklidir.</li>
+                                <li><strong>Eritrosruorin:</strong> Dev bir proteindir, bazı solucanlarda bulunur.</li>
+                            </ul>
+                            <p><strong>Sonuç:</strong> Evrimsel süreçte demir, omurgalılarda en verimli oksijen taşıyıcısı olarak seçilmiştir. Ama bazı canlılar farklı sistemler geliştirmiştir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curiosity Section -->
+        <div class="content-section" id="curiosity-section">
+            <button class="back-btn" id="back-from-curiosity">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-search-plus"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="curiosity-container">
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 1. FETAL DOLAŞIM: BEBEKLER DOĞMADAN ÖNCE NASIL NEFES ALIR?</div>
+                    <div class="curiosity-content">
+                        <p>Fetüs (doğmamış bebek) akciğerleriyle nefes alamaz çünkü anne rahminde sıvı doludur. Peki nasıl oksijen alır?</p>
+                        <p><strong>Göbek Kordonu:</strong> Fetüsün göbek kordonunda iki atardamar ve bir toplardamar bulunur. Plasenta yoluyla anne kanından oksijen ve besin alır.</p>
+                        <p><strong>Fetal Kalpte Özel Yapılar:</strong>
+                        <ul>
+                            <li><strong>Foramen Ovale:</strong> Sağ ve sol kulakçıklar arasında açıklık. Kanın bir kısmı sağ kulakçıktan direkt sol kulakçığa geçer, böylece akciğerlere uğramaz.</li>
+                            <li><strong>Duktus Arteriozus:</strong> Akciğer atardamarı ile aort arasında bağlantı. Akciğerlere giden kanın çoğu buradan direkt aortaya geçer.</li>
+                        </ul>
+                        <p><strong>Doğumda Değişiklikler:</strong> Bebek doğup ilk nefesini alınca akciğerler açılır, basınç değişir. Foramen ovale kapanır (fossa ovalis olur), duktus arteriozus kapanır (ligamentum arteriozum olur). Eğer kapanmazsa doğumsal kalp hastalıkları oluşur (PDA, ASD).</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 2. KALBİN ELEKTRİKSEL DİLİ: EKG/ELEKTROKARDİYOGRAFİ</div>
+                    <div class="curiosity-content">
+                        <p>EKG, kalbin elektriksel aktivitesinin grafiksel kaydıdır. Her dalga ve aralık özel bir olayı temsil eder:</p>
+                        <p><strong>EKG Dalgaları:</strong>
+                        <ul>
+                            <li><strong>P Dalgası:</strong> Kulakçıkların depolarizasyonu (kasılması)</li>
+                            <li><strong>QRS Kompleksi:</strong> Karıncıkların depolarizasyonu (kasılması), kulakçıkların repolarizasyonu (gevşemesi) bu sırada gizlenir</li>
+                            <li><strong>T Dalgası:</strong> Karıncıkların repolarizasyonu (gevşemesi)</li>
+                        </ul>
+                        <p><strong>EKG Aralıkları:</strong>
+                        <ul>
+                            <li><strong>PR Aralığı:</strong> SA düğümünden AV düğümüne iletim süresi (normal: 0,12-0,20 saniye)</li>
+                            <li><strong>QT Aralığı:</strong> Karıncık depolarizasyonu ve repolarizasyonu toplamı</li>
+                            <li><strong>ST Segmenti:</strong> Karıncıkların tamamen depolarize olduğu (kasıldığı) zaman</li>
+                        </ul>
+                        <p><strong>İlginç Bilgi:</strong> EKG'de kulakçıkların repolarizasyonu (gevşemesi) görülmez çünkü QRS kompleksinin güçlü sinyali altında gizlenir. Eğer görülebilseydi, "Ta dalgası" olarak adlandırılırdı.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 3. KAN GRUPLARININ EVRİMSEL KÖKENİ</div>
+                    <div class="curiosity-content">
+                        <p>Kan grupları (A, B, AB, O) kırmızı kan hücrelerinin yüzeyindeki antijenlere göre belirlenir. Peki neden farklı kan grupları var?</p>
+                        <p><strong>Evrimsel Hipotezler:</strong>
+                        <ul>
+                            <li><strong>O Grubu (En Eski):</strong> İlk insanlar avcı-toplayıcıydı, O grubu baskındı. Afrika'da O grubu %60-70 oranındadır.</li>
+                            <li><strong>A Grubu:</strong> Tarım devrimiyle ortaya çıktığı düşünülüyor. Tahıl ve bitki ağırlıklı beslenen toplumlarda yaygın. Avrupa'da sık görülür.</li>
+                            <li><strong>B Grubu:</strong> Göçebe hayvancı toplumlarda (Orta Asya, Himalayalar) ortaya çıkmış olabilir.</li>
+                            <li><strong>AB Grubu (En Yeni):</strong> A ve B gruplarının karışmasıyla oluşmuş, nadir görülür (%5).</li>
+                        </ul>
+                        <p><strong>Hastalık Direnci:</strong> Farklı kan grupları farklı hastalıklara direnç veya yatkınlık sağlar:
+                        <ul>
+                            <li>O grubu: Sıtmaya daha dirençli, mide ülserine daha yatkın</li>
+                            <li>A grubu: Mide kanseri ve kalp hastalıklarına daha yatkın</li>
+                            <li>B ve AB grupları: Pankreas kanseri riski daha yüksek</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 4. MEMELİ OLMAYAN HAYVANLARDA KAN ve DOLAŞIM</div>
+                    <div class="curiosity-content">
+                        <p>Memelilerdeki dolaşım sistemi, diğer hayvanlardan önemli farklılıklar gösterir:</p>
+                        <p><strong>Balıklar:</strong>
+                        <ul>
+                            <li>Tek dolaşım: Kalp → solungaçlar → vücut → kalp</li>
+                            <li>2 odacıklı kalp: Bir kulakçık, bir karıncık</li>
+                            <li>Alyuvarları çekirdeklidir</li>
+                        </ul>
+                        <p><strong>Kurbağalar (Amfibiler):</strong>
+                        <ul>
+                            <li>3 odacıklı kalp: İki kulakçık, bir karıncık</li>
+                            <li>Karıncıkta karışık kan (O₂'li ve O₂'siz)</li>
+                            <li>Deri solunumu: Deriden oksijen alabilirler</li>
+                        </ul>
+                        <p><strong>Sürüngenler (Timsahta hariç):</strong>
+                        <ul>
+                            <li>3 odacıklı kalp ama karıncıkta kısmi bölme</li>
+                            <li>Daha az karışık kan</li>
+                        </ul>
+                        <p><strong>Kuşlar ve Memeliler:</strong>
+                        <ul>
+                            <li>4 odacıklı kalp (tam ayrılmış)</li>
+                            <li>Tam çift dolaşım</li>
+                            <li>Kuşlarda alyuvarlar çekirdeklidir!</li>
+                        </ul>
+                        <p><strong>İlginç Gerçek:</strong> Mavi kanlı canlılar var! Ahtapot, mürekkep balığı ve bazı kabuklular hemositin adlı bakır içeren bir pigment kullanır. Bakır oksijenle birleşince mavi renk oluşur.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 5. KALP NAKLİ ve YAPAY KALPLER</div>
+                    <div class="curiosity-content">
+                        <p>Kalp nakli (transplantasyon) tarihi ve teknolojisi oldukça ilginçtir:</p>
+                        <p><strong>İlk Kalp Nakli:</strong> 1967'de Güney Afrikalı cerrah Christiaan Barnard tarafından gerçekleştirildi. Hasta 18 gün yaşadı.</p>
+                        <p><strong>Bağışıklık Sistemi Sorunu:</strong> Nakledilen kalp vücut tarafından yabancı olarak görülür. Bu nedenle ömür boyu immünosupresif (bağışıklık baskılayıcı) ilaç kullanılır.</p>
+                        <p><strong>Yapay Kalpler:</strong>
+                        <ul>
+                            <li><strong>Total Yapay Kalp (TAH):</strong> Tüm kalbi değiştirir. Jarvik-7 ilk başarılı örnektir (1982).</li>
+                            <li><strong>Ventriküler Destek Cihazları (VAD):</strong> Sadece bir karıncığın görevini üstlenir. Kalp nakline köprü veya kalıcı tedavi olarak kullanılır.</li>
+                            <li><strong>Biyouyumlu Malzemeler:</strong> Kanın pıhtılaşmaması için özel kaplamalar geliştirilmiştir.</li>
+                        </ul>
+                        <p><strong>Gelecek Teknolojiler:</strong>
+                        <ul>
+                            <li><strong>Biyobaskılı Kalpler:</strong> Hasta kendi hücrelerinden 3D yazıcıyla kalp dokusu oluşturma</li>
+                            <li><strong>Xenotransplantasyon:</strong> Domuz kalbi nakli (2022'de ilk kez insana yapıldı)</li>
+                            <li><strong>Kök Hücre Tedavileri:</strong> Hasarlı kalp kasını onarmak için</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 6. KANIN FİZİKSEL ÖZELLİKLERİ ve REOLOJİSİ</div>
+                    <div class="curiosity-content">
+                        <p>Kan sadece biyolojik değil, aynı zamanda ilginç fiziksel özelliklere sahip bir sıvıdır:</p>
+                        <p><strong>Viskozite (Akmazlık):</strong>
+                        <ul>
+                            <li>Kan, sudan 3-4 kat daha viskozdur</li>
+                            <li>Viskozite artarsa (polistemi, dehidrasyon) kalbin iş yükü artar</li>
+                            <li>Anemide viskozite azalır, kan akışı hızlanır ama oksijen taşıma kapasitesi düşer</li>
+                        </ul>
+                        <p><strong>Non-Newtonian Akış:</strong> Kan Newtonian bir sıvı değildir (su gibi). Viskozitesi akış hızına göre değişir:
+                        <ul>
+                            <li>Yavaş akışta (kılcal damarlar): Viskozite yüksek</li>
+                            <li>Hızlı akışta (büyük damarlar): Viskozite düşük</li>
+                        </ul>
+                        <p><strong>Fahraeus-Lindqvist Etkisi:</strong> Dar damarlarda (kılcal) alyuvarlar merkeze toplanır, plazma kenarda akar. Bu "aksiyal migrasyon" direnci azaltır.</p>
+                        <p><strong>Kanın Akustik Özellikleri:</strong> Kan, ultrason dalgalarını belirli şekilde yansıtır. Bu özellik Doppler ultrasonla kan akış hızını ölçmek için kullanılır.</p>
+                        <p><strong>Manyetik Özellikler:</strong> Hemoglobindeki demir paramanyetiktir. Deoksihemoglobin (O₂'siz) manyetik rezonans görüntülemede (MRI) farklı sinyal verir (BOLD kontrastı). Bu fonksiyonel MRI (fMRI) ile beyin aktivitesini görmemizi sağlar!</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 7. KALP HASTALIKLARININ TARİHÇESİ ve TEDAVİLERİN EVRİMİ</div>
+                    <div class="curiosity-content">
+                        <p>Kalp-damar hastalıklarının tedavisi insanlık tarihi boyunca nasıl değişti?</p>
+                        <p><strong>Antik Dönem:</strong>
+                        <ul>
+                            <li>Eski Mısır (Ebers Papirüsü, MÖ 1550): Kalbi "ruhun ve bilgeliğin merkezi" olarak görürdü</li>
+                            <li>Antik Yunan: Kalbi ısı merkezi, atardamarları hava taşıyan kanallar sanıyorlardı</li>
+                            <li>Galen (MS 129-216): Kanın karaciğerde yapıldığını, kalpten "vital ruh" taşındığını düşünüyordu</li>
+                        </ul>
+                        <p><strong>Rönesans ve Bilimsel Devrim:</strong>
+                        <ul>
+                            <li>William Harvey (1578-1657): Kan dolaşımını keşfetti (1628)</li>
+                            <li>Marcello Malpighi (1628-1694): Kılcal damarları mikroskopla gözlemledi</li>
+                        </ul>
+                        <p><strong>Modern Dönem Önemli Buluşlar:</strong>
+                        <ul>
+                            <li>1903: Willem Einthoven - EKG cihazını icat etti (1924 Nobel)</li>
+                            <li>1929: Werner Forssmann - Kendi kalbine kateter soktu (1956 Nobel)</li>
+                            <li>1953: John Gibbon - Kalp-akciğer makinesini geliştirdi</li>
+                            <li>1967: Christiaan Barnard - İlk insandan insana kalp nakli</li>
+                            <li>1977: Andreas Grüntzig - İlk koroner anjiyoplasti (balon)</li>
+                            <li>1986: Jacques Puel & Ulrich Sigwart - İlk koroner stent</li>
+                        </ul>
+                        <p><strong>İlginç Gerçek:</strong> Steteskop 1816'da icat edildi. Fransız doktor René Laennec, genç bir kadının göğsünü doğrudan dinlemekten utandığı için kağıttan bir tüp yapmış ve böylece steteskop doğmuş!</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 8. UZAYDA KALP ve DOLAŞIM SİSTEMİ</div>
+                    <div class="curiosity-content">
+                        <p>Yerçekimsiz ortam (mikrogravite) kalp ve dolaşım sistemini nasıl etkiler?</p>
+                        <p><strong>Yerçekimsiz Ortamın Etkileri:</strong>
+                        <ul>
+                            <li><strong>Sıvı Kayması:</strong> Yerçekimi olmayınca vücut sıvıları üst bölgelere (göğüs, baş) kayar. Astronotların yüzleri şişer ("puffy face"), bacakları incelir ("bird legs").</li>
+                            <li><strong>Kalbin İş Yükü Azalır:</strong> Yerçekimine karşı kan pompalama gerekmez, kalp daha az çalışır, zamanla küçülür ("kardiyak atrofi").</li>
+                            <li><strong>Kan Hacmi Azalır:</strong> Vücut fazla sıvıyı idrarla atar, kan hacmi %10-15 azalır.</li>
+                            <li><strong>Ortostatik İntolerans:</strong> Dünyaya dönünce astronotlar ayakta duramaz, bayılır. Çünkü vücut yerçekimine alışkın değildir, kan bacaklara çöker.</li>
+                        </ul>
+                        <p><strong>Kontr Önlemler:</strong>
+                        <ul>
+                            <li><strong>Egzersiz:</strong> Astronotlar günde 2 saat egzersiz yapar (koşu bandı, bisiklet, direnç egzersizleri)</li>
+                            <li><strong>Alt-Basınç Kıyafeti:</strong> Bacaklara basınç uygulayarak kanın üste kaymasını engeller</li>
+                            <li><strong>Tuz ve Sıvı Yüklemesi:</strong> Dünyaya iniş öncesi tuzlu sıvı içilir, kan hacmi artırılır</li>
+                        </ul>
+                        <p><strong>Mars Görevi Zorlukları:</strong> Mars'a yolculuk 6-9 ay sürer. Uzun süreli mikrogravite sonrası Mars'ın yerçekimi (Dünya'nın %38'i) ile nasıl başa çıkılacak? Ayrıca kozmik radyasyon damar sertliğini hızlandırır.</p>
+                        <p><strong>İlginç Araştırma:</strong> Uluslararası Uzay İstasyonu'nda "kalp hücreleri" deneyi yapıldı. Kalp kası hücreleri mikrogravitede kümeleşip kendi kendine kasılmaya başladı!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Dolaşım Sistemi Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="BURAYA_GITHUB_LINKINI_YAPISTIRIN" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('curiosity-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('curiosity-section').classList.add('active');
+            updateProgress('curiosity');
+        });
+
+        // Back buttons
+        const backButtons = [
+            ['back-from-flashcards', 'flashcard-section'],
+            ['back-from-mindmap', 'mindmap-section'],
+            ['back-from-summary', 'summary-section'],
+            ['back-from-contextual', 'contextual-section'],
+            ['back-from-test', 'test-section'],
+            ['back-from-reasoning', 'reasoning-section'],
+            ['back-from-curiosity', 'curiosity-section']
+        ];
+
+        backButtons.forEach(([btnId, sectionId]) => {
+            document.getElementById(btnId).addEventListener('click', () => {
+                document.getElementById(sectionId).classList.remove('active');
+                document.getElementById('dashboard').style.display = 'grid';
+                if (sectionId === 'test-section') {
+                    document.getElementById('test-result').style.display = 'none';
+                }
+            });
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Dolaşım Sistemi Sorusu
+        const flashcards = [
+            {
+                question: "Dolaşım sisteminin temel görevi nedir?",
+                answer: "Besin ve oksijeni hücrelere ulaştırmak, hücrelerde oluşan atıkları hücrelerden uzaklaştırmaktır. İnsanda kan dolaşımı ve lenf dolaşımı olmak üzere iki çeşit dolaşım görülür."
+            },
+            {
+                question: "Kalbin yapısı nasıldır? Kaç odacıktan oluşur?",
+                answer: "Kalp dört odacıktan oluşur: Üstte iki kulakçık (atriyum), altta iki karıncık (ventrikül). Sağ ve sol bölümler birbirinden tamamen ayrılmıştır."
+            },
+            {
+                question: "Kalbin tabakaları nelerdir?",
+                answer: "1. Perikart (dış): Kalbi saran iki katlı zar, sürtünmeyi azaltır. 2. Miyokart (orta): Kalp kası, kasılmayı sağlar. 3. Endokart (iç): Kalbin iç yüzeyini saran tek tabakalı yassı epitel."
+            },
+            {
+                question: "Koroner damarların görevi nedir? Tıkanırsa ne olur?",
+                answer: "Kalbin kendi beslenmesini sağlarlar. Aorttan çıkarlar. Tıkanır veya daralırsa kalp, ihtiyacı olan besin ve oksijeni alamaz, kalp krizi (enfarktüs) oluşur."
+            },
+            {
+                question: "Sistol ve diastol nedir?",
+                answer: "Sistol: Kalbin kasılma aşaması (kan pompalanır). Diastol: Kan pompalandıktan sonra kalbe tekrar kan dolması için geçen gevşeme aşaması."
+            },
+            {
+                question: "Kalp döngüsü nedir?",
+                answer: "Kalp atışının başlangıcından bir sonraki kalp atışının başlangıcına kadar geçen süredir. Yetişkinlerde yaklaşık 0,85 saniye sürer."
+            },
+            {
+                question: "Kalbin elektriksel iletim sistemi nasıl çalışır?",
+                answer: "1. Sinoatrial düğüm (SA): Sağ kulakçıkta, uyarıyı başlatır. 2. Atriyoventriküler düğüm (AV): Kulakçıklarla karıncıklar arasında, uyarıyı 0,10 saniye bekletir. 3. His demetleri ve Purkinje lifleri: Uyarıyı karıncıklara iletir."
+            },
+            {
+                question: "Kalbin çalışmasını etkileyen faktörler nelerdir?",
+                answer: "Hızlandırıcı: Sempatik sinir sistemi, adrenalin, tiroksin, kafein, kandaki CO₂ artışı. Yavaşlatıcı: Vagus siniri (parasempatik), asetilkolin."
+            },
+            {
+                question: "Damar çeşitleri nelerdir? Görevleri nedir?",
+                answer: "1. Atardamarlar (arter): Kalpten organlara kan götürür. 2. Toplardamarlar (vena): Organlardan kalbe kan getirir. 3. Kılcal damarlar: Atardamar ve toplardamarı bağlar, madde alışverişi yeri."
+            },
+            {
+                question: "Atardamar, toplardamar ve kılcal damar farkları nelerdir?",
+                answer: "Kan basıncı: Atardamar > Kılcal damar > Toplardamar. Duvar kalınlığı: Atardamar > Toplardamar > Kılcal damar. Kan akış hızı: Atardamar > Toplardamar > Kılcal damar. Toplam kesit alanı: Kılcal damar > Toplardamar > Atardamar."
+            },
+            {
+                question: "Kılcal damarlarda madde alışverişi nasıl gerçekleşir?",
+                answer: "Starling hipotezi: Kan basıncı (KB) ve osmotik basınç (OB) farkıyla. Atardamar ucunda KB > OB: Besin, O₂ dokuya geçer. Toplardamar ucunda KB < OB: Atıklar (CO₂) kana geçer."
+            },
+            {
+                question: "Kanın yapısı nasıldır? Hangi bileşenlerden oluşur?",
+                answer: "%55 plazma (su, proteinler, hormonlar, besinler, atıklar), %45 kan hücreleri (alyuvarlar, akyuvarlar, kan pulcukları)."
+            },
+            {
+                question: "Alyuvarların (eritrosit) özellikleri nelerdir?",
+                answer: "O₂ ve CO₂ taşır, hemoglobin içerir, çekirdeksiz, disk şeklinde, 120 gün yaşar. 1 mm³ kanda 5-6 milyon bulunur. Erkeklerde kadınlardan daha fazladır."
+            },
+            {
+                question: "Akyuvarların (lökosit) özellikleri nelerdir?",
+                answer: "Bağışıklıkta görev alır, fagositoz yapar, antikor üretir, çekirdekli, hareketli. 1 mm³ kanda 5.000-10.000 bulunur. Enfeksiyonda sayıları artar."
+            },
+            {
+                question: "Kan pulcuklarının (trombosit) görevi nedir?",
+                answer: "Kan pıhtılaşmasında görev alır. Çekirdeksiz, renksiz, kemik iliği hücrelerinden kopan sitoplazmik parçalardır. 1 mm³ kanda 250-400 bin bulunur."
+            },
+            {
+                question: "Kan pıhtılaşması nasıl gerçekleşir?",
+                answer: "1. Damar hasarı → kan pulcukları yapışır, tromboplastin salgılar. 2. Tromboplastin + Ca²⁺ + K vitamini → protrombini trombine çevirir. 3. Trombin → fibrinojeni fibrine çevirir. 4. Fibrin iplikçikleri pıhtıyı oluşturur."
+            },
+            {
+                question: "Nabız nedir?",
+                answer: "Kalbin ritmik şekilde kasılıp gevşemesinin atardamarlarda hissedilmesidir."
+            },
+            {
+                question: "Tansiyon nedir? Büyük ve küçük tansiyon ne demektir?",
+                answer: "Kalbin kasılıp gevşemesi sırasında kanın atardamar duvarına yaptığı basınçtır. Büyük tansiyon: Karıncıkların kasılması sırasındaki basınç (~120 mm Hg). Küçük tansiyon: Karıncıkların gevşemesi sırasındaki basınç (~80 mm Hg)."
+            },
+            {
+                question: "Toplardamarlarda kan nasıl ilerler?",
+                answer: "Damar çevresindeki kasların kasılmasıyla damar sıkıştırılır, kan kalbe doğru itilir. Kalp seviyesinin altındaki toplardamarlarda tek yönlü kapakçıklar geri akışı engeller."
+            },
+            {
+                question: "Hemoglobin nedir? Yapısı nasıldır?",
+                answer: "Alyuvarlarda bulunan, oksijen taşıyan proteindir. Hem (demir içeren kısım) ve globin (protein kısmı) olmak üzere iki kısımdan oluşur. Bir hemoglobin 4 oksijen molekülü taşır."
+            },
+            {
+                question: "Kan plazmasındaki proteinlerin görevleri nelerdir?",
+                answer: "Albumin: Osmotik basıncı sağlar, maddeleri taşır. Globulin: Bağışıklık (antikorlar), taşıma. Fibrinojen: Pıhtılaşma."
+            },
+            {
+                question: "Sol karıncık neden sağ karıncıktan daha kalın kaslıdır?",
+                answer: "Sol karıncık kanı tüm vücuda pompalar (sistemik dolaşım), bu yüksek basınç ve uzun mesafe gerektirir. Sağ karıncık sadece akciğerlere pompalar (pulmoner dolaşım), daha az kuvvet yeterlidir."
+            },
+            {
+                question: "Kalp kapakçıkları nelerdir? Görevleri nedir?",
+                answer: "1. İkili kapakçık (biküspit/mitral): Sol kulakçık ve karıncık arasında. 2. Üçlü kapakçık (triküspit): Sağ kulakçık ve karıncık arasında. 3. Yarım ay kapakçıkları (semilunar): Karıncıklardan çıkan atardamarların başlangıcında. Görev: Kanın tek yönde ilerlemesini sağlamak."
+            },
+            {
+                question: "Yüksek rakımda neden alyuvar sayısı artar?",
+                answer: "Yüksek rakımda havadaki oksijen azalır. Vücut daha fazla oksijen taşıyabilmek için daha fazla alyuvar üretir (adaptasyon)."
+            },
+            {
+                question: "Uzun süre hareketsiz ayakta durunca neden bayılma olabilir?",
+                answer: "Toplardamarlardaki kan, kas pompası çalışmadığı için kalbe dönemez. Kalbe dönen kan azalır, beyne giden kan azalır, tansiyon düşer ve bayılma olur."
+            }
+        ];
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (Based on PDF content)
+        const testQuestions = [
+            {
+                question: "Dolaşım sisteminin temel görevi nedir?",
+                options: [
+                    "Sadece besinleri hücrelere ulaştırmak",
+                    "Sadece oksijeni hücrelere ulaştırmak",
+                    "Besin ve oksijeni hücrelere ulaştırmak, atıkları uzaklaştırmak",
+                    "Sadece hormonları taşımak",
+                    "Sadece ısı düzenlemesi yapmak"
+                ],
+                correct: 2,
+                explanation: "Dolaşım sisteminin temel görevi besin ve oksijeni hücrelere ulaştırmak, hücrelerde oluşan atıkları hücrelerden uzaklaştırmaktır. İnsanda kan dolaşımı ve lenf dolaşımı olmak üzere iki çeşit dolaşım görülür."
+            },
+            {
+                question: "Kalp kaç odacıktan oluşur?",
+                options: [
+                    "1 odacık",
+                    "2 odacık",
+                    "3 odacık",
+                    "4 odacık",
+                    "5 odacık"
+                ],
+                correct: 3,
+                explanation: "Kalp dört odacıktan oluşur: Üstte iki kulakçık (atriyum), altta iki karıncık (ventrikül). Sağ ve sol bölümler birbirinden tamamen ayrılmıştır."
+            },
+            {
+                question: "Kalbin dıştan içe doğru tabakaları hangi seçenekte doğru verilmiştir?",
+                options: [
+                    "Endokart - Miyokart - Perikart",
+                    "Miyokart - Endokart - Perikart",
+                    "Perikart - Endokart - Miyokart",
+                    "Perikart - Miyokart - Endokart",
+                    "Endokart - Perikart - Miyokart"
+                ],
+                correct: 3,
+                explanation: "Kalbin tabakaları dıştan içe doğru: 1. Perikart (dış): Kalbi saran zar. 2. Miyokart (orta): Kalp kası. 3. Endokart (iç): Kalbin iç yüzeyini saran tabaka."
+            },
+            {
+                question: "Koroner damarların görevi nedir?",
+                options: [
+                    "Kanı akciğerlere taşımak",
+                    "Kanı beyne taşımak",
+                    "Kalbin kendi beslenmesini sağlamak",
+                    "Karaciğeri beslemek",
+                    "Böbrekleri beslemek"
+                ],
+                correct: 2,
+                explanation: "Koroner damarlar, kalbin kendi beslenmesini sağlayan damarlardır. Aorttan çıkarlar. Tıkanır veya daralırsa kalp krizi (enfarktüs) oluşur."
+            },
+            {
+                question: "Kalbin kasılma aşamasına ne ad verilir?",
+                options: [
+                    "Diastol",
+                    "Sistol",
+                    "Kardiyak döngü",
+                    "Nabız",
+                    "Tansiyon"
+                ],
+                correct: 1,
+                explanation: "Kalbin kasılma aşamasına sistol, gevşeme aşamasına diastol denir. Sistolde kan pompalanır, diastolde kalbe kan dolar."
+            },
+            {
+                question: "Kalp döngüsü nedir?",
+                options: [
+                    "Kalbin bir kez kasılması",
+                    "Kalbin bir kez gevşemesi",
+                    "Kalp atışının başlangıcından bir sonraki kalp atışının başlangıcına kadar geçen süre",
+                    "Kalbin dakikadaki atım sayısı",
+                    "Kalbin pompaladığı kan miktarı"
+                ],
+                correct: 2,
+                explanation: "Kalp döngüsü, kalp atışının başlangıcından bir sonraki kalp atışının başlangıcına kadar geçen süredir. Yetişkinlerde yaklaşık 0,85 saniye sürer."
+            },
+            {
+                question: "Kalbin elektriksel iletim sisteminde uyarıyı başlatan yapı hangisidir?",
+                options: [
+                    "Atriyoventriküler düğüm",
+                    "His demetleri",
+                    "Purkinje lifleri",
+                    "Sinoatrial düğüm",
+                    "Miyokart"
+                ],
+                correct: 3,
+                explanation: "Sinoatrial düğüm (SA düğümü) kalbin doğal pacemaker'ıdır, uyarıyı başlatır. Sağ kulakçık duvarında bulunur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi kalbin çalışmasını hızlandırıcı faktörlerden biri değildir?",
+                options: [
+                    "Adrenalin",
+                    "Sempatik sinir sistemi",
+                    "Kandaki CO₂ artışı",
+                    "Asetilkolin",
+                    "Tiroksin"
+                ],
+                correct: 3,
+                explanation: "Asetilkolin parasempatik sinir sisteminin nörotransmitteridir ve kalbi yavaşlatıcı etki yapar. Adrenalin, sempatik sinir sistemi, kandaki CO₂ artışı ve tiroksin kalbi hızlandırır."
+            },
+            {
+                question: "Aşağıdaki damar çeşitlerinden hangisi kalpten organlara kan taşır?",
+                options: [
+                    "Toplardamar",
+                    "Atardamar",
+                    "Kılcal damar",
+                    "Lenf damarı",
+                    "Hepsi"
+                ],
+                correct: 1,
+                explanation: "Atardamarlar (arter) kalpten organlara kan taşır. Toplardamarlar organlardan kalbe kan getirir. Kılcal damarlar atardamar ve toplardamarı bağlar."
+            },
+            {
+                question: "Aşağıdakilerden hangisinde kan basıncı en yüksektir?",
+                options: [
+                    "Toplardamarlar",
+                    "Kılcal damarlar (toplardamar ucu)",
+                    "Kılcal damarlar (atardamar ucu)",
+                    "Atardamarlar",
+                    "Lenf damarları"
+                ],
+                correct: 3,
+                explanation: "Kan basıncı sıralaması: Atardamarlar > Kılcal damarlar (atardamar ucu) > Kılcal damarlar (toplardamar ucu) > Toplardamarlar. Atardamarlarda basınç en yüksektir çünkü kalp doğrudan bu damarlara kan pompalar."
+            },
+            {
+                question: "Kılcal damarlarda madde alışverişi hangi hipotezle açıklanır?",
+                options: [
+                    "Darwin hipotezi",
+                    "Starling hipotezi",
+                    "Mendel hipotezi",
+                    "Pasteur hipotezi",
+                    "Koch hipotezi"
+                ],
+                correct: 1,
+                explanation: "Kılcal damarlarda madde alışverişi Starling hipotezi ile açıklanır. Kan basıncı (KB) ve osmotik basınç (OB) farkına göre: Atardamar ucunda KB > OB olduğunda besin ve O₂ dokuya geçer, toplardamar ucunda KB < OB olduğunda atıklar (CO₂) kana geçer."
+            },
+            {
+                question: "Kanın plazma kısmı yaklaşık yüzde kaçını oluşturur?",
+                options: [
+                    "%25",
+                    "%35",
+                    "%45",
+                    "%55",
+                    "%65"
+                ],
+                correct: 3,
+                explanation: "Kanın %55'i plazma (sıvı kısım), %45'i kan hücrelerinden (alyuvarlar, akyuvarlar, kan pulcukları) oluşur."
+            },
+            {
+                question: "Alyuvarlar (eritrositler) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Oksijen ve karbondioksit taşır",
+                    "Hemoglobin içerir",
+                    "Çekirdeklidir",
+                    "Disk şeklindedir",
+                    "120 gün yaşar"
+                ],
+                correct: 2,
+                explanation: "Memeli alyuvarları olgunlaşırken çekirdeklerini kaybeder, bu nedenle çekirdeksizdir. Bu sayede daha fazla hemoglobin taşıyabilir ve daha esnek olurlar."
+            },
+            {
+                question: "1 mm³ kanda yaklaşık kaç alyuvar bulunur?",
+                options: [
+                    "5-10 bin",
+                    "50-100 bin",
+                    "250-400 bin",
+                    "5-6 milyon",
+                    "50-60 milyon"
+                ],
+                correct: 3,
+                explanation: "Yetişkin bir insanın 1 mm³ kanında yaklaşık 5-6 milyon alyuvar bulunur. Akyuvarlar 5-10 bin, kan pulcukları 250-400 bin kadardır."
+            },
+            {
+                question: "Akyuvarlar (lökositler) ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Oksijen taşır",
+                    "Çekirdeksizdir",
+                    "Bağışıklıkta görev alır",
+                    "Kan pıhtılaşmasını sağlar",
+                    "120 gün yaşar"
+                ],
+                correct: 2,
+                explanation: "Akyuvarlar bağışıklık sisteminde görev alır, fagositoz yapar, antikor üretir. Çekirdeklidir, hareketlidir. Enfeksiyon durumunda sayıları artar."
+            },
+            {
+                question: "Kan pulcukları (trombositler) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Kan pıhtılaşmasında görev alır",
+                    "Çekirdeksizdir",
+                    "Kemik iliği hücrelerinden kopan parçalardır",
+                    "1 mm³ kanda 5-6 milyon bulunur",
+                    "Renksizdir"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Kan pulcukları 1 mm³ kanda 250-400 bin kadar bulunur. 5-6 milyon olan alyuvarlardır. Kan pulcukları pıhtılaşmada görev alır, çekirdeksizdir, renksizdir."
+            },
+            {
+                question: "Kan pıhtılaşmasında fibrinojeni fibirine dönüştüren enzim hangisidir?",
+                options: [
+                    "Tromboplastin",
+                    "Trombin",
+                    "Protrombin",
+                    "Fibrin",
+                    "Heparin"
+                ],
+                correct: 1,
+                explanation: "Pıhtılaşma sırasında trombin, fibrinojeni fibrine dönüştürür. Fibrin iplikçikleri kan hücrelerini tutarak pıhtıyı oluşturur."
+            },
+            {
+                question: "Nabız nedir?",
+                options: [
+                    "Kalbin pompaladığı kan miktarı",
+                    "Kalbin ritmik kasılıp gevşemesinin atardamarlarda hissedilmesi",
+                    "Kanın damar duvarına yaptığı basınç",
+                    "Kalbin elektriksel aktivitesi",
+                    "Kalbin dinlenme süresi"
+                ],
+                correct: 1,
+                explanation: "Nabız, kalbin ritmik şekilde kasılıp gevşemesinin atardamarlarda hissedilmesidir. Yetişkinlerde normal nabız dakikada 70-80 arasındadır."
+            },
+            {
+                question: "Büyük tansiyon (sistolik) nedir?",
+                options: [
+                    "Karıncıkların gevşemesi sırasındaki basınç",
+                    "Karıncıkların kasılması sırasındaki basınç",
+                    "Kulakçıkların kasılması sırasındaki basınç",
+                    "Kalbin dinlenme sırasındaki basıncı",
+                    "Toplardamarlardaki basınç"
+                ],
+                correct: 1,
+                explanation: "Büyük tansiyon (sistolik tansiyon), karıncıkların kasılması (sistol) sırasında kanın atardamar duvarına yaptığı maksimum basınçtır. Normalde ~120 mm Hg'dir."
+            },
+            {
+                question: "Toplardamarlarda kanın ilerlemesi nasıl sağlanır?",
+                options: [
+                    "Sadece kalbin pompalama gücüyle",
+                    "Damar çevresindeki kasların kasılmasıyla",
+                    "Sadece yerçekimiyle",
+                    "Sadece solunum hareketleriyle",
+                    "Hiçbiri"
+                ],
+                correct: 1,
+                explanation: "Toplardamarlarda kan basıncı düşüktür. Kanın ilerlemesi damar çevresindeki kasların kasılmasıyla (kas pompası) sağlanır. Kalp seviyesinin altındaki toplardamarlarda tek yönlü kapakçıklar geri akışı engeller."
+            },
+            {
+                question: "Hemoglobin molekülü kaç oksijen molekülü taşıyabilir?",
+                options: [
+                    "1",
+                    "2",
+                    "4",
+                    "8",
+                    "16"
+                ],
+                correct: 2,
+                explanation: "Bir hemoglobin molekülü 4 oksijen molekülü taşıyabilir. Her hemoglobinin 4 hem grubu vardır ve her hem grubu bir oksijen bağlar."
+            },
+            {
+                question: "Kan plazmasındaki albumin proteininin temel görevi nedir?",
+                options: [
+                    "Bağışıklık",
+                    "Pıhtılaşma",
+                    "Osmotik basıncı sağlama",
+                    "Oksijen taşıma",
+                    "Hormon taşıma"
+                ],
+                correct: 2,
+                explanation: "Albumin kanın osmotik basıncını sağlar, suyun damar içinde kalmasını sağlar. Ayrıca yağ asitleri, hormonlar, ilaçlar gibi maddeleri taşır."
+            },
+            {
+                question: "Sol karıncık neden sağ karıncıktan daha kalın kaslıdır?",
+                options: [
+                    "Daha fazla kan pompaladığı için",
+                    "Kanı sadece akciğerlere pompaladığı için",
+                    "Kanı tüm vücuda pompaladığı için",
+                    "Daha yavaş kasıldığı için",
+                    "Daha az enerji harcadığı için"
+                ],
+                correct: 2,
+                explanation: "Sol karıncık kanı tüm vücuda (sistemik dolaşım) pompalar, bu yüksek basınç ve uzun mesafe gerektirir. Sağ karıncık sadece akciğerlere (pulmoner dolaşım) pompalar, daha az kuvvet yeterlidir."
+            },
+            {
+                question: "Sol kulakçık ile sol karıncık arasındaki kapakçık hangisidir?",
+                options: [
+                    "Üçlü kapakçık (triküspit)",
+                    "İkili kapakçık (biküspit/mitral)",
+                    "Yarım ay kapakçığı",
+                    "Pulmoner kapakçık",
+                    "Aort kapakçığı"
+                ],
+                correct: 1,
+                explanation: "Sol kulakçık ile sol karıncık arasında ikili kapakçık (biküspit veya mitral kapak) bulunur. Sağ kulakçık ile sağ karıncık arasında üçlü kapakçık (triküspit) bulunur."
+            },
+            {
+                question: "Yüksek rakıma çıkıldıkça kandaki alyuvar sayısı neden artar?",
+                options: [
+                    "Kemik iliği daha hızlı çalıştığı için",
+                    "Havadaki oksijen azaldığı için",
+                    "Vücut ısısı düştüğü için",
+                    "Kan basıncı arttığı için",
+                    "Metabolizma hızlandığı için"
+                ],
+                correct: 1,
+                explanation: "Yüksek rakımda havadaki oksijen miktarı azalır. Vücut bu hipoksik (oksijen azlığı) duruma adapte olmak için daha fazla alyuvar üretir. Daha fazla alyuvar = daha fazla hemoglobin = daha fazla oksijen taşınması."
+            },
+            {
+                question: "Uzun süre hareketsiz ayakta duran bir askerin bayılmasının nedeni nedir?",
+                options: [
+                    "Kalbin çok hızlı atması",
+                    "Tansiyonun yükselmesi",
+                    "Kanın bacaklarda birikip kalbe dönememesi",
+                    "Alyuvar sayısının azalması",
+                    "Solunumun yavaşlaması"
+                ],
+                correct: 2,
+                explanation: "Uzun süre hareketsiz ayakta durunca, bacak kasları kasılmadığı için toplardamarlardaki kan kalbe dönemez (kas pompası çalışmaz). Kan bacaklarda birikir, kalbe dönen kan azalır, beyne giden kan azalır, tansiyon düşer ve bayılma olur."
+            },
+            {
+                question: "Kılcal damarların yapısı nasıldır?",
+                options: [
+                    "Üç tabakalıdır (endotel, düz kas, bağ doku)",
+                    "Sadece endotel tabakasından oluşur",
+                    "Sadece düz kas tabakasından oluşur",
+                    "Sadece bağ dokudan oluşur",
+                    "Kas tabakası kalındır"
+                ],
+                correct: 1,
+                explanation: "Kılcal damarlar sadece endotel adı verilen tek sıralı yassı epitel hücrelerinden oluşur. Bu ince yapı madde alışverişi için idealdir. Atardamar ve toplardamarlar ise üç tabakalıdır."
+            },
+            {
+                question: "1 mm³ kanda kaç akyuvar bulunur?",
+                options: [
+                    "5-10",
+                    "50-100",
+                    "5.000-10.000",
+                    "50.000-100.000",
+                    "5-6 milyon"
+                ],
+                correct: 2,
+                explanation: "1 mm³ kanda (1 mikrolitre) 5.000-10.000 akyuvar bulunur. Alyuvarlar 5-6 milyon, kan pulcukları 250-400 bin kadardır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi kanın taşıma görevlerinden biri değildir?",
+                options: [
+                    "Oksijen ve karbondioksit taşınması",
+                    "Besin maddelerinin taşınması",
+                    "Atık maddelerin taşınması",
+                    "Hormonların taşınması",
+                    "Sindirim enzimlerinin üretilmesi"
+                ],
+                correct: 4,
+                explanation: "Kanın taşıma görevleri: O₂ ve CO₂ taşınması, besin maddelerinin taşınması, atık maddelerin taşınması, hormonların taşınması. Sindirim enzimlerinin üretilmesi pankreas, mide gibi organların görevidir, kanın görevi değildir."
+            },
+            {
+                question: "Kalbin her pompalayışında vücuda yaklaşık ne kadar kan pompalanır?",
+                options: [
+                    "20 cc",
+                    "50 cc",
+                    "100 cc",
+                    "200 cc",
+                    "500 cc"
+                ],
+                correct: 3,
+                explanation: "Kalbin her pompalayışında yaklaşık 200 cc kan vücuda pompalanır. Bu dolaşım insanda yaklaşık 23 saniyede tamamlanır."
+            },
+            {
+                question: "Sağlıklı bir insanda dinlenme anında küçük tansiyon kaç mm Hg civarındadır?",
+                options: [
+                    "60 mm Hg",
+                    "80 mm Hg",
+                    "100 mm Hg",
+                    "120 mm Hg",
+                    "140 mm Hg"
+                ],
+                correct: 1,
+                explanation: "Sağlıklı bir insanda dinlenme anında büyük tansiyon 120 mm Hg, küçük tansiyon 80 mm Hg civarındadır. Büyük tansiyon karıncıkların kasılması, küçük tansiyon gevşemesi sırasındaki basınçtır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Dolaşım sistemini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>
