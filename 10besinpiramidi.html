@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Besin Piramidi ve Madde Döngüleri Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #2ecc71;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #9b59b6;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #5c6bc0;
+        }
+
+        .context-scenario i {
+            color: #5c6bc0;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #e74c3c;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #2ecc71;
+        }
+
+        .option.selected {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2ecc71;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">10. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Besin Piramidi-Madde Döngüleri</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Besin Piramidi ve Madde Döngüleri Öğrenme Portalı</h1>
+            <div class="subtitle">6 farklı öğrenme yöntemi ile ekosistemdeki madde ve enerji akışını, besin zincirlerini, biyolojik birikimi ve madde döngülerini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/6</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile besin piramidi ve madde döngülerinin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Besin zincirleri, enerji akışı ve madde döngülerini görsel olarak öğrenin ve kavramlar arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Besin piramidi ve madde döngülerinin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile besin zincirleri ve madde döngüleri soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk test ile besin piramidi ve madde döngüleri hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Besin Piramidi ve Madde Döngüleri Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Besin Piramidi ve Madde Döngüleri Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekosistemde Enerji Akışı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Termodinamiğin 1. Yasası:</strong> Enerji yoktan var edilemez, vardan yok edilemez, ancak dönüştürülebilir</li>
+                        <li><strong>Termodinamiğin 2. Yasası:</strong> Her enerji dönüşümünde bir kısım enerji ısı olarak çevreye yayılır</li>
+                        <li><strong>Beslenme yoluyla enerji aktarımı:</strong> Kimyasal enerji formunda bir organizmadan diğerine aktarılır</li>
+                        <li><strong>Üreticiler (bitkiler):</strong> Güneş enerjisini kimyasal enerjiye dönüştürür (fotosentez)</li>
+                        <li><strong>Tüketiciler:</strong> Üreticilerden veya diğer tüketicilerden enerji alır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Besin Zincirleri ve Ağları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Besin zinciri:</strong> Üreticiden tüketiciye doğru tek yönlü enerji aktarımı</li>
+                        <li><strong>Üreticiler:</strong> Bitkiler, fotosentez yapan canlılar (1. trofik basamak)</li>
+                        <li><strong>Birincil tüketiciler:</strong> Otçullar, üreticilerle beslenir (2. trofik basamak)</li>
+                        <li><strong>İkincil tüketiciler:</strong> Etçiller, birincil tüketicilerle beslenir (3. trofik basamak)</li>
+                        <li><strong>Üçüncül tüketiciler:</strong> İkincil tüketicilerle beslenen etçiller (4. trofik basamak)</li>
+                        <li><strong>Besin ağı:</strong> Birçok besin zincirinin iç içe geçmesiyle oluşan karmaşık yapı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekolojik Piramitler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Trofik basamak:</strong> Beslenme düzeyindeki her bir basamak</li>
+                        <li><strong>Biyokütle:</strong> Bir popülasyondaki tüm bireylerin toplam kütlesi</li>
+                        <li><strong>Besin piramidi:</strong> Canlıların biyokütlelerini gösterir, en altta üreticiler bulunur</li>
+                        <li><strong>Enerji piramidi:</strong> Enerji akışını ve %10 Yasasını gösterir</li>
+                        <li><strong>%10 Yasası:</strong> Bir trofik basamaktaki enerjinin yaklaşık %10'u bir üst basamağa aktarılır</li>
+                        <li><strong>Enerji kaybı:</strong> Enerjinin %90'ı ısı olarak çevreye yayılır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Biyolojik Birikim</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Zararlı maddelerin besin zincirinde birikmesi</li>
+                        <li><strong>Neden:</strong> Endüstriyel faaliyetler, pestisitler, ağır metaller</li>
+                        <li><strong>Minamata Hastalığı:</strong> Civa zehirlenmesi, balıklarda biriken metil civa</li>
+                        <li><strong>İtai İtai Hastalığı:</strong> Kadmiyum zehirlenmesi, pirinçlerde biriken kadmiyum</li>
+                        <li><strong>Etki:</strong> Besin piramidinin üst basamaklarında daha fazla birikir, ciddi sağlık sorunlarına neden olur</li>
+                        <li><strong>Atık piller:</strong> Civa, kadmiyum, kurşun içerir, toprağa ve suya karışarak besin zincirine girer</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Madde Döngüleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Su döngüsü:</strong> Buharlaşma, yoğuşma, yağış, akış olaylarıyla gerçekleşir</li>
+                        <li><strong>Karbon döngüsü:</strong> Fotosentez ve solunum ile gerçekleşir, CO₂ atmosferde bulunur</li>
+                        <li><strong>Azot döngüsü:</strong> Azot bağlayıcı bakteriler, nitrifikasyon ve denitrifikasyon ile gerçekleşir</li>
+                        <li><strong>Ayrıştırıcılar:</strong> Ölü organizmaları parçalar, maddeleri tekrar kullanılabilir hale getirir</li>
+                        <li><strong>Döngünün önemi:</strong> Maddelerin devirli kullanımı, yaşamın sürekliliği için şarttır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekolojik Sürdürülebilirlik</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Net sıfır hedefi:</strong> Sera gazı salımının azaltılarak sıfıra ulaşılması</li>
+                        <li><strong>Sürdürülebilirlik:</strong> Gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılama</li>
+                        <li><strong>Yenilenebilir kaynaklar:</strong> Güneş, rüzgar, su enerjisi</li>
+                        <li><strong>Yenilenemeyen kaynaklar:</strong> Fosil yakıtlar (kömür, petrol, doğal gaz)</li>
+                        <li><strong>Çevre politikaları:</strong> Uluslararası anlaşmalar, sürdürülebilir kalkınma</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Besin Piramidi ve Madde Döngüleri Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> EKOSİSTEMDE MADDE VE ENERJİ AKIŞI</div>
+                    <ul class="summary-list">
+                        <li>Ekosistemler, canlı ve cansız varlıklardan oluşan, karşılıklı ilişki ve etkileşim halinde olan sistemlerdir.</li>
+                        <li><strong>Enerji akışı:</strong> Beslenme yoluyla bir organizmadan diğerine kimyasal enerji formunda aktarılır.</li>
+                        <li><strong>Termodinamiğin birinci yasası:</strong> Enerji yoktan var edilemez, vardan yok edilemez, ancak dönüştürülebilir. Bitkiler güneş enerjisini kimyasal enerjiye dönüştürür.</li>
+                        <li><strong>Termodinamiğin ikinci yasası:</strong> Her enerji aktarımı veya dönüşümü sırasında enerjinin bir kısmı ısı enerjisine dönüşerek çevreye yayılır. Bu nedenle enerjinin iş yapmak için kullanılabilir bölümü giderek azalır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-link"></i> BESİN ZİNCİRLERİ VE BESİN AĞLARI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Kavram</th>
+                            <th>Tanım</th>
+                            <th>Örnek</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Besin Zinciri</strong></td>
+                            <td>Besinlerde depolanan enerjinin üretici canlılardan tüketici canlılara doğru tek yönlü olarak iletimi</td>
+                            <td>Ot → Tavşan → Tilki</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Üreticiler</strong></td>
+                            <td>Kendi besinini üreten canlılar (bitkiler, fotosentetik bakteriler)</td>
+                            <td>Buğday, çim, algler</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Birincil Tüketiciler</strong></td>
+                            <td>Üreticilerle beslenen otçul canlılar</td>
+                            <td>Tavşan, geyik, çekirge</td>
+                        </tr>
+                        <tr>
+                            <td><strong>İkincil Tüketiciler</strong></td>
+                            <td>Birincil tüketicilerle beslenen etçil canlılar</td>
+                            <td>Tilki, kurt, baykuş</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Üçüncül Tüketiciler</strong></td>
+                            <td>İkincil tüketicilerle beslenen etçil canlılar</td>
+                            <td>Kartal, aslan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hepçiller</strong></td>
+                            <td>Hem bitkilerle hem hayvanlarla beslenen canlılar</td>
+                            <td>İnsan, ayı, fare</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ayrıştırıcılar</strong></td>
+                            <td>Ölü organizmaları parçalayarak maddelerin tekrar kullanılmasını sağlayan canlılar</td>
+                            <td>Bakteriler, mantarlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Besin Ağı</strong></td>
+                            <td>Birçok besin zincirinin iç içe geçmesiyle oluşan karmaşık beslenme ilişkileri</td>
+                            <td>Ekosistemdeki tüm beslenme ilişkileri</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Besin zincirleri tek yönlüdür ve basit görünür. Ancak ekosistemde örtüşen çok sayıda besin zinciri karmaşık besin ağlarını oluşturur. Besin ağları, habitattaki tüm organizmalar arasındaki enerji aktarımını gösterir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-chart-bar"></i> EKOLOJİK PİRAMİTLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Trofik basamak:</strong> Belirli bir türün popülasyonlarının beslenme düzeyindeki her bir basamağına denir.</li>
+                        <li><strong>Biyokütle:</strong> Bir popülasyonu oluşturan tüm bireylerin toplam kütlesidir.</li>
+                        <li><strong>Besin piramidi:</strong> Canlılarda enerji akışını göstermek için kullanılır. En altta biyokütlesi en fazla olan üreticiler bulunur.</li>
+                        <li><strong>Enerji piramidi:</strong> Enerji akışını ve %10 Yasasını görsel olarak gösterir.</li>
+                        <li><strong>%10 Yasası:</strong> Bir trofik basamaktaki kullanılabilir enerjinin yaklaşık %10'u bir üst basamaktaki canlılara aktarılabilir. Enerjinin yaklaşık %90'ı canlılık faaliyetlerinde kullanılır ve ısı olarak çevreye yayılır.</li>
+                        <li><strong>Piramit yapısı:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>1. trofik basamak: Üreticiler (en fazla biyokütle ve enerji)</li>
+                                <li>2. trofik basamak: Birincil tüketiciler (otçullar)</li>
+                                <li>3. trofik basamak: İkincil tüketiciler (etçiller)</li>
+                                <li>4. trofik basamak: Üçüncül tüketiciler (en az biyokütle ve enerji)</li>
+                                <li>Tüm basamaklarda: Ayrıştırıcılar</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Enerji Kaybının Nedenleri:</strong> Enerjinin bir kısmı sindirilmeden dışkı yoluyla atılır. Dışkı ile atılan organik kalıntılar ayrıştırıcılar tarafından parçalanır. Ayrıca canlılar enerjiyi büyüme, hareket, üreme gibi yaşamsal faaliyetler için kullanır ve bu sırada ısı enerjisi açığa çıkar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-skull-crossbones"></i> BİYOLOJİK BİRİKİM VE ETKİLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Endüstriyel faaliyetler sonucu doğaya bırakılan kimyasal ve sentetik maddelerin besin zinciri boyunca ilerleyip canlıların dokularında birikmesidir.</li>
+                        <li><strong>Mekanizma:</strong> Zararlı maddeler toprak ve su ortamlarına karışır, besin zinciri boyunca ilerler. Vücuttan kolayca uzaklaştırılamayan bu maddeler farklı trofik basamaklardaki canlıların dokularında birikir.</li>
+                        <li><strong>Minamata Hastalığı:</strong> Japonya'da ortaya çıkan bir civa zehirlenmesidir. Fabrikadan Minamata Körfezi'ne boşaltılan metil civa balıklarda birikmiş, bu balıkları yiyen insanlarda ciddi zehirlenmelere neden olmuştur.</li>
+                        <li><strong>İtai İtai Hastalığı:</strong> Japonya'da kadmiyum zehirlenmesine bağlı olarak ortaya çıkan hastalıktır. Madencilik faaliyetleri sonucu nehre karışan kadmiyum pirinçlere geçmiş, bu pirinçleri yiyen insanlarda kemik ve eklem ağrılarına neden olmuştur.</li>
+                        <li><strong>Atık piller:</strong> Civa, kadmiyum, kurşun gibi ağır metaller içerir. Çöplere atıldığında toprağa ve suya karışarak besin zincirine girer. İnsan vücudunda birikerek nörolojik bozukluklar, kanser, böbrek ve karaciğer hastalıklarına neden olur.</li>
+                        <li><strong>DDT (Dikloro Difenil Trikloroetan):</strong> Tarım zararlılarına karşı kullanılan bir pestisittir. Besin zincirleri yoluyla ekosistemde taşınır ve canlı dokularında birikir. 1980'li yıllardan itibaren birçok ülkede yasaklanmıştır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-recycle"></i> MADDE DÖNGÜLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Genel prensip:</strong> Ekosistemde bulunan maddeler canlı ve cansız ortamlar arasında sürekli bir döngü halindedir. Canlılar ölür veya atık üretir, ayrıştırıcılar bu maddeleri parçalar ve üreticiler tarafından tekrar kullanılır.</li>
+                        <li><strong>Su döngüsü:</strong> Suyun buharlaşma, yoğuşma, yağış, akış gibi olaylarla yeryüzü ve gökyüzü arasında sürekli bir döngü halinde dolanımıdır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Buharlaşma: Okyanus, deniz, göl ve karalardan suyun atmosfere geçmesi</li>
+                                <li>Terleme: Canlıların solunumu ve terlemesiyle atmosfere su buharı çıkması</li>
+                                <li>Yoğuşma: Atmosferdeki su buharının sıvı hale geçmesi</li>
+                                <li>Yağış: Yağmur, kar veya dolu olarak yeryüzüne inmesi</li>
+                            </ul>
+                        </li>
+                        <li><strong>Karbon döngüsü:</strong> Karbonun atmosfer, bitki örtüsü, okyanus ve canlı organizmalar arasında dolaşımıdır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Fotosentez: Bitkiler atmosferdeki CO₂'yi alır, organik madde ve O₂ üretir</li>
+                                <li>Solunum: Canlılar organik maddeleri parçalayarak enerji elde eder, CO₂ açığa çıkar</li>
+                                <li>Yanma: Odun veya fosil yakıtların yanmasıyla CO₂ atmosfere verilir</li>
+                                <li>Ayrışma: Ölü organizmalar ayrıştırıcılar tarafından parçalanır, karbon atmosfere döner</li>
+                            </ul>
+                        </li>
+                        <li><strong>Azot döngüsü:</strong> Azotun atmosfer, toprak, su ve canlılar arasındaki dolaşımıdır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Azot bağlama: Azot bağlayıcı bakteriler atmosferdeki azotu toprağa bağlar</li>
+                                <li>Nitrifikasyon: Bakteriler amonyağı önce nitrite, sonra nitrata dönüştürür</li>
+                                <li>Bitkiler: Nitratı alarak protein gibi organik molekülleri üretir</li>
+                                <li>Hayvanlar: Azotu bitki veya diğer hayvanlarla beslenme yoluyla alır</li>
+                                <li>Denitrifikasyon: Bakteriler nitratı tekrar atmosferik azota dönüştürür</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> EKOLOJİK SÜRDÜRÜLEBİLİRLİK</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Kavram</th>
+                            <th>Tanım</th>
+                            <th>Örnek/Önlem</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Sıfır Hedefi</strong></td>
+                            <td>Sera gazı salımının azaltılarak sıfıra ulaşılması, Paris Anlaşması ile konulan bir hedef</td>
+                            <td>Yenilenebilir enerji kullanımı, enerji verimliliği</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sürdürülebilirlik</strong></td>
+                            <td>Gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılama</td>
+                            <td>Doğal kaynakların korunması, geri dönüşüm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yenilenebilir Kaynaklar</strong></td>
+                            <td>Doğada sürekli var olan veya kendini yenileyebilen kaynaklar</td>
+                            <td>Güneş, rüzgar, su, biyokütle enerjisi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yenilenemeyen Kaynaklar</strong></td>
+                            <td>Sınırlı miktarda olan ve tükenebilen kaynaklar</td>
+                            <td>Kömür, petrol, doğal gaz, madenler</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Biyosfer-2 Projesi</strong></td>
+                            <td>Kapalı bir biyosferde insan yaşamını test etmek için yapılan ekoloji projesi</td>
+                            <td>Madde döngülerinin düzenli gerçekleşmemesi çevre sorunlarına neden olmuştur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uluslararası Anlaşmalar</strong></td>
+                            <td>Çevre sorunlarını çözmek için uluslararası iş birliği</td>
+                            <td>Paris Antlaşması, CITES, Basel Sözleşmesi</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Biyosfer-2 Projesi'nin Sonuçları:</strong> Proje sonlandırıldığında yaşam alanındaki oksijen oranı %14'e düşmüş, karbondioksit derişimi artmış, azot oksit miktarı insanın sinir sistemine zarar verecek oranlara ulaşmıştır. Su kaynakları kirlenmiş, birçok canlı türü yok olmuştur. Bu proje madde döngülerinin düzenli şekilde gerçekleşmemesinin ciddi çevre sorunlarına neden olacağını göstermiştir.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Besin Piramidi ve Madde Döngüleri Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Bir çiftçi tarlasındaki böcekleri öldürmek için DDT adlı bir pestisit kullanıyor. Zamanla bu böcekleri yiyen kuşların sayısında azalma, kuşları yiyen yırtıcıların ise daha da az sayıda olduğu gözlemleniyor. Bu durum besin piramidi ve biyolojik birikim açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: DDT, 20. yüzyılın ikinci yarısında yaygın olarak kullanılan bir pestisittir. Çevrede yaklaşık 10 yıl boyunca kalabilir ve fiziksel etkenlerle kolayca parçalanmaz.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Bu durum biyolojik birikim ve %10 Yasası ile açıklanır.</p>
+                        <p><strong>Açıklama:</strong> DDT pestisiti böcekler üzerinde kullanılır. Böcekler bu pestisiti vücutlarında biriktirir. Böcekleri yiyen kuşlar, birçok böceği yediği için daha fazla DDT alır ve vücutlarında biriktirir. Kuşları yiyen yırtıcılar ise en fazla DDT'yi alır çünkü besin piramidinin en üst basamağındadır. Bu nedenle yırtıcılarda DDT birikimi en fazladır.</p>
+                        <p>Besin piramidinde yukarı çıkıldıkça:
+                        <ol>
+                            <li>Enerji miktarı azalır (%10 Yasası)</li>
+                            <li>Zararlı madde birikimi artar (biyolojik birikim)</li>
+                        </ol>
+                        DDT, kuşların ve yırtıcıların üreme sistemlerine zarar verir, yumurta kabuklarının incelmesine neden olur. Bu da popülasyonların azalmasına yol açar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Japonya'nın Minamata Koyu'nda bir fabrika yıllarca metil civa içeren atıkları körfeze boşaltmıştır. Zamanla körfezdeki balıkları yiyen insanlarda ciddi sağlık sorunları ortaya çıkmıştır. Bu olayda besin zinciri ve biyolojik birikim nasıl rol oynamıştır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Minamata hastalığı, çevre kirliliğinin neden olduğu rapor edilen ilk hastalıktır. Hastalarda uzuv kaybı, görme sorunları, denge sorunları, titreme gibi semptomlar görülmüştür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Bu olay biyolojik birikimin klasik bir örneğidir.</p>
+                        <p><strong>Açıklama:</strong> Fabrikadan boşaltılan metil civa suya karışır. Suyun içindeki küçük organizmalar ve bitkiler metil civayı absorbe eder. Bu küçük organizmaları yiyen küçük balıklar metil civayı vücutlarında biriktirir. Küçük balıkları yiyen daha büyük balıklar ise daha fazla metil civayı biriktirir. Besin zincirinde yukarı çıkıldıkça metil civa miktarı artar.</p>
+                        <p>İnsanlar (besin piramidinin en üstünde) bu büyük balıkları yediğinde, balıklarda biriken tüm metil civayı almış olur. Metil civa insan vücudundan kolay atılamaz ve sinir sisteminde birikir. Bu birikim Minamata hastalığına neden olur.</p>
+                        <p><strong>Besin zinciri örneği:</strong> Su bitkileri → Küçük balıklar → Büyük balıklar → İnsanlar</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Bir ekosistemde şu besin zinciri gözlemleniyor: Çimen → Çekirge → Kurbağa → Yılan → Kartal. Bu besin zincirinde 10.000 birim enerji çimende depolanmış olsaydı, kartala ulaşan enerji ne kadar olurdu? Bu durum %10 Yasası'nı nasıl gösterir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: %10 Yasası'na göre, bir trofik basamaktaki kullanılabilir enerjinin yaklaşık %10'u bir üst basamaktaki canlılara aktarılabilir. Enerjinin yaklaşık %90'ı ısı olarak çevreye yayılır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Kartala ulaşan enerji yaklaşık 1 birim olurdu.</p>
+                        <p><strong>Hesaplama:</strong>
+                        <ul>
+                            <li>Çimendeki enerji: 10.000 birim</li>
+                            <li>Çekirgeye geçen enerji: 10.000 × %10 = 1.000 birim</li>
+                            <li>Kurbağaya geçen enerji: 1.000 × %10 = 100 birim</li>
+                            <li>Yılana geçen enerji: 100 × %10 = 10 birim</li>
+                            <li>Kartala geçen enerji: 10 × %10 = 1 birim</li>
+                        </ul>
+                        </p>
+                        <p><strong>%10 Yasası'nın gösterdiği:</strong>
+                        <ol>
+                            <li>Enerji piramidinin tabanından tepesine doğru çıkıldıkça enerji miktarı hızla azalır.</li>
+                            <li>Bu nedenle besin zincirleri genellikle 4-5 halkadan uzun olamaz. Daha uzun zincirlerde en üstteki canlıya yeterli enerji ulaşamaz.</li>
+                            <li>Enerjinin büyük kısmı ısı olarak kaybolduğu için ekosistemler sürekli güneş enerjisine ihtiyaç duyar.</li>
+                        </ol>
+                        Bu yasa aynı zamanda neden etçillerin (yırtıcıların) sayıca otçullardan daha az olduğunu da açıklar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Biyosfer-2 projesinde, kapalı bir ortamda 8 insan 2 yıl boyunca yaşamaya çalışmıştır. Proje sonunda oksijen oranı %14'e düşmüş, karbondioksit artmış, birçok canlı türü yok olmuştur. Bu proje madde döngülerinin önemi hakkında bize ne öğretmiştir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Biyosfer-2, Arizona Çölü'nde dış ortamdan tamamen izole, yaklaşık 12.000 m²'lik bir yaşam alanıydı. Amacı uzayda insan yaşamına uygun koloni kurulmasına hazırlık yapmaktı.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Biyosfer-2 projesi, madde döngülerinin düzenli şekilde gerçekleşmemesinin ciddi çevre sorunlarına neden olacağını göstermiştir.</p>
+                        <p><strong>Açıklama:</strong>
+                        <ol>
+                            <li><strong>Oksijen-karbondioksit dengesizliği:</strong> Bitkiler yeterince fotosentez yapamadığı için oksijen üretimi azalmış, solunumla üretilen karbondioksit artmıştır. Bu da oksijen oranının tehlikeli seviyelere düşmesine neden olmuştur.</li>
+                            <li><strong>Azot döngüsü bozulması:</strong> Azot oksit miktarı insan sinir sistemine zarar verecek oranlara ulaşmıştır.</li>
+                            <li><strong>Su döngüsü problemleri:</strong> Su kaynakları kirlenmiş, göller yosunlarla kaplanmıştır.</li>
+                            <li><strong>Biyolojik çeşitlilik kaybı:</strong> Ortama bırakılan 25 omurgalı türünden 19'u yok olmuş, bitkilerin çoğu ve tozlaşmayı sağlayan böcekler ölmüştür.</li>
+                            <li><strong>İstilacı türlerin artışı:</strong> Karınca, çekirge ve hamam böceklerinin sayısı artmıştır.</li>
+                        </ol>
+                        Bu proje, Dünya'daki madde döngülerinin ne kadar karmaşık ve birbiriyle bağlantılı olduğunu, insan yapımı sistemlerin bu döngüleri taklit etmekte zorlandığını göstermiştir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir orman ekosisteminde ağaçlar, geyikler, kurtlar ve ayrıştırıcılar bulunmaktadır. Bu ekosistemdeki madde ve enerji akışını besin zinciri ve madde döngüleri açısından açıklayın.</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Orman ekosistemleri, besin zincirleri ve madde döngülerinin en iyi gözlemlenebildiği yerlerdir. Üreticiler, tüketiciler ve ayrıştırıcılar arasında sürekli bir madde ve enerji akışı vardır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu orman ekosisteminde enerji tek yönlü akarken, maddeler devirli olarak kullanılır.</p>
+                        <p><strong>Enerji akışı (besin zinciri):</strong>
+                        <ol>
+                            <li><strong>Ağaçlar (üreticiler):</strong> Güneş enerjisini fotosentezle kimyasal enerjiye dönüştürür. Bu enerji yapraklar, meyveler ve diğer bitki kısımlarında depolanır.</li>
+                            <li><strong>Geyikler (birincil tüketiciler):</strong> Ağaçların yapraklarını yiyerek depolanmış enerjiyi alır. Aldıkları enerjinin bir kısmını yaşamsal faaliyetler için kullanır, bir kısmını büyüme için depolar.</li>
+                            <li><strong>Kurtlar (ikincil tüketiciler):</strong> Geyikleri yiyerek enerji alır. %10 Yasası'na göre, geyiklerin enerjisinin sadece %10'u kurtlara aktarılır.</li>
+                            <li><strong>Ayrıştırıcılar (bakteri ve mantarlar):</strong> Ölü ağaçlar, ölü geyikler ve ölü kurtları parçalar. Bu sırada kendi enerjilerini elde ederler.</li>
+                        </ol>
+                        </p>
+                        <p><strong>Madde döngüleri:</strong>
+                        <ol>
+                            <li><strong>Karbon döngüsü:</strong> Ağaçlar fotosentezle CO₂ alır, O₂ verir. Tüm canlılar solunumla O₂ alır, CO₂ verir. Ölü organizmalar ayrıştırıcılar tarafından parçalanır, karbon tekrar atmosfere döner.</li>
+                            <li><strong>Azot döngüsü:</strong> Topraktaki azot bağlayıcı bakteriler atmosferik azotu bağlar. Ağaçlar bu azotu alır. Geyikler ağaçlardan, kurtlar geyiklerden azot alır. Ölü organizmalar ayrıştırıcılar tarafından parçalanır, azot tekrar toprağa döner.</li>
+                            <li><strong>Su döngüsü:</strong> Ağaçlar terleme yoluyla su buharı atmosfere verir. Yağışlarla su toprağa döner, ağaçlar kökleriyle suyu alır.</li>
+                        </ol>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Atık piller çöpe atıldığında neden çevre ve insan sağlığı için tehlikelidir? Bu durum besin zinciri ve biyolojik birikim açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Piller; civa, kadmiyum, kurşun, çinko, mangan, lityum, demir, nikel, kobalt gibi kimyasal maddelerden üretilir. Bu maddelerin çoğu ağır metaldir ve canlılar için toksiktir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Atık piller besin zinciri yoluyla insanlara ulaşarak biyolojik birikime neden olur.</p>
+                        <p><strong>Süreç:</strong>
+                        <ol>
+                            <li><strong>Toprak ve su kirliliği:</strong> Atık piller çöplere veya düzensiz depolama alanlarına atıldığında, zamanla aşınır ve içindeki ağır metaller (civa, kadmiyum, kurşun) toprağa ve suya karışır.</li>
+                            <li><strong>Bitkilere geçiş:</strong> Bitkiler kökleriyle bu ağır metalleri topraktan alır ve bünyelerinde biriktirir.</li>
+                            <li><strong>Hayvanlara geçiş:</strong> Otçul hayvanlar bu bitkileri yiyerek ağır metalleri alır. Etçil hayvanlar otçulları yiyerek daha fazla ağır metal biriktirir.</li>
+                            <li><strong>İnsanlara geçiş:</strong> İnsanlar hem bitkileri (sebze, meyve) hem de hayvanları (et, süt) yiyerek ağır metalleri alır.</li>
+                        </ol>
+                        </p>
+                        <p><strong>Biyolojik birikim:</strong> Ağır metaller vücuttan kolayca atılamaz. Sürekli alındığında vücutta birikir. Besin piramidinin üst basamaklarına çıkıldıkça birikim miktarı artar.</p>
+                        <p><strong>Sağlık sorunları:</strong>
+                        <ul>
+                            <li><strong>Civa:</strong> Nörolojik bozukluklar, merkezî sinir sistemi hastalıkları (Minamata hastalığı)</li>
+                            <li><strong>Kadmiyum:</strong> Böbrek ve karaciğer hastalıkları, kemik erimesi (İtai itai hastalığı)</li>
+                            <li><strong>Kurşun:</strong> Zeka geriliği, öğrenme güçlüğü, davranış bozuklukları</li>
+                        </ul>
+                        Bu nedenle atık pillerin ayrı toplanması ve geri dönüştürülmesi gerekir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">"Net sıfır" hedefi nedir ve bu hedefe ulaşmak için neler yapılmalıdır? Bu hedefin madde döngüleri ve sürdürülebilirlik açısından önemi nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: "Net sıfır", Dünya'nın ortalama sıcaklığındaki artışın sınırlandırılması için sera gazı salımının azaltılarak sıfıra ulaşılması için Paris Anlaşması ile konulan bir hedeftir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> "Net sıfır" hedefi, sera gazı salımının atmosfere salınan sera gazlarının geri soğurulmasıyla dengelenmesidir.</p>
+                        <p><strong>Hedefe ulaşmak için yapılması gerekenler:</strong>
+                        <ol>
+                            <li><strong>Yenilenebilir enerji kullanımı:</strong> Fosil yakıtların (kömür, petrol, doğal gaz) kullanımını azaltmak, güneş, rüzgar, hidroelektrik enerjisine geçmek.</li>
+                            <li><strong>Enerji verimliliği:</strong> Binalarda, ulaşımda, endüstride enerji tüketimini azaltmak.</li>
+                            <li><strong>Ormanları korumak ve ağaçlandırma:</strong> Ağaçlar fotosentezle CO₂'yi emer, bu nedenle ormanlar "karbon yutağı" görevi görür.</li>
+                            <li><strong>Sürdürülebilir tarım:</strong> Kimyasal gübre ve pestisit kullanımını azaltmak, organik tarımı teşvik etmek.</li>
+                            <li><strong>Atık yönetimi:</strong> Geri dönüşümü artırmak, atıkları enerjiye dönüştürmek.</li>
+                        </ol>
+                        </p>
+                        <p><strong>Madde döngüleri açısından önemi:</strong>
+                        <ul>
+                            <li><strong>Karbon döngüsü:</strong> Fosil yakıtların yakılması atmosferdeki CO₂ miktarını artırır, bu da küresel ısınmaya neden olur. Net sıfır hedefi karbon döngüsünün dengesini korumaya yardımcı olur.</li>
+                            <li><strong>Azot döngüsü:</strong> Endüstriyel tarımda kullanılan azotlu gübreler azot oksitlerin atmosfere salınmasına neden olur. Bu gazlar hem sera gazıdır hem de asit yağmurlarına neden olur.</li>
+                        </ul>
+                        </p>
+                        <p><strong>Sürdürülebilirlik açısından önemi:</strong> Net sıfır hedefine ulaşmak, gelecek nesillerin de bugünkü nesiller gibi temiz hava, su ve toprak kaynaklarına sahip olmasını sağlar. Biyolojik çeşitliliği korur, iklim değişikliğinin olumsuz etkilerini azaltır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Bir göl ekosisteminde algler (su yosunları), küçük balıklar, büyük balıklar ve balıkçıllar (kuş) bulunmaktadır. Bu ekosistemde besin ağı nasıl oluşur ve neden besin zincirinden daha gerçekçidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Gerçek ekosistemlerde çoğu canlı tek çeşit yerine çok çeşit besin tükettiği için birden fazla besin zincirinde yer alır. Bazı canlıların birden fazla besin zincirinde yer alması nedeniyle ekosistemler, çok sayıda farklı besin zinciri içerir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Bu göl ekosisteminde bir besin ağı oluşur çünkü her canlı birden fazla besin kaynağı kullanır.</p>
+                        <p><strong>Besin ağı örneği:</strong>
+                        <ul>
+                            <li><strong>Algler (üreticiler):</strong> Güneş enerjisini kullanarak fotosentez yapar.</li>
+                            <li><strong>Küçük balıklar (birincil tüketiciler):</strong> Sadece alglerle beslenmezler. Aynı zamanda suda yaşayan küçük omurgasızları da yerler.</li>
+                            <li><strong>Büyük balıklar (ikincil tüketiciler):</strong> Sadece küçük balıklarla beslenmezler. Aynı zamanda kurbağa yavrularını, böcekleri de yerler. Ayrıca bazı büyük balıklar hem etçil hem otçul olabilir (hepçil).</li>
+                            <li><strong>Balıkçıllar (üçüncül tüketiciler):</strong> Sadece büyük balıklarla beslenmezler. Aynı zamanda kurbağaları, küçük balıkları, suya yakın böcekleri de yerler.</li>
+                            <li><strong>Ayrıştırıcılar:</strong> Ölü algleri, ölü balıkları, ölü kuşları parçalar.</li>
+                        </ul>
+                        </p>
+                        <p><strong>Neden besin ağı daha gerçekçidir?</strong>
+                        <ol>
+                            <li><strong>Çeşitlilik:</strong> Doğada nadiren tek bir besin kaynağına bağımlı canlılar vardır. Çoğu canlı farklı besin kaynakları kullanır.</li>
+                            <li><strong>Esneklik:</strong> Bir besin kaynağı azaldığında, canlı diğer besin kaynaklarına yönelebilir. Bu, popülasyonun devamını sağlar.</li>
+                            <li><strong>Denge:</strong> Besin ağları ekosistemdeki dengeyi korur. Bir türün popülasyonu azaldığında, onu yiyen canlılar başka besinlere yönelir.</li>
+                            <li><strong>Karmaşıklık:</strong> Gerçek ekosistemler çok karmaşıktır. Basit besin zincirleri bu karmaşıklığı tam olarak yansıtmaz.</li>
+                        </ol>
+                        Besin ağları, ekosistemdeki tüm beslenme ilişkilerini gösterdiği için daha gerçekçi bir modeldir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Azot döngüsünde azot bağlayıcı bakteriler, nitrifikasyon ve denitrifikasyon bakterilerinin rolleri nelerdir? Bu bakteriler olmasaydı azot döngüsü nasıl etkilenirdi?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Azot, canlı yaşamı için yapısal ve işlevsel öneme sahip temel elementlerden biridir. Amino asit, nükleik asit, hormon, vitamin gibi moleküllerin yapısına katılır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Bakteriler azot döngüsünün temel taşlarıdır. Olmasalardı azot döngüsü durur ve yaşam sona ererdi.</p>
+                        <p><strong>Bakterilerin rolleri:</strong>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Bakteri Türü</th>
+                                <th>Rolü</th>
+                                <th>Süreç</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Azot Bağlayıcı Bakteriler</strong></td>
+                                <td>Atmosferdeki serbest azotu (N₂) bağlayarak amonyağa (NH₃) dönüştürür</td>
+                                <td>Azot bağlama</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nitrifikasyon Bakterileri</strong></td>
+                                <td>Amonyağı (NH₃) önce nitrite (NO₂⁻), sonra nitrata (NO₃⁻) dönüştürür</td>
+                                <td>Nitrifikasyon</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Denitrifikasyon Bakterileri</strong></td>
+                                <td>Nitratı (NO₃⁻) tekrar atmosferik azota (N₂) dönüştürür</td>
+                                <td>Denitrifikasyon</td>
+                            </tr>
+                        </table>
+                        </p>
+                        <p><strong>Azot bağlayıcı bakterilerin özel yeri:</strong> Bazı azot bağlayıcı bakteriler baklagillerin (fasulye, bezelye, mercimek) köklerindeki nodüllerde yaşar. Bu simbiyotik ilişkide bitki bakterilere besin sağlar, bakteriler de bitkiye bağladıkları azotu verir.</p>
+                        <p><strong>Bakteriler olmasaydı:</strong>
+                        <ol>
+                            <li><strong>Bitkiler azotu kullanamazdı:</strong> Bitkiler atmosferdeki serbest azotu (N₂) doğrudan kullanamaz. Azotun bitkiler tarafından kullanılabilmesi için amonyum (NH₄⁺) veya nitrat (NO₃⁻) formuna dönüştürülmesi gerekir. Bu dönüşümü bakteriler yapar.</li>
+                            <li><strong>Protein sentezi dururdu:</strong> Azot, proteinlerin yapı taşı olan amino asitlerin temel elementidir. Azot olmadan protein sentezlenemez.</li>
+                            <li><strong>DNA ve RNA sentezi dururdu:</strong> Azot, nükleik asitlerin (DNA ve RNA) yapısında bulunur. Azot olmadan genetik materyal üretilemez.</li>
+                            <li><strong>Yaşam sona ererdi:</strong> Tüm canlılar azota ihtiyaç duyar. Azot döngüsü durursa, önce bitkiler, sonra otçullar, en son etçiller ölürdü.</li>
+                        </ol>
+                        Bu nedenle bakteriler azot döngüsünün ve dolayısıyla yaşamın sürdürülmesi için hayati öneme sahiptir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Termodinamiğin birinci ve ikinci yasaları ekosistemdeki enerji akışını nasıl açıklar? Bu yasalar besin piramidi ve %10 Yasası ile nasıl ilişkilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Termodinamik; ısı, sıcaklık ve enerjiyi konu alan madde dönüşümlerinin incelenmesidir. Doğadaki tüm enerji ilişkileri, termodinamiğin birinci ve ikinci yasalarıyla açıklanır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Termodinamiğin yasaları ekosistemdeki enerji akışının temel prensiplerini açıklar ve besin piramidinin neden üçgen şeklinde olduğunu gösterir.</p>
+                        <p><strong>Termodinamiğin birinci yasası (Enerjinin korunumu yasası):</strong>
+                        <ul>
+                            <li>"Enerji yoktan var edilemez, vardan yok edilemez, ancak bir şekilden diğerine dönüştürülebilir."</li>
+                            <li><strong>Ekosistemdeki uygulaması:</strong> Güneşten gelen ışık enerjisi, bitkiler tarafından fotosentezle kimyasal enerjiye dönüştürülür. Bu kimyasal enerji besin zinciri yoluyla bir canlıdan diğerine aktarılır. Enerji kaybolmaz, sadece form değiştirir.</li>
+                            <li><strong>Örnek:</strong> Bitkideki kimyasal enerji, otçul hayvan tarafından alınır, bir kısmı hareket enerjisine, bir kısmı ısı enerjisine dönüşür.</li>
+                        </ul>
+                        </p>
+                        <p><strong>Termodinamiğin ikinci yasası (Entropi yasası):</strong>
+                        <ul>
+                            <li>"Her enerji aktarımı veya dönüşümü sırasında sistemdeki mevcut enerjinin bir kısmı, ısı enerjisine dönüşerek çevreye yayılır."</li>
+                            <li>"Enerjinin ekosistemlerdeki akışı sırasında enerji farklı şekillere dönüştükçe enerjinin iş yapmak için kullanılabilir bölümü giderek azalır."</li>
+                            <li><strong>Ekosistemdeki uygulaması:</strong> Bir canlı diğerini yediğinde, enerjinin tamamını aktaramaz. Enerjinin bir kısmı:
+                                <ol>
+                                    <li>Sindirilemeyen kısım dışkıyla atılır</li>
+                                    <li>Yaşamsal faaliyetler için kullanılır (hareket, büyüme, üreme)</li>
+                                    <li>Isı olarak çevreye yayılır</li>
+                                </ol>
+                            </li>
+                        </ul>
+                        </p>
+                        <p><strong>Besin piramidi ve %10 Yasası ile ilişkisi:</strong>
+                        <ol>
+                            <li><strong>Piramidin tabanı geniştir:</strong> Üreticiler (bitkiler) en fazla enerjiyi içerir çünkü doğrudan güneş enerjisini kimyasal enerjiye dönüştürür.</li>
+                            <li><strong>Piramit yukarı doğru daralır:</strong> Termodinamiğin ikinci yasası gereği, her beslenme ilişkisinde enerjinin büyük kısmı kaybolur. Bu nedenle bir üst basamağa daha az enerji aktarılır.</li>
+                            <li><strong>%10 Yasası:</strong> Bir trofik basamaktaki enerjinin sadece yaklaşık %10'u bir üst basamağa aktarılabilir. %90'ı ısı olarak kaybolur.</li>
+                            <li><strong>Piramidin tepesi dardır:</strong> En üstteki tüketicilere (yırtıcılara) çok az enerji ulaşır. Bu nedenle yırtıcılar sayıca azdır.</li>
+                        </ol>
+                        Bu yasalar ekosistemlerin neden sürekli güneş enerjisine ihtiyaç duyduğunu ve neden besin zincirlerinin genellikle kısa olduğunu açıklar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Besin Piramidi ve Madde Döngüleri Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2ecc71; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden besin piramidinde enerji yukarı çıkıldıkça azalır? %10 Yasası neden var?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Termodinamiğin ikinci yasası ve canlıların enerjiyi verimli kullanamaması.</p>
+                        <p><strong>Mantık:</strong> Bir canlı diğerini yediğinde, yediği canlının enerjisinin tamamını kullanıma alamaz. Enerjinin bir kısmı:</p>
+                        <div class="reasoning-answer">
+                            <p><strong>1. Sindirilemez ve atılır:</strong> Canlılar yedikleri besinlerin tamamını sindiremez. Örneğin, otçul bir hayvan yaprakları yediğinde, yapraklardaki liflerin (selüloz) bir kısmını sindiremez ve dışkı olarak atar. Bu atıkta hala enerji vardır ama hayvan onu kullanamaz.</p>
+                            <p><strong>2. Yaşamsal faaliyetler için kullanılır:</strong> Canlı enerjiyi sadece büyümek için değil, aynı zamanda:
+                            <ul>
+                                <li>Hareket etmek için (kas kasılması)</li>
+                                <li>Vücut ısısını korumak için (özellikle memeliler ve kuşlar)</li>
+                                <li>Solunum yapmak için (akciğerlerin çalışması)</li>
+                                <li>Dolaşım yapmak için (kalbin atması)</li>
+                                <li>Sinir iletimi için (beyin ve sinirlerin çalışması)</li>
+                            </ul>
+                            Bu faaliyetlerin hepsi enerji gerektirir ve bu enerji ısı olarak çevreye yayılır.</p>
+                            <p><strong>3. Isı olarak kaybolur:</strong> Tüm bu yaşamsal faaliyetler sırasında enerjinin bir kısmı ısı enerjisine dönüşür ve çevreye yayılır. Bu ısı geri kazanılamaz.</p>
+                            <p><strong>Sonuç:</strong> Bir canlı aldığı enerjinin sadece küçük bir kısmını (yaklaşık %10) büyüme için kullanabilir ve bu kısım bir sonraki canlıya aktarılabilir. Bu nedenle besin piramidinin her basamağında enerji yaklaşık %10 azalır.</p>
+                            <p><strong>Örnek:</strong> 10.000 birim enerji bitkide olsun. Otçul bunu yediğinde sadece 1.000 birimini büyüme için kullanabilir. Etçil otçulu yediğinde ise sadece 100 birim alabilir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden biyolojik birikimde zararlı maddeler besin piramidinin üstüne çıkıldıkça artar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Zararlı maddeler vücuttan atılamaz ve besin zincirinde birikirken "toplanır".</p>
+                        <p><strong>Mantık yürütme:</strong> Biyolojik birikim, enerji akışının tam tersi yönde çalışır. Enerji azalırken, zararlı maddeler artar. Neden?</p>
+                        <div class="reasoning-answer">
+                            <p><strong>1. Vücuttan atılamama:</strong> Civa, kadmiyum, DDT gibi maddeler vücuttan kolayca atılamaz. Karaciğer ve böbrekler bu maddeleri parçalayamaz veya vücuttan uzaklaştıramaz. Bu nedenle vücutta birikir.</p>
+                            <p><strong>2. Besin tüketimiyle birikim:</strong> Bir canlı, içinde zararlı madde birikmiş olan başka bir canlıyı yer. Yediği canlının vücudundaki tüm zararlı maddeyi alır. Kendi vücudunda zaten birikmiş olan zararlı maddeye eklenir.</p>
+                            <p><strong>3. Toplanma etkisi:</strong> Küçük bir balık günde 100 küçük organizma yer. Her küçük organizmada az miktarda civa varsa, balık bu civanın tamamını alır. Büyük bir balık günde 10 küçük balık yer. Her küçük balıkta biriken civanın tamamını alır. Bu nedenle büyük balıkta civa miktarı çok daha fazladır.</p>
+                            <p><strong>4. Zaman faktörü:</strong> Üst basamaktaki canlılar genellikle daha uzun yaşar. Daha uzun süre zararlı maddeye maruz kalır ve biriktirir.</p>
+                            <p><strong>Analoji:</strong> Bir odada 10 kişinin her biri 1 TL versin (toplam 10 TL). Bu 10 kişiyi temsil eden 1 kişi odadan çıksın ve 10 TL'yi yanında götürsün. 5 oda dolusu insan (her odada 10 kişi) aynı işlemi yapsın. Bu 5 odadan çıkan 5 kişi (her biri 10 TL taşıyor) başka bir odada toplansın. Bu odadan çıkan 1 kişi 50 TL taşır. İşte biyolojik birikim böyle çalışır: Zararlı maddeler "toplanır".</p>
+                            <p><strong>Sonuç:</strong> Besin piramidinin en üstündeki canlılar (yırtıcılar, insanlar) en fazla zararlı maddeyi biriktirir. Bu nedenle Minamata'da balıkları yiyen insanlar hasta olmuş, balıklar ise daha az etkilenmiştir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden madde döngüleri olmasaydı yaşam sona ererdi?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Yapısal sebep:</strong> Dünya kapalı bir sistemdir (uzaydan çok az madde girer). Maddeler sınırlıdır.</p>
+                        <p><strong>Mantık:</strong> Canlılar yaşamak için sürekli maddeye ihtiyaç duyar. Eğer maddeler devirli olarak kullanılmasaydı, bir süre sonra tükenirdi.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnek 1 - Karbon olmasaydı:</strong>
+                            <ul>
+                                <li>Karbon, tüm organik moleküllerin (karbonhidrat, protein, yağ, nükleik asit) temel yapı taşıdır.</li>
+                                <li>Bitkiler fotosentez için atmosferden CO₂ alır.</li>
+                                <li>Eğer karbon döngüsü olmasaydı:
+                                    <ol>
+                                        <li>Bitkiler tüm CO₂'yi kullanırdı</li>
+                                        <li>Atmosferde CO₂ kalmazdı</li>
+                                        <li>Bitkiler fotosentez yapamazdı</li>
+                                        <li>Bitkiler ölürdü</li>
+                                        <li>Otçullar ölürdü</li>
+                                        <li>Etçiller ölürdü</li>
+                                    </ol>
+                                </li>
+                            </ul>
+                            </p>
+                            <p><strong>Örnek 2 - Azot olmasaydı:</strong>
+                            <ul>
+                                <li>Azot, proteinlerin ve DNA'nın yapısında bulunur.</li>
+                                <li>Bitkiler azotu topraktan alır.</li>
+                                <li>Eğer azot döngüsü olmasaydı:
+                                    <ol>
+                                        <li>Bitkiler topraktaki tüm azotu kullanırdı</li>
+                                        <li>Toprakta azot kalmazdı</li>
+                                        <li>Bitkiler protein sentezleyemezdi</li>
+                                        <li>Bitkiler büyüyemezdi</li>
+                                        <li>Besin zinciri çökerdi</li>
+                                    </ol>
+                                </li>
+                            </ul>
+                            </p>
+                            <p><strong>Örnek 3 - Su olmasaydı:</strong>
+                            <ul>
+                                <li>Su, tüm canlıların temel yapı taşıdır (hücrelerin %70-90'ı sudur).</li>
+                                <li>Su, fotosentez için gereklidir.</li>
+                                <li>Eğer su döngüsü olmasaydı:
+                                    <ol>
+                                        <li>Su buharlaşır ama geri dönmezdi</li>
+                                        <li>Karalar kururdu</li>
+                                        <li>Bitkiler susuzluktan ölürdü</li>
+                                        <li>Hayvanlar susuzluktan ölürdü</li>
+                                    </ol>
+                                </li>
+                            </ul>
+                            </p>
+                            <p><strong>Ayrıştırıcıların rolü:</strong> Ayrıştırıcılar (bakteri ve mantarlar) madde döngülerinin kahramanlarıdır. Ölü organizmaları parçalayarak maddeleri tekrar kullanılabilir hale getirirler. Ayrıştırıcılar olmasaydı:
+                            <ul>
+                                <li>Ölü organizmalar çürümezdi</li>
+                                <li>Maddeler toprağa geri dönmezdi</li>
+                                <li>Toprak verimsizleşirdi</li>
+                                <li>Bitkiler büyüyemezdi</li>
+                            </ul>
+                            Biyosfer-2 projesinin başarısız olmasının nedenlerinden biri de ayrıştırıcıların yeterince çalışmamasıydı.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden besin zincirleri genellikle 4-5 halkadan uzun değildir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel sebep:</strong> %10 Yasası ve enerjinin hızla azalması.</p>
+                        <p><strong>Mantık:</strong> Her halkada enerji yaklaşık %90 azaldığı için, birkaç halkadan sonra enerji o kadar azalır ki bir sonraki canlıya yetmez.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Hesaplama örneği:</strong>
+                            <ol>
+                                <li>Bitkiler: 10.000 birim enerji</li>
+                                <li>Otçullar: 1.000 birim (bitkilerin %10'u)</li>
+                                <li>Etçiller (1): 100 birim (otçulların %10'u)</li>
+                                <li>Etçiller (2): 10 birim (etçillerin %10'u)</li>
+                                <li>Etçiller (3): 1 birim (etçillerin %10'u)</li>
+                                <li>Etçiller (4): 0,1 birim (etçillerin %10'u - artık yetersiz)</li>
+                            </ol>
+                            5. halkada sadece 1 birim enerji kaldı. 6. halkada ise sadece 0,1 birim enerji olur ki bu bir canlının yaşaması için yeterli değildir.</p>
+                            <p><strong>Neden 4-5 halka?</strong>
+                            <ul>
+                                <li><strong>Enerji ihtiyacı:</strong> Canlıların yaşaması için belirli bir minimum enerji gerekir. Bu minimum enerjiye ulaşılamazsa, o canlı türü o ekosistemde yaşayamaz.</li>
+                                <li><strong>Popülasyon büyüklüğü:</strong> Çok az enerji varsa, çok az sayıda birey yaşayabilir. Popülasyon çok küçükse, üreme şansı azalır ve tür yok olabilir.</li>
+                                <li><strong>Ekosistemin verimliliği:</strong> Verimli ekosistemlerde (örneğin okyanuslar, yağmur ormanları) daha uzun besin zincirleri olabilir çünkü başlangıçtaki enerji miktarı daha fazladır. Kurak ekosistemlerde ise besin zincirleri daha kısadır.</li>
+                            </ul>
+                            </p>
+                            <p><strong>İstisnalar:</strong>
+                            <ul>
+                                <li><strong>Parazitler:</strong> Bazı parazitler besin zincirine ek halkalar ekleyebilir. Örneğin: Ot → Tavşan → Kene → Kuş. Kene bir parazittir ve tavşandan kan emer, kuş da keneyi yer.</li>
+                                <li><strong>Çok verimli ekosistemler:</strong> Okyanuslarda bazen 6-7 halkalı besin zincirleri görülebilir: Fitoplankton → Zooplankton → Küçük balık → Orta boy balık → Büyük balık → Köpekbalığı.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Sonuç:</strong> %10 Yasası, besin zincirlerinin uzunluğunu sınırlayan temel faktördür. Bu nedenle doğada "süper yırtıcılar" (5. veya 6. basamaktaki etçiller) nadirdir ve genellikle büyük alanlara ihtiyaç duyar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden bazı canlılar hem etçil hem otçuldur (hepçil)? Bu durum besin ağlarını nasıl etkiler?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Evrimsel avantaj:</strong> Hepçil olmak, besin bulma şansını artırır.</p>
+                        <p><strong>Mantık:</strong> Doğada besin bulmak her zaman kolay değildir. Mevsimlere, iklim değişikliklerine, popülasyon dalgalanmalarına bağlı olarak besin kaynakları azalabilir veya artabilir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Hepçil olmanın avantajları:</strong>
+                            <ol>
+                                <li><strong>Esneklik:</strong> Bir besin kaynağı azaldığında, diğerine geçebilir. Örneğin, ayılar yazın meyve ve böcek yer, sonbaharda somon balığı avlar, kış uykusundan önce ise hem bitki hem hayvansal besinlerle yağ depolar.</li>
+                                <li><strong>Daha fazla besin kaynağı:</strong> Sadece et veya sadece bitki ile sınırlı değildir. Bu, daha geniş bir besin yelpazesi demektir.</li>
+                                <li><strong>Daha kolay hayatta kalma:</strong> Kıtlık dönemlerinde hepçiller, sadece etçil veya sadece otçul olanlardan daha iyi hayatta kalır.</li>
+                                <li><strong>Farklı trofik basamaklarda olabilme:</strong> Hepçiller besin zincirinde farklı basamaklarda bulunabilir. Örneğin, insanlar marul yediğinde 2. basamakta (birincil tüketici), tavuk yediğinde 3. basamakta (ikincil tüketici), somon yediğinde 4. basamakta (üçüncül tüketici) olabilir.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Besin ağlarına etkisi:</strong>
+                            <ul>
+                                <li><strong>Karmaşıklığı artırır:</strong> Hepçiller birçok farklı besin zincirine bağlanır. Bu, besin ağlarını daha karmaşık hale getirir.</li>
+                                <li><strong>Dengeyi sağlar:</strong> Hepçiller ekosistemde denge unsuru olabilir. Örneğin, fareler hem bitki tohumları yer hem de böcekleri yer. Fare popülasyonu arttığında, hem bitki popülasyonunu hem de böcek popülasyonunu kontrol eder.</li>
+                                <li><strong>Enerji akışını değiştirir:</strong> Hepçiller enerjinin farklı yollardan akmasını sağlar. Bu, ekosistemin daha dirençli olmasını sağlar. Bir yol tıkandığında, enerji diğer yollardan akabilir.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Örnek - İnsanlar:</strong> İnsanlar tipik hepçillerdir. Bu bize büyük bir avantaj sağlamıştır:
+                            <ul>
+                                <li>Farklı iklimlerde yaşayabiliriz (sadece bitki veya sadece etle beslenen canlılar belirli iklimlerle sınırlıdır)</li>
+                                <li>Farklı ekosistemlere adapte olabiliriz</li>
+                                <li>Besin kıtlığında daha iyi hayatta kalırız</li>
+                            </ul>
+                            Ancak bu avantaj aynı zamanda bir soruna da neden olur: İnsanlar besin zincirinin birçok basamağında yer aldığı için, biyolojik birikimden çok etkilenir. Örneğin, hem sebze yiyerek (bitkilerde biriken pestisitler) hem de balık yiyerek (balıklarda biriken civa) zararlı maddeleri alırız.</p>
+                            <p><strong>Sonuç:</strong> Hepçillik bir evrimsel başarıdır. Canlıya esneklik ve hayatta kalma avantajı sağlar. Aynı zamanda besin ağlarını karmaşık ve dirençli hale getirir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden ayrıştırıcılar tüm trofik basamaklarda bulunur ve neden önemlidir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Fonksiyonel gereklilik:</strong> Ayrıştırıcılar madde döngülerinin tamamlanması için şarttır.</p>
+                        <p><strong>Mantık:</strong> Ayrıştırıcılar olmasaydı, ölü organizmalar ve atıklar birikir, maddeler tekrar kullanılamazdı.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Ayrıştırıcıların çalışma prensibi:</strong>
+                            <ol>
+                                <li><strong>Ölü organizmaları bulur:</strong> Bakteri ve mantarlar ölü bitki ve hayvanları, dışkıları, diğer organik atıkları "bulur". Aslında bu maddelerin üzerinde yaşar.</li>
+                                <li><strong>Sindirim enzimleri salgılar:</strong> Ayrıştırıcılar, hücre dışına sindirim enzimleri salgılar. Bu enzimler ölü organizmaları parçalar.</li>
+                                <li><strong>Parçalanmış maddeleri emer:</strong> Ayrıştırıcılar, parçalanmış küçük molekülleri emerek kendi besinlerini elde eder.</li>
+                                <li><strong>Mineralize eder:</strong> Organik maddeleri inorganik maddelere dönüştürür (mineralizasyon). Örneğin, proteinleri amino asitlere, sonra amonyağa dönüştürür.</li>
+                                <li><strong>Toprağa geri verir:</strong> Parçalanan maddeler toprağa karışır ve bitkiler tarafından tekrar kullanılabilir hale gelir.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Neden tüm trofik basamaklarda?</strong>
+                            <ul>
+                                <li><strong>Her basamakta ölüm olur:</strong> Sadece üreticiler değil, tüm tüketiciler de ölür. Birincil, ikincil, üçüncül tüketicilerin hepsi öldüğünde ayrıştırılması gerekir.</li>
+                                <li><strong>Her basamakta atık üretilir:</strong> Canlılar sadece öldüklerinde değil, yaşarken de atık üretir (dışkı, idrar, deri döküntüleri). Bu atıkların da ayrıştırılması gerekir.</li>
+                                <li><strong>Farklı maddeler farklı ayrıştırıcılar gerektirir:</strong> Bitki atıkları (selüloz) genellikle mantarlar tarafından, hayvan atıkları ve ölüleri ise genellikle bakteriler tarafından parçalanır.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Önemi:</strong>
+                            <ol>
+                                <li><strong>Madde döngülerini tamamlar:</strong> Ayrıştırıcılar olmasaydı, karbon, azot ve diğer elementler ölü organizmalarda hapsolurdu. Bitkiler bu maddeleri tekrar kullanamazdı.</li>
+                                <li><strong>Toprak verimliliğini artırır:</strong> Ayrıştırıcılar organik atıkları humusa dönüştürür. Humus, toprağın verimliliğini artıran zengin organik maddedir.</li>
+                                <li><strong>Çöp birikmesini önler:</strong> Doğada çöp diye bir şey yoktur çünkü her şey ayrıştırılır ve tekrar kullanılır.</li>
+                                <li><strong>Hastalıkları önler:</strong> Ölü organizmalar patojen (hastalık yapıcı) mikroorganizmalar için üreme alanı olabilir. Ayrıştırıcılar bu ölü organizmaları hızla parçalayarak hastalık riskini azaltır.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Biyosfer-2'deki sorun:</strong> Biyosfer-2 projesinde ayrıştırıcılar yeterince çalışmamıştır. Bu nedenle:
+                            <ul>
+                                <li>Ölü organizmalar birikmiştir</li>
+                                <li>Toprak verimsizleşmiştir</li>
+                                <li>CO₂ seviyesi artmıştır (karbon döngüsü tamamlanmamıştır)</li>
+                            </ul>
+                            Bu da gösteriyor ki, ayrıştırıcılar görünmez kahramanlardır. Onlar olmasaydı, Dünya kısa sürede yaşanmaz hale gelirdi.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Neden yenilenemeyen kaynaklar sürdürülebilir değildir? Bu kaynakların kullanımı madde döngülerini nasıl etkiler?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel tanım:</strong> Yenilenemeyen kaynaklar, oluşumu milyonlarca yıl süren ve tüketildiğinde yerine yenisi konulamayan kaynaklardır.</p>
+                        <p><strong>Mantık:</strong> Sürdürülebilirlik, "gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılama" demektir. Yenilenemeyen kaynaklar tükenebildiği için sürdürülebilir değildir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Yenilenemeyen kaynak örnekleri:</strong>
+                            <ol>
+                                <li><strong>Fosil yakıtlar (kömür, petrol, doğal gaz):</strong> Milyonlarca yıl önce ölmüş bitki ve hayvanların kalıntılarından oluşur. Oluşmaları çok uzun sürer, tüketilmeleri ise çok hızlıdır.</li>
+                                <li><strong>Madenler (altın, bakır, demir):</strong> Dünya'nın jeolojik süreçleriyle oluşur. Sınırlı miktardadır.</li>
+                                <li><strong>Fosfat kayaları (fosfor kaynağı):</strong> Gübre yapımında kullanılır. Sınırlı miktardadır.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Neden sürdürülebilir değil?</strong>
+                            <ul>
+                                <li><strong>Tükenirler:</strong> Bugünkü hızla kullanılmaya devam edilirse, bir süre sonra biteceklerdir. Örneğin, bazı petrol rezervlerinin 50-100 yıl içinde tükeneceği tahmin ediliyor.</li>
+                                <li><strong>Yenilenemezler:</strong> İnsan ömrüyle kıyaslandığında, bu kaynakların yeniden oluşması için gereken süre çok uzundur (milyonlarca yıl). Bu nedenle pratikte yenilenemez kabul edilirler.</li>
+                                <li><strong>Eşitsiz dağılım:</strong> Bu kaynaklar dünyada eşit dağılmamıştır. Bazı ülkeler zenginken, bazıları fakirdir. Bu da siyasi çatışmalara neden olabilir.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Madde döngülerine etkisi:</strong>
+                            <ol>
+                                <li><strong>Karbon döngüsünü bozar:</strong> Fosil yakıtların yakılması, milyonlarca yıldır yer altında depolanmış karbonun aniden atmosfere salınması demektir. Bu, atmosferdeki CO₂ miktarını hızla artırır ve küresel ısınmaya neden olur. Doğal karbon döngüsü bu hızlı artışa ayak uyduramaz.</li>
+                                <li><strong>Asit yağmurlarına neden olur:</strong> Fosil yakıtların yakılması sırasında açığa çıkan kükürt ve azot oksitler, atmosferde asitlere dönüşür ve asit yağmurlarına neden olur. Asit yağmurları toprağı, suyu ve bitkileri olumsuz etkiler.</li>
+                                <li><strong>Toprak kirliliği:</strong> Madencilik faaliyetleri toprağı kirletir, verimliliğini azaltır. Maden atıkları toprağa ve suya karışarak besin zincirine girer (biyolojik birikim).</li>
+                                <li><strong>Su kirliliği:</strong> Petrol sızıntıları suyu kirletir, suda yaşayan canlıları öldürür.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Çözüm:</strong>
+                            <ul>
+                                <li><strong>Yenilenebilir kaynaklara geçiş:</strong> Güneş, rüzgar, hidroelektrik, jeotermal enerji</li>
+                                <li><strong>Enerji verimliliği:</strong> Daha az enerji ile daha fazla iş yapmak</li>
+                                <li><strong>Geri dönüşüm:</strong> Madenlerin geri dönüştürülmesi</li>
+                                <li><strong>Sürdürülebilir madencilik:</strong> Çevreye zarar vermeyen madencilik yöntemleri</li>
+                            </ul>
+                            </p>
+                            <p><strong>Sonuç:</strong> Yenilenemeyen kaynakların kullanımı, madde döngülerini hızlandırarak veya bozarak çevre sorunlarına neden olur. Sürdürülebilir bir gelecek için yenilenebilir kaynaklara geçiş şarttır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden "net sıfır" hedefi önemlidir ve bu hedefe ulaşmak için neden uluslararası iş birliği gerekir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Küresel sorun:</strong> İklim değişikliği sınır tanımaz.</p>
+                        <p><strong>Mantık:</strong> Atmosfer tüm Dünya'yı sarar. Bir ülkenin saldığı sera gazları tüm dünyayı etkiler.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>"Net sıfır" nedir?</strong> Atmosfere salınan sera gazları miktarı ile atmosferden uzaklaştırılan sera gazları miktarının eşit olmasıdır. Yani "sıfır emisyon" değil, "net sıfır emisyon"dur. Bazı sektörlerde (örneğin havacılık, çimento üretimi) tamamen sıfır emisyona ulaşmak zor olabilir, ancak bu emisyonlar başka yerlerde yapılan emisyon azaltımları veya karbon yutağı oluşturma (ağaçlandırma) ile dengelenebilir.</p>
+                            <p><strong>Neden önemli?</strong>
+                            <ol>
+                                <li><strong>Küresel ısınmayı sınırlandırmak:</strong> Bilim insanları, küresel ısınmayı 1,5°C ile sınırlandırmak için net sıfır hedefine ulaşmamız gerektiğini söylüyor. Daha fazla ısınma geri dönüşü olmayan etkilere neden olabilir (buzulların erimesi, deniz seviyesinin yükselmesi, aşırı hava olayları).</li>
+                                <li><strong>Madde döngülerini korumak:</strong> Fosil yakıt kullanımı karbon döngüsünü bozar. Net sıfır hedefi, karbon döngüsünün dengesini korumaya yardımcı olur.</li>
+                                <li><strong>Biyolojik çeşitliliği korumak:</strong> İklim değişikliği birçok türün yok olmasına neden oluyor. Net sıfır hedefi bu yok oluşu yavaşlatabilir.</li>
+                                <li><strong>İnsan sağlığını korumak:</strong> Hava kirliliği (fosil yakıtların yanmasından kaynaklanan) insan sağlığını olumsuz etkiler. Net sıfır hedefi temiz hava sağlar.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Neden uluslararası iş birliği?</strong>
+                            <ul>
+                                <li><strong>Atmosfer paylaşılıyor:</strong> Atmosfer tüm dünya ülkeleri tarafından paylaşılır. Bir ülkenin saldığı CO₂ tüm dünyayı etkiler. Örneğin, Çin'de salınan CO₂, ABD'deki iklimi etkiler.</li>
+                                <li><strong>Serbest sürücü problemi:</strong> Eğer bazı ülkeler çaba göstermezse, diğerlerinin çabaları boşa gider. Tüm ülkelerin katılımı gerekir.</li>
+                                <li><strong>Ekonomik eşitsizlik:</strong> Gelişmiş ülkeler tarihsel olarak daha fazla sera gazı salmıştır. Gelişmekte olan ülkeler ise kalkınmak için enerjiye ihtiyaç duyar. Gelişmiş ülkelerin gelişmekte olan ülkelere finansal ve teknolojik destek sağlaması gerekir.</li>
+                                <li><strong>Teknoloji paylaşımı:</strong> Temiz enerji teknolojileri pahalı olabilir. Uluslararası iş birliği ile bu teknolojiler paylaşılabilir, maliyetler düşürülebilir.</li>
+                                <li><strong>Ortak standartlar:</strong> Uluslararası anlaşmalar (Paris Anlaşması) ortak hedefler ve standartlar belirler. Bu da şeffaflığı ve hesap verilebilirliği sağlar.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Paris Anlaşması:</strong> 2015 yılında imzalanan bu anlaşma, küresel ısınmayı 2°C'nin altında, mümkünse 1,5°C'de sınırlandırmayı hedefler. Ülkeler kendi "ulusal katkı beyanlarını" sunar ve her 5 yılda bir bu beyanları günceller. Bu anlaşma uluslararası iş birliğinin en iyi örneğidir.</p>
+                            <p><strong>Sonuç:</strong> Net sıfır hedefi, Dünya'nın yaşanabilir bir gezegen olarak kalması için şarttır. Bu hedefe ulaşmak için tüm ülkelerin iş birliği yapması gerekir çünkü iklim değişikliği küresel bir sorundur ve küresel çözüm gerektirir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Besin Piramidi ve Madde Döngüleri Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/10besinpiramidi.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 6) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Besin Piramidi ve Madde Döngüleri Sorusu
+        const csvData = `Termodinamiğin birinci yasası nedir?,"Enerji yoktan var edilemez, vardan yok edilemez, ancak bir şekilden diğerine dönüştürülebilir. Bitkiler güneş enerjisini kimyasal enerjiye dönüştürür."`
+        + `\nTermodinamiğin ikinci yasası nedir?,"Her enerji aktarımı veya dönüşümü sırasında enerjinin bir kısmı ısı enerjisine dönüşerek çevreye yayılır. Enerjinin iş yapmak için kullanılabilir bölümü giderek azalır."`
+        + `\nBesin zinciri nedir?,"Besinlerde depolanan enerjinin üretici canlılardan tüketici canlılara doğru tek yönlü olarak iletimidir. Örnek: Ot → Tavşan → Tilki"`
+        + `\nBesin ağı nedir?,"Birçok besin zincirinin iç içe geçmesiyle oluşan karmaşık beslenme ilişkileridir. Ekosistemdeki tüm beslenme ilişkilerini gösterir."`
+        + `\nÜreticiler (ototroflar) nedir?,"Kendi besinini üreten canlılardır. Fotosentez yaparak güneş enerjisini kimyasal enerjiye dönüştürürler. Örnek: Bitkiler, algler, bazı bakteriler."`
+        + `\nBirincil tüketiciler nedir?,"Üreticilerle beslenen otçul canlılardır. Besin zincirinin ikinci basamağındadır. Örnek: Tavşan, geyik, çekirge."`
+        + `\nİkincil tüketiciler nedir?,"Birincil tüketicilerle beslenen etçil canlılardır. Besin zincirinin üçüncü basamağındadır. Örnek: Tilki, kurt, baykuş."`
+        + `\nÜçüncül tüketiciler nedir?,"İkincil tüketicilerle beslenen etçil canlılardır. Besin zincirinin dördüncü basamağındadır. Örnek: Kartal, aslan, köpekbalığı."`
+        + `\nHepçiller (omnivorlar) nedir?,"Hem bitkilerle hem hayvanlarla beslenen canlılardır. Besin zincirinde farklı basamaklarda bulunabilirler. Örnek: İnsan, ayı, fare."`
+        + `\nAyrıştırıcılar (saprofitler) nedir?,"Ölü organizmaları parçalayarak maddelerin tekrar kullanılmasını sağlayan canlılardır. Tüm trofik basamaklarda bulunurlar. Örnek: Bakteriler, mantarlar."`
+        + `\nTrofik basamak nedir?,"Beslenme düzeyindeki her bir basamaktır. 1. basamak: Üreticiler, 2. basamak: Birincil tüketiciler, 3. basamak: İkincil tüketiciler, 4. basamak: Üçüncül tüketiciler."`
+        + `\nBiyokütle nedir?,"Bir popülasyonu oluşturan tüm bireylerin toplam kütlesidir. Besin piramidinin tabanında (üreticilerde) en fazla, tepesinde (üçüncül tüketicilerde) en azdır."`
+        + `\nBesin piramidi nedir?,"Canlıların biyokütlelerini gösteren piramittir. En altta üreticiler, en üstte üçüncül tüketiciler bulunur."`
+        + `\nEnerji piramidi nedir?,"Enerji akışını ve %10 Yasasını gösteren piramittir. Bir basamaktaki enerjinin yaklaşık %10'u bir üst basamağa aktarılır."`
+        + `\n%10 Yasası nedir?,"Bir trofik basamaktaki kullanılabilir enerjinin yaklaşık %10'u bir üst basamaktaki canlılara aktarılabilir. Enerjinin %90'ı ısı olarak çevreye yayılır."`
+        + `\nBiyolojik birikim nedir?,"Zararlı maddelerin besin zinciri boyunca ilerleyip canlıların dokularında birikmesidir. Besin piramidinin üst basamaklarında daha fazla birikir."`
+        + `\nMinamata Hastalığı nedir?,"Japonya'da ortaya çıkan bir civa zehirlenmesidir. Fabrika atıklarındaki metil civa balıklarda birikmiş, bu balıkları yiyen insanlarda zehirlenme görülmüştür."`
+        + `\nİtai İtai Hastalığı nedir?,"Japonya'da kadmiyum zehirlenmesine bağlı olarak ortaya çıkan hastalıktır. Madencilik faaliyetleri sonucu nehre karışan kadmiyum pirinçlere geçmiş, bu pirinçleri yiyen insanlarda kemik ve eklem ağrıları olmuştur."`
+        + `\nMadde döngüsü nedir?,"Ekosistemde bulunan maddelerin canlı ve cansız ortamlar arasında sürekli bir döngü halinde olmasıdır. Su, karbon ve azot döngüleri en önemlileridir."`
+        + `\nSu döngüsü nedir?,"Suyun buharlaşma, yoğuşma, yağış, akış gibi olaylarla yeryüzü ve gökyüzü arasında sürekli bir döngü halinde dolanımıdır."`
+        + `\nKarbon döngüsü nedir?,"Karbonun atmosfer, bitki örtüsü, okyanus ve canlı organizmalar arasında dolaşımıdır. Fotosentez ve solunum ile gerçekleşir."`
+        + `\nAzot döngüsü nedir?,"Azotun atmosfer, toprak, su ve canlılar arasındaki dolaşımıdır. Azot bağlayıcı bakteriler, nitrifikasyon ve denitrifikasyon ile gerçekleşir."`
+        + `\nSürdürülebilirlik nedir?,"Gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılamaktır."`
+        + `\nNet sıfır hedefi nedir?,"Sera gazı salımının azaltılarak sıfıra ulaşılmasıdır. Paris Anlaşması ile konulan bir hedeftir."`
+        + `\nBiyosfer-2 Projesi nedir?,"Kapalı bir biyosferde insan yaşamını test etmek için yapılan ekoloji projesidir. Madde döngülerinin düzenli gerçekleşmemesi çevre sorunlarına neden olmuştur."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Termodinamiğin birinci yasasına göre aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Enerji yoktan var edilebilir",
+                    "Enerji vardan yok edilebilir",
+                    "Enerji bir şekilden diğerine dönüştürülebilir",
+                    "Enerji hiçbir şekilde dönüştürülemez",
+                    "Enerji sadece ısı enerjisine dönüşür"
+                ],
+                correct: 2,
+                explanation: "Termodinamiğin birinci yasasına göre enerji yoktan var edilemez, vardan yok edilemez, ancak bir şekilden diğerine dönüştürülebilir. Örneğin bitkiler güneş enerjisini fotosentezle kimyasal enerjiye dönüştürür."
+            },
+            {
+                question: "Termodinamiğin ikinci yasası ekosistemlerdeki enerji akışını nasıl etkiler?",
+                options: [
+                    "Enerjinin tamamı bir sonraki basamağa aktarılır",
+                    "Enerjinin bir kısmı ısı olarak çevreye yayılır",
+                    "Enerji aktarımında kayıp olmaz",
+                    "Enerji geri kazanılabilir",
+                    "Enerji sadece üreticilerde bulunur"
+                ],
+                correct: 1,
+                explanation: "Termodinamiğin ikinci yasasına göre her enerji aktarımı veya dönüşümü sırasında sistemdeki mevcut enerjinin bir kısmı, ısı enerjisine dönüşerek çevreye yayılır. Bu nedenle enerjinin iş yapmak için kullanılabilir bölümü giderek azalır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi besin zincirinin doğru sıralamasıdır?",
+                options: [
+                    "Üretici → İkincil tüketici → Birincil tüketici → Üçüncül tüketici",
+                    "Birincil tüketici → Üretici → İkincil tüketici → Üçüncül tüketici",
+                    "Üretici → Birincil tüketici → İkincil tüketici → Üçüncül tüketici",
+                    "Üçüncül tüketici → İkincil tüketici → Birincil tüketici → Üretici",
+                    "İkincil tüketici → Birincil tüketici → Üretici → Üçüncül tüketici"
+                ],
+                correct: 2,
+                explanation: "Besin zinciri üreticilerden başlar: Üretici (1. basamak) → Birincil tüketici (2. basamak, otçul) → İkincil tüketici (3. basamak, etçil) → Üçüncül tüketici (4. basamak, etçil). Örnek: Ot → Tavşan → Tilki → Kartal."
+            },
+            {
+                question: "Besin ağları ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Birçok besin zincirinin iç içe geçmesiyle oluşur",
+                    "Ekosistemdeki tüm beslenme ilişkilerini gösterir",
+                    "Besin zincirlerinden daha karmaşıktır",
+                    "Canlılar tek bir besin zincirinde yer alır",
+                    "Gerçek ekosistemleri daha iyi temsil eder"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Besin ağlarında çoğu canlı tek bir besin zincirinde değil, birden fazla besin zincirinde yer alır. Canlılar genellikle çeşitli besin kaynakları kullanır. Bu nedenle besin ağları besin zincirlerinden daha karmaşık ve gerçekçidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi birincil tüketiciye örnek değildir?",
+                options: [
+                    "Tavşan",
+                    "Geyik",
+                    "Çekirge",
+                    "Kartal",
+                    "İnek"
+                ],
+                correct: 3,
+                explanation: "Birincil tüketiciler üreticilerle (bitkilerle) beslenen otçul canlılardır. Tavşan, geyik, çekirge ve inek otçuldur. Kartal ise etçildir ve ikincil veya üçüncül tüketicidir."
+            },
+            {
+                question: "Hepçil (omnivor) canlılarla ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sadece bitkilerle beslenir",
+                    "Sadece hayvanlarla beslenir",
+                    "Hem bitkilerle hem hayvanlarla beslenir",
+                    "Sadece ölü organizmalarla beslenir",
+                    "Sadece bakterilerle beslenir"
+                ],
+                correct: 2,
+                explanation: "Hepçiller (omnivorlar) hem bitkilerle hem hayvanlarla beslenen canlılardır. İnsan, ayı, fare, domuz hepçil canlılara örnektir. Hepçiller besin zincirinde farklı basamaklarda bulunabilir."
+            },
+            {
+                question: "Ayrıştırıcıların ekosistemdeki en önemli rolü nedir?",
+                options: [
+                    "Güneş enerjisini kimyasal enerjiye dönüştürmek",
+                    "Bitkileri yiyerek enerji elde etmek",
+                    "Hayvanları yiyerek enerji elde etmek",
+                    "Ölü organizmaları parçalayarak maddeleri tekrar kullanılabilir hale getirmek",
+                    "Atmosferdeki azotu bağlamak"
+                ],
+                correct: 3,
+                explanation: "Ayrıştırıcıların (bakteri ve mantarlar) en önemli rolü ölü organizmaları ve atıkları parçalayarak maddelerin (karbon, azot, vs.) tekrar kullanılabilir hale gelmesini sağlamaktır. Böylece madde döngülerini tamamlarlar."
+            },
+            {
+                question: "%10 Yasası'na göre, bitkilerde 50.000 birim enerji varsa, üçüncül tüketiciye ulaşan enerji ne kadar olur?",
+                options: [
+                    "50.000 birim",
+                    "5.000 birim",
+                    "500 birim",
+                    "50 birim",
+                    "5 birim"
+                ],
+                correct: 3,
+                explanation: "%10 Yasası'na göre her basamakta enerji %10 azalır: Bitkiler: 50.000 birim → Birincil tüketici: 5.000 birim (%10'u) → İkincil tüketici: 500 birim (%10'u) → Üçüncül tüketici: 50 birim (%10'u)."
+            },
+            {
+                question: "Biyolojik birikimle ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Zararlı maddeler besin zincirinde aşağı indikçe artar",
+                    "Zararlı maddeler besin zincirinde yukarı çıktıkça azalır",
+                    "Zararlı maddeler besin zincirinde yukarı çıktıkça artar",
+                    "Zararlı maddeler sadece üreticilerde birikir",
+                    "Zararlı maddeler sadece ayrıştırıcılarda birikir"
+                ],
+                correct: 2,
+                explanation: "Biyolojik birikimde zararlı maddeler (civa, kadmiyum, DDT gibi) besin zincirinde yukarı çıktıkça artar. Çünkü her canlı yediği canlının vücudundaki tüm zararlı maddeyi alır ve kendi vücudunda biriktirir. En üstteki tüketicilerde (yırtıcılar, insanlar) en fazla birikir."
+            },
+            {
+                question: "Minamata Hastalığı nedir?",
+                options: [
+                    "Bir kadmiyum zehirlenmesidir",
+                    "Bir civa zehirlenmesidir",
+                    "Bir kurşun zehirlenmesidir",
+                    "Bir arsenik zehirlenmesidir",
+                    "Bir çinko zehirlenmesidir"
+                ],
+                correct: 1,
+                explanation: "Minamata Hastalığı, Japonya'nın Minamata Koyu'nda ortaya çıkan bir civa zehirlenmesidir. Fabrikadan körfeze boşaltılan metil civa balıklarda birikmiş, bu balıkları yiyen insanlarda ciddi sağlık sorunlarına neden olmuştur."
+            },
+            {
+                question: "İtai İtai Hastalığı nedir?",
+                options: [
+                    "Bir civa zehirlenmesidir",
+                    "Bir kadmiyum zehirlenmesidir",
+                    "Bir kurşun zehirlenmesidir",
+                    "Bir bakır zehirlenmesidir",
+                    "Bir alüminyum zehirlenmesidir"
+                ],
+                correct: 1,
+                explanation: "İtai İtai Hastalığı, Japonya'da kadmiyum zehirlenmesine bağlı olarak ortaya çıkan hastalıktır. Madencilik faaliyetleri sonucu nehre karışan kadmiyum pirinçlere geçmiş, bu pirinçleri yiyen insanlarda kemik ve eklem ağrıları görülmüştür."
+            },
+            {
+                question: "Madde döngülerinin en önemli özelliği nedir?",
+                options: [
+                    "Maddeler bir kez kullanılır ve kaybolur",
+                    "Maddeler canlı ve cansız ortamlar arasında sürekli döngü halindedir",
+                    "Maddeler sadece canlılar arasında dolaşır",
+                    "Maddeler sadece cansız ortamda bulunur",
+                    "Maddeler hiç değişime uğramaz"
+                ],
+                correct: 1,
+                explanation: "Madde döngülerinin en önemli özelliği, maddelerin canlı ve cansız ortamlar arasında sürekli bir döngü halinde olmasıdır. Canlılar maddeleri alır, kullanır, atık olarak geri verir. Ayrıştırıcılar atıkları parçalar ve maddeler tekrar kullanılabilir hale gelir."
+            },
+            {
+                question: "Su döngüsünde aşağıdaki olaylardan hangisi gerçekleşmez?",
+                options: [
+                    "Buharlaşma",
+                    "Yoğuşma",
+                    "Yağış",
+                    "Fotosentez",
+                    "Terleme"
+                ],
+                correct: 3,
+                explanation: "Su döngüsünde buharlaşma (su yüzeylerinden suyun gaz haline geçmesi), yoğuşma (su buharının sıvı hale geçmesi), yağış (yağmur, kar, dolu) ve terleme (canlıların su buharı salması) gerçekleşir. Fotosentez ise karbon döngüsünde gerçekleşen bir olaydır."
+            },
+            {
+                question: "Karbon döngüsünde aşağıdakilerden hangisi atmosfere karbondioksit (CO₂) salınmasına neden olmaz?",
+                options: [
+                    "Solunum",
+                    "Fotosentez",
+                    "Yanma",
+                    "Ayrışma",
+                    "Volkanik patlamalar"
+                ],
+                correct: 1,
+                explanation: "Fotosentez, bitkilerin atmosferden CO₂ alarak organik madde ve oksijen ürettiği bir süreçtir. Atmosfere CO₂ salınmasına neden olmaz, tam tersine CO₂'yi kullanır. Solunum, yanma (odun, fosil yakıt), ayrışma (bakteri ve mantarların ölü organizmaları parçalaması) ve volkanik patlamalar ise atmosfere CO₂ salar."
+            },
+            {
+                question: "Azot döngüsünde atmosferdeki azotu (N₂) toprağa bağlayan canlılar hangileridir?",
+                options: [
+                    "Nitrifikasyon bakterileri",
+                    "Denitrifikasyon bakterileri",
+                    "Azot bağlayıcı bakteriler",
+                    "Fotosentetik bakteriler",
+                    "Ayrıştırıcı mantarlar"
+                ],
+                correct: 2,
+                explanation: "Azot döngüsünde atmosferdeki serbest azotu (N₂) toprağa bağlayan canlılar azot bağlayıcı bakterilerdir. Bu bakteriler azotu amonyağa (NH₃) dönüştürür. Bazı azot bağlayıcı bakteriler baklagillerin köklerindeki nodüllerde yaşar ve bitkiyle simbiyotik bir ilişki kurar."
+            },
+            {
+                question: "Sürdürülebilirlik nedir?",
+                options: [
+                    "Sadece bugünün ihtiyaçlarını karşılama",
+                    "Gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılama",
+                    "Sadece gelecek nesillerin ihtiyaçlarını karşılama",
+                    "Doğal kaynakları hızla tüketme",
+                    "Çevreyi kirletmeden ekonomik büyüme sağlama"
+                ],
+                correct: 1,
+                explanation: "Sürdürülebilirlik, gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden bugünün ihtiyaçlarını karşılamaktır. Bu kavram ekonomik, sosyal ve çevresel boyutları içerir. Doğal kaynakların korunması, geri dönüşüm, yenilenebilir enerji kullanımı sürdürülebilirliği sağlamanın yollarıdır."
+            },
+            {
+                question: "'Net sıfır' hedefi nedir?",
+                options: [
+                    "Hiç sera gazı salmamak",
+                    "Sera gazı salımının atmosfere salınan sera gazlarının geri soğurulmasıyla dengelenmesi",
+                    "Sadece karbondioksit salımını azaltmak",
+                    "Sadece metan salımını azaltmak",
+                    "Sadece azot oksit salımını azaltmak"
+                ],
+                correct: 1,
+                explanation: "'Net sıfır' hedefi, sera gazı salımının atmosfere salınan sera gazlarının geri soğurulmasıyla (örneğin ağaçların CO₂'yi emmesiyle) dengelenmesidir. Tamamen sıfır emisyon değil, net sıfır emisyondur. Paris Anlaşması ile konulan bir hedeftir."
+            },
+            {
+                question: "Biyosfer-2 Projesi'nde aşağıdakilerden hangisi gözlemlenmemiştir?",
+                options: [
+                    "Oksijen oranının %14'e düşmesi",
+                    "Karbondioksit derişiminin artması",
+                    "Tüm canlı türlerinin sağlıklı şekilde yaşamaya devam etmesi",
+                    "Su kaynaklarının kirlenmesi",
+                    "Birçok canlı türünün yok olması"
+                ],
+                correct: 2,
+                explanation: "Biyosfer-2 Projesi başarısız olmuştur. Proje sonunda oksijen oranı %14'e düşmüş, karbondioksit derişimi artmış, su kaynakları kirlenmiş, ortama bırakılan 25 omurgalı türünden 19'u yok olmuştur. Tüm canlı türleri sağlıklı şekilde yaşamaya devam etmemiştir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi yenilenebilir enerji kaynağı değildir?",
+                options: [
+                    "Güneş enerjisi",
+                    "Rüzgar enerjisi",
+                    "Hidroelektrik enerji",
+                    "Kömür",
+                    "Jeotermal enerji"
+                ],
+                correct: 3,
+                explanation: "Güneş, rüzgar, hidroelektrik ve jeotermal enerji yenilenebilir enerji kaynaklarıdır. Doğada sürekli var olan veya kendini yenileyebilen kaynaklardır. Kömür ise fosil yakıttır ve yenilenemez enerji kaynağıdır. Kömür oluşumu milyonlarca yıl sürer ve tükenebilir."
+            },
+            {
+                question: "Atık pillerle ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Civa, kadmiyum, kurşun gibi ağır metaller içerir",
+                    "Çöpe atıldığında toprağa ve suya karışabilir",
+                    "Besin zinciri yoluyla insanlara ulaşabilir",
+                    "İnsan sağlığına zarar vermez",
+                    "Ayrı toplanması ve geri dönüştürülmesi gerekir"
+                ],
+                correct: 3,
+                explanation: "Atık piller civa, kadmiyum, kurşun gibi ağır metaller içerir. Çöpe atıldığında zamanla aşınır ve içindeki ağır metaller toprağa ve suya karışır. Besin zinciri yoluyla bitkilere, hayvanlara ve insanlara ulaşır. İnsan vücudunda birikerek nörolojik bozukluklar, kanser, böbrek ve karaciğer hastalıklarına neden olur. Bu nedenle atık pillerin ayrı toplanması ve geri dönüştürülmesi gerekir."
+            },
+            {
+                question: "DDT ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sadece böcekleri etkiler, diğer canlıları etkilemez",
+                    "Besin zincirinde birikmez",
+                    "Çevrede uzun süre kalabilir ve kolayca parçalanmaz",
+                    "Hala tüm ülkelerde serbestçe kullanılmaktadır",
+                    "İnsan sağlığına hiçbir zararı yoktur"
+                ],
+                correct: 2,
+                explanation: "DDT (Dikloro Difenil Trikloroetan) 20. yüzyılın ikinci yarısında yaygın olarak kullanılan bir pestisittir. Çevrede yaklaşık 10 yıl boyunca kalabilir ve fiziksel etkenlerle kolayca parçalanmaz. Besin zincirlerinde birikir ve canlı dokularında birikerek sağlık sorunlarına neden olur. 1980'li yıllardan itibaren birçok ülkede yasaklanmıştır."
+            },
+            {
+                question: "Azot döngüsünde nitrifikasyon nedir?",
+                options: [
+                    "Atmosferik azotun toprağa bağlanması",
+                    "Amonyağın nitrata dönüştürülmesi",
+                    "Nitratın atmosferik azota dönüştürülmesi",
+                    "Proteinlerin amino asitlere parçalanması",
+                    "Bitkilerin azotu alması"
+                ],
+                correct: 1,
+                explanation: "Nitrifikasyon, azot döngüsünde amonyağın (NH₃) önce nitrite (NO₂⁻), sonra nitrata (NO₃⁻) dönüştürülmesi olayıdır. Bu dönüşümü nitrifikasyon bakterileri yapar. Nitrat bitkiler tarafından alınabilir formdadır."
+            },
+            {
+                question: "Denitrifikasyon nedir?",
+                options: [
+                    "Atmosferik azotun toprağa bağlanması",
+                    "Amonyağın nitrata dönüştürülmesi",
+                    "Nitratın atmosferik azota dönüştürülmesi",
+                    "Proteinlerin amino asitlere parçalanması",
+                    "Bitkilerin azotu alması"
+                ],
+                correct: 2,
+                explanation: "Denitrifikasyon, azot döngüsünde nitratın (NO₃⁻) tekrar atmosferik azota (N₂) dönüştürülmesi olayıdır. Bu dönüşümü denitrifikasyon bakterileri yapar. Böylece azot topraktan atmosfere geri döner."
+            },
+            {
+                question: "Biyokütle piramidinde aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "En üstte üreticiler bulunur",
+                    "En altta üçüncül tüketiciler bulunur",
+                    "En altta üreticiler bulunur",
+                    "Her basamakta biyokütle eşittir",
+                    "Sadece hayvanlar bulunur"
+                ],
+                correct: 2,
+                explanation: "Biyokütle piramidinde en altta (tabanda) üreticiler (bitkiler) bulunur ve biyokütleleri en fazladır. Yukarı çıkıldıkça biyokütle azalır. En üstte ise üçüncül tüketiciler bulunur ve biyokütleleri en azdır."
+            },
+            {
+                question: "Ekosistemdeki enerji akışı ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Tek yönlüdür",
+                    "Geri dönüşü yoktur",
+                    "Sürekli güneş enerjisi ile beslenir",
+                    "Kapalı bir döngüdür",
+                    "%10 Yasası'na göre işler"
+                ],
+                correct: 3,
+                explanation: "Ekosistemdeki enerji akışı tek yönlüdür, geri dönüşü yoktur. Sürekli olarak güneş enerjisi ile beslenir (açık sistem). Kapalı bir döngü değildir. %10 Yasası'na göre çalışır: Bir basamaktaki enerjinin yaklaşık %10'u bir üst basamağa aktarılır."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Besin piramidi ve madde döngülerini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

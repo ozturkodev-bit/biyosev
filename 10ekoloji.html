@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Ekoloji Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #2ecc71;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .test-question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2ecc71;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">10. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Ekosistem</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-leaf"></i> Ekoloji Öğrenme Portalı</h1>
+            <div class="subtitle">6 farklı öğrenme yöntemi ile ekoloji, ekosistem bileşenleri, popülasyon ve komünite konularını keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/6</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile ekoloji temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Ekoloji konularını görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Ekoloji konularının tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile ekoloji soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">25 soruluk test ile ekoloji hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Ekoloji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Ekoloji Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekolojinin Temel Kavramları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ekoloji:</strong> Canlı organizmaların birbirleri ve çevreleriyle olan ilişkilerini inceleyen bilim dalı</li>
+                        <li><strong>Ekosistem:</strong> Belirli bir bölgedeki canlı toplulukları ve bu canlıların etkileşim hâlinde olduğu cansız çevre</li>
+                        <li><strong>Ekolojik Organizasyon:</strong> Popülasyon → Komünite → Ekosistem → Biyosfer şeklinde hiyerarşik düzeyler</li>
+                        <li><strong>Ekolojik Niş:</strong> Bir türün yaşamını sürdürmek için yaptığı tüm faaliyetler ve diğer canlılarla ilişkileri</li>
+                        <li><strong>Habitat:</strong> Bir organizmanın veya aynı türden bireylerin doğal yaşama ortamı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekosistemin Cansız (Abiyotik) Bileşenleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>İklim:</strong> Işık, sıcaklık, yağış, rüzgâr, nem gibi fiziksel faktörler</li>
+                        <li><strong>Işık:</strong> Bitkilerin fotosentezi, hayvan davranışları, gün uzunluğuna bağlı olaylar</li>
+                        <li><strong>Sıcaklık:</strong> Canlıların biyolojik süreçleri, enzim çalışması, adaptasyonlar</li>
+                        <li><strong>Su:</strong> Yaşamın devamlılığı, madde taşınması, sindirim, fotosentez, boşaltım</li>
+                        <li><strong>Toprak:</strong> Canlılar için yaşam alanı, organik ve inorganik maddeler içerir</li>
+                        <li><strong>pH:</strong> Canlıların biyolojik süreçlerini etkileyen önemli faktör</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Ekosistemin Canlı (Biyotik) Bileşenleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Üreticiler (Ototroflar):</strong> Fotosentez veya kemosentezle besin üretir. Bitkiler, algler, siyanobakteriler</li>
+                        <li><strong>Tüketiciler (Heterotroflar):</strong> Besinlerini dış ortamdan hazır alır. Çengel boynuzlu dağ keçisi, kızıl tilki</li>
+                        <li><strong>Ayrıştırıcılar (Saprotroflar):</strong> Organik maddeleri inorganik maddelere dönüştürür. Bakteriler, mantarlar</li>
+                        <li><strong>Besin Zinciri:</strong> Üreticiler → Tüketiciler → Ayrıştırıcılar arasındaki enerji akışı</li>
+                        <li><strong>Madde Döngüleri:</strong> Karbon, azot, su gibi maddelerin ekosistemde dolaşımı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Popülasyon ve Dinamikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Popülasyon:</strong> Belirli bir alanda yaşayan aynı türe ait bireylerin oluşturduğu topluluk</li>
+                        <li><strong>Popülasyon Yoğunluğu:</strong> Birim alan veya hacimdeki birey sayısı</li>
+                        <li><strong>Popülasyon Büyüklüğü:</strong> Belirli bir zamandaki toplam birey sayısı</li>
+                        <li><strong>Taşıma Kapasitesi:</strong> Birim alanda bulunabilecek maksimum birey sayısı</li>
+                        <li><strong>Çevre Direnci:</strong> Popülasyonun büyümesini engelleyen biyotik ve abiyotik faktörler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Komünite ve Etkileşimler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Komünite:</strong> Belirli bir alanda birbiriyle etkileşim hâlindeki tüm türlerin oluşturduğu topluluk</li>
+                        <li><strong>Tür İçi Rekabet:</strong> Aynı türün bireyleri arasında besin, barınma, ışık, su için rekabet</li>
+                        <li><strong>Türler Arası Rekabet:</strong> Farklı türler arasında aynı kaynaklar için rekabet</li>
+                        <li><strong>Av-Avcı İlişkisi:</strong> Besin zinciri içindeki azalma-artma dengesi</li>
+                        <li><strong>Süksesyon:</strong> Bir bölgedeki türlerin zaman içinde sıralı olarak birbirinin yerini alması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Simbiyotik İlişkiler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Mutualizm:</strong> Her iki türün de karşılıklı fayda gördüğü ilişki (Liken birliği, azot bakterileri-baklagiller)</li>
+                        <li><strong>Kommensalizm:</strong> Türlerden biri fayda görürken diğerinin etkilenmediği ilişki (Remora balığı-köpekbalığı)</li>
+                        <li><strong>Amensalizm:</strong> Bir türün engellendiği, diğerinin etkilenmediği ilişki (Ceviz ağacı-altındaki bitkiler)</li>
+                        <li><strong>Parazitizm:</strong> Bir türün yarar, diğerinin zarar gördüğü ilişki (Bit, pire, tenya, ölse otu)</li>
+                        <li><strong>Parazit Türleri:</strong> Yarı parazit (ökse otu) ve tam parazit (canavar otu) bitkiler; dış ve iç parazit hayvanlar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Ekoloji Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> EKOLOJİ BİLİMİ VE TEMEL KAVRAMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Ekoloji</strong>, canlı organizmaların birbirleri ve çevreleriyle olan ilişkilerini inceleyen bilim dalıdır.</li>
+                        <li><strong>Ekosistem</strong>, belirli bir bölgedeki canlı topluluklarının tamamı ve bu canlıların etkileşim hâlinde olduğu cansız çevredir.</li>
+                        <li>Ekolojik organizasyon düzeyleri küçükten büyüğe doğru: <strong>popülasyon → komünite → ekosistem → biyosfer</strong> şeklindedir.</li>
+                        <li><strong>Habitat</strong>, bir organizmanın veya aynı türden bireylerin doğal yaşama ortamıdır.</li>
+                        <li><strong>Ekolojik niş</strong>, bir türün yaşamını sürdürmek için yapmış olduğu tüm faaliyetlerin yanı sıra diğer canlılarla olan ilişkilerini ve ekosistem içindeki işlevini belirtir.</li>
+                        <li>Ekoloji araştırmaları sayesinde doğal kaynakların ve biyoçeşitliliğin korunması, sürdürülebilirliğin sağlanması hakkında bilimsel veriler elde edilir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-mountain"></i> EKOSİSTEMİN CANSIZ (ABİYOTİK) BİLEŞENLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Bileşen</th>
+                            <th>Tanım</th>
+                            <th>Etkileri ve Örnekler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>İklim</strong></td>
+                            <td>Bir bölgede uzun yıllar hüküm süren hava koşullarının ortalaması</td>
+                            <td>Canlıların dağılışını ve etkinliklerini belirler. Akdeniz iklimine uyum sağlamış bitkiler</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Işık</strong></td>
+                            <td>Fotosentez için gerekli enerji kaynağı</td>
+                            <td>Bitkilerin çiçeklenme zamanı, hayvanların göçü, kış uykusu, üreme dönemleri</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sıcaklık</strong></td>
+                            <td>Canlıların biyolojik süreçlerini etkileyen faktör</td>
+                            <td>Enzim çalışması, metabolizma. Çöl tilkisi-kutup tilkisi adaptasyon farkları</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Su</strong></td>
+                            <td>Yaşamın devamlılığı için gerekli bileşen</td>
+                            <td>Sindirim, fotosentez, boşaltım, solunum, vücut sıcaklığının ayarlanması</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toprak</strong></td>
+                            <td>Pek çok canlı için yaşam alanı sağlar</td>
+                            <td>Organik ve inorganik maddeler, su ve hava içerir. Bitkiler kökleriyle toprağa tutunur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>pH</strong></td>
+                            <td>Asitlik-bazlık derecesi</td>
+                            <td>Her canlının yaşayabileceği optimum pH değeri vardır. Asit yağmurları pH'ı değiştirir</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Cansız (abiyotik) bileşenler, ekosistemin temel yapı taşlarıdır. Bu bileşenler canlıların dağılışını, sayısını ve etkinliklerini doğrudan etkiler. Örneğin çöl ekosisteminde yaşayan canlılar (kaktüs, çöl tilkisi, deve) yüksek sıcaklığa ve susuzluğa adapte olmuşlardır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tree"></i> EKOSİSTEMİN CANLI (BİYOTİK) BİLEŞENLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Üreticiler (Ototroflar):</strong> Fotosentez veya kemosentezle kendi besinini üreten canlılardır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Karasal ekosistemlerde: Bitkiler</li>
+                                <li>Sucul ekosistemlerde: Algler ve siyanobakteriler</li>
+                                <li>Derin deniz dipleri, bataklıklarda: Kemosentetik bakteriler ve arkeler</li>
+                                <li>Ekosistemdeki tüm canlılara enerji sağlayan besin zincirini başlatır</li>
+                            </ul>
+                        </li>
+                        <li><strong>Tüketiciler (Heterotroflar):</strong> Besinlerini dış ortamdan hazır olarak alan canlılardır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Örnekler: Çengel boynuzlu dağ keçisi, kızıl tilki, insan</li>
+                                <li>Besin zincirinde üreticilerden sonra gelir</li>
+                                <li>Farklı beslenme seviyelerine (birincil, ikincil, üçüncül tüketici) ayrılır</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ayrıştırıcılar (Saprotroflar):</strong> Organik maddeleri inorganik maddelere dönüştüren canlılardır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Örnekler: Bakteriler ve mantarlar</li>
+                                <li>Bitki ve hayvan atıklarını parçalayarak besin elde eder</li>
+                                <li>Üreticilerin ihtiyaç duyduğu inorganik maddelerin döngüsünü sağlar</li>
+                                <li>Besin ve enerji akışının sürekliliğini korur</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Besin Zinciri ve Madde Döngüleri:</strong> Ekosistemlerde cansız ve canlı ögeler birbirine besin zinciri ve madde döngüleri ile bağlıdır. Üreticiler → Tüketiciler → Ayrıştırıcılar arasında enerji akışı gerçekleşir. Ayrıştırıcılar olmazsa organik maddeler parçalanamaz, besin döngüsü durur ve ekosistemde yaşam sona erer.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-users"></i> POPÜLASYON VE DİNAMİKLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Popülasyon:</strong> Belirli bir ekosistemde, belli bir alanda yaşayan aynı türe ait bireylerin oluşturduğu topluluktur.</li>
+                        <li><strong>Örnekler:</strong> Antalya çevresinde yaşayan alageyikler, Ege çevresindeki anemon çiçekleri</li>
+                        <li><strong>Popülasyon Yoğunluğu:</strong> Birim alan ya da birim hacimde bulunan birey sayısıdır.</li>
+                        <li><strong>Popülasyon Büyüklüğü:</strong> Belirli bir zaman diliminde bir popülasyonda bulunan toplam birey sayısıdır.</li>
+                        <li><strong>Taşıma Kapasitesi:</strong> Birim alanda bulunabilecek maksimum birey sayısıdır.</li>
+                        <li><strong>Çevre Direnci:</strong> Bir popülasyonun yaşadığı çevrede büyüme ve gelişmesini engelleyen her türlü biyotik ve abiyotik faktördür.</li>
+                        <li><strong>Popülasyon Değişimi Formülü:</strong> (Doğum + İçe Göç) - (Ölüm + Dışa Göç)
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Doğum ve içe göç > Ölüm ve dışa göç → Popülasyon büyür</li>
+                                <li>Doğum ve içe göç < Ölüm ve dışa göç → Popülasyon küçülür</li>
+                                <li>Doğum ve içe göç = Ölüm ve dışa göç → Popülasyon dengededir</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-hands-helping"></i> KOMÜNİTE VE ETKİLEŞİMLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Komünite:</strong> Belirli bir alan içerisinde birbiriyle etkileşim hâlindeki tüm türlerin oluşturduğu topluluktur.</li>
+                        <li><strong>Tür İçi Rekabet:</strong> Aynı türün bireyleri arasında görülen rekabettir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Besin, barınma, ışık, su gibi sınırlı kaynaklar için</li>
+                                <li>Birey sayısı arttıkça rekabet artar</li>
+                                <li>Örnek: Ormandaki ağaçların güneş ışığı için rekabeti</li>
+                            </ul>
+                        </li>
+                        <li><strong>Türler Arası Rekabet:</strong> Farklı türler arasında aynı kaynaklar için rekabettir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Ekolojik nişleri örtüşen türler arasında görülür</li>
+                                <li>Gause deneyi: Paramecium aurelia ve Paramecium caudatum</li>
+                                <li>Örnek: Benekli sırtlanlar ve aslanlar arasındaki rekabet</li>
+                            </ul>
+                        </li>
+                        <li><strong>Av-Avcı İlişkisi:</strong> Komünite yapısını etkileyen önemli bir etkileşimdir.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Avcı sayısı artarsa av azalır, av azalınca avcı azalır</li>
+                                <li>Denge durumunda dalgalanmalar görülür</li>
+                                <li>Örnek: Kanada vaşağı ve kar tavşanı popülasyonları</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-handshake"></i> SİMBİYOTİK İLİŞKİLER</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>İlişki Türü</th>
+                            <th>Açıklama</th>
+                            <th>Örnek</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Mutualizm</strong></td>
+                            <td>Her iki türün de karşılıklı fayda gördüğü ilişki</td>
+                            <td>Liken birliği (alg-mantar), azot bakterileri-baklagiller, insan bağırsağındaki yararlı bakteriler</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kommensalizm</strong></td>
+                            <td>Türlerden biri fayda görürken diğerinin etkilenmediği ilişki</td>
+                            <td>Remora balığı-köpekbalığı, epifit bitkiler-ağaçlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amensalizm</strong></td>
+                            <td>Bir türün engellendiği, diğerinin etkilenmediği ilişki</td>
+                            <td>Ceviz ağacı-altındaki otsu bitkiler, bazı bitkilerin allelopatik etkisi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Parazitizm</strong></td>
+                            <td>Bir türün yarar, diğerinin zarar gördüğü ilişki</td>
+                            <td>Bit, pire, kene (dış parazit); tenya, bağırsak solucanı (iç parazit); ökse otu, canavar otu (bitkisel parazit)</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Parazitizm Notları:</strong> Parazitler makroparazitler (bağırsak solucanları, bitler, parazit bitkiler) ve mikroparazitler (virüsler, bazı bakteriler, protistler, mantarlar) olarak ikiye ayrılır. Bitkisel parazitler yarı parazit (ökse otu) ve tam parazit (canavar otu) olmak üzere incelenir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-fire"></i> SÜKSESYON (ARDILLIK)</div>
+                    <ul class="summary-list">
+                        <li><strong>Süksesyon:</strong> Bir bölgedeki türlerin zaman içinde sıralı olarak birbirinin yerini almasıdır.</li>
+                        <li><strong>Nedenleri:</strong> Orman yangınları, volkanik patlamalar, toprak kayması gibi büyük çevresel bozulmalar</li>
+                        <li><strong>Süksesyon Süreci:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li>Öncü türler (likenler, yosunlar) ortamı hazırlar</li>
+                                <li>Otsu bitkiler gelişir</li>
+                                <li>Çalılar ve bodur ağaçlar yerleşir</li>
+                                <li>Büyük ağaçlar bölgeye hâkim olur</li>
+                                <li>Klimaks topluluk oluşur (denge durumu)</li>
+                            </ol>
+                        </li>
+                        <li><strong>Örnek - Kızılçam Ormanları Yangını Sonrası:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>İlkbaharda kızılçam fideleri çıkar</li>
+                                <li>Çalı ve ağaççıklar sürgün verir</li>
+                                <li>Tek yıllık bitkiler çiçek açar</li>
+                                <li>İlk iki yılda tüm bitkiler yeniden ortaya çıkar</li>
+                                <li>20-25 yılda orman eski yapısına kavuşur</li>
+                            </ul>
+                        </li>
+                        <li><strong>Önem:</strong> Süksesyon, ekosistemlerin kendini yenileme kapasitesini gösterir. Biyoçeşitlilik açısından yangın sonrası ilk birkaç yıl çok değerlidir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Ekoloji Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Sultan Sazlığı Millî Parkı'nda hem tatlı hem de tuzlu su ekosistemleri bir arada bulunmaktadır. Bu durum neden bu alanda çok fazla canlı türünün yaşamasını sağlamış olabilir? Hangi ekosistem bileşenleri bu çeşitliliği etkilemiştir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sultan Sazlığı Millî Parkı, Kayseri'de 24.357 hektarlık bir sulak alandır. Güneydoğusunda tuzlu Yay Gölü bulunur. Pek çok kuş türüne (ak pelikan, flamingo, leylek vb.) ev sahipliği yapar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Farklı su ekosistemlerinin bir arada bulunması habitat çeşitliliğini artırmış, bu da tür çeşitliliğini artırmıştır.</p>
+                        <p><strong>Açıklama:</strong> Sultan Sazlığı'nda hem tatlı hem tuzlu su ekosistemlerinin bulunması, farklı ekolojik nişlere sahip canlılar için uygun yaşam alanları (habitatlar) oluşturmuştur. Bazı türler tatlı suda, bazıları tuzlu suda, bazıları ise her iki ortama da adapte olabilmişlerdir. Bu durum:
+                        <ol>
+                            <li><strong>Abiyotik faktör çeşitliliği:</strong> Farklı su tuzluluk oranları, sıcaklık, pH değerleri</li>
+                            <li><strong>Besin kaynağı çeşitliliği:</strong> Farklı üretici türleri ve besin zincirleri</li>
+                            <li><strong>Barınma ve üreme alanı çeşitliliği:</strong> Sazlıklar, açık su yüzeyleri, kıyı bölgeleri</li>
+                        </ol>
+                        sağlamıştır. Sulak alanlar yağmur ormanlarından sonra biyolojik olarak en zengin ekosistemlerdir çünkü farklı türde birçok canlıya beslenme, üreme ve barınma ortamı sağlarlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Tek Tek Dağları Millî Parkı'nda kurt popülasyonunun izlenmesi için fotokapanlar kullanılmaktadır. Kurt popülasyonundaki değişimlerin izlenmesi neden önemlidir? Popülasyon büyüklüğündeki artış veya azalış ne anlama gelir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Biyolojik Çeşitlilik İzleme Programı kapsamında kurt (Canis lupus) popülasyon yoğunluğundaki değişim izlenmektedir. Fotokapanlarla alandaki kurt popülasyonunun yoğunluğu tespit edilmektedir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Kurt popülasyonundaki değişimler ekosistem sağlığının göstergesidir ve koruma çalışmalarının etkinliğini değerlendirmek için önemlidir.</p>
+                        <p><strong>Açıklama:</strong> Kurtlar besin zincirinin üst basamağında yer alan apex (tepe) avcılardır. Popülasyonlarındaki değişimler:
+                        <ol>
+                            <li><strong>Av popülasyonlarının durumunu gösterir:</strong> Kurt sayısındaki artış, av (tavşan, geyik vb.) popülasyonlarının sağlıklı olduğunu gösterir.</li>
+                            <li><strong>Habitat kalitesinin göstergesidir:</strong> Popülasyon artışı, habitatın korunduğunu ve yaşam alanlarının yeterli olduğunu gösterir.</li>
+                            <li><strong>Tehditlerin varlığını ortaya koyar:</strong> Popülasyon azalışı, kaçak avcılık, habitat kaybı, hastalık gibi tehditlerin varlığına işaret eder.</li>
+                            <li><strong>Koruma çalışmalarının etkinliğini ölçer:</strong> Popülasyonun sabit kalması veya artması, alınan tedbirlerin işe yaradığının göstergesidir.</li>
+                        </ol>
+                        Bu nedenle kurt popülasyonunun izlenmesi, sadece kurtlar için değil, tüm ekosistemin sağlığı ve yaban hayatının korunması için önemlidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Yumurtalık Lagünü Millî Parkı hem tatlı hem tuzlu su bataklıklarına, sazlıklara, kumul alanlara sahiptir ve kuş göç yolları üzerinde bulunmaktadır. Bu özellikler lagündeki biyoçeşitliliği nasıl etkilemiştir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yumurtalık Lagünü Millî Parkı, birçok hayvan ve bitki türüne ev sahipliği yapan önde gelen biyoçeşitlilik alanlarından biridir. Nil kaplumbağası, benekli kaplumbağa, deniz kaplumbağası, yeşil kaplumbağa, vaşak, yaban keçisi, yarasa gibi türler burada yaşar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Farklı habitat tipleri ve kuş göç yolu üzerinde bulunması, lagünde yüksek biyoçeşitlilik oluşmasını sağlamıştır.</p>
+                        <p><strong>Açıklama:</strong> Yumurtalık Lagünü'ndeki biyoçeşitliliğin yüksek olmasının nedenleri:
+                        <ol>
+                            <li><strong>Habitat çeşitliliği:</strong> Tatlı ve tuzlu su bataklıkları, sazlıklar, kumul alanlar, ıslak çayırlar, çamur düzlükleri gibi farklı habitatlar, farklı ekolojik nişlere sahip türlere yaşam alanı sağlar.</li>
+                            <li><strong>Kuş göç yolu üzerinde olması:</strong> Göçmen kuşlar için dinlenme, beslenme ve üreme alanıdır. Bu da geçici tür çeşitliliğini artırır.</li>
+                            <li><strong>Ekolojik niş çeşitliliği:</strong> Farklı beslenme seviyeleri (üreticiler, tüketiciler, ayrıştırıcılar) ve besin zincirleri oluşmuştur.</li>
+                            <li><strong>İklim ve coğrafi konum:</strong> Akdeniz iklimi ve korunaklı lagün yapısı, birçok tür için uygun yaşam koşulları sağlar.</li>
+                        </ol>
+                        Bu faktörler lagünü bir "biyoçeşitlilik sıcak noktası" haline getirmiştir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Kızılçam ormanlarında çıkan yangınlardan sonra ekosistem kendini yenilemektedir. Bu süksesyon sürecinde hangi türler önce ortaya çıkar? Süksesyon neden birkaç on yıl sürer?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: 2021 yılındaki orman yangınlarından sonra kızılçam ormanlarının kendini onarma potansiyeli yüksektir. Yangından sonraki ilkbaharda kızılçam fideleri, çalılar ve tek yıllık bitkiler ortaya çıkar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Önce öncü türler (otsu bitkiler, çalılar) ortaya çıkar. Süksesyonun uzun sürmesinin nedeni ağaçların büyümesinin zaman almasıdır.</p>
+                        <p><strong>Açıklama:</strong> Kızılçam ormanlarında yangın sonrası süksesyon süreci:
+                        <ol>
+                            <li><strong>İlk aşama (ilk 1-2 yıl):</strong> Öncü türler olan otsu bitkiler, yangını canlı atlatan tohumlardan çıkan kızılçam fideleri, toprak altı organlardan sürgün veren çalılar ortaya çıkar.</li>
+                            <li><strong>Orta aşama (2-10 yıl):</strong> Çalılar gelişir, fundalar yayılır, genç ağaçlar büyümeye başlar.</li>
+                            <li><strong>Son aşama (10-25 yıl):</strong> Kızılçam ağaçları büyür, orman yapısı oluşur, tür çeşitliliği artar.</li>
+                        </ol>
+                        <strong>Süksesyon neden uzun sürer?</strong>
+                        <ul>
+                            <li><strong>Ağaç büyümesi zaman alır:</strong> Kızılçamın yangından önceki orman yapısına erişmesi 20-25 yıl gerektirir.</li>
+                            <li><strong>Toprak oluşumu ve besin birikimi:</strong> Toprağın organik madde açısından zenginleşmesi zaman alır.</li>
+                            <li><strong>Türlerin yerleşmesi:</strong> Farklı türlerin sırayla ortama yerleşmesi ve dengenin kurulması yıllar sürer.</li>
+                        </ul>
+                        Yangın sonrası ilk birkaç yıl, biyoçeşitlilik açısından çok değerlidir çünkü farklı yaşam formları bir arada görülür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Norveç ve İsveç'teki kızıl tilki popülasyonunda 1970'lerde görülen sarkopitik uyuz hastalığı, tilki popülasyonunda azalmaya neden olmuştur. Bu azalma tilkilerin avı olan yaban tavşanı ve orman tavuğu popülasyonlarını nasıl etkilemiştir? Bu durum hangi ekosistem ilişkisine örnektir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Uyuz parazitinin neden olduğu hastalık, kızıl tilkilerde 2-4 ay içinde ölüme yol açmış ve tilki popülasyonunda önemli azalmalar meydana gelmiştir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Tilkilerin azalması, yaban tavşanı ve orman tavuğu sayısında geçici artışa neden olmuştur. Bu durum av-avcı ilişkisine örnektir.</p>
+                        <p><strong>Açıklama:</strong> Bu olay ekosistemdeki besin zinciri ilişkilerini ve popülasyon dengelerini gösterir:
+                        <ol>
+                            <li><strong>Av-avcı dengesi:</strong> Kızıl tilkiler yaban tavşanı ve orman tavuğu için avcı konumundadır.</li>
+                            <li><strong>Tilki azalınca:</strong> Avcı baskısı azalır, av popülasyonları (tavşan ve tavuk) artar.</li>
+                            <li><strong>Geçici etki:</strong> Bu artış geçicidir çünkü:
+                                <ul>
+                                    <li>Artış besin kaynaklarını tüketmeye başlar</li>
+                                    <li>Diğer avcı türler bu popülasyonları kontrol eder</li>
+                                    <li>Tilki popülasyonu zamanla toparlanır</li>
+                                </ul>
+                            </li>
+                            <li><strong>Parazitizm etkisi:</strong> Uyuz paraziti ile tilki arasındaki ilişki parazitizmdir (tilki zarar görür).</li>
+                        </ol>
+                        Bu olay, ekosistemlerdeki türler arası ilişkilerin ne kadar hassas dengelere dayandığını ve bir türdeki değişimin diğer türleri nasıl etkilediğini gösterir. Ayrıca parazitlerin popülasyon dinamiklerini nasıl etkileyebileceğine iyi bir örnektir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Akdeniz fokunun Mersin kıyılarındaki popülasyonu 1990'larda yok olmanın eşiğindeyken, alınan habitat koruma önlemleri sayesinde 2000'lerde iyileşme göstermiş, ancak 2015'te tekrar azalmıştır. Habitat kaybı popülasyonu nasıl etkilemiştir? Yavru ölümlerinin artmasının nedeni nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Akdeniz foku popülasyonu 2005'te 33 bireyken, 2015'te 15 bireye düşmüştür. Yıllık yavru sayısı ortalaması 7'den 3'e düşmüştür. Kıyılardaki yapılaşma ve liman kurulması yaşam alanlarını tahrip etmiştir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Habitat kaybı, fokların uygun üreme mağaralarını kaybetmesine ve yavru ölümlerinin artmasına neden olmuştur.</p>
+                        <p><strong>Açıklama:</strong> Akdeniz fokunun popülasyonundaki değişim, habitat korumanın önemini gösterir:
+                        <ol>
+                            <li><strong>1990'lar-2000'ler arası iyileşme:</strong> Habitat koruma önlemleri alınınca popülasyon artmıştır. Bu, uygun yaşam alanlarının korunmasının türlerin hayatta kalması için ne kadar kritik olduğunu gösterir.</li>
+                            <li><strong>2015'te azalma:</strong> Kıyılardaki yapılaşma ve liman inşaatları fok habitatlarını tahrip etmiştir.</li>
+                            <li><strong>Yavru ölümlerinin artma nedeni:</strong> Foklar yavrularını korunaklı mağaralarda doğurur. Habitat tahribatı sonucu:
+                                <ul>
+                                    <li>Uygun mağaralar azalmıştır</li>
+                                    <li>Foklar korunaksız mağaralarda yavrulamak zorunda kalmıştır</li>
+                                    <li>Korunaksız yavrular dalgalara, predatörlere (avcılara) ve insan rahatsızlığına maruz kalmıştır</li>
+                                    <li>Bu da yavru ölüm oranlarını artırmıştır</li>
+                                </ul>
+                            </li>
+                            <li><strong>Popülasyonun geleceği:</strong> Üreme potansiyeline sahip bireyler olsa da habitat kaybından ötürü yavru ölümlerinin yüksek olması, popülasyonun yok olma riskini artırmaktadır.</li>
+                        </ol>
+                        Bu örnek, sadece bireyleri korumanın değil, yaşam alanlarını (habitatları) korumanın da ne kadar önemli olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Çöl ekosisteminde yaşayan kaktüs, çöl tilkisi ve deve gibi canlılar yüksek sıcaklığa ve susuzluğa nasıl adapte olmuştur? Bu adaptasyonlar ekosistemin cansız bileşenleri ile nasıl ilişkilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Çölde yaşayan canlılar 50°C'nin üzerindeki sıcaklıklara dayanacak şekilde adapte olmuştur. Kaktüsler su depolayarak, çöl tilkisi büyük kulaklarıyla, develer hörgüçlerinde yağ depolayarak ve az terleyerek çöl koşullarına uyum sağlamıştır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Çöl canlıları, abiyotik faktörlere (yüksek sıcaklık, su kıtlığı) karşı fizyolojik, yapısal ve davranışsal adaptasyonlar geliştirmiştir.</p>
+                        <p><strong>Açıklama:</strong> Çöl ekosistemindeki cansız bileşenler (abiyotik faktörler) canlıların adaptasyonlarını şekillendirmiştir:
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Canlı</th>
+                                <th>Çöl Koşulları (Abiyotik Faktörler)</th>
+                                <th>Adaptasyonlar</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Kaktüs</strong></td>
+                                <td>Yüksek sıcaklık, su kıtlığı, güçlü güneş ışığı</td>
+                                <td>
+                                    <ul>
+                                        <li>Gövdesinde su depolama</li>
+                                        <li>Dikenlere dönüşmüş yapraklar (terlemeyi azaltır)</li>
+                                        <li>Kalın kutikula (su kaybını önler)</li>
+                                        <li>Yüzeye yakın yayılan kökler (yağmuru hemen emer)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Çöl Tilkisi</strong></td>
+                                <td>Yüksek sıcaklık, su kıtlığı</td>
+                                <td>
+                                    <ul>
+                                        <li>Büyük kulaklar (vücut ısısını yayar)</li>
+                                        <li>Açık renkli kürk (güneş ışınlarını yansıtır)</li>
+                                        <li>Geceleri aktif olma (gündüz sıcağından kaçınma)</li>
+                                        <li>İdrarı konsantre etme (su tasarrufu)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Deve</strong></td>
+                                <td>Yüksek sıcaklık, su kıtlığı, kum fırtınaları</td>
+                                <td>
+                                    <ul>
+                                        <li>Hörgüçte yağ depolama (enerji ve metabolik su kaynağı)</li>
+                                        <li>Uzun kirpikler ve kulak kılları (kumdan korunma)</li>
+                                        <li>Az terleyerek su kaybını azaltma</li>
+                                        <li>Vücut sıcaklığını geniş aralıkta tutabilme</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                        Bu adaptasyonlar, canlıların bulundukları ekosistemin cansız bileşenlerine nasıl mükemmel uyum sağladığını gösterir. Her adaptasyon, belirli bir abiyotik faktöre karşı geliştirilmiş bir çözümdür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Gause'un Paramecium aurelia ve Paramecium caudatum türleriyle yaptığı deneyde, iki tür ayrı kültür ortamlarında yaşayabilirken, aynı ortama konduğunda P. aurelia yaşamaya devam etmiş, P. caudatum ise yok olmuştur. Bu sonuç hangi ekolojik kavramı açıklar? Neden böyle bir sonuç ortaya çıkmıştır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Rus bilim insanı Gause, ekolojik nişleri örtüşen iki Paramecium türü arasındaki rekabeti gözlemlemiştir. İki tür ayrı ortamlarda yaşayabilmiş, ancak aynı ortamda birlikte yetiştirildiğinde P. aurelia diğer türü ortadan kaldırmıştır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Bu deney "rekabetçi dışlama ilkesini" açıklar. P. aurelia daha hızlı üreme ve besini daha etkin kullanma özelliğiyle rekabette üstün gelmiştir.</p>
+                        <p><strong>Açıklama:</strong> Gause deneyi ekolojide çok önemli bir ilkeyi kanıtlamıştır:
+                        <ol>
+                            <li><strong>Rekabetçi Dışlama İlkesi:</strong> Aynı kaynaklar için rekabet eden ve ekolojik nişleri tamamen örtüşen iki tür, aynı habitatta uzun süre bir arada bulunamaz. Biri diğerini dışlar veya ortamdan uzaklaştırır.</li>
+                            <li><strong>Deney sonuçları:</strong>
+                                <ul>
+                                    <li><strong>Ayrı ortamlar:</strong> Her iki tür de yaşayabilmiş, popülasyonları sabit kalmıştır.</li>
+                                    <li><strong>Aynı ortam:</strong> P. aurelia yaşamaya devam etmiş, P. caudatum yok olmuştur.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Neden P. aurelia kazanmıştır?</strong>
+                                <ul>
+                                    <li>Daha hızlı üreme özelliğine sahiptir</li>
+                                    <li>Ortamdaki sınırlı besin maddelerini daha etkin kullanır</li>
+                                    <li>Rekabet avantajı sayesinde diğer türü ortamdan dışlamıştır</li>
+                                </ul>
+                            </li>
+                            <li><strong>Ekolojik önemi:</strong> Bu ilke, doğada neden benzer ekolojik nişlere sahip türlerin genellikle farklı habitatlarda veya farklı kaynakları kullanacak şekilde evrimleştiğini açıklar. Türler, rekabeti azaltmak için niş farklılaşmasına gider.</li>
+                        </ol>
+                        Bu deney, türler arası rekabetin popülasyon dinamikleri üzerindeki güçlü etkisini ve doğal seçilim sürecinde rekabetin rolünü göstermektedir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Sucul komünitelerde derinlik arttıkça tür çeşitliliği neden azalır? Işığın ulaşamadığı derinliklerde hangi tür canlılar yaşar ve nasıl beslenir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sucul komünitelerde çeşitlilik, suyun derinliği ve ışığın ulaşabilirliği ile değişiklik gösterir. Işığın ulaşabildiği bölgeler fotosentetik canlılar açısından zenginken, derinlik arttıkça tür çeşitliliği azalır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Derinlik arttıkça ışık azalır, fotosentez durur ve besin üretimi olmaz. Işıksız derinliklerde kemosentetik canlılar ve çürükçül türler yaşar.</p>
+                        <p><strong>Açıklama:</strong> Sucul ekosistemlerde derinlikle birlikte yaşanan değişimler:
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Derinlik</th>
+                                <th>Işık Durumu</th>
+                                <th>Canlı Türleri</th>
+                                <th>Beslenme Şekli</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Yüzey ve Işıklı Bölge</strong> (Fotik Bölge)</td>
+                                <td>Işık yeterli</td>
+                                <td>Fitoplankton (algler), su bitkileri, balıklar, kabuklular</td>
+                                <td>Fotosentez (üreticiler), otçul ve etçil tüketiciler</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Orta Derinlikler</strong></td>
+                                <td>Işık az</td>
+                                <td>Işığa az ihtiyaç duyan türler, gece aktif hayvanlar</td>
+                                <td>Çürükçül beslenme, predasyon (av-avcı)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Derin Dip Bölgeler</strong> (Afotik Bölge)</td>
+                                <td>Işık yok</td>
+                                <td>Kemosentetik bakteriler, derin deniz canlıları (ışık üreten balıklar, dev kalamar)</td>
+                                <td>Kemosentez, çürükçül beslenme, predasyon, detritus (organik döküntü) ile beslenme</td>
+                            </tr>
+                        </table>
+                        <strong>Işıksız derinliklerde yaşam nasıl mümkün olur?</strong>
+                        <ol>
+                            <li><strong>Kemosentez:</strong> Hidrotermal bacalar çevresinde kemosentetik bakteriler, hidrojen sülfür gibi kimyasalları enerjiye çevirerek besin üretir.</li>
+                            <li><strong>Biyolüminesans:</strong> Bazı derin deniz canlıları kendi ışığını üretir (ateş böceği gibi).</li>
+                            <li><strong>Detritus beslenme:</strong> Yukarıdan düşen organik döküntülerle (ölü organizmalar, dışkı) beslenirler.</li>
+                            <li><strong>Adaptasyonlar:</strong> Büyük ağızlar, esnek çeneler, uzun dişler, avı çekmek için ışık organları geliştirmişlerdir.</li>
+                        </ol>
+                        Bu nedenle derin deniz ekosistemleri, yüzey ekosistemlerinden tamamen farklı canlı topluluklarına ev sahipliği yapar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Topraksız alanlarda (kaya, kum, çakıllı bölgeler) süksesyon süreci nasıl başlar ve ilerler? Bu süreçte hangi türler öncülük eder ve toprak nasıl oluşur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Volkanik patlamalar veya toprak kaymaları sonucu toprağın kaybolduğu bölgelerde başlangıçta canlı yaşamı mümkün değildir. Bu tür yerlerde süksesyon süreci çok yavaş başlar ve yüzlerce yıl sürebilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Topraksız alanlarda süksesyon, likenlerle başlar. Likenler kayayı aşındırarak toprak oluşumunu başlatır, ardından yosunlar ve otsu bitkiler gelir.</p>
+                        <p><strong>Açıklama:</strong> Topraksız alanlarda birincil süksesyon süreci:
+                        <ol>
+                            <li><strong>1. Aşama - Likenler (Öncü Topluluk):</strong>
+                                <ul>
+                                    <li>Kayalık ve taşlık yerlere uyum sağlamış likenler yerleşir</li>
+                                    <li>Liken birliği (alg + mantar) kayayı aşındırarak ince bir toprak tabakası oluşturur</li>
+                                    <li>Bu süreç çok yavaştır, yıllar sürer</li>
+                                </ul>
+                            </li>
+                            <li><strong>2. Aşama - Yosunlar:</strong>
+                                <ul>
+                                    <li>Likenlerin oluşturduğu ince toprakta yosunlar gelişir</li>
+                                    <li>Yosunlar toprağın nemli kalmasına yardımcı olur</li>
+                                    <li>Toprak kalınlaşmaya ve organik madice zenginleşmeye başlar</li>
+                                </ul>
+                            </li>
+                            <li><strong>3. Aşama - Otsu Bitkiler:</strong>
+                                <ul>
+                                    <li>Yeterli toprak oluşunca otsu bitkiler (çimenler) gelişir</li>
+                                    <li>Bu bitkiler kökleriyle toprağı daha fazla parçalar</li>
+                                    <li>Ölen bitkiler toprağa organik madde katar</li>
+                                </ul>
+                            </li>
+                            <li><strong>4. Aşama - Çalılar ve Ağaçlar:</strong>
+                                <ul>
+                                    <li>Toprak derinleştikçe çalılar yerleşir</li>
+                                    <li>Ardından bodur ağaçlar, sonra büyük ağaçlar gelir</li>
+                                    <li>Sonunda klimaks topluluk (olgun orman) oluşur</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <strong>Toprak oluşum mekanizmaları:</strong>
+                        <ul>
+                            <li><strong>Fiziksel parçalanma:</strong> Sıcaklık değişimleri, donma-çözülme, köklerin basıncı</li>
+                            <li><strong>Kimyasal ayrışma:</strong> Likenlerin salgıladığı asitlerin kayanın kimyasal yapısını bozması</li>
+                            <li><strong>Organik madde birikimi:</strong> Ölen organizmaların toprağa karışması</li>
+                        </ul>
+                        Bu süreç yüzlerce yıl sürebilir. Örneğin, bir volkanik adada tam bir orman oluşması yüzlerce, hatta binlerce yıl alabilir. Bu nedenle toprak, ekosistemlerin en değerli ve yenilenmesi en zor bileşenlerinden biridir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Ekoloji Testi (25 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 25</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2ecc71; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden ekosistemlerde cansız (abiyotik) ve canlı (biyotik) bileşenler birbirinden ayrılmaz bir bütündür?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Canlılar, cansız çevrenin sunduğu kaynaklar olmadan yaşayamaz; cansız çevre ise canlıların etkisiyle değişir ve zenginleşir.</p>
+                        <p><strong>Mantık:</strong> Ekosistem bir fabrika gibi düşünülebilir. Cansız bileşenler fabrikanın binası, elektriği, suyu ve hammaddeleridir. Canlı bileşenler ise işçiler, makineler ve üretim sürecidir. Bina ve altyapı olmadan işçiler çalışamaz, işçiler olmadan da hammaddeler işlenemez.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnekle açıklama:</strong> Bir orman ekosistemini düşünün:
+                            <ul>
+                                <li><strong>Toprak (cansız):</strong> Ağaçların kök salması, su ve mineral alması için gereklidir.</li>
+                                <li><strong>Ağaçlar (canlı):</strong> Toprağı kökleriyle tutar, erozyonu önler, yaprakları toprağa organik madde katar.</li>
+                                <li><strong>Su (cansız):</strong> Tüm canlılar için hayati öneme sahiptir.</li>
+                                <li><strong>Hayvanlar (canlı):</strong> Tohumları yayarak bitkilerin yayılmasını sağlar, dışkıları toprağı gübreler.</li>
+                            </ul>
+                            Bu karşılıklı etkileşimler olmadan ekosistem çöker. Örneğin ayrıştırıcılar (mantar, bakteri) olmasaydı, ölü organizmalar parçalanmaz, toprak besin açısından fakirleşir, bitkiler büyüyemezdi.</p>
+                            <p><strong>Biyolojik önemi:</strong> Bu bütünlük, ekosistemlerin sürdürülebilirliğini sağlar. Bir bileşenin eksilmesi (örneğin suyun kirlenmesi veya ayrıştırıcıların yok olması) tüm sistemi etkiler. Bu nedenle doğa koruma çalışmalarında sadece tek bir türü değil, tüm ekosistemi korumak esastır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Popülasyonlar neden sonsuza kadar büyüyemez? Taşıma kapasitesi ve çevre direnci nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel mantık:</strong> Doğadaki kaynaklar sınırlıdır. Sonsuz büyüme, bu sınırlı kaynakları tüketir ve sistem çöker.</p>
+                        <p><strong>Mantık yürütme:</strong> Bir otoparkı düşünün. Otoparkın belirli sayıda araç kapasitesi vardır. Araç sayısı bu kapasiteye ulaştığında, yeni araçlar park edemez. Doğada da her habitatın bir "taşıma kapasitesi" vardır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Taşıma kapasitesi:</strong> Bir habitatın, sürdürülebilir şekilde destekleyebileceği maksimum birey sayısıdır.</p>
+                            <p><strong>Çevre direnci:</strong> Popülasyon büyümesini sınırlayan faktörlerdir. İki çeşittir:
+                            <ol>
+                                <li><strong>Abiyotik (cansız) faktörler:</strong> Su, besin, alan, iklim koşullarının sınırlı olması</li>
+                                <li><strong>Biyotik (canlı) faktörler:</strong> Rekabet, av-avcı ilişkileri, parazitler, hastalıklar</li>
+                            </ol>
+                            </p>
+                            <p><strong>Popülasyon büyümesinin aşamaları:</strong>
+                            <ol>
+                                <li><strong>Başlangıç:</strong> Kaynaklar bol, bireyler az → Hızlı üreme (üssel büyüme)</li>
+                                <li><strong>Orta dönem:</strong> Bireyler çoğalır, rekabet başlar → Büyüme yavaşlar</li>
+                                <li><strong>Denge:</strong> Taşıma kapasitesine ulaşılır → Doğum ve ölüm dengelenir</li>
+                            </ol>
+                            </p>
+                            <p><strong>Örnek:</strong> Bir adaya 10 tavşan bırakıldığını düşünün. İlk yıllar hızla çoğalırlar (bol ot, az rakip). Zamanla tavşan sayısı artar, otlar tükenmeye başlar, hastalıklar yayılır, aç tavşanlar zayıf düşer. Sonunda tavşan sayısı, adanın taşıma kapasitesi (örneğin 1000 tavşan) civarında dengelenir.</p>
+                            <p><strong>Sonuç:</strong> Doğada hiçbir popülasyon sonsuza kadar büyüyemez. Çevre direnci, popülasyonları taşıma kapasitesi sınırları içinde tutar. Bu, ekosistemlerin kendini dengede tutma mekanizmasıdır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Av-avcı ilişkisinde popülasyonlar neden birbirini izleyen dalgalanmalar gösterir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Yapısal sebep:</strong> Av ve avcı popülasyonları birbirine bağımlıdır. Birindeki değişim diğerini etkiler, bu da ilkini tekrar etkiler.</p>
+                        <p><strong>Mantık:</strong> Bu bir "geri bildirim döngüsü" dür. Avcılar çoğalınca av azalır, av azalınca avcı azalır, avcı azalınca av çoğalır, ve döngü tekrar başlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kanada vaşağı ve kar tavşanı örneği üzerinden adım adım:</strong>
+                            <ol>
+                                <li><strong>1. Adım:</strong> Tavşan popülasyonu yüksek (bol besin var). Vaşaklar iyi beslenir, çoğalır.</li>
+                                <li><strong>2. Adım:</strong> Vaşak sayısı artar, daha çok tavşan avlanır. Tavşan sayısı azalır.</li>
+                                <li><strong>3. Adım:</strong> Tavşan azalınca vaşaklar aç kalır. Bazıları ölür, bazıları göç eder. Vaşak sayısı azalır.</li>
+                                <li><strong>4. Adım:</strong> Vaşak azalınca tavşanlar üzerindeki avcı baskısı azalır. Tavşanlar tekrar çoğalmaya başlar.</li>
+                                <li><strong>5. Adım:</strong> Tavşanlar çoğalınca vaşaklar için bol besin olur. Vaşak sayısı tekrar artar.</li>
+                                <li><strong>Döngü başa döner.</strong></li>
+                            </ol>
+                            <p><strong>Neden tamamen yok olmuyorlar?</strong>
+                            <ul>
+                                <li><strong>Zaman gecikmesi:</strong> Popülasyon değişimleri anında değil, zaman alır.</li>
+                                <li><strong>Alternatif besin kaynakları:</strong> Vaşaklar sadece tavşanla beslenmez.</li>
+                                <li><strong>Habitat kapasitesi:</strong> Her iki türün de taşıma kapasitesi vardır.</li>
+                                <li><strong>Adaptasyonlar:</strong> Tavşanlar saklanır, vaşaklar farklı avlara yönelir.</li>
+                            </ul>
+                            <p><strong>Grafiksel olarak:</strong> İki popülasyonun grafiği çizildiğinde, birbirini takip eden dalgalar görülür. Tavşan grafiğinin tepe noktaları, vaşak grafiğinin dip noktalarından biraz sonra gelir (vaşakların tavşan artışına tepki vermesi zaman alır).</p>
+                            <p><strong>Sonuç:</strong> Bu dalgalanmalar, ekosistemlerin dinamik dengelerinin bir göstergesidir. Popülasyonlar sabit değil, sürekli değişim halindedir. Bu dalgalanmalar normaldir ve sistemin sağlıklı olduğunu gösterir. Dalgalanmalar durursa (örneğin tavşan hep aynı sayıda kalırsa), bu bir sorun işareti olabilir (habitat bozulması, kirlilik vb.).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden farklı ekosistemlerde farklı türler hâkimdir? İklimin etkisi nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel fark:</strong> Her canlının yaşayabileceği belirli koşullar vardır. Farklı ekosistemler farklı abiyotik koşullar sunar.</p>
+                        <p><strong>Mantık:</strong> Canlılar, bulundukları ortamın koşullarına adapte olmuşlardır. Bir canlının bir ekosistemde başarılı olması, o ekosistemin koşullarına uyum sağlayabilmesine bağlıdır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>İklimin belirleyici rolü:</strong> İklim (sıcaklık, yağış, mevsimler) ekosistemlerin en belirleyici abiyotik faktörüdür.</p>
+                            <p><strong>Örneklerle açıklama:</strong>
+                            <table class="comparison-table">
+                                <tr>
+                                    <th>Ekosistem</th>
+                                    <th>İklim Koşulları</th>
+                                    <th>Hâkim Türler ve Adaptasyonları</th>
+                                    <th>Neden başka türler burada yaşayamaz?</th>
+                                </tr>
+                                <tr>
+                                    <td><strong>Çöl</strong></td>
+                                    <td>Çok sıcak, çok az yağış, gündüz-gece sıcaklık farkı yüksek</td>
+                                    <td>Kaktüs (su depolama, dikenler), çöl tilkisi (büyük kulaklar, açık renk), deve (hörgüç)</td>
+                                    <td>Yağmur ormanı bitkileri su kaybeder, kutup ayısı aşırı ısınır</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kutup/Tundra</strong></td>
+                                    <td>Çok soğuk, kar ve buz, kısa yaz</td>
+                                    <td>Kutup ayısı (kalın kürk, yağ tabakası), kutup tilkisi (küçük kulaklar), likenler</td>
+                                    <td>Deve soğuktan donar, tropikal bitkiler fotosentez yapamaz</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yağmur Ormanı</strong></td>
+                                    <td>Sıcak, çok yağışlı, yüksek nem, mevsim farkı az</td>
+                                    <td>Geniş yapraklı ağaçlar, epifitler, maymunlar, papağanlar</td>
+                                    <td>Kaktüs aşırı su alır çürür, kutup ayısı aşırı ısınır</td>
+                                </tr>
+                            </table>
+                            <p><strong>Adaptasyonun önemi:</strong> Her canlı, atalarından genetik olarak aldığı ve kendi yaşamı boyunca geliştirdiği özelliklerle belirli koşullara uyum sağlar. Bu özellikleri olmayan canlılar o ekosistemde yaşayamaz veya rekabet edemez.</p>
+                            <p><strong>Ekolojik niş:</strong> Her tür, ekosistem içinde belirli bir "iş" görür. Çölde su tasarrufu yapmak, kutupta ısı korumak, yağmur ormanında yüksek nemde yaşamak birer "iş" tir. Farklı ekosistemler farklı "işler" gerektirir, bu nedenle farklı "uzmanlar" (türler) hâkimdir.</p>
+                            <p><strong>Sonuç:</strong> Dünyadaki muazzam biyoçeşitlilik, farklı ekosistem koşullarına verilmiş evrimsel yanıtlardır. İklim değişikliği bu koşulları değiştirdiğinde, adapte olamayan türler yok olur, adapte olabilenler hayatta kalır veya göç eder.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Süksesyon (ardıllık) neden belirli bir sırayla gerçekleşir? Öncü türler neden önce gelir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Boyut sınırlaması:</strong> Çıplak kayada hemen ağaç yetişmez çünkü ağaçların büyümesi için toprak ve besin gerekir.</p>
+                        <p><strong>Mantık:</strong> Süksesyon bir merdiven çıkmak gibidir. Önce ilk basamağa çıkarsınız, sonra ikinciye, üçüncüye... Her basamak bir sonraki için zemin hazırlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Süksesyonun mantığı adım adım:</strong>
+                            <ol>
+                                <li><strong>Başlangıç - Çıplak kaya:</strong> Hiç toprak yok, besin yok, su tutulumu yok.</li>
+                                <li><strong>1. Basamak - Likenler neden öncüdür?</strong>
+                                    <ul>
+                                        <li>Çok dayanıklıdırlar, kayada tutunabilirler</li>
+                                        <li>Fotosentez yaparak kendi besinini üretir (dışarıdan besine ihtiyaç yok)</li>
+                                        <li>Asit salgılayarak kayayı aşındırır, ilk toprak parçacıklarını oluşturur</li>
+                                        <li>Öldüklerinde organik madde olarak toprağa karışır</li>
+                                    </ul>
+                                    Likenler olmasa toprak oluşamazdı.
+                                </li>
+                                <li><strong>2. Basamak - Yosunlar neden sonra gelir?</strong>
+                                    <ul>
+                                        <li>Likenlerin oluşturduğu ince toprakta yetişebilirler</li>
+                                        <li>Daha fazla organik madde üretirler</li>
+                                        <li>Su tutarak ortamı nemli hale getirirler</li>
+                                        <li>Toprak tabakasını kalınlaştırırlar</li>
+                                    </ul>
+                                    Likenler olmadan yosunlar tutunamazdı.
+                                </li>
+                                <li><strong>3. Basamak - Otsu bitkiler:</strong>
+                                    <ul>
+                                        <li>Artık yeterli toprak vardır</li>
+                                        <li>Kökleri toprağı daha da parçalar</li>
+                                        <li>Çok sayıda tohum üreterek hızla yayılırlar</li>
+                                        <li>Hayvanlar için barınak ve besin sağlarlar</li>
+                                    </ul>
+                                </li>
+                                <li><strong>4. Basamak - Çalılar ve Ağaçlar:</strong>
+                                    <ul>
+                                        <li>Derin toprak ve bol besin gerektirirler</li>
+                                        <li>Uzun ömürlüdürler, yavaş büyürler</li>
+                                        <li>Gölge yaparak önceki türleri baskılar (rekabet)</li>
+                                        <li>Klimaks (olgun) topluluğu oluştururlar</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p><strong>Analoji:</strong> Bir ev inşa etmek gibidir. Önce temel atarsınız (likenler), sonra duvarları örersiniz (yosunlar, otlar), en son çatıyı ve detayları yaparsınız (ağaçlar). Temelsiz duvar, duvarsız çatı olmaz.</p>
+                            <p><strong>Neden bu sıra değişmez?</strong> Çünkü her aşama bir sonraki için gerekli koşulları hazırlar. Ağaç tohumu kayaya düşse bile filizlenemez çünkü toprak, su tutulumu ve besin yoktur. Süksesyon doğanın "kendini onarma protokolü" dür. Yangın, volkan gibi felaketlerden sonra doğa bu protokolü uygulayarak kendini yeniler.</p>
+                            <p><strong>İnsan etkisi:</strong> İnsanlar bu süreci hızlandırabilir (ağaç dikmek) veya engelleyebilir (erozyona neden olmak). Ancak doğal süksesyonun yerini tamamen tutamazlar çünkü doğal süreçte türler arasındaki karmaşık etkileşimler oluşur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Komünitelerde neden hem rekabet hem de işbirliği (simbiyoz) vardır? Bu ilişkiler bir arada nasıl var olur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Yoğunluk kavramı:</strong> Rekabet kaynak kıtlığında, işbirliği ise karşılıklı fayda durumunda ortaya çıkar.</p>
+                        <p><strong>Mantık:</strong> Doğa sadece "en güçlü olan hayatta kalır" değil, aynı zamanda "en uyum sağlayan hayatta kalır" prensibiyle işler. Bazen uyum sağlamak, diğer türlerle işbirliği yapmayı gerektirir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Rekabet neden var?</strong> Kaynaklar (besin, su, alan, ışık) sınırlıdır. Aynı kaynağı kullanan türler veya bireyler arasında rekabet kaçınılmazdır. Rekabet:
+                            <ul>
+                                <li>Zayıf bireyleri eler, populasyonu güçlendirir</li>
+                                <li>Türleri farklı kaynaklara yönelmeye zorlar (niş farklılaşması)</li>
+                                <li>Popülasyon büyüklüğünü taşıma kapasitesi içinde tutar</li>
+                            </ul>
+                            </p>
+                            <p><strong>İşbirliği (Simbiyoz) neden var?</strong> Bazı durumlarda işbirliği yapmak, rekabet etmekten daha avantajlıdır. İşbirliği:
+                            <ul>
+                                <li>Zor görevleri bölüşmeyi sağlar (likende alg fotosentez yapar, mantar su ve mineral sağlar)</li>
+                                <li>Koruma sağlar (remora balığı köpekbalığına tutunur, köpekbalığından korunur)</li>
+                                <li>Besin elde etmeyi kolaylaştırır (insan bağırsağındaki bakteriler K ve B vitamini sentezler, karşılığında besin ve barınak alır)</li>
+                            </ul>
+                            </p>
+                            <p><strong>Bir arada nasıl var olurlar?</strong>
+                            <ol>
+                                <li><strong>Farklı ilişkiler farklı durumlarda geçerlidir:</strong> Aynı kaynak için aynı anda hem rekabet hem işbirliği olmaz. İki tür ya rekabet eder ya da işbirliği yapar.</li>
+                                <li><strong>Rekabet işbirliğine yol açabilir:</strong> Şiddetli rekabet, türleri farklılaşmaya zorlar. Bazen bu farklılaşma, birinin diğerinin atığını kullanması gibi tamamlayıcı ilişkilere dönüşebilir.</li>
+                                <li><strong>Kaynak bolluğu işbirliğini artırır:</strong> Kaynaklar bol olduğunda rekabet azalır, türler daha kolay işbirliği yapabilir.</li>
+                                <li><strong>Komünitede her türlü ilişki vardır:</strong> Bir komünitede A ve B türü rekabet ederken, A ve C türü mutualist, B ve D türü av-avcı ilişkisi içinde olabilir. Ekosistem bu karmaşık ilişkiler ağı üzerine kuruludur.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Örnek:</strong> Bir ormanda:
+                            <ul>
+                                <li>Ağaçlar ışık için rekabet eder (tür içi ve türler arası rekabet)</li>
+                                <li>Aynı ağaç, köklerindeki mikorizal mantarlarla mutualist ilişki kurar (mantar su ve mineral getirir, ağaç fotosentez ürünü verir)</li>
+                                <li>Ağacın yapraklarını yiyen tırtıllar ile onları yiyen kuşlar av-avcı ilişkisi içindedir</li>
+                                <li>Ağacın üzerinde yaşayan epifit bitkiler (örn. orkide) ağaçla kommensalist ilişki kurar (ağaçtan destek alır, zarar vermez)</li>
+                            </ul>
+                            </p>
+                            <p><strong>Sonuç:</strong> Rekabet ve işbirliği, doğadaki iki temel etkileşimdir. Rekabet kaynakların adil(ish) dağılımını ve populasyon kontrolünü sağlar. İşbirliği ise karmaşık görevlerin başarılmasını ve verimliliği artırır. Sağlıklı bir ekosistemde her ikisi de dengeli şekilde bulunur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Bir ekosistemdeki tür sayısı (çeşitlilik) neden o ekosistemin direncini (dayanıklılığını) artırır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Temel yapı farkı:</strong> Çeşitlilik, ekosisteme esneklik ve yedekleme (yedek parça) sağlar.</p>
+                        <p><strong>Mantık:</strong> Tek bir iplikten yapılmış bir halat, kesildiğinde kopar. Yüz iplikten yapılmış bir halat ise birkaç ipliği kopsa da dayanıklılığını korur. Tür çeşitliliği de ekosisteme bu "yedek iplikleri" sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Yüksek çeşitliliğin faydaları:</strong>
+                            <ol>
+                                <li><strong>Fonksiyonel yedeklilik:</strong> Ekosistemde her işlevi (fotosentez yapma, tohum yayma, toprağı havalandırma, atık ayrıştırma) birden fazla tür yapar. Bir tür yok olursa, aynı işi yapan başka bir tür onun görevini üstlenebilir.
+                                    <ul>
+                                        <li><strong>Örnek:</strong> Bir ormanda bir ağaç türü hastalıktan yok olsa, diğer ağaç türleri fotosentez yapmaya devam eder.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Besin ağı karmaşıklığı:</strong> Yüksek çeşitlilik, karmaşık besin ağları oluşturur. Karmaşık ağlarda bir halka (tür) koptuğunda, sistem alternatif yollarla işlevine devam edebilir.
+                                    <ul>
+                                        <li><strong>Örnek:</strong> Avcı bir tür yok olursa, av popülasyonunu başka avcılar kontrol eder.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Hastalıklara direnç:</strong> Tek türden oluşan bir ekosistem (örneğin tek tip plantasyon) bir hastalıkta tümüyle yok olabilir. Çok türlü ekosistemde hastalık bazı türlere bulaşsa da diğerleri hayatta kalır.</li>
+                                <li><strong>İklim değişikliğine uyum:</strong> Farklı türler farklı koşullara toleranslıdır. İklim değişince bazı türler dayanır, ekosistem devam eder.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Düşük çeşitliliğin riskleri:</strong>
+                            <ul>
+                                <li><strong>Tarım monokültürleri:</strong> Tek tip mısır tarlasında bir hastalık veya böcek salgını tüm ürünü yok edebilir.</li>
+                                <li><strong>Balık çiftlikleri:</strong> Tek tür yetiştiriciliğinde hastalık hızla yayılır.</li>
+                                <li><strong>Kentsel yeşil alanlar:</strong> Sadece çim ve birkaç ağaç türü içeren parklar, böcek saldırılarına karşı savunmasızdır.</li>
+                            </ul>
+                            </p>
+                            <p><strong>Analoji:</strong> Bir futbol takımını düşünün. Takımda sadece forvet oyuncuları olsaydı, defans yapılamazdı, kaleci olmasaydı gol yerdi. Çeşitli pozisyonlarda (forvet, defans, orta saha, kaleci) iyi oyuncuları olan takım daha başarılı ve dirençlidir. Doğada da her tür bir "pozisyon" (ekolojik niş) doldurur.</p>
+                            <p><strong>İnsan vücudu örneği:</strong> Bağırsak mikrobiyotası (flora) yüksek çeşitlilikte bakteriler içerir. Bu çeşitlilik:
+                            <ul>
+                                <li>Sindirime yardımcı olur</li>
+                                <li>Zararlı bakterilerin yerleşmesini engeller</li>
+                                <li>Vitamin sentezler</li>
+                                <li>Bağışıklığı güçlendirir</li>
+                            </ul>
+                            Antibiyotik kullanımı bu çeşitliliği azaltır, bu da mantar enfeksiyonlarına, ishale, vitamin eksikliklerine yol açabilir.</p>
+                            <p><strong>Sonuç:</strong> Biyoçeşitlilik, ekosistemlerin sigortasıdır. Doğal afetlere, iklim değişikliğine, hastalıklara karşı dayanıklılık sağlar. Bu nedenle koruma çalışmalarında sadece nadir türleri değil, tüm çeşitliliği korumak önemlidir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden bazı türler belirli bölgelere (endemik) özgüdür? Coğrafi izolasyonun etkisi nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Kilit faktör:</strong> Türler bulundukları ortamın koşullarına adapte olur ve coğrafi engeller nedeniyle başka yerlere yayılamaz.</p>
+                        <p><strong>Mantık:</strong> Evrim, canlıları bulundukları ortama uygun hale getirir. Eğer bir canlı popülasyonu uzun süre diğerlerinden izole kalırsa, farklı yönde evrimleşir ve yeni bir tür haline gelir. Bu tür sadece o izole bölgede bulunur.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Endemik türler nasıl oluşur?</strong>
+                            <ol>
+                                <li><strong>Coğrafi izolasyon:</strong> Ada, dağ, göl, çöl gibi engeller bir popülasyonu diğerlerinden ayırır.
+                                    <ul>
+                                        <li><strong>Örnek:</strong> Galapagos adalarındaki ispinoz kuşları. Anakara ispinozlarından ayrıldılar, her adada farklı besin kaynaklarına uyum sağladılar, farklı türlere evrildiler.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Adaptasyon:</strong> İzole popülasyon, bulunduğu ortamın koşullarına uyum sağlar.
+                                    <ul>
+                                        <li><strong>Örnek:</strong> Tek Tek Dağları'ndaki endemik bitkiler kuraklığa dayanıklı hale gelmiştir.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Evrim:</strong> Nesiller geçtikçe izole popülasyon, ana popülasyondan giderek daha farklı hale gelir.</li>
+                                <li><strong>Türleşme:</strong> Farklılıklar o kadar artar ki, artık ana popülasyonla çiftleşemezler veya verimli döller veremezler. Yeni bir tür oluşur.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Endemizmin nedenleri:</strong>
+                            <ul>
+                                <li><strong>Adalar:</strong> En çok endemik tür adalarda bulunur (Galapagos, Madagaskar, Hawaii).</li>
+                                <li><strong>Dağlar:</strong> Yüksek dağlar izole habitatlar oluşturur (Alpler, Himalayalar).</li>
+                                <li><strong>Göller:</strong> Eski ve derin göller (Baykal Gölü, Van Gölü).</li>
+                                <li><strong>Mağaralar:</strong> Yer altı mağara sistemleri.</li>
+                                <li><strong>İklim koşulları:</strong> Çok özel iklim gerektiren türler (yüksek nem, özel toprak türü).</li>
+                            </ul>
+                            </p>
+                            <p><strong>Türkiye'den örnekler:</strong>
+                            <ul>
+                                <li><strong>Anadolu dikenli faresi:</strong> Sadece Türkiye'de</li>
+                                <li><strong>Kapadokya soğanı:</strong> Sadece Kapadokya bölgesinde</li>
+                                <li><strong>Datça hurması:</strong> Sadece Datça yarımadasında</li>
+                                <li><strong>Van kedisi:</strong> Sadece Van bölgesinde (kültürel endemizm)</li>
+                            </ul>
+                            </p>
+                            <p><strong>Endemik türler neden önemlidir?</strong>
+                            <ol>
+                                <li><strong>Biyoçeşitliliğin hazinesidir:</strong> Dünyada sadece o bölgede bulunur, yok olurlarsa dünyadan silinirler.</li>
+                                <li><strong>Evrimsel tarih taşırlar:</strong> Geçmişteki coğrafi değişimler hakkında bilgi verirler.</li>
+                                <li><strong>Ekolojik dengede özel rolleri vardır:</strong> O ekosisteme özgü işlevleri yerine getirirler.</li>
+                                <li><strong>Potansiyel faydaları vardır:</strong> İlaç, gıda, endüstriyel hammadde kaynağı olabilirler.</li>
+                            </ol>
+                            </p>
+                            <p><strong>Tehditler:</strong> Endemik türler özellikle hassastır çünkü:
+                            <ul>
+                                <li>Dar bir alanda yaşarlar, habitat kaybından doğrudan etkilenirler</li>
+                                <li>Popülasyonları küçüktür, genetik çeşitlilikleri azdır</li>
+                                <li>İklim değişikliği onları doğrudan tehdit eder (başka yere göç edemezler)</li>
+                                <li>İstilacı türlerle rekabet edemezler</li>
+                            </ul>
+                            </p>
+                            <p><strong>Sonuç:</strong> Endemik türler, doğanın eşsiz ve geri dönüşü olmayan sanat eserleridir. Korunmaları sadece o ülkenin değil, tüm insanlığın sorumluluğudur çünkü yok olduklarında dünyanın bir parçası da yok olur.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Ekoloji Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/10ekoloji.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 6) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Ekoloji Sorusu
+        const csvData = `Ekoloji nedir?,"Canlı organizmaların birbirleri ve çevreleriyle olan ilişkilerini inceleyen bilim dalıdır."`
+        + `\nEkosistem nedir?,"Belirli bir bölgedeki canlı topluluklarının tamamı ve bu canlıların etkileşim hâlinde olduğu cansız çevredir."`
+        + `\nHabitat nedir?,"Bir organizmanın veya aynı türden bireylerin doğal yaşama ortamıdır."`
+        + `\nEkolojik niş nedir?,"Bir türün yaşamını sürdürmek için yaptığı tüm faaliyetler, diğer canlılarla ilişkileri ve ekosistemdeki işlevidir."`
+        + `\nPopülasyon nedir?,"Belirli bir ekosistemde, belli bir alanda yaşayan aynı türe ait bireylerin oluşturduğu topluluktur."`
+        + `\nKomünite nedir?,"Belirli bir alan içerisinde birbiriyle etkileşim hâlindeki tüm türlerin oluşturduğu topluluktur."`
+        + `\nAbiyotik faktörler nelerdir?,"Işık, sıcaklık, su, toprak, pH gibi cansız çevre faktörleridir."`
+        + `\nBiyotik faktörler nelerdir?,"Üreticiler, tüketiciler ve ayrıştırıcılar gibi canlı çevre faktörleridir."`
+        + `\nÜreticiler (ototroflar) nedir?,"Fotosentez veya kemosentezle kendi besinini üreten canlılardır (bitkiler, algler, siyanobakteriler)."`
+        + `\nTüketiciler (heterotroflar) nedir?,"Besinlerini dış ortamdan hazır olarak alan canlılardır (hayvanlar, mantarlar, bazı bakteriler)."`
+        + `\nAyrıştırıcılar (saprotroflar) nedir?,"Organik maddeleri inorganik maddelere dönüştüren canlılardır (bakteriler, mantarlar)."`
+        + `\nTür içi rekabet nedir?,"Aynı türün bireyleri arasında besin, barınma, ışık, su gibi sınırlı kaynaklar için rekabettir."`
+        + `\nTürler arası rekabet nedir?,"Farklı türler arasında aynı kaynaklar için rekabettir. Gause deneyi ile gösterilmiştir."`
+        + `\nMutualizm nedir?,"Birlikte yaşayan her iki türün de karşılıklı fayda gördüğü simbiyotik ilişkidir (Liken birliği, azot bakterileri-baklagiller)."`
+        + `\nKommensalizm nedir?,"Türlerden biri fayda görürken diğerinin etkilenmediği simbiyotik ilişkidir (Remora balığı-köpekbalığı)."`
+        + `\nParazitizm nedir?,"Bir türün yarar, diğerinin zarar gördüğü simbiyotik ilişkidir (Bit, pire, tenya, ökse otu)."`
+        + `\nAmensalizm nedir?,"Bir türün engellendiği, diğerinin etkilenmediği ilişkidir (Ceviz ağacı-altındaki bitkiler)."`
+        + `\nAv-avcı ilişkisi nedir?,"Komünitede avcı sayısı artınca av azalır, av azalınca avcı azalır. Denge durumunda dalgalanmalar görülür."`
+        + `\nSüksesyon nedir?,"Bir bölgedeki türlerin zaman içinde sıralı olarak birbirinin yerini almasıdır. Yangın, volkan sonrası görülür."`
+        + `\nTaşıma kapasitesi nedir?,"Birim alanda bulunabilecek maksimum birey sayısıdır."`
+        + `\nPopülasyon yoğunluğu nedir?,"Birim alan ya da birim hacimde bulunan birey sayısıdır."`
+        + `\nÇevre direnci nedir?,"Popülasyonun büyümesini engelleyen her türlü biyotik ve abiyotik faktördür."`
+        + `\nPopülasyon değişimi nasıl hesaplanır?,"(Doğum + İçe Göç) - (Ölüm + Dışa Göç). Sonuç pozitifse büyür, negatifse küçülür, sıfırsa dengededir."`
+        + `\nİzotonik çözelti nedir?,"Hücre sitoplazmasıyla eş yoğunluktaki çözeltidir. Hücreye net su girişi veya çıkışı olmaz."`
+        + `\nHipertonik çözelti nedir?,"Hücre sitoplazmasından daha yoğun çözeltidir. Hücre su kaybeder (ozmoz)."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 25 Questions
+        const testQuestions = [
+            {
+                question: "Ekoloji nedir?",
+                options: [
+                    "Canlı organizmaların iç yapılarını inceleyen bilim dalı",
+                    "Canlı organizmaların birbirleri ve çevreleriyle olan ilişkilerini inceleyen bilim dalı",
+                    "Sadece bitkileri inceleyen bilim dalı",
+                    "Sadece hayvanları inceleyen bilim dalı",
+                    "Mikroorganizmaları inceleyen bilim dalı"
+                ],
+                correct: 1,
+                explanation: "Ekoloji, canlı organizmaların birbirleri ve çevreleriyle olan ilişkilerini inceleyen bilim dalıdır. Temel birimi ekosistemdir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi ekosistemin cansız (abiyotik) bileşenlerinden biri değildir?",
+                options: [
+                    "Işık",
+                    "Sıcaklık",
+                    "Su",
+                    "Bitkiler",
+                    "Toprak"
+                ],
+                correct: 3,
+                explanation: "Bitkiler canlı (biyotik) bileşenlerdir. Ekosistemin cansız (abiyotik) bileşenleri; ışık, sıcaklık, su, toprak ve pH'tır."
+            },
+            {
+                question: "Ekosistemin canlı bileşenleri işlevlerine göre kaç gruba ayrılır?",
+                options: [
+                    "2 grup",
+                    "3 grup",
+                    "4 grup",
+                    "5 grup",
+                    "6 grup"
+                ],
+                correct: 1,
+                explanation: "Ekosistemin canlı bileşenleri işlevlerine göre üreticiler, tüketiciler ve ayrıştırıcılar olmak üzere üç gruba ayrılır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi üretici (ototrof) canlılara örnektir?",
+                options: [
+                    "Çengel boynuzlu dağ keçisi",
+                    "Kızıl tilki",
+                    "Algler",
+                    "Mantarlar",
+                    "Bakteriler (çoğu)"
+                ],
+                correct: 2,
+                explanation: "Algler fotosentez yaparak besin ürettiği için üreticidir. Diğer seçenekler tüketici (heterotrof) veya ayrıştırıcıdır."
+            },
+            {
+                question: "Bir popülasyonun birim alanda bulunabilecek maksimum birey sayısına ne denir?",
+                options: [
+                    "Popülasyon yoğunluğu",
+                    "Popülasyon büyüklüğü",
+                    "Taşıma kapasitesi",
+                    "Çevre direnci",
+                    "Ekolojik niş"
+                ],
+                correct: 2,
+                explanation: "Birim alanda bulunabilecek maksimum birey sayısına taşıma kapasitesi denir. Popülasyonlar genellikle taşıma kapasitesi civarında dengelenir."
+            },
+            {
+                question: "Belirli bir alan içerisinde birbiriyle etkileşim hâlindeki tüm türlerin oluşturduğu topluluğa ne denir?",
+                options: [
+                    "Popülasyon",
+                    "Komünite",
+                    "Ekosistem",
+                    "Biyosfer",
+                    "Habitat"
+                ],
+                correct: 1,
+                explanation: "Belirli bir alan içerisinde birbiriyle etkileşim hâlindeki tüm türlerin oluşturduğu topluluğa komünite denir. Popülasyon ise aynı türün bireylerinden oluşur."
+            },
+            {
+                question: "Aynı türün bireyleri arasında görülen rekabete ne denir?",
+                options: [
+                    "Türler arası rekabet",
+                    "Tür içi rekabet",
+                    "Habitat rekabeti",
+                    "Ekolojik rekabet",
+                    "Kaynak rekabeti"
+                ],
+                correct: 1,
+                explanation: "Aynı türün bireyleri arasında görülen rekabete tür içi rekabet denir. Aynı kaynakları kullanan farklı türler arasındaki rekabete ise türler arası rekabet denir."
+            },
+            {
+                question: "Gause'un Paramecium türleriyle yaptığı deney hangi ekolojik ilkeyi kanıtlamıştır?",
+                options: [
+                    "Mutualizm ilkesi",
+                    "Rekabetçi dışlama ilkesi",
+                    "Av-avcı dengesi ilkesi",
+                    "Taşıma kapasitesi ilkesi",
+                    "Süksesyon ilkesi"
+                ],
+                correct: 1,
+                explanation: "Gause deneyi, ekolojik nişleri örtüşen iki türün aynı habitatta uzun süre bir arada bulunamayacağını, birinin diğerini dışlayacağını göstermiştir. Buna rekabetçi dışlama ilkesi denir."
+            },
+            {
+                question: "Bir orman yangını sonrasında türlerin sıralı olarak birbirinin yerini alması sürecine ne denir?",
+                options: [
+                    "Adaptasyon",
+                    "Evolüsyon",
+                    "Süksesyon",
+                    "Rekabet",
+                    "Mutualizm"
+                ],
+                correct: 2,
+                explanation: "Bir bölgedeki türlerin zaman içinde sıralı olarak birbirinin yerini alması süksesyon (ardıllık) olarak adlandırılır. Yangın, volkan patlaması gibi bozulmalardan sonra görülür."
+            },
+            {
+                question: "Aşağıdaki simbiyotik ilişkilerden hangisinde her iki tür de karşılıklı fayda görür?",
+                options: [
+                    "Mutualizm",
+                    "Kommensalizm",
+                    "Parazitizm",
+                    "Amensalizm",
+                    "Rekabet"
+                ],
+                correct: 0,
+                explanation: "Mutualizmde her iki tür de karşılıklı fayda görür (örnek: liken birliği, azot bakterileri-baklagiller). Kommensalizmde bir fayda görür, diğeri etkilenmez. Parazitizmde biri yarar, diğeri zarar görür."
+            },
+            {
+                question: "Aşağıdakilerden hangisi parazitizme örnek değildir?",
+                options: [
+                    "Bit",
+                    "Pire",
+                    "Tenya",
+                    "Liken birliği",
+                    "Ökse otu"
+                ],
+                correct: 3,
+                explanation: "Liken birliği mutualizme örnektir (alg ve mantar karşılıklı fayda görür). Bit, pire, tenya parazittir. Ökse otu ise yarı parazit bitkidir."
+            },
+            {
+                question: "Bir organizmanın veya aynı türden bireylerin doğal yaşama ortamına ne denir?",
+                options: [
+                    "Ekolojik niş",
+                    "Habitat",
+                    "Ekosistem",
+                    "Komünite",
+                    "Biyosfer"
+                ],
+                correct: 1,
+                explanation: "Bir organizmanın veya aynı türden bireylerin doğal yaşama ortamı habitat olarak adlandırılır. Ekolojik niş ise türün yaşamını sürdürmek için yaptığı faaliyetler ve ilişkilerdir."
+            },
+            {
+                question: "Kanada'da yaşayan vaşak ve kar tavşanı popülasyonları arasındaki ilişki nasıldır?",
+                options: [
+                    "Mutualizm",
+                    "Kommensalizm",
+                    "Av-avcı ilişkisi",
+                    "Rekabet",
+                    "Parazitizm"
+                ],
+                correct: 2,
+                explanation: "Vaşak ve kar tavşanı arasında av-avcı ilişkisi vardır. Avcı sayısı artınca av azalır, av azalınca avcı azalır, bu şekilde dengeli dalgalanmalar gösterirler."
+            },
+            {
+                question: "Sultan Sazlığı Millî Parkı'nda çok fazla canlı türünün yaşamasının temel sebebi nedir?",
+                options: [
+                    "Sadece tatlı su ekosisteminin olması",
+                    "Sadece tuzlu su ekosisteminin olması",
+                    "Hem tatlı hem tuzlu su ekosistemlerinin bir arada bulunması",
+                    "Hiç insan yerleşiminin olmaması",
+                    "Çok sıcak olması"
+                ],
+                correct: 2,
+                explanation: "Sultan Sazlığı'nda hem tatlı hem tuzlu su ekosistemlerinin bir arada bulunması, farklı habitatlar ve ekolojik nişler oluşturmuş, bu da tür çeşitliliğini artırmıştır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi çöl ekosistemine adapte olmuş bir canlı değildir?",
+                options: [
+                    "Kaktüs",
+                    "Çöl tilkisi",
+                    "Deve",
+                    "Kutup ayısı",
+                    "Sarı sabır bitkisi"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Kutup ayısı kutup ekosistemine adapte olmuştur. Kaktüs, çöl tilkisi, deve ve sarı sabır bitkisi çöl ekosistemine adapte olmuş canlılardır."
+            },
+            {
+                question: "Popülasyon büyüklüğündeki değişiklik aşağıdakilerden hangisi ile hesaplanır?",
+                options: [
+                    "Doğum - Ölüm",
+                    "(Doğum + İçe Göç) - (Ölüm + Dışa Göç)",
+                    "İçe Göç - Dışa Göç",
+                    "Doğum + İçe Göç",
+                    "Ölüm + Dışa Göç"
+                ],
+                correct: 1,
+                explanation: "Popülasyon büyüklüğündeki değişiklik: (Doğum + İçe Göç) - (Ölüm + Dışa Göç) formülü ile hesaplanır. Sonuç pozitifse popülasyon büyür, negatifse küçülür, sıfırsa dengededir."
+            },
+            {
+                question: "Işığın ulaşamadığı derin deniz ekosistemlerinde hangi canlılar besin üretir?",
+                options: [
+                    "Fotosentetik algler",
+                    "Fotosentetik bakteriler",
+                    "Kemosentetik bakteriler",
+                    "Bitkiler",
+                    "Siyanobakteriler"
+                ],
+                correct: 2,
+                explanation: "Işığın ulaşamadığı derin deniz ekosistemlerinde kemosentetik bakteriler, hidrotermal bacalar çevresinde kimyasalları enerjiye çevirerek besin üretir. Fotosentez için ışık gereklidir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi yarı parazit bitkiye örnektir?",
+                options: [
+                    "Canavar otu",
+                    "Ökse otu",
+                    "Küstüm otu",
+                    "Papatya",
+                    "Kekik"
+                ],
+                correct: 1,
+                explanation: "Ökse otu yarı parazit bitkidir; klorofili vardır, fotosentez yapar, ancak su ve mineralleri üzerinde yaşadığı ağaçtan alır. Canavar otu ise tam parazittir."
+            },
+            {
+                question: "Bir ekosistemde ayrıştırıcıların tamamen yok olduğunu düşünün. Bu durum ekosistemi nasıl etkiler?",
+                options: [
+                    "Sadece bitkiler etkilenir",
+                    "Sadece hayvanlar etkilenir",
+                    "Ekosistemde hiçbir değişiklik olmaz",
+                    "Organik maddeler ayrışmaz, besin döngüsü durur, yaşam sona erer",
+                    "Sadece su döngüsü etkilenir"
+                ],
+                correct: 3,
+                explanation: "Ayrıştırıcılar organik maddeleri inorganik maddelere dönüştürür. Yok olduklarında organik maddeler ayrışmaz, üreticiler ihtiyaç duyduğu inorganik maddelere ulaşamaz, besin döngüsü durur ve ekosistemde yaşam sona erer."
+            },
+            {
+                question: "Tek Tek Dağları Millî Parkı'nda kurt popülasyonunun izlenmesinin temel amacı nedir?",
+                options: [
+                    "Kurtları evcilleştirmek",
+                    "Kurtların sayısını azaltmak",
+                    "Ekosistem sağlığını ve koruma çalışmalarının etkinliğini değerlendirmek",
+                    "Kurt derisi elde etmek",
+                    "Kurtları başka bölgelere nakletmek"
+                ],
+                correct: 2,
+                explanation: "Kurt popülasyonunun izlenmesi, ekosistem sağlığının göstergesidir. Popülasyon değişimleri, habitat kalitesini, av popülasyonlarını, tehditleri ve koruma çalışmalarının etkinliğini gösterir."
+            },
+            {
+                question: "Kızılçam ormanlarında yangın sonrası süksesyon süreci ne kadar sürer?",
+                options: [
+                    "1-2 yıl",
+                    "5-10 yıl",
+                    "20-25 yıl",
+                    "100 yıl",
+                    "500 yıl"
+                ],
+                correct: 2,
+                explanation: "Kızılçam ormanlarında yangın sonrası ekosistemin kendini yenilemesi birkaç yıl sürer, ancak ormanın biyokütle ve boy olarak eski halini alması, kızılçamın büyümesi için gereken 20-25 yılı bulur."
+            },
+            {
+                question: "Norveç ve İsveç'teki kızıl tilki popülasyonunda 1970'lerde görülen uyuz hastalığı, tilkilerin avı olan yaban tavşanı popülasyonunu nasıl etkilemiştir?",
+                options: [
+                    "Tavşan popülasyonu azalmıştır",
+                    "Tavşan popülasyonu artmıştır",
+                    "Tavşan popülasyonu değişmemiştir",
+                    "Tavşanlar da hastalığa yakalanmıştır",
+                    "Tavşanlar göç etmiştir"
+                ],
+                correct: 1,
+                explanation: "Tilki popülasyonu azalınca, avcı baskısı azalmış ve yaban tavşanı popülasyonunda geçici bir artış görülmüştür. Bu av-avcı ilişkisinin doğal sonucudur."
+            },
+            {
+                question: "Akdeniz fokunun Mersin kıyılarındaki popülasyonu 2015'te neden azalmıştır?",
+                options: [
+                    "Çok fazla yavru doğmuştur",
+                    "Habitat koruma önlemleri alınmıştır",
+                    "Kıyılardaki yapılaşma ve liman inşaatları habitatı tahrip etmiştir",
+                    "Balık popülasyonları artmıştır",
+                    "İklim soğumuştur"
+                ],
+                correct: 2,
+                explanation: "Kıyılardaki yapılaşma ve liman inşaatları fok habitatlarını tahrip etmiş, uygun üreme mağaralarını azaltmış, bu da yavru ölümlerini artırarak popülasyonun azalmasına neden olmuştur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi mutualizmin zorunlu (obligat) örneğidir?",
+                options: [
+                    "Karga ve kızıl geyik",
+                    "Remora balığı ve köpekbalığı",
+                    "Liken birliği (alg ve mantar)",
+                    "Ceviz ağacı ve altındaki bitkiler",
+                    "Bit ve insan"
+                ],
+                correct: 2,
+                explanation: "Liken birliğinde alg ve mantar birbirleri olmadan yaşayamaz, bu zorunlu mutualizmdir. Karga-geyik isteğe bağlı mutualizm, remora-köpekbalığı kommensalizm, ceviz ağacı-amensalizm, bit-parazitizmdir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="test-question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Ekoloji konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

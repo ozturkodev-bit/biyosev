@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Fermantasyon ve Enerji Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #2ecc71;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2ecc71;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #9b59b6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #2196f3;
+        }
+
+        .context-scenario i {
+            color: #2196f3;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2ecc71;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">10. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Fermantasyon</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-flask"></i> Fermantasyon ve Enerji Öğrenme Portalı</h1>
+            <div class="subtitle">5 farklı öğrenme yöntemi ile fermantasyon, enerji metabolizması ve besinlerdeki enerji değerlerini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/5</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+                 <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile fermantasyon ve enerji metabolizmasının temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Fermantasyon çeşitlerini, metabolizmayı ve enerji değerlerini görsel olarak öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile fermantasyon ve metabolizma soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile fermantasyon ve enerji metabolizması hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Fermantasyon, metabolizma ve besin enerjisinin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Fermantasyon ve Enerji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Fermantasyon ve Enerji Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fermantasyon Nedir?</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Oksijen kullanılmadan organik bileşiklerin parçalanması</li>
+                        <li><strong>Yer:</strong> Ökaryot ve prokaryot hücrelerin sitoplazmasında</li>
+                        <li><strong>Hammadde:</strong> Genellikle monosakkaritler (glikoz)</li>
+                        <li><strong>ATP Üretimi:</strong> Glikolizden 2 ATP (net)</li>
+                        <li><strong>NAD⁺ Yenilenmesi:</strong> Fermantasyonun temel amacı</li>
+                        <li><strong>Örnekler:</strong> Yoğurt, peynir, ekmek, turşu, şarap yapımı</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Etil Alkol Fermantasyonu</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Süreç:</strong> Glikoz → Piruvat → Asetaldehit → Etil alkol</li>
+                        <li><strong>CO₂ Çıkışı:</strong> Var (piruvattan ayrılır)</li>
+                        <li><strong>Son Ürün:</strong> Etil alkol (etanol)</li>
+                        <li><strong>Görüldüğü Canlılar:</strong> Maya mantarları, bazı bakteriler, bazı bitki tohumları</li>
+                        <li><strong>Endüstriyel Kullanım:</strong> Ekmek yapımı (hamur kabarması), alkollü içecek üretimi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Laktik Asit Fermantasyonu</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Süreç:</strong> Glikoz → Piruvat → Laktik asit</li>
+                        <li><strong>CO₂ Çıkışı:</strong> Yok</li>
+                        <li><strong>Son Ürün:</strong> Laktik asit</li>
+                        <li><strong>Görüldüğü Canlılar:</strong> Bazı bakteriler, memelilerin kas hücreleri, bazı mantarlar</li>
+                        <li><strong>Endüstriyel Kullanım:</strong> Yoğurt, peynir, turşu, kefir yapımı</li>
+                        <li><strong>Kaslarda:</strong> Oksijen yetersizliğinde ATP üretimi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fermente Besinler ve Sağlık</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Süt Ürünleri:</strong> Yoğurt, peynir, kefir, kırmız, kurut</li>
+                        <li><strong>Diğer Besinler:</strong> Turşu, boza, tarhana, sucuk, pastırma, şarap, bira</li>
+                        <li><strong>Probiyotik Etki:</strong> Bağırsak mikrobiyotasını geliştirir</li>
+                        <li><strong>Sağlık Faydaları:</strong> Sindirim sistemi rahatsızlıklarında olumlu etkiler</li>
+                        <li><strong>Bağışıklık:</strong> Bağışıklık sistemini güçlendirir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Metabolizma ve Enerji</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Metabolizma:</strong> Canlıda gerçekleşen tüm kimyasal tepkimeler</li>
+                        <li><strong>Anabolizma:</strong> Yapım tepkimeleri (fotosentez, protein sentezi)</li>
+                        <li><strong>Katabolizma:</strong> Yıkım tepkimeleri (solunum, sindirim)</li>
+                        <li><strong>Enerji Dengesi:</strong> Alınan enerji = Harcanan enerji</li>
+                        <li><strong>Obezite:</strong> Alınan enerji > Harcanan enerji</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Besinlerin Enerji Değerleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yağlar:</strong> 9 kcal/g (37,7 kJ/g) - En yüksek enerji</li>
+                        <li><strong>Karbohidratlar:</strong> 4 kcal/g (16,7 kJ/g) - Hızlı enerji kaynağı</li>
+                        <li><strong>Proteinler:</strong> 4 kcal/g (16,7 kJ/g) - Gerektiğinde enerji kaynağı</li>
+                        <li><strong>Enerji Birimleri:</strong> Kalori (cal) ve Joule (J)</li>
+                        <li><strong>1 kcal =</strong> 1000 cal = 4,184 kJ</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fermantasyonu Etkileyen Faktörler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sıcaklık:</strong> Enzim aktivitesini etkiler</li>
+                        <li><strong>pH:</strong> Asitlik-bazlık dengesi</li>
+                        <li><strong>Substrat Konsantrasyonu:</strong> Glikoz miktarı</li>
+                        <li><strong>Enzim Miktarı:</strong> Maya veya bakteri miktarı</li>
+                        <li><strong>Oksijen:</strong> Fermantasyon oksijensiz ortamda gerçekleşir</li>
+                        <li><strong>İnhibitörler:</strong> Fermantasyonu engelleyen maddeler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Enerji-Metabolizma İlişkisi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Beslenmenin Amacı:</strong> Metabolik süreçler için enerji sağlamak</li>
+                        <li><strong>Denge:</strong> Enerji alımı ve tüketimi arasında denge olmalı</li>
+                        <li><strong>Sağlıklı Beslenme:</strong> Yeterli ve dengeli besin alımı</li>
+                        <li><strong>Metabolik Hastalıklar:</strong> Obezite, diyabet, kalp-damar hastalıkları</li>
+                        <li><strong>Astronot Örneği:</strong> Metabolizma hızının %75 azaltılması hedefi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Fermantasyon ve Enerji Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Ayşe, evde yoğurt yapmak için sütü kaynatıp ılıttıktan sonra içine bir miktar yoğurt mayası ekliyor ve sıcak bir ortamda bekletiyor. Birkaç saat sonra sütün yoğurda dönüştüğünü görüyor. Bu süreçte hangi fermantasyon çeşidi gerçekleşmiştir ve bu fermantasyonun kimyasal mekanizması nasıldır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Evde yoğurt yapımı, laktik asit fermantasyonunun klasik bir örneğidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Yoğurt yapımında laktik asit fermantasyonu gerçekleşir. Süreç şu şekildedir:</p>
+                        <ol>
+                            <li>Sütteki laktoz (süt şekeri), laktik asit bakterileri tarafından parçalanır.</li>
+                            <li>Glikoliz reaksiyonları ile laktozdan piruvat oluşur.</li>
+                            <li>Piruvat, laktik asit bakterilerinin enzimleri ile laktik aside dönüşür.</li>
+                            <li>Bu sırada NADH'den NAD⁺ yenilenir ve glikoliz devam eder.</li>
+                            <li>Ortamda biriken laktik asit süt proteinlerini (kazein) çöktürerek yoğurt kıvamını oluşturur.</li>
+                        </ol>
+                        <p><strong>Ek Bilgi:</strong> Yoğurdun ekşi tadı laktik asitten kaynaklanır. Probiyotik bakteriler bağırsak sağlığı için faydalıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir fırıncı, ekmek hamurunu mayaladıktan sonra üzerini örtüyor ve ılık bir ortamda bekletiyor. Bir süre sonra hamurun kabardığını görüyor. Ekmek pişirildiğinde ise alkol kokusu geliyor. Bu süreçte hangi fermantasyon çeşidi gerçekleşmiştir ve hamurun kabarmasının nedeni nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ekmek yapımında maya mantarları kullanılır ve etil alkol fermantasyonu gerçekleşir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Ekmek yapımında etil alkol fermantasyonu gerçekleşir. Süreç şu şekildedir:</p>
+                        <ol>
+                            <li>Maya mantarları, hamurdaki nişastayı glikoza parçalar.</li>
+                            <li>Glikoz, glikoliz ile piruvata dönüşür.</li>
+                            <li>Piruvat, mayaların enzimleri ile önce asetaldehite, sonra etil alkole dönüşür.</li>
+                            <li>Piruvattan asetaldehit oluşurken CO₂ açığa çıkar.</li>
+                            <li>Açığa çıkan CO₂ gazı hamur içinde baloncuklar oluşturarak hamurun kabarmasını sağlar.</li>
+                            <li>Pişirme sırasında alkol buharlaşır, CO₂ ise ekmeğin gözenekli yapısını oluşturur.</li>
+                        </ol>
+                        <p><strong>Kimyasal Denklem:</strong> C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Sporcu Mehmet, 400 metre koşu yarışında son 100 metrede bacaklarında yanma ve ağrı hissetmeye başlıyor. Yarıştan sonra nefes nefese kalıyor ve bacakları ağrımaya devam ediyor. Bu durumun fermantasyon ile nasıl bir ilişkisi vardır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yoğun egzersiz sırasında kas hücrelerine yeterli oksijen ulaşamaz ve laktik asit fermantasyonu devreye girer.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Bu durum laktik asit fermantasyonu ile açıklanır:</p>
+                        <ol>
+                            <li>Yoğun egzersiz sırasında kas hücreleri çok fazla ATP'ye ihtiyaç duyar.</li>
+                            <li>Oksijenli solunum yeterli oksijen olduğunda yavaş yavaş ATP üretir.</li>
+                            <li>Ani ve yoğun enerji ihtiyacında kas hücrelerine yeterli oksijen ulaşamaz.</li>
+                            <li>Bu durumda kas hücreleri laktik asit fermantasyonuna başvurur.</li>
+                            <li>Glikoz, laktik asit fermantasyonu ile parçalanır ve ATP üretilir.</li>
+                            <li>Biriken laktik asit kaslarda yanma ve ağrı hissine neden olur.</li>
+                            <li>Yarıştan sonra derin nefes alınması, biriken laktik asidin karaciğerde glikoza dönüştürülmesi için gereken oksijeni sağlar.</li>
+                        </ol>
+                        <p><strong>Ek Bilgi:</strong> Isınma hareketleri, kasların oksijen kullanım verimliliğini artırarak laktik asit birikimini geciktirir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Zeynep Hanım, turşu kurmak için salatalık, su, tuz ve nohut kullanıyor. Kavanozu kapattıktan birkaç gün sonra turşuda gaz kabarcıkları oluştuğunu fark ediyor. Bir hafta sonra ise turşuların ekşi bir tada sahip olduğunu görüyor. Bu süreçte hangi fermantasyon çeşidi gerçekleşmiştir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Turşu yapımında laktik asit bakterileri etkilidir ve laktik asit fermantasyonu gerçekleşir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Turşu yapımında laktik asit fermantasyonu gerçekleşir:</p>
+                        <ol>
+                            <li>Nohut ve sebzelerin üzerindeki doğal laktik asit bakterileri fermantasyonu başlatır.</li>
+                            <li>Sebzelerdeki şekerler (glikoz, fruktoz) bakteriler tarafından parçalanır.</li>
+                            <li>Laktik asit fermantasyonu sonucu laktik asit oluşur.</li>
+                            <li>Ortamda biriken laktik asit pH'ı düşürerek asidik bir ortam oluşturur.</li>
+                            <li>Asidik ortam zararlı mikroorganizmaların gelişimini engeller ve turşunun bozulmadan saklanmasını sağlar.</li>
+                            <li>Gaz kabarcıkları, fermantasyon sırasında açığa çıkan CO₂'den kaynaklanır (laktik asit fermantasyonunda CO₂ çıkışı görülmez ama turşuda diğer bakteriler nedeniyle az miktarda CO₂ oluşabilir).</li>
+                        </ol>
+                        <p><strong>Ek Bilgi:</strong> Tuz, zararlı bakterilerin gelişimini engellerken laktik asit bakterilerinin gelişimine izin verir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Astronotların Mars yolculuğunda kış uykusuna yatırılması planlanıyor. Bu süreçte astronotların metabolizma hızlarının %75 azaltılması hedefleniyor. Metabolizma hızının azaltılması neden önemlidir ve bu durum enerji metabolizması ile nasıl ilişkilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Uzun uzay yolculuklarında astronotların enerji ihtiyaçlarını azaltmak için kış uykusu düşünülüyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Metabolizma hızının azaltılmasının nedenleri:</p>
+                        <ol>
+                            <li><strong>Enerji Tasarrufu:</strong> Uzun yolculukta sınırlı kaynaklarla (oksijen, su, besin) maksimum mesafe kat etmek.</li>
+                            <li><strong>Atık Üretiminin Azalması:</strong> Daha az CO₂, idrar, dışkı üretimi.</li>
+                            <li><strong>Psikolojik Etkilerin Azalması:</strong> Kapalı alanda geçirilen uzun sürenin psikolojik etkilerini minimize etmek.</li>
+                            <li><strong>Fiziksel Sorunların Önlenmesi:</strong> Kas ve kemik erimesi gibi uzay yolculuğu sorunlarını yavaşlatmak.</li>
+                        </ol>
+                        <p><strong>Enerji Metabolizması İlişkisi:</strong></p>
+                        <ul>
+                            <li>Metabolizma hızı, birim zamanda harcanan enerji miktarını ifade eder.</li>
+                            <li>Bazal metabolizma hızı (BMH), dinlenme halinde hayati fonksiyonları sürdürmek için gereken minimum enerjidir.</li>
+                            <li>Metabolizma hızının %75 azaltılması, enerji ihtiyacını ve besin tüketimini büyük ölçüde azaltır.</li>
+                            <li>Kış uykusunda vücut sıcaklığı, kalp atış hızı ve solunum hızı düşer, böylece ATP üretimi ve tüketimi azalır.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Beslenme uzmanı Dr. Can, iki farklı menü hazırlıyor. Birinci menüde 100 gram patates cipsi, ikinci menüde ise 100 gram haşlanmış patates, 100 gram yoğurt ve bir elma var. Bu iki menünün enerji değerleri ve besin ögeleri açısından karşılaştırılması nasıl olur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sağlıklı beslenmede sadece enerji miktarı değil, besin ögelerinin kalitesi de önemlidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> İki menünün karşılaştırması:</p>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Özellik</th>
+                                <th>Menü 1: 100g Patates Cipsi</th>
+                                <th>Menü 2: Haşlanmış Patates + Yoğurt + Elma</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Enerji (kcal)</strong></td>
+                                <td>~494 kcal (yüksek)</td>
+                                <td>~250 kcal (orta)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yağ (g)</strong></td>
+                                <td>27,8 g (yüksek, doymuş yağ fazla)</td>
+                                <td>~4 g (düşük, doymamış yağlar)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Karbohidrat (g)</strong></td>
+                                <td>59,7 g (basit şekerler)</td>
+                                <td>~45 g (kompleks karbohidratlar)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Protein (g)</strong></td>
+                                <td>4,4 g (düşük)</td>
+                                <td>~12 g (yüksek, kaliteli protein)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tuz (g)</strong></td>
+                                <td>1,4 g (yüksek)</td>
+                                <td>~0,3 g (düşük)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin/Mineraller</strong></td>
+                                <td>Az miktarda</td>
+                                <td>C vitamini, potasyum, kalsiyum, probiyotikler</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Doygunluk Süresi</strong></td>
+                                <td>Kısa süreli (yüksek glisemik indeks)</td>
+                                <td>Uzun süreli (düşük glisemik indeks)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sağlık Etkisi</strong></td>
+                                <td>Obezite, kalp-damar hastalıkları riski</td>
+                                <td>Sağlıklı sindirim, bağışıklık sistemini güçlendirme</td>
+                            </tr>
+                        </table>
+                        <p><strong>Sonuç:</strong> Menü 2 daha düşük enerjiye sahip olmasına rağmen daha besleyici, daha uzun süre tok tutan ve sağlık açısından daha faydalıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir bira üretim tesisinde, arpa maltı su ile karıştırılıp ısıtılıyor. Daha sonra maya eklenip fermentasyon tanklarına alınıyor. Fermantasyon sırasında tanklardan CO₂ çıkışı gözleniyor ve sıcaklık kontrol ediliyor. Bu süreçte hangi fermantasyon çeşidi gerçekleşir ve neden sıcaklık kontrolü önemlidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bira üretimi endüstriyel ölçekte etil alkol fermantasyonunun klasik bir örneğidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Bira üretiminde etil alkol fermantasyonu gerçekleşir:</p>
+                        <ol>
+                            <li>Arpa maltındaki nişasta, enzimlerle maltoza parçalanır.</li>
+                            <li>Maya mantarları, maltozu glikoza parçalar.</li>
+                            <li>Glikoz, etil alkol fermantasyonu ile etil alkol ve CO₂'ye dönüşür.</li>
+                            <li>Açığa çıkan CO₂ biraya köpüklü yapısını verir.</li>
+                        </ol>
+                        <p><strong>Sıcaklık Kontrolünün Önemi:</strong></p>
+                        <ul>
+                            <li><strong>Enzim Aktivitesi:</strong> Mayaların enzimleri belirli sıcaklık aralığında optimum çalışır (20-30°C).</li>
+                            <li><strong>Maya Büyümesi:</strong> Sıcaklık mayaların üreme hızını etkiler.</li>
+                            <li><strong>Yan Ürünler:</strong> Yüksek sıcaklıkta istenmeyen yan ürünler (füzel alkoller) oluşabilir ve bira tadını bozabilir.</li>
+                            <li><strong>Fermantasyon Hızı:</strong> Sıcaklık arttıkça fermantasyon hızı artar ama kontrol edilmezse mayalar ölebilir.</li>
+                            <li><strong>Kontaminasyon:</strong> Yüksek sıcaklık, istenmeyen bakterilerin gelişimine neden olabilir.</li>
+                        </ul>
+                        <p><strong>Ek Bilgi:</strong> Bira üretiminde Saccharomyces cerevisiae türü maya kullanılır. Fermantasyon süresi ve sıcaklığı bira çeşidine göre değişir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Hasan Bey, bağırsak problemleri nedeniyle doktora gidiyor. Doktor ona probiyotik içeren fermente besinler tüketmesini öneriyor. Hasan Bey neden fermente besinler tüketmelidir ve bu besinler bağırsak sağlığını nasıl iyileştirir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Fermente besinler probiyotik bakteriler içerir ve bağırsak mikrobiyotasını düzenler.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Fermente besinlerin bağırsak sağlığına faydaları:</p>
+                        <ol>
+                            <li><strong>Probiyotik Kaynağı:</strong> Yoğurt, kefir, turşu gibi fermente besinler canlı probiyotik bakteriler içerir.</li>
+                            <li><strong>Bağırsak Mikrobiyotasını Düzenler:</strong> Probiyotikler bağırsaktaki yararlı bakteri popülasyonunu artırır.</li>
+                            <li><strong>Sindirimi Kolaylaştırır:</strong> Fermantasyon sırasında besinler parçalanır ve sindirimi kolaylaşır.</li>
+                            <li><strong>Bağışıklığı Güçlendirir:</strong> Bağırsaklar bağışıklık sisteminin %70'ini oluşturur. Sağlıklı bağırsak mikrobiyotası bağışıklığı güçlendirir.</li>
+                            <li><strong>Enzim ve Vitamin Üretimi:</strong> Probiyotik bakteriler K vitamini, B vitaminleri ve çeşitli enzimler üretir.</li>
+                            <li><strong>Hastalık Belirtilerini Azaltır:</strong> İrritabl bağırsak sendromu, ülseratif kolit, Crohn hastalığı gibi durumlarda semptomları azaltır.</li>
+                            <li><strong>Zararlı Bakterileri Engeller:</strong> Yararlı bakteriler zararlı bakterilerin yerleşmesini engeller.</li>
+                        </ol>
+                        <p><strong>Önemli Fermente Besinler:</strong> Yoğurt, kefir, lahana turşusu (sauerkraut), kimchi, kombucha, miso, tempeh.</p>
+                        <p><strong>Ek Bilgi:</strong> Prebiyotikler (soğan, sarımsak, muz, tam tahıllar) probiyotiklerin besinidir ve birlikte tüketildiğinde sinbiyotik etki gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Bir sporcu, antrenman öncesi ve sonrası beslenmesinde karbonhidrat, protein ve yağ dengesine dikkat ediyor. Maraton koşusu öncesi "karbonhidrat yüklemesi" yapıyor. Bu stratejinin enerji metabolizması açısından mantığı nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Dayanıklılık sporlarında kas glikojen depolarının dolu olması performansı artırır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Karbonhidrat yüklemesinin enerji metabolizması açısından mantığı:</p>
+                        <ol>
+                            <li><strong>Glikojen Depolama:</strong> Karbonhidratlar vücutta glikojen olarak kas ve karaciğerde depolanır.</li>
+                            <li><strong>Enerji Kaynağı:</strong> Glikojen, egzersiz sırasında kaslar için hızlı ve verimli enerji kaynağıdır.</li>
+                            <li><strong>Maraton Performansı:</strong> Dayanıklılık sporlarında (maraton, triatlon) kas glikojen depoları performansı belirler.</li>
+                            <li><strong>Yükleme Süreci:</strong> Yarıştan 3-7 gün önce karbonhidrat alımı artırılır, antrenman azaltılır.</li>
+                            <li><strong>Depo Kapasitesi:</strong> Normalde kaslar 300-400 g glikojen depolar, yükleme ile 500-600 g'a çıkarılabilir.</li>
+                            <li><strong>Yağ Kullanımı:</strong> Glikojen depoları doluyken vücut yağları daha verimli kullanır.</li>
+                            <li><strong>"Duvar" Etkisinin Önlenmesi:</strong> Maratonun 30-35. km'lerinde glikojen depoları tükenirse sporcu "duvara çarpar" (bitkinlik). Karbonhidrat yüklemesi bunu önler.</li>
+                        </ol>
+                        <p><strong>Metabolik Mekanizma:</strong></p>
+                        <ul>
+                            <li>Karbonhidratlar glikoza parçalanır.</li>
+                            <li>Glikoz, insülin etkisiyle kas ve karaciğer hücrelerine alınır.</li>
+                            <li>Hücrelerde glikoz, glikojen sentaz enzimi ile glikojene dönüştürülür.</li>
+                            <li>Egzersiz sırasında glikojen, glikojen fosforilaz enzimi ile glikoza parçalanır ve enerji üretiminde kullanılır.</li>
+                        </ul>
+                        <p><strong>Ek Bilgi:</strong> 1 g glikojen 3-4 g su tutar, bu nedenle karbonhidrat yüklemesi sırasında kilo artışı normaldir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir gıda mühendisi, probiyotik yoğurt üretirken fermantasyon sürecini kontrol ediyor. Fermantasyonun verimini etkileyen faktörler nelerdir ve bu faktörler nasıl kontrol edilmelidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Endüstriyel yoğurt üretiminde fermantasyon süreci titizlikle kontrol edilir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Fermantasyon verimini etkileyen faktörler ve kontrol yöntemleri:</p>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Faktör</th>
+                                <th>Etkisi</th>
+                                <th>Kontrol Yöntemi</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Sıcaklık</strong></td>
+                                <td>Enzim aktivitesini, bakteri büyüme hızını ve metabolizmasını etkiler</td>
+                                <td>40-45°C'de sabit tutulur (termofilik bakteriler için optimum)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>pH</strong></td>
+                                <td>Bakteri aktivitesini, yoğurt tekstürünü ve tadını etkiler</td>
+                                <td>Başlangıç pH 6,5, son pH 4,6-4,4 (asitlik kontrolü)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maya/Kültür Miktarı</strong></td>
+                                <td>Fermantasyon süresini ve ürün kalitesini etkiler</td>
+                                <td>%2-3 oranında starter kültür kullanılır</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Süt Kalitesi</strong></td>
+                                <td>Besin içeriği, antibiyotik kalıntıları bakterileri etkiler</td>
+                                <td>Kaliteli, antibiyotiksiz süt kullanılır, pastörize edilir</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oksijen</strong></td>
+                                <td>Laktik asit bakterileri fakültatif anaerobiktir</td>
+                                <td>Kapalı fermentasyon tankları kullanılır</td>
+                            </tr>
+                            <tr>
+                                <td><strong>İnkübasyon Süresi</strong></td>
+                                <td>Asitlik, kıvam ve probiyotik canlılığını etkiler</td>
+                                <td>4-8 saat (istenen asitliğe göre ayarlanır)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>İnhibitörler</strong></td>
+                                <td>Antibiyotikler, sanitasyon kimyasalları bakterileri öldürür</td>
+                                <td>Kaliteli hammaddeler, uygun sanitasyon</td>
+                            </tr>
+                        </table>
+                        <p><strong>Probiyotik Yoğurt Üretiminde Ek Faktörler:</strong></p>
+                        <ul>
+                            <li><strong>Probiyotik Suş Seçimi:</strong> Lactobacillus acidophilus, Bifidobacterium spp. gibi sindirim sisteminde canlı kalabilen suşlar.</li>
+                            <li><strong>Prebiyotik Eklenmesi:</strong> İnülin, fruktooligosakkaritler gibi prebiyotikler probiyotiklerin canlılığını artırır.</li>
+                            <li><strong>Soğuk Zincir:</strong> Probiyotik canlılığını korumak için soğukta muhafaza ve dağıtım.</li>
+                            <li><strong>Canlı Hücre Sayısı:</strong> Tüketim anında en az 10⁶-10⁷ CFU/g canlı probiyotik hücre olmalıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Fermantasyon ve Enerji Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #3498db; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Fermantasyon ve Enerji Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> FERMANTASYON NEDİR?</div>
+                    <ul class="summary-list">
+                        <li>Fermantasyon, <strong>oksijen kullanılmadan</strong> organik bileşiklerin (genellikle glikoz) parçalanmasıdır.</li>
+                        <li><strong>Yer:</strong> Ökaryot ve prokaryot hücrelerin sitoplazmasında gerçekleşir.</li>
+                        <li><strong>Temel amaç:</strong> Glikoliz sırasında NAD⁺'nın yenilenmesini sağlamaktır. NAD⁺ olmadan glikoliz durur.</li>
+                        <li><strong>ATP Üretimi:</strong> Sadece glikoliz evresinde 2 ATP (net) üretilir. Fermantasyonun kendisi ATP üretmez.</li>
+                        <li><strong>Son ürünler:</strong> Organik bileşikler (etil alkol, laktik asit) ve bazen inorganik bileşikler (CO₂).</li>
+                        <li>Fermantasyon, oluşan son ürüne göre <strong>etil alkol fermantasyonu</strong> ve <strong>laktik asit fermantasyonu</strong> olarak ikiye ayrılır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-wine-bottle"></i> ETİL ALKOL FERMANTASYONU</div>
+                    <ul class="summary-list">
+                        <li><strong>Kimyasal Denklem:</strong> C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP</li>
+                        <li><strong>Süreç:</strong>
+                            <ol style="margin-left: 20px;">
+                                <li>Glikoz → 2 Piruvat (glikoliz)</li>
+                                <li>Piruvat → Asetaldehit + CO₂ (piruvat dekarboksilaz)</li>
+                                <li>Asetaldehit → Etil alkol (alkol dehidrogenaz, NADH kullanılır)</li>
+                            </ol>
+                        </li>
+                        <li><strong>CO₂ Çıkışı:</strong> Var (piruvattan ayrılırken).</li>
+                        <li><strong>Görüldüğü Canlılar:</strong> Maya mantarları (Saccharomyces cerevisiae), bazı bakteriler, bazı bitki tohumları.</li>
+                        <li><strong>Endüstriyel Kullanım:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Ekmek yapımı:</strong> CO₂ hamuru kabartır, alkol pişerken buharlaşır.</li>
+                                <li><strong>Alkollü içecekler:</strong> Şarap (üzüm), bira (arpa), viski (arpa, mısır).</li>
+                                <li><strong>Biyoetanol üretimi:</strong> Yenilenebilir yakıt kaynağı.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-drumstick-bite"></i> LAKTİK ASİT FERMANTASYONU</div>
+                    <ul class="summary-list">
+                        <li><strong>Kimyasal Denklem:</strong> C₆H₁₂O₆ → 2C₃H₆O₃ (laktik asit) + 2ATP</li>
+                        <li><strong>Süreç:</strong>
+                            <ol style="margin-left: 20px;">
+                                <li>Glikoz → 2 Piruvat (glikoliz)</li>
+                                <li>Piruvat → Laktik asit (laktat dehidrogenaz, NADH kullanılır)</li>
+                            </ol>
+                        </li>
+                        <li><strong>CO₂ Çıkışı:</strong> Yok.</li>
+                        <li><strong>Görüldüğü Canlılar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Bakteriler:</strong> Lactobacillus, Streptococcus türleri (yoğurt, peynir, turşu yapımı).</li>
+                                <li><strong>Memeli kas hücreleri:</strong> Oksijen yetersizliğinde (yoğun egzersiz).</li>
+                                <li><strong>Bazı mantarlar.</strong></li>
+                            </ul>
+                        </li>
+                        <li><strong>Endüstriyel Kullanım:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Süt ürünleri:</strong> Yoğurt, peynir, kefir, ayran.</li>
+                                <li><strong>Sebze fermente ürünleri:</strong> Turşu, lahana turşusu (sauerkraut), kimchi.</li>
+                                <li><strong>Et ürünleri:</strong> Sucuk, pastırma (kürleme işlemi).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kaslarda Laktik Asit Fermantasyonu:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Yoğun egzersizde kas hücrelerine yeterli oksijen ulaşamaz.</li>
+                                <li>Kas hücreleri laktik asit fermantasyonu ile ATP üretir.</li>
+                                <li>Biriken laktik asit kaslarda yanma ve ağrıya neden olur.</li>
+                                <li>Dinlenme sırasında laktik asit karaciğerde glikoza dönüştürülür (Cori döngüsü).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-utensils"></i> FERMENTE BESİNLER VE SAĞLIK</div>
+                    <ul class="summary-list">
+                        <li><strong>Fermente Besin Tanımı:</strong> Bakteri, mantar, maya gibi mikroorganizmaların kontrollü büyümesi ve enzimatik işlemlerle üretilen yiyecek/içecekler.</li>
+                        <li><strong>Fermente Süt Ürünleri:</strong> Yoğurt, peynir, kefir, kırmız, kurut (kurutulmuş yoğurt).</li>
+                        <li><strong>Diğer Fermente Besinler:</strong> Turşu, boza, tarhana, şarap, bira, sirke, soya sosu, sucuk, pastırma.</li>
+                        <li><strong>Sağlık Faydaları:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Probiyotik kaynağı:</strong> Canlı yararlı bakteriler içerir.</li>
+                                <li><strong>Bağırsak mikrobiyotasını düzenler:</strong> Yararlı bakteri popülasyonunu artırır.</li>
+                                <li><strong>Sindirimi kolaylaştırır:</strong> Besinler önceden parçalanmıştır.</li>
+                                <li><strong>Bağışıklığı güçlendirir:</strong> Bağırsak-bağışıklık sistemi ilişkisi.</li>
+                                <li><strong>Vitamin ve enzim üretimi:</strong> B vitaminleri, K vitamini, çeşitli enzimler.</li>
+                                <li><strong>Hastalık semptomlarını azaltır:</strong> İrritabl bağırsak sendromu, ülseratif kolit, Crohn hastalığı, hazımsızlık, şişkinlik.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Saglam Suyu Örneği:</strong> Adana'ya özgü coğrafi işaretli fermente bir içecek. Bulgur unu, ekşi maya, su, tuz, siyah havuç, saglam ve pancarın fermente edilmesiyle yapılır. Mor-kırmızı renkli, ekşi bir içecektir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> ENERJİ-METABOLİZMA İLİŞKİSİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Metabolizma:</strong> Canlı organizmalarda yaşamın sürdürülmesi için gerçekleşen tüm kimyasal reaksiyonların bütünü.</li>
+                        <li><strong>Anabolizma (Yapım):</strong> Küçük moleküllerden büyük moleküllerin sentezlendiği tepkimeler (protein sentezi, fotosentez). Enerji gerektirir.</li>
+                        <li><strong>Katabolizma (Yıkım):</strong> Büyük moleküllerden küçük moleküllerin oluşturulduğu tepkimeler (solunum, sindirim). Enerji açığa çıkarır.</li>
+                        <li><strong>Enerji Dengesi:</strong> Sağlıklı yaşam için alınan enerji = harcanan enerji olmalıdır.</li>
+                        <li><strong>Obezite:</strong> Alınan enerji > harcanan enerji olduğunda vücutta aşırı yağ birikmesi. Diyabet, kalp-damar hastalıkları, inme riskini artırır.</li>
+                        <li><strong>Astronot Örneği (Kış Uykusu):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Mars yolculuğu gibi uzun uzay görevlerinde astronotların kış uykusuna yatırılması planlanıyor.</li>
+                                <li>Metabolizma hızının %75 azaltılması hedefleniyor.</li>
+                                <li>Amaç: Enerji tasarrufu, atık üretiminin azaltılması, psikolojik etkilerin minimize edilmesi.</li>
+                                <li>DADLE maddesi gibi yapay kış uykusu indükleyicileri araştırılıyor.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-apple-alt"></i> BESİNLERİN ENERJİ DEĞERLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Besin Grubu</th>
+                            <th>Temel Bileşenler</th>
+                            <th>Enerji Değeri (1g)</th>
+                            <th>Özellikler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Yağlar</strong></td>
+                            <td>Yağ asitleri, gliserol</td>
+                            <td>9 kcal/g (37,7 kJ/g)</td>
+                            <td>En yüksek enerji, uzun süreli enerji deposu, hücre zarı yapısı, hormon öncüsü</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Karbohidratlar</strong></td>
+                            <td>Glikoz, fruktoz, galaktoz</td>
+                            <td>4 kcal/g (16,7 kJ/g)</td>
+                            <td>Hızlı enerji kaynağı, beyin için temel enerji, glikojen olarak depolanır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Proteinler</strong></td>
+                            <td>Amino asitler</td>
+                            <td>4 kcal/g (16,7 kJ/g)</td>
+                            <td>Yapısal görev (kas, enzim, hormon), gerektiğinde enerji kaynağı</td>
+                        </tr>
+                    </table>
+                    
+                    <ul class="summary-list" style="margin-top: 20px;">
+                        <li><strong>Enerji Birimleri:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kalori (cal):</strong> 1 gram suyun sıcaklığını 1°C artırmak için gereken enerji.</li>
+                                <li><strong>Kilokalori (kcal):</strong> 1000 cal = 1 kcal. Besin etiketlerindeki "kalori" aslında kilokaloridir.</li>
+                                <li><strong>Joule (J):</strong> Uluslararası birim sisteminde enerji birimi.</li>
+                                <li><strong>Dönüşüm:</strong> 1 kcal = 4,184 kJ (kilojoule)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Neden Yağlar Daha Fazla Enerji Verir?</strong> Yağ molekülleri bol miktarda C-H bağı içerir. Hücresel solunumda bu bağların parçalanması çok ATP üretilmesini sağlar. Karbohidratlarda daha fazla oksijen atomu vardır, bu nedenle daha az C-H bağı bulunur.</li>
+                        <li><strong>Besin Etiketlerinin Okunması:</strong> Gıda ambalajlarındaki enerji ve besin ögeleri tabloları sağlıklı seçim yapmaya yardımcı olur. Porsiyon başına değerlere dikkat edilmelidir.</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Sağlıklı beslenmede sadece enerji miktarı değil, besin ögelerinin kalitesi de önemlidir. 100 kcal'lık patates cipsi ile 100 kcal'lık meyve aynı enerjiyi verse de vitamin, mineral, lif içerikleri ve sağlık etkileri farklıdır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cogs"></i> FERMANTASYONU ETKİLEYEN FAKTÖRLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Sıcaklık:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Enzim aktivitesini doğrudan etkiler.</li>
+                                <li>Her mikroorganizmanın optimum sıcaklık aralığı vardır.</li>
+                                <li>Maya için: 20-30°C, Laktik asit bakterileri için: 40-45°C.</li>
+                                <li>Yüksek sıcaklık enzimleri denatüre eder, düşük sıcaklık aktiviteyi yavaşlatır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>pH (Asitlik-Bazlık):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Enzimler belirli pH aralığında çalışır.</li>
+                                <li>Maya için optimum pH: 4-6, Laktik asit bakterileri için: 5,5-6,5.</li>
+                                <li>Asidik ortam zararlı bakterileri inhibe eder.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Substrat (Besin) Konsantrasyonu:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Glikoz gibi substratların miktarı fermantasyon hızını etkiler.</li>
+                                <li>Substrat sınırlayıcı faktör olabilir.</li>
+                                <li>Yüksek şeker konsantrasyonu osmotik basınç oluşturarak mayaları inhibe edebilir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Enzim/Mikroorganizma Miktarı:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Maya veya bakteri miktarı arttıkça fermantasyon hızı artar.</li>
+                                <li>Starter kültür kalitesi ve canlılığı önemlidir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Oksijen:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Fermantasyon oksijensiz (anaerobik) ortamda gerçekleşir.</li>
+                                <li>Oksijen varlığında mayalar oksijenli solunumu tercih eder (Pasteur etkisi).</li>
+                                <li>Kapalı kaplar veya özel fermentörler kullanılır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>İnhibitörler (Engelleyiciler):</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Antibiyotikler, ağır metaller, yüksek tuz/şeker konsantrasyonu.</li>
+                                <li>Bazı inhibitörler rekabetçi veya rekabetçi olmayan engelleme yapar.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-vial"></i> KONTROL NOKTASI: FERMANTASYON KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Sorular/Fermantasyon Çeşitleri</th>
+                            <th>Etil Alkol Fermantasyonu</th>
+                            <th>Laktik Asit Fermantasyonu</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Glikoliz gerçekleşir mi?</strong></td>
+                            <td>Evet</td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CO₂ çıkışı gözlenir mi?</strong></td>
+                            <td>Evet</td>
+                            <td>Hayır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ATP sentezi gerçekleşir mi?</strong></td>
+                            <td>Evet (glikolizden 2 ATP net)</td>
+                            <td>Evet (glikolizden 2 ATP net)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Son ürün çeşitleri nelerdir?</strong></td>
+                            <td>Etil alkol (etanol)</td>
+                            <td>Laktik asit (laktat)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ETS görev alır mı?</strong></td>
+                            <td>Hayır</td>
+                            <td>Hayır</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hangi canlılarda görülür?</strong></td>
+                            <td>Maya mantarları, bazı bakteriler, bazı bitki tohumları</td>
+                            <td>Laktik asit bakterileri, memeli kas hücreleri, bazı mantarlar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Endüstriyel kullanım</strong></td>
+                            <td>Ekmek, alkollü içecekler, biyoetanol</td>
+                            <td>Yoğurt, peynir, turşu, et ürünleri</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Fermantasyon Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/10fermantasyon.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 5) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 30 Fermantasyon ve Enerji Sorusu
+        const csvData = `Fermantasyon nedir?,"Oksijen kullanılmadan organik bileşiklerin (genellikle glikoz) parçalanmasıdır. Temel amaç NAD⁺'nın yenilenmesidir."
+Fermantasyon nerede gerçekleşir?,"Ökaryot ve prokaryot hücrelerin sitoplazmasında gerçekleşir."
+Fermantasyon sırasında net kaç ATP üretilir?,"2 ATP (glikoliz evresinde üretilir, fermantasyonun kendisi ATP üretmez)."
+Fermantasyonun temel amacı nedir?,"Glikoliz sırasında oluşan NADH'den NAD⁺'nın yenilenmesini sağlamaktır. NAD⁺ olmadan glikoliz durur."
+Etil alkol fermantasyonunun kimyasal denklemi nedir?,"C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP"
+Etil alkol fermantasyonunda CO₂ çıkışı olur mu?,"Evet, piruvattan asetaldehit oluşurken CO₂ ayrılır."
+Etil alkol fermantasyonu hangi canlılarda görülür?,"Maya mantarları (Saccharomyces cerevisiae), bazı bakteriler, bazı bitki tohumları."
+Ekmek yapımında hamur neden kabarır?,"Etil alkol fermantasyonu sırasında açığa çıkan CO₂ gazı hamur içinde baloncuklar oluşturur."
+Laktik asit fermantasyonunun kimyasal denklemi nedir?,"C₆H₁₂O₆ → 2C₃H₆O₃ (laktik asit) + 2ATP"
+Laktik asit fermantasyonunda CO₂ çıkışı olur mu?,"Hayır, laktik asit fermantasyonunda CO₂ çıkışı görülmez."
+Laktik asit fermantasyonu hangi canlılarda görülür?,"Laktik asit bakterileri (Lactobacillus, Streptococcus), memeli kas hücreleri, bazı mantarlar."
+Yoğurt yapımında hangi fermantasyon çeşidi gerçekleşir?,"Laktik asit fermantasyonu. Laktik asit bakterileri süt şekerini (laktozu) laktik aside dönüştürür."
+Kaslarda laktik asit fermantasyonu neden gerçekleşir?,"Yoğun egzersizde kas hücrelerine yeterli oksijen ulaşamaz. Kas hücreleri laktik asit fermantasyonu ile ATP üretir."
+Fermente besin nedir?,"Bakteri, mantar, maya gibi mikroorganizmaların kontrollü büyümesi ve enzimatik işlemlerle üretilen yiyecek/içeceklerdir."
+Fermente besinlere örnekler veriniz.,"Yoğurt, peynir, kefir, turşu, boza, tarhana, şarap, bira, sirke, sucuk, pastırma."
+Fermente besinlerin sağlık faydaları nelerdir?,"Probiyotik kaynağıdır, bağırsak mikrobiyotasını düzenler, sindirimi kolaylaştırır, bağışıklığı güçlendirir, vitamin/enzim üretir."
+Metabolizma nedir?,"Canlı organizmalarda yaşamın sürdürülmesi için gerçekleşen tüm kimyasal reaksiyonların bütünüdür."
+Anabolizma ve katabolizma nedir?,"Anabolizma: Yapım tepkimeleri (protein sentezi). Katabolizma: Yıkım tepkimeleri (solunum, sindirim)."
+Sağlıklı beslenmede enerji dengesi nasıl olmalıdır?,"Alınan enerji = Harcanan enerji olmalıdır. Denge bozulursa obezite veya zayıflık görülür."
+Obezite nedir ve hangi hastalıklara yol açar?,"Vücutta sağlığı bozacak ölçüde aşırı yağ birikmesidir. Diyabet, kalp-damar hastalıkları, inme, solunum hastalıkları riskini artırır."
+Astronotlar neden kış uykusuna yatırılmak isteniyor?,"Uzun uzay yolculuklarında enerji tasarrufu, atık üretiminin azaltılması, psikolojik etkilerin minimize edilmesi için."
+1 gram yağ kaç kcal enerji verir?,"9 kcal/g (37,7 kJ/g) - en yüksek enerji değeri."
+1 gram karbonhidrat kaç kcal enerji verir?,"4 kcal/g (16,7 kJ/g) - hızlı enerji kaynağı."
+1 gram protein kaç kcal enerji verir?,"4 kcal/g (16,7 kJ/g) - yapısal görevleri de vardır."
+Kalori ve kilokalori nedir?,"Kalori (cal): 1g suyun sıcaklığını 1°C artırmak için gereken enerji. Kilokalori (kcal): 1000 cal. Besin etiketlerindeki 'kalori' aslında kilokaloridir."
+1 kcal kaç kJ'dir?,"1 kcal = 4,184 kJ (kilojoule)"
+Neden yağlar karbonhidratlardan daha fazla enerji verir?,"Yağ molekülleri bol miktarda C-H bağı içerir. Hücresel solunumda bu bağların parçalanması çok ATP üretilmesini sağlar. Karbohidratlarda daha fazla oksijen atomu vardır."
+Fermantasyonu etkileyen faktörler nelerdir?,"Sıcaklık, pH, substrat konsantrasyonu, enzim/mikroorganizma miktarı, oksijen varlığı, inhibitörler."
+Saglam suyu nedir?,"Adana'ya özgü coğrafi işaretli fermente bir içecek. Bulgur unu, ekşi maya, su, tuz, siyah havuç, saglam ve pancarın fermente edilmesiyle yapılır."
+Probiyotik nedir?,"Canlı yararlı bakterilerdir. Fermente besinlerde bulunur, bağırsak sağlığını olumlu etkiler."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions
+        const testQuestions = [
+            {
+                question: "Fermantasyon nedir?",
+                options: [
+                    "Oksijenli ortamda organik bileşiklerin parçalanması",
+                    "Oksijen kullanılmadan organik bileşiklerin parçalanması",
+                    "Sadece bitkilerde gerçekleşen enerji üretim süreci",
+                    "Protein sentezi süreci",
+                    "DNA replikasyonu süreci"
+                ],
+                correct: 1,
+                explanation: "Fermantasyon, oksijen kullanılmadan organik bileşiklerin (genellikle glikoz) parçalanmasıdır. Temel amaç NAD⁺'nın yenilenmesidir. Ökaryot ve prokaryot hücrelerin sitoplazmasında gerçekleşir."
+            },
+            {
+                question: "Fermantasyon sırasında net kaç ATP üretilir?",
+                options: ["0 ATP", "2 ATP", "4 ATP", "36 ATP", "38 ATP"],
+                correct: 1,
+                explanation: "Fermantasyon sırasında sadece glikoliz evresinde 2 ATP (net) üretilir. Fermantasyonun kendisi ATP üretmez, sadece NAD⁺'nın yenilenmesini sağlar."
+            },
+            {
+                question: "Etil alkol fermantasyonunun kimyasal denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "C₆H₁₂O₆ → 2C₃H₆O₃ + 2ATP",
+                    "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP",
+                    "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 36ATP",
+                    "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂",
+                    "C₆H₁₂O₆ → 3C₂H₄O₂ + 2ATP"
+                ],
+                correct: 1,
+                explanation: "Etil alkol fermantasyonunun kimyasal denklemi: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP şeklindedir. Glikoz, etil alkol ve karbondioksite dönüşür."
+            },
+            {
+                question: "Aşağıdakilerden hangisi etil alkol fermantasyonunun özelliklerinden değildir?",
+                options: [
+                    "CO₂ çıkışı vardır",
+                    "Maya mantarlarında görülür",
+                    "Son ürün etil alkoldür",
+                    "Oksijenli ortamda gerçekleşir",
+                    "Ekmek yapımında kullanılır"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Etil alkol fermantasyonu oksijensiz (anaerobik) ortamda gerçekleşir. Oksijen varlığında mayalar oksijenli solunumu tercih eder (Pasteur etkisi). CO₂ çıkışı vardır, mayalarda görülür, son ürün etil alkoldür ve ekmek yapımında kullanılır."
+            },
+            {
+                question: "Laktik asit fermantasyonu ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "CO₂ çıkışı vardır",
+                    "Son ürün etil alkoldür",
+                    "Sadece bitkilerde görülür",
+                    "Yoğurt yapımında gerçekleşir",
+                    "Oksijenli ortamda gerçekleşir"
+                ],
+                correct: 3,
+                explanation: "Laktik asit fermantasyonu yoğurt yapımında gerçekleşir. Laktik asit bakterileri süt şekerini (laktozu) laktik aside dönüştürür. CO₂ çıkışı yoktur, son ürün laktik asittir, bakterilerde ve memeli kas hücrelerinde görülür, oksijensiz ortamda gerçekleşir."
+            },
+            {
+                question: "Kaslarda laktik asit fermantasyonu ne zaman gerçekleşir?",
+                options: [
+                    "Dinlenme halindeyken",
+                    "Uyku sırasında",
+                    "Yeterli oksijen olduğunda",
+                    "Yoğun egzersiz sırasında oksijen yetersizliğinde",
+                    "Sindirim sırasında"
+                ],
+                correct: 3,
+                explanation: "Kaslarda laktik asit fermantasyonu, yoğun egzersiz sırasında kas hücrelerine yeterli oksijen ulaşamadığında gerçekleşir. Kas hücreleri laktik asit fermantasyonu ile ATP üretir. Biriken laktik asit kaslarda yanma ve ağrıya neden olur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi fermente bir besin değildir?",
+                options: ["Yoğurt", "Peynir", "Ekmek", "Taze süt", "Turşu"],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Taze süt fermente bir besin değildir. Yoğurt, peynir, ekmek (mayalanma süreci ile) ve turşu fermente besinlerdir. Fermente besinler, mikroorganizmaların kontrollü büyümesi ve enzimatik işlemlerle üretilen yiyecek/içeceklerdir."
+            },
+            {
+                question: "Fermente besinlerin sağlık faydaları arasında aşağıdakilerden hangisi yer almaz?",
+                options: [
+                    "Probiyotik kaynağıdır",
+                    "Bağırsak mikrobiyotasını düzenler",
+                    "Sindirimi zorlaştırır",
+                    "Bağışıklığı güçlendirir",
+                    "Vitamin ve enzim üretimine katkı sağlar"
+                ],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Fermente besinler sindirimi kolaylaştırır, zorlaştırmaz. Fermantasyon sırasında besinler önceden parçalandığı için sindirimi daha kolaydır. Fermente besinler probiyotik kaynağıdır, bağırsak mikrobiyotasını düzenler, bağışıklığı güçlendirir ve vitamin/enzim üretimine katkı sağlar."
+            },
+            {
+                question: "Metabolizma nedir?",
+                options: [
+                    "Sadece sindirim sistemi reaksiyonları",
+                    "Canlıda gerçekleşen tüm kimyasal reaksiyonların bütünü",
+                    "Sadece solunum reaksiyonları",
+                    "Sadece protein sentezi reaksiyonları",
+                    "Sadece fotosentez reaksiyonları"
+                ],
+                correct: 1,
+                explanation: "Metabolizma, canlı organizmalarda yaşamın sürdürülmesi için gerçekleşen tüm kimyasal reaksiyonların bütünüdür. Anabolizma (yapım) ve katabolizma (yıkım) olarak ikiye ayrılır."
+            },
+            {
+                question: "Anabolizma ve katabolizma ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Anabolizma: Yıkım tepkimeleri, Katabolizma: Yapım tepkimeleri",
+                    "Anabolizma: Enerji açığa çıkarır, Katabolizma: Enerji gerektirir",
+                    "Anabolizma: Yapım tepkimeleri, Katabolizma: Yıkım tepkimeleri",
+                    "İkisi de aynı anlama gelir",
+                    "Anabolizma sadece bitkilerde, katabolizma sadece hayvanlarda görülür"
+                ],
+                correct: 2,
+                explanation: "Anabolizma: Küçük moleküllerden büyük moleküllerin sentezlendiği yapım tepkimeleridir (protein sentezi, fotosentez). Enerji gerektirir. Katabolizma: Büyük moleküllerden küçük moleküllerin oluşturulduğu yıkım tepkimeleridir (solunum, sindirim). Enerji açığa çıkarır."
+            },
+            {
+                question: "Sağlıklı beslenmede enerji dengesi nasıl olmalıdır?",
+                options: [
+                    "Alınan enerji > Harcanan enerji",
+                    "Alınan enerji < Harcanan enerji",
+                    "Alınan enerji = Harcanan enerji",
+                    "Sadece yağ alımı önemlidir",
+                    "Sadece protein alımı önemlidir"
+                ],
+                correct: 2,
+                explanation: "Sağlıklı beslenmede alınan enerji = harcanan enerji olmalıdır. Alınan enerji > harcanan enerji olduğunda obezite, alınan enerji < harcanan enerji olduğunda zayıflık görülür."
+            },
+            {
+                question: "Obezite ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Vücutta aşırı yağ birikmesidir",
+                    "Diyabet riskini artırır",
+                    "Kalp-damar hastalıkları riskini artırır",
+                    "Sağlıklı bir durumdur",
+                    "İnme riskini artırır"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Obezite sağlıklı bir durum değildir. Vücutta sağlığı bozacak ölçüde aşırı yağ birikmesidir. Diyabet, kalp-damar hastalıkları, inme, solunum hastalıkları riskini artırır."
+            },
+            {
+                question: "Astronotların Mars yolculuğunda kış uykusuna yatırılmasının temel amacı nedir?",
+                options: [
+                    "Daha fazla yemek yemelerini sağlamak",
+                    "Metabolizma hızlarını artırmak",
+                    "Metabolizma hızlarını azaltarak enerji tasarrufu sağlamak",
+                    "Kas kütlelerini artırmak",
+                    "Daha fazla oksijen tüketmelerini sağlamak"
+                ],
+                correct: 2,
+                explanation: "Astronotların kış uykusuna yatırılmasının temel amacı, metabolizma hızlarını %75 azaltarak enerji tasarrufu sağlamak, atık üretimini azaltmak ve psikolojik etkileri minimize etmektir. Uzun uzay yolculuklarında sınırlı kaynaklarla maksimum mesafe kat etmek için."
+            },
+            {
+                question: "1 gram yağ kaç kcal enerji verir?",
+                options: ["2 kcal/g", "4 kcal/g", "7 kcal/g", "9 kcal/g", "12 kcal/g"],
+                correct: 3,
+                explanation: "1 gram yağ 9 kcal (37,7 kJ) enerji verir. Bu, besin ögeleri arasında en yüksek enerji değeridir. Yağ molekülleri bol miktarda C-H bağı içerir ve bu bağların parçalanması çok ATP üretilmesini sağlar."
+            },
+            {
+                question: "1 gram karbonhidrat kaç kcal enerji verir?",
+                options: ["2 kcal/g", "4 kcal/g", "7 kcal/g", "9 kcal/g", "12 kcal/g"],
+                correct: 1,
+                explanation: "1 gram karbonhidrat 4 kcal (16,7 kJ) enerji verir. Karbonhidratlar hızlı enerji kaynağıdır, beyin için temel enerji kaynağıdır ve glikojen olarak depolanır."
+            },
+            {
+                question: "1 gram protein kaç kcal enerji verir?",
+                options: ["2 kcal/g", "4 kcal/g", "7 kcal/g", "9 kcal/g", "12 kcal/g"],
+                correct: 1,
+                explanation: "1 gram protein 4 kcal (16,7 kJ) enerji verir. Proteinlerin asıl görevi yapısal olmaktır (kas, enzim, hormon), ancak gerektiğinde enerji kaynağı olarak da kullanılabilirler."
+            },
+            {
+                question: "Kalori ve kilokalori ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "1 kalori = 1000 kilokalori",
+                    "Besin etiketlerindeki 'kalori' aslında kilokaloridir",
+                    "Kalori, Joule'dan daha büyük bir birimdir",
+                    "1 kilokalori = 1 kalori",
+                    "Kalori sadece yağlar için kullanılan bir birimdir"
+                ],
+                correct: 1,
+                explanation: "Besin etiketlerindeki 'kalori' aslında kilokaloridir (kcal). 1 kilokalori = 1000 kalori. Kalori (cal): 1 gram suyun sıcaklığını 1°C artırmak için gereken enerjidir."
+            },
+            {
+                question: "1 kcal kaç kJ'dir?",
+                options: ["1 kJ", "2,184 kJ", "4,184 kJ", "6,184 kJ", "8,184 kJ"],
+                correct: 2,
+                explanation: "1 kcal = 4,184 kJ (kilojoule). Joule, uluslararası birim sisteminde (SI) enerji birimidir. Besin etiketlerinde çoğu zaman hem kcal hem kJ değerleri birlikte verilir."
+            },
+            {
+                question: "Neden yağlar karbonhidratlardan daha fazla enerji verir?",
+                options: [
+                    "Yağlar daha hafiftir",
+                    "Yağlar daha lezzetlidir",
+                    "Yağ molekülleri bol miktarda C-H bağı içerir",
+                    "Yağlar daha kolay sindirilir",
+                    "Yağlar daha fazla oksijen atomu içerir"
+                ],
+                correct: 2,
+                explanation: "Yağ molekülleri bol miktarda C-H (karbon-hidrojen) bağı içerir. Hücresel solunumda bu bağların parçalanması çok ATP üretilmesini sağlar. Karbonhidratlarda daha fazla oksijen atomu vardır, bu nedenle daha az C-H bağı bulunur ve daha az enerji verir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi fermantasyonu etkileyen faktörlerden değildir?",
+                options: [
+                    "Sıcaklık",
+                    "pH",
+                    "Substrat (besin) konsantrasyonu",
+                    "Oksijen varlığı",
+                    "Işık şiddeti"
+                ],
+                correct: 4,
+                correctIndex: 4,
+                explanation: "Işık şiddeti fermantasyonu etkileyen bir faktör değildir. Fermantasyon oksijensiz ortamda gerçekleşir ve ışığa ihtiyaç duymaz. Fermantasyonu etkileyen faktörler: Sıcaklık, pH, substrat konsantrasyonu, enzim/mikroorganizma miktarı, oksijen varlığı, inhibitörler."
+            },
+            {
+                question: "Saglam suyu nedir?",
+                options: [
+                    "Bir çeşit meyve suyu",
+                    "Adana'ya özgü fermente bir içecek",
+                    "Sadece hayvansal kaynaklı bir içecek",
+                    "Sentetik bir içecek",
+                    "Sadece kışın tüketilen bir içecek"
+                ],
+                correct: 1,
+                explanation: "Saglam suyu, Adana'da asırlardır üretilen, yöre ile ünlenmiş ve coğrafi işaret tescili almış fermente bir içecektir. Bulgur unu, ekşi maya, su, tuz, siyah havuç, saglam ve pancarın fermente edilmesiyle yapılır. Mor-kırmızı renkli, ekşi bir içecektir."
+            },
+            {
+                question: "Probiyotik nedir?",
+                options: [
+                    "Zararlı bakteriler",
+                    "Vitamin çeşidi",
+                    "Canlı yararlı bakteriler",
+                    "Mineral çeşidi",
+                    "Protein çeşidi"
+                ],
+                correct: 2,
+                explanation: "Probiyotikler, canlı yararlı bakterilerdir. Fermente besinlerde (yoğurt, kefir, turşu) bulunurlar. Bağırsak sağlığını olumlu etkiler, bağırsak mikrobiyotasını düzenler, sindirimi kolaylaştırır ve bağışıklığı güçlendirir."
+            },
+            {
+                question: "Aşağıdaki besin çiftlerinden hangisi fermente besin değildir?",
+                options: [
+                    "Yoğurt - Peynir",
+                    "Ekmek - Şarap",
+                    "Taze meyve - Çiğ sebze",
+                    "Turşu - Boza",
+                    "Kefir - Tarhana"
+                ],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Taze meyve ve çiğ sebze fermente besin değildir. Yoğurt, peynir, ekmek (mayalanma ile), şarap, turşu, boza, kefir ve tarhana fermente besinlerdir. Fermente besinler mikroorganizmaların etkisiyle üretilir."
+            },
+            {
+                question: "Fermantasyon ile ilgili aşağıdaki ifadelerden hangisi yanlıştır?",
+                options: [
+                    "Oksijensiz ortamda gerçekleşir",
+                    "Glikoliz evresi içerir",
+                    "ETS (Elektron Taşıma Sistemi) kullanılır",
+                    "NAD⁺ yenilenmesini sağlar",
+                    "ATP üretimi sınırlıdır"
+                ],
+                correct: 2,
+                correctIndex: 2,
+                explanation: "Fermantasyon sırasında ETS (Elektron Taşıma Sistemi) kullanılmaz. ETS oksijenli solunumda kullanılır. Fermantasyon oksijensiz ortamda gerçekleşir, glikoliz evresi içerir, NAD⁺ yenilenmesini sağlar ve ATP üretimi sınırlıdır (sadece glikolizden 2 ATP net)."
+            },
+            {
+                question: "Bir öğrenci laboratuvarda fermantasyon deneyi yapıyor ve aşağıdaki koşulları sağlıyor: 1. Oksijensiz ortam 2. 35°C sıcaklık 3. pH 5,5 4. Glikoz çözeltisi 5. Maya kültürü. Bu koşullarda hangi fermantasyon çeşidi gözlenir?",
+                options: [
+                    "Etil alkol fermantasyonu",
+                    "Laktik asit fermantasyonu",
+                    "Asetik asit fermantasyonu",
+                    "Bütirik asit fermantasyonu",
+                    "Karışık asit fermantasyonu"
+                ],
+                correct: 0,
+                explanation: "Bu koşullarda etil alkol fermantasyonu gözlenir. Maya kültürü, glikoz varlığı, oksijensiz ortam, uygun sıcaklık ve pH, etil alkol fermantasyonu için ideal koşullardır. Mayalar glikozu etil alkol ve CO₂'ye dönüştürür."
+            },
+            {
+                question: "Bir atlet, 100 metre koşusu sırasında son 20 metrede bacaklarında şiddetli yanma hissetmeye başlıyor. Bu durumun nedeni aşağıdakilerden hangisidir?",
+                options: [
+                    "Etil alkol birikmesi",
+                    "Laktik asit birikmesi",
+                    "Glikojen fazlalığı",
+                    "Protein yıkımı",
+                    "Yağ asidi birikmesi"
+                ],
+                correct: 1,
+                explanation: "Bu durumun nedeni laktik asit birikmesidir. Yoğun egzersiz sırasında kas hücrelerine yeterli oksijen ulaşamaz. Kas hücreleri laktik asit fermantasyonu ile ATP üretir. Biriken laktik asit kaslarda yanma ve ağrı hissine neden olur."
+            },
+            {
+                question: "Aşağıdaki tabloda besinlerin enerji değerleri verilmiştir. Hangi besin en fazla enerjiyi verir? (100g için) Patates cipsi: 494 kcal, Peynir: 219 kcal, Yağsız yoğurt: 73 kcal, Meyve suyu: 51 kcal",
+                options: [
+                    "Patates cipsi",
+                    "Peynir",
+                    "Yağsız yoğurt",
+                    "Meyve suyu",
+                    "Hepsi aynı enerjiyi verir"
+                ],
+                correct: 0,
+                explanation: "Patates cipsi (494 kcal/100g) en fazla enerjiyi verir. Bunun nedeni yüksek yağ içeriğidir (27,8g/100g). Yağlar 9 kcal/g ile en yüksek enerji değerine sahip besin ögesidir. Peynir 219 kcal, yoğurt 73 kcal, meyve suyu 51 kcal enerji verir."
+            },
+            {
+                question: "Bir kişi günlük 2500 kcal enerji harcıyor ancak 3000 kcal enerji alıyorsa uzun vadede ne olur?",
+                options: [
+                    "Kilo verir",
+                    "Kilosu sabit kalır",
+                    "Kilo alır (obezite riski)",
+                    "Kas kütlesi artar",
+                    "Enerji dengesi bozulmaz"
+                ],
+                correct: 2,
+                explanation: "Alınan enerji (3000 kcal) > harcanan enerji (2500 kcal) olduğu için kişi kilo alır. Günlük 500 kcal fazla alım, haftada 3500 kcal fazla alım demektir (≈0,5 kg yağ dokusu). Uzun vadede bu durum obezite riskini artırır."
+            },
+            {
+                question: "Aşağıdaki ifadelerden hangisi fermantasyonun endüstriyel kullanımı ile ilgili yanlıştır?",
+                options: [
+                    "Ekmek yapımında kullanılır",
+                    "Yoğurt yapımında kullanılır",
+                    "Alkollü içecek üretiminde kullanılır",
+                    "Plastik üretiminde kullanılır",
+                    "İlaç üretiminde (antibiyotik) kullanılır"
+                ],
+                correct: 3,
+                correctIndex: 3,
+                explanation: "Plastik üretiminde fermantasyon doğrudan kullanılmaz. Fermantasyonun endüstriyel kullanımları: Ekmek yapımı (etil alkol fermantasyonu), yoğurt yapımı (laktik asit fermantasyonu), alkollü içecek üretimi (etil alkol fermantasyonu), ilaç üretimi (antibiyotiklerin bir kısmı fermantasyonla üretilir)."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Fermantasyon ve enerji konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve özetlerden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+// Sesli Bölüm Mantığı
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Ekolojik Sürdürülebilirlik Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            /* Ekoloji temasına uygun yeşil tonları */
+            background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #27ae60;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #d35400;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #27ae60;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #16a085;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #1abc9c;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #27ae60;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #f39c12;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #f39c12;
+        }
+
+        .context-scenario i {
+            color: #f39c12;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #2ecc71;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #3498db;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #27ae60;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #27ae60;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #27ae60;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f1c40f, #e67e22);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #e74c3c;
+        }
+
+        .reasoning-content {
+            background: #fff5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #e74c3c;
+        }
+
+        .reasoning-answer {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .flashcard-container { height: 350px; }
+            .comparison-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">10. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Ekolojik Sürdürülebilirlik</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-leaf"></i> Ekolojik Sürdürülebilirlik Öğrenme Portalı</h1>
+            <div class="subtitle">6 farklı öğrenme yöntemi ile Sürdürülebilirlik, Çevre Sorunları, Biyoçeşitlilik ve Atık Yönetimi konularını keşfedin</div>
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/6</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+            <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+                <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">Önemli kavramları, tanımları ve kısa bilgileri interaktif kartlarla öğrenin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Ekolojik sürdürülebilirlik bileşenlerini bütüncül bir yapıda görselleştirin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book-open"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Tüm konuları içeren, madde madde özetlenmiş kapsamlı çalışma notu.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları (Meke Gölü, E-atıklar vb.) üzerinden konuyu pekiştirin.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">Çoktan seçmeli sorularla bilgilerinizi sınayın ve anında geri bildirim alın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">"Neden?" ve "Nasıl?" sorularıyla ezberden uzak, mantıksal öğrenmeyi keşfedin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Fermantasyon ve Enerji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Ekolojik Sürdürülebilirlik Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">1. Ekolojik Sürdürülebilirlik</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Doğal kaynakların, biyoçeşitliliğin ve ekosistemlerin korunarak gelecek nesillere aktarılması.</li>
+                        <li><strong>Amaç:</strong> İhtiyaçları karşılarken doğanın kendini yenileme kapasitesini aşmamak.</li>
+                        <li><strong>Temel:</strong> Brundtland Raporu ("Ortak Geleceğimiz", 1987).</li>
+                        <li><strong>3 Boyut:</strong> Sosyal, Ekonomik, Ekolojik.</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">2. Sürdürülebilirliği Kısıtlayan Durumlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Habitat Kaybı:</strong> Yaşam alanlarının tarım, kentleşme vb. ile yok olması.</li>
+                        <li><strong>Habitat Parçalanması:</strong> Büyük yaşam alanlarının küçük parçalara bölünmesi.</li>
+                        <li><strong>Kirlilik:</strong> Hava, Su, Toprak, Radyoaktif.</li>
+                        <li><strong>İklim Değişikliği:</strong> Sera etkisi, küresel ısınma.</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">3. Çevre Kirliliği Türleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Hava Kirliliği:</strong> Fosil yakıtlar, ozon incelmesi (CFC), asit yağmurları.</li>
+                        <li><strong>Su Kirliliği:</strong> Ötrofikasyon (aşırı alg çoğalması), endüstriyel atıklar.</li>
+                        <li><strong>Toprak Kirliliği:</strong> Ağır metaller, tarım ilaçları, biyoremediasyon (temizleme).</li>
+                        <li><strong>Radyoaktif Kirlilik:</strong> Nükleer santraller, tıbbi atıklar.</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">4. Ekolojik Ayak İzi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Tüketilen kaynakların üretimi ve atıkların yok edilmesi için gereken verimli toprak/su alanı.</li>
+                        <li><strong>Karbon Ayak İzi:</strong> Faaliyetler sonucu oluşan sera gazı (CO2) miktarı.</li>
+                        <li><strong>Su Ayak İzi:</strong> Üretim ve tüketimde kullanılan toplam tatlı su hacmi.</li>
+                        <li><strong>Biyokapasite:</strong> Doğanın kaynak üretme kapasitesi.</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">5. Koruma Çalışmaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tür Koruma:</strong> Nesli tehlikedeki türler (Akdeniz foku, Kelaynak).</li>
+                        <li><strong>Alan Koruma (İn-situ):</strong> Milli parklar, özel çevre koruma bölgeleri.</li>
+                        <li><strong>Alan Dışı Koruma (Ex-situ):</strong> Gen bankaları, tohum bankaları, botanik bahçeleri.</li>
+                        <li><strong>Sözleşmeler:</strong> Ramsar (sulak alanlar), CITES, Bern.</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">6. Atık Yönetimi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Sıfır Atık:</strong> İsrafı önleme, atığı kaynağında azaltma.</li>
+                        <li><strong>Geri Dönüşüm:</strong> Atıkların tekrar hammaddeye dönüşmesi.</li>
+                        <li><strong>Kompost:</strong> Organik atıkların gübreye dönüşmesi.</li>
+                        <li><strong>Bertaraf:</strong> Düzenli depolama, yakma, biyometanizasyon.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book-open"></i> Detaylı Özet ve Konu Anlatımı
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-globe-americas"></i> SÜRDÜRÜLEBİLİRLİK KAVRAMI</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> "Bugünün gereksinimlerini, gelecek kuşakların gereksinimlerini karşılama yeteneğinden ödün vermeden karşılayan kalkınma" (Brundtland Raporu, 1987).</li>
+                        <li><strong>Ekolojik Sürdürülebilirlik:</strong> Doğal kaynakların, biyoçeşitliliğin korunması ve ekosistemlerin dengede tutulmasıdır. Kaynakların kendini yenileme hızından daha hızlı tüketilmemesini esas alır.</li>
+                        <li><strong>BM 2030 Hedefleri:</strong> Yoksulluğu bitirme, açlığa son verme, temiz su, iklim eylemi, karasal ve sudaki yaşamı koruma gibi 17 ana hedeften oluşur.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exclamation-triangle"></i> SÜRDÜRÜLEBİLİRLİĞİ KISITLAYAN DURUMLAR</div>
+                    <ul class="summary-list">
+                        <li><strong>Habitat Kaybı ve Parçalanması:</strong> Canlıların yaşam alanlarının (orman, sulak alan) tarım, madencilik veya şehirleşme ile yok edilmesi veya bölünmesidir. Türlerin yayılmasını ve üremesini zorlaştırır.</li>
+                        <li><strong>Hava Kirliliği:</strong> Fosil yakıtlar, egzoz gazları ve sanayi atıkları ile oluşur.
+                            <ul>
+                                <li><strong>Ozon İncelmesi:</strong> CFC (Kloroflorokarbon) gazları ozon tabakasını incelterek zararlı UV ışınlarının dünyaya ulaşmasına neden olur.</li>
+                                <li><strong>Asit Yağmurları:</strong> SO₂ ve NO₂ gazlarının havadaki su buharıyla birleşerek sülfürik ve nitrik asit olarak yağmasıdır (pH < 5.6). Ormanlara ve tarihi eserlere zarar verir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Su Kirliliği ve Ötrofikasyon:</strong> Suya karışan azot ve fosfor (gübreler) alglerin aşırı çoğalmasına (alg patlaması) neden olur. Su yüzeyi yeşillenir, ışık alta geçemez, oksijen tükenir ve balıklar ölür.</li>
+                        <li><strong>Toprak Kirliliği:</strong> Ağır metaller, piller, tarım ilaçları toprağı kirletir. <strong>Biyoremediasyon</strong>, kirlenmiş alanların canlı organizmalar (bakteri, bitki) kullanılarak temizlenmesidir.</li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-fire"></i> KÜRESEL İKLİM DEĞİŞİKLİĞİ VE EROZYON</div>
+                    <ul class="summary-list">
+                        <li><strong>Sera Etkisi:</strong> Sera gazlarının (CO₂, CH₄) güneş ısısını tutarak dünyayı ısıtmasıdır. İnsan faaliyetleriyle bu gazların artması <strong>Küresel Isınma</strong>'ya yol açar.</li>
+                        <li><strong>Sonuçları:</strong> Buzulların erimesi, deniz seviyesinin yükselmesi (Solomon Adaları örneği), kuraklık, sel.</li>
+                        <li><strong>Erozyon:</strong> Bitki örtüsünün yok olmasıyla verimli toprağın su veya rüzgârla taşınmasıdır. Barajların dolmasına ve verim kaybına neden olur.</li>
+                        <li><strong>Orman Yangınları:</strong> Doğal sebepler (yıldırım) veya insan ihmali ile çıkar. Habitat kaybına ve erozyona zemin hazırlar.</li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shoe-prints"></i> EKOLOJİK AYAK İZİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Tanım:</strong> Tüketilen kaynakların üretimi ve atıkların bertarafı için gereken biyolojik olarak verimli toprak ve su alanıdır.</li>
+                        <li><strong>Biyokapasite:</strong> Doğanın kaynak üretme ve atıkları tolere etme kapasitesidir.</li>
+                        <li><strong>Ekolojik Açık:</strong> Ekolojik Ayak İzi > Biyokapasite durumu (Sürdürülemezlik).</li>
+                        <li><strong>Su Ayak İzi:</strong> Üretim/tüketim aşamasında kullanılan toplam tatlı su hacmi.</li>
+                        <li><strong>Karbon Ayak İzi:</strong> Faaliyetler sonucu atmosfere salınan sera gazı miktarı.</li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> BİYOÇEŞİTLİLİĞİN KORUNMASI</div>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Yöntem</th>
+                            <th>Açıklama</th>
+                            <th>Örnekler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Yerinde (Alan) Koruma</strong></td>
+                            <td>Türlerin kendi doğal yaşam alanlarında korunmasıdır.</td>
+                            <td>Milli Parklar, Tabiat Parkları, Özel Çevre Koruma Bölgeleri.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alan Dışı Koruma</strong></td>
+                            <td>Türlerin doğal yaşam alanları dışında koruma altına alınmasıdır.</td>
+                            <td>Gen Bankaları, Tohum Bankaları, Botanik Bahçeleri, Arboretumlar.</td>
+                        </tr>
+                    </table>
+                    <ul class="summary-list">
+                        <li><strong>Endemik Türler:</strong> Sadece belirli bir bölgeye özgü türler (Türkiye biyoçeşitlilik açısından çok zengindir).</li>
+                        <li><strong>Korunan Türler:</strong> Akdeniz Foku, Deniz Kaplumbağaları (Caretta caretta), Kelaynaklar.</li>
+                        <li><strong>Gen Bankaları:</strong> Gelecekteki gıda güvenliği ve genetik çeşitlilik için tohumların saklandığı merkezlerdir (Örn: Ankara ve İzmir'deki tohum gen bankaları).</li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-recycle"></i> ATIK YÖNETİMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Sıfır Atık:</strong> İsrafın önlenmesi, atığın kaynağında azaltılması ve ayrıştırılarak geri kazanılması hedefidir.</li>
+                        <li><strong>Geri Dönüşüm:</strong> Atıkların fiziksel/kimyasal işlemlerle ikincil hammaddeye dönüştürülmesi.</li>
+                        <li><strong>Kompost:</strong> Organik atıkların (gıda, yaprak) mikroorganizmalarla ayrıştırılarak gübreye dönüştürülmesi.</li>
+                        <li><strong>Biyometanizasyon:</strong> Organik atıkların oksijensiz ortamda parçalanarak biyogaz (enerji) üretilmesi.</li>
+                        <li><strong>Bertaraf Yöntemleri:</strong> Düzenli depolama (sızıntı suyu kontrolü yapılır) ve Yakma (hacim azaltılır, enerji elde edilir). Vahşi (düzensiz) depolama çevre için zararlıdır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Gerçek Hayat Senaryoları ve Sorular
+            </h2>
+            
+            <div class="contextual-container">
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Solomon Adaları'nda yapılan araştırmalarda 1947-2015 yılları arasında 5 adanın tamamen sular altında kaldığı, 6 adanın ise büyük oranda aşındığı tespit edilmiştir. Bu durumun temel sebebi nedir ve hangi küresel çevre sorunuyla ilişkilidir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Deniz seviyeleri son 20 yılda bu bölgede ortalama 7-10 mm yükselmiştir (Dünya ortalamasının çok üstünde).
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Küresel İklim Değişikliği (Küresel Isınma).</p>
+                        <p><strong>Açıklama:</strong> Sera gazlarının artmasıyla küresel sıcaklıklar artmakta, bu da buzulların erimesine ve deniz suyunun ısınarak genleşmesine neden olmaktadır. Sonuç olarak deniz seviyesi yükselir, kıyı erozyonu artar ve adalar sular altında kalır.</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir gölde tarımsal faaliyetler sonucu gübre girdisi artmış ve göl yüzeyi tamamen yeşil bir tabakayla (algler) kaplanmıştır. Bir süre sonra göldeki balıkların öldüğü gözlenmiştir. Bu olayın adı nedir ve balıklar neden ölmüştür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Azot ve fosfor artışı su bitkilerini aşırı besler.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Ötrofikasyon.</p>
+                        <p><strong>Açıklama:</strong> Alglerin aşırı çoğalması su yüzeyini kapatır ve güneş ışığının dibe ulaşmasını engeller. Dipteki bitkiler fotosentez yapamaz ve ölür. Alglerin ölümüyle ayrıştırıcı bakteriler artar ve sudaki çözünmüş oksijeni hızla tüketirler. Oksijensizlik balık ölümlerine neden olur.</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Teknolojik gelişmelerle birlikte cep telefonu ve bilgisayar değiştirme sıklığı artmıştır. Bu durum "E-atık" (Elektronik atık) sorununu doğurmuştur. E-atıkların rastgele çöpe atılmasının çevreye en büyük zararı nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Elektronik devrelerde kurşun, cıva, kadmiyum gibi maddeler bulunur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Ağır metal kirliliği (Toprak ve Su).</p>
+                        <p><strong>Açıklama:</strong> E-atıklar içerdikleri ağır metaller nedeniyle tehlikeli atıklardır. Doğaya bırakıldıklarında bu zehirli maddeler toprağa ve yer altı sularına karışarak besin zincirine girer ve canlı sağlığını tehdit eder.</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Meke Gölü (Konya), volkanik bir krater gölüdür ancak son yıllarda kurumuş ve tuz tabakaları oluşmuştur. Meke Gölü'nün kurumasında etkili olan insan kaynaklı faktörler neler olabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Bölgede tarımsal sulama için yer altı suları yoğun kullanılmaktadır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Yer altı sularının aşırı kullanımı ve yanlış sulama teknikleri.</p>
+                        <p><strong>Açıklama:</strong> İklim değişikliğine bağlı buharlaşmanın yanı sıra, tarım arazilerini sulamak için açılan kuyular yer altı su seviyesini düşürür. Gölü besleyen kaynaklar kesilince göl kurur. Bu, sürdürülebilir olmayan su kullanımına örnektir.</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir belediye, evlerden çıkan sebze-meyve kabuklarını, dökülen yaprakları ayrı toplayarak bir tesiste işliyor ve sonucunda parklarda kullanmak üzere toprak benzeri bir ürün elde ediyor. Bu işlemin adı nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Organik atıkların oksijenli ortamda ayrıştırılması sürecidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Kompostlaştırma (Kompost yapımı).</p>
+                        <p><strong>Açıklama:</strong> Organik atıkların mikroorganizmalar tarafından parçalanarak humuslu toprağa (organik gübreye) dönüştürülmesidir. Bu yöntemle hem atık miktarı azalır hem de toprak verimliliği artar.</p>
+                    </div>
+                </div>
+                
+                 <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Ankara'da ve İzmir'de bulunan Tohum Gen Bankalarında binlerce bitki türüne ait tohumlar özel koşullarda saklanmaktadır. Bu çalışma hangi koruma yöntemine girer ve temel amacı nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Bitkiler doğal ortamlarının dışında, yapay bir ortamda saklanmaktadır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Alan Dışı (Ex-situ) Koruma.</p>
+                        <p><strong>Açıklama:</strong> Temel amaç, bitkilerin genetik çeşitliliğini korumak ve olası bir felaket, salgın hastalık veya nesil tükenmesi durumunda bu türleri tekrar doğaya kazandırabilmek veya ıslah çalışmalarında kullanabilmektir (Biyolojik sigorta).</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir sanayi bölgesinde toprak ağır metallerle kirlenmiştir. Bilim insanları bu toprağı temizlemek için ağır metalleri bünyesinde biriktirebilen özel bitkiler ekmiştir. Bu temizleme yöntemine ne ad verilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Kirliliği gidermek için canlı organizmalar (bitki, bakteri vb.) kullanılıyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Biyoremediasyon.</p>
+                        <p><strong>Açıklama:</strong> Kirletilmiş ekosistemleri onarmak ve toksik maddelerden arındırmak için canlı organizmaların kullanılması işlemidir. Çevre dostu bir temizleme yöntemidir.</p>
+                    </div>
+                </div>
+
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Ahmet Bey, işe giderken kendi aracı yerine metroyu kullanmaya başlamış, evindeki ampulleri tasarruflu olanlarla değiştirmiş ve yerli gıda ürünleri tüketmeye özen göstermiştir. Ahmet Bey bu davranışlarıyla neyi azaltmayı hedeflemektedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Fosil yakıt tüketimi, enerji kullanımı ve nakliye süreçleri sera gazı salınımına neden olur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Ekolojik Ayak İzini (Özellikle Karbon Ayak İzini).</p>
+                        <p><strong>Açıklama:</strong> Daha az enerji tüketmek ve fosil yakıt kullanımını azaltmak, atmosfere salınan CO₂ miktarını düşürür. Bu da bireysel karbon ayak izinin küçülmesini sağlar.</p>
+                    </div>
+                </div>
+
+                 <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Şehirlerdeki tarihi mermer heykellerin ve binaların yüzeylerinin aşındığı ve zarar gördüğü fark edilmiştir. Aynı bölgedeki ormanlarda ağaç yapraklarında sararma görülmektedir. Bu zararların sebebi hangi çevre sorunudur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Fabrika bacalarından ve araç egzozlarından çıkan kükürt ve azot gazları havadaki suyla birleşmektedir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Asit Yağmurları.</p>
+                        <p><strong>Açıklama:</strong> Havadaki SO₂ ve NO₂ gazları su buharı ile tepkimeye girerek sülfürik ve nitrik asit oluşturur. Bu asitli yağışlar mermeri (kalsiyum karbonat) eritir ve bitki dokularına zarar verir.</p>
+                    </div>
+                </div>
+
+                 <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir bölgeden otoyol geçirilmesi sonucu ormanlık alan ikiye bölünmüştür. Bir süre sonra bu ormanda yaşayan bazı hayvan türlerinin sayısının azaldığı ve genetik çeşitliliğin düştüğü gözlenmiştir. Bu durumun temel ekolojik nedeni nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Bağlam: Büyük ve bütüncül bir yaşam alanı, insan etkisiyle küçük parçalara ayrılmıştır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Habitat Parçalanması.</p>
+                        <p><strong>Açıklama:</strong> Habitat parçalandığında canlıların hareket alanı kısıtlanır, eş bulma ve beslenme olanakları azalır. Popülasyonlar arası gen akışı kesilir, bu da türlerin yok olma riskini artırır.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Ekolojik Sürdürülebilirlik Testi
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 0</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #8e44ad; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden Ekolojik Ayak İzinin Biyokapasiteden büyük olması tehlikelidir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> İnsanların kaynak talebi, dünyanın bu kaynakları yenileme hızını aşıyor demektir.</p>
+                        <p><strong>Mantık:</strong> Bir banka hesabı gibi düşünün. Her ay kazandığınızdan (Biyokapasite) daha fazlasını harcarsanız (Ayak İzi), birikimden (Doğal sermaye) yersiniz. Bu durum sürdürülemezdir ve sonunda iflasa (ekosistem çöküşüne) yol açar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sonuç:</strong> Ekolojik açık oluşur. Kaynaklar tükenir, atıklar birikir ve gelecek nesillere "borçlu" bir dünya bırakılır.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden tohum gen bankaları "Biyolojik Sigorta" olarak adlandırılır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Doğal afetler, savaşlar veya iklim değişikliği tarımsal üretimi ve bitki türlerini yok edebilir.</p>
+                        <p><strong>Mantık:</strong> Sigorta, kötü günler için yapılan bir yatırımdır. Gen bankaları da bitkilerin genetik materyalini (özünü) güvenli bir yerde saklar. Dışarıdaki (doğadaki) bitkiler yok olsa bile, bu bankalardaki tohumlar kullanılarak o türler tekrar hayata döndürülebilir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sonuç:</strong> Biyoçeşitlilik kaybı önlenir ve gelecekteki gıda güvenliği garanti altına alınmış olur.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Ötrofikasyonda su bitkileri (algler) artmasına rağmen neden oksijen azalır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Çelişki gibi görünen durum:</strong> Bitkiler fotosentez yapıp oksijen üretir, öyleyse çok alg çok oksijen demek olmalı değil mi?</p>
+                        <p><strong>Mantık:</strong> Algler su yüzeyini bir "battaniye" gibi kapatır.
+                        <ol>
+                            <li>Yüzey kaplanınca ışık dibe inemez -> Dipteki bitkiler fotosentez yapamaz ve ölür (Oksijen kaynağı kesilir).</li>
+                            <li>Ölen bitkileri ve kısa ömürlü algleri çürütmek için ayrıştırıcı bakteriler devreye girer.</li>
+                            <li>Bu bakteriler çürütme yaparken sudaki oksijeni <strong>tüketir</strong>.</li>
+                        </ol>
+                        </p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sonuç:</strong> Aşırı üretim (alg patlaması) paradoksal bir şekilde aşırı tüketime (bakteriyel solunum) ve oksijensizliğe (ölüme) yol açar.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden "Sıfır Atık" sadece geri dönüşüm demek değildir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Kavram Yanılgısı:</strong> Çoğu kişi sıfır atığı sadece kutulara ayırıp atmak sanır.</p>
+                        <p><strong>Mantık:</strong> Geri dönüşüm de enerji ve su harcayan bir işlemdir. Asıl mantıklı olan "Atığın hiç oluşmamasını sağlamaktır".</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Hiyerarşi:</strong>
+                            1. Önleme (İhtiyacın yoksa alma) -> En iyisi.<br>
+                            2. Azaltma.<br>
+                            3. Tekrar Kullanma.<br>
+                            4. Geri Dönüşüm -> Son çare.<br>
+                            Bu yüzden sıfır atık, bir yaşam tarzı değişikliği ve israfı önleme felsefesidir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Habitat parçalanması neden türlerin yok olmasına sebep olur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Büyük bir ormanın içinden yol geçirmek ormanı yok etmez, sadece böler. Peki sorun ne?</p>
+                        <p><strong>Mantık:</strong>
+                        <ul>
+                            <li>Hayvanlar eş bulmak için karşıya geçemez (Genetik çeşitlilik azalır).</li>
+                            <li>Küçük parçalar "kenar etkisi"ne daha açıktır (Rüzgar, sıcaklık değişimi, avcılar iç kısımlara kadar girer).</li>
+                            <li>Büyük alana ihtiyaç duyan yırtıcılar barınamaz.</li>
+                        </ul>
+                        </p>
+                        <div class="reasoning-answer">
+                            <p><strong>Sonuç:</strong> Ekosistem bütünlüğü bozulur, popülasyonlar zayıflar ve yerel yok oluşlar başlar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Ekosistem Sürdürülebilirliği Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/10surdurulebilirlik.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Navigation Logic
+        // sections dizisine 'audio' ekle
+const sections = ['flashcard', 'mindmap', 'summary', 'contextual', 'test', 'reasoning', 'audio'];
+        
+        sections.forEach(section => {
+            const btn = document.getElementById(`${section}-btn`);
+            const content = document.getElementById(`${section}-section`);
+            const backBtn = document.getElementById(`back-from-${section}`);
+            
+            if(btn && content && backBtn) {
+                btn.addEventListener('click', () => {
+                    document.getElementById('dashboard').style.display = 'none';
+                    content.classList.add('active');
+                    updateProgress(section);
+                });
+                
+                backBtn.addEventListener('click', () => {
+                    content.classList.remove('active');
+                    document.getElementById('dashboard').style.display = 'grid';
+                });
+            }
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 6) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD DATA & LOGIC
+        const flashcardData = [
+            { q: "Sürdürülebilir Kalkınma Nedir?", a: "Bugünün ihtiyaçlarını, gelecek nesillerin ihtiyaçlarını karşılama yeteneğinden ödün vermeden karşılamaktır." },
+            { q: "Ekolojik Sürdürülebilirlik Nedir?", a: "Doğal kaynakların, biyoçeşitliliğin ve ekosistemlerin korunarak gelecek nesillere aktarılmasını sağlayan kalkınma boyutudur." },
+            { q: "Habitat Parçalanması Nedir?", a: "Büyük ve sürekli yaşam alanlarının insan etkisiyle (yol, baraj vb.) küçük parçalara bölünmesidir." },
+            { q: "Hava Kirliliğinin Doğal Kaynakları Nelerdir?", a: "Yanardağ faaliyetleri, orman yangınları, çöl tozları." },
+            { q: "Ozon Tabakasının İncelmesine Neden Olan Gaz?", a: "Kloroflorokarbonlar (CFC)." },
+            { q: "Asit Yağmurları Hangi Gazlardan Oluşur?", a: "Kükürtdioksit (SO₂) ve Azot dioksit (NO₂)." },
+            { q: "Ötrofikasyon Nedir?", a: "Suda azot/fosfor artışıyla alglerin aşırı çoğalması ve oksijenin tükenmesi olayıdır." },
+            { q: "Biyoremediasyon Nedir?", a: "Kirletilmiş alanların canlı organizmalar (bakteri, bitki) kullanılarak temizlenmesidir." },
+            { q: "Radyoaktif Kirlilik Nedir?", a: "Çevrede veya canlı dokularında radyoaktif maddelerin birikmesidir (Nükleer santraller, tıbbi atıklar)." },
+            { q: "Sera Etkisi Nedir?", a: "Sera gazlarının güneş ısısını tutarak dünyayı ısıtmasıdır. Artışı küresel ısınmaya yol açar." },
+            { q: "Erozyon Nedir?", a: "Verimli toprak örtüsünün su veya rüzgâr etkisiyle aşınıp taşınmasıdır." },
+            { q: "Ekolojik Ayak İzi Nedir?", a: "Tüketilen kaynakların üretimi ve atıkların bertarafı için gereken biyolojik olarak verimli toprak ve su alanıdır." },
+            { q: "Biyokapasite Nedir?", a: "Dünyanın (veya bir bölgenin) doğal kaynak üretme ve atıkları tolere etme kapasitesidir." },
+            { q: "Ekolojik Açık Nedir?", a: "Ekolojik ayak izinin biyokapasiteden büyük olması durumudur (Sürdürülemezlik)." },
+            { q: "Yerinde (Alan) Koruma Nedir?", a: "Türlerin kendi doğal yaşam alanlarında (Milli parklar vb.) korunmasıdır." },
+            { q: "Alan Dışı (Ex-situ) Koruma Nedir?", a: "Türlerin doğal yaşam alanları dışında (Gen bankaları, botanik bahçeleri) korunmasıdır." },
+            { q: "Sıfır Atık Nedir?", a: "İsrafın önlenmesi, atığın kaynağında azaltılması ve geri kazanılması hedefidir." },
+            { q: "Kompostlaştırma Nedir?", a: "Organik atıkların kontrollü ortamda ayrıştırılarak gübreye dönüştürülmesidir." },
+            { q: "Biyometanizasyon Nedir?", a: "Organik atıkların oksijensiz ortamda parçalanarak biyogaz (enerji) üretilmesidir." },
+            { q: "Düzenli Depolama Nedir?", a: "Atıkların sızıntı suyu ve gaz kontrolü yapılarak özel alanlarda depolanması ve üzerinin örtülmesidir." }
+        ];
+
+        let currentCardIndex = 0;
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardLabel = document.getElementById('current-card');
+        const totalCardsLabel = document.getElementById('total-cards');
+
+        totalCardsLabel.textContent = flashcardData.length;
+
+        function loadCard() {
+            questionElement.textContent = flashcardData[currentCardIndex].q;
+            answerElement.textContent = flashcardData[currentCardIndex].a;
+            currentCardLabel.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentCardIndex < flashcardData.length - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        document.getElementById('flip-btn').addEventListener('click', () => flashcardElement.classList.toggle('flipped'));
+        flashcardElement.addEventListener('click', () => flashcardElement.classList.toggle('flipped'));
+        
+        document.getElementById('shuffle-btn').addEventListener('click', () => {
+            flashcardData.sort(() => Math.random() - 0.5);
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        loadCard(); // Initial load
+
+        // CONTEXTUAL QUESTIONS LOGIC
+        function toggleAnswer(id) {
+            const el = document.getElementById(`answer-${id}`);
+            const btn = el.previousElementSibling;
+            el.classList.toggle('show');
+            btn.innerHTML = el.classList.contains('show') ? 
+                '<i class="fas fa-eye-slash"></i> Cevabı Gizle' : 
+                '<i class="fas fa-eye"></i> Cevabı Göster';
+        }
+
+        // TEST DATA & LOGIC
+        const testQuestions = [
+            {
+                q: "Aşağıdakilerden hangisi sürdürülebilir kalkınmanın tanımıdır?",
+                options: [
+                    "Sadece bugünün ihtiyaçlarını en ucuz yolla karşılamak.",
+                    "Ekonomik büyümeyi her şeyin üstünde tutmak.",
+                    "Gelecek nesillerin ihtiyaçlarından ödün vermeden bugünü karşılamak.",
+                    "Doğal kaynakları tüketene kadar kullanmak."
+                ],
+                correct: 2,
+                explain: "Sürdürülebilirlik, kaynakların gelecek nesillere de yetecek şekilde dengeli kullanılmasıdır."
+            },
+            {
+                q: "Aşağıdakilerden hangisi ekolojik sürdürülebilirliği kısıtlayan durumlardan biri değildir?",
+                options: [
+                    "Habitat parçalanması",
+                    "Biyoçeşitlilik kaybı",
+                    "Yenilenebilir enerji kullanımı",
+                    "Hava ve su kirliliği"
+                ],
+                correct: 2,
+                explain: "Yenilenebilir enerji kullanımı sürdürülebilirliği kısıtlamaz, aksine destekler."
+            },
+            {
+                q: "Ötrofikasyon olayının temel nedeni aşağıdakilerden hangisidir?",
+                options: [
+                    "Suya karışan ağır metaller",
+                    "Suya karışan azot ve fosfor miktarının artması",
+                    "Suyun pH değerinin düşmesi",
+                    "Radyoaktif atıklar"
+                ],
+                correct: 1,
+                explain: "Gübre ve atıklardan gelen azot ve fosfor, alg patlamasına (ötrofikasyon) neden olur."
+            },
+            {
+                q: "Kirletilmiş ekosistemlerin canlı organizmalar kullanılarak temizlenmesine ne ad verilir?",
+                options: [
+                    "Biyometanizasyon",
+                    "Kompostlaştırma",
+                    "Biyoremediasyon",
+                    "Ötrofikasyon"
+                ],
+                correct: 2,
+                explain: "Biyoremediasyon, kirliliğin giderilmesinde canlıların (bakteri, bitki vb.) kullanılmasıdır."
+            },
+            {
+                q: "Aşağıdakilerden hangisi hava kirliliği sonucu oluşan Asit Yağmurları'nın etkilerinden biri değildir?",
+                options: [
+                    "Tarihi eserlerin aşınması",
+                    "Ormanların zarar görmesi",
+                    "Su kaynaklarının pH değerinin düşmesi",
+                    "Ozon tabakasının kalınlaşması"
+                ],
+                correct: 3,
+                explain: "Asit yağmurları ozon tabakasını kalınlaştırmaz. Ozon incelmesi CFC gazları kaynaklıdır."
+            },
+            {
+                q: "Ekolojik Ayak İzi ile ilgili hangisi doğrudur?",
+                options: [
+                    "Sadece karbon salınımını ölçer.",
+                    "İhtiyaç duyulan verimli toprak ve su alanı miktarını ifade eder.",
+                    "Ayak izi biyokapasiteden büyükse sürdürülebilirlik sağlanmıştır.",
+                    "Sadece bireysel tüketimi ölçer."
+                ],
+                correct: 1,
+                explain: "Ekolojik ayak izi, kaynak üretimi ve atık bertarafı için gereken biyolojik alanı ölçer."
+            },
+            {
+                q: "Aşağıdakilerden hangisi 'Alan Dışı (Ex-situ) Koruma' yöntemine örnektir?",
+                options: [
+                    "Milli Parklar",
+                    "Tohum Gen Bankaları",
+                    "Özel Çevre Koruma Bölgeleri",
+                    "Tabiat Parkları"
+                ],
+                correct: 1,
+                explain: "Tohum gen bankaları, türlerin doğal yaşam alanları dışında saklandığı (ex-situ) yerlerdir."
+            },
+            {
+                q: "Sıfır Atık yaklaşımının öncelikli hedefi hangisidir?",
+                options: [
+                    "Tüm atıkları yakmak",
+                    "Atıkları düzenli depolamak",
+                    "İsrafı önlemek ve atığı kaynağında azaltmak",
+                    "Daha fazla çöp kutusu koymak"
+                ],
+                correct: 2,
+                explain: "Sıfır atığın temeli israfı önlemek ve atık oluşumunu minimize etmektir."
+            },
+            {
+                q: "Organik atıkların oksijensiz ortamda parçalanarak biyogaz üretilmesi işlemine ne denir?",
+                options: [
+                    "Kompostlaştırma",
+                    "Biyometanizasyon",
+                    "Yakma",
+                    "Düzenli depolama"
+                ],
+                correct: 1,
+                explain: "Biyometanizasyon, oksijensiz ortamda metan gazı (biyogaz) üretimi sürecidir."
+            },
+            {
+                q: "Erozyon riskini artıran insan faaliyeti hangisidir?",
+                options: [
+                    "Ağaçlandırma yapmak",
+                    "Nöbetleşe ekim yapmak",
+                    "Tarlaları eğime dik sürmek",
+                    "Ormanların tahrip edilmesi"
+                ],
+                correct: 3,
+                explain: "Ormanların yok edilmesi toprağı tutan kökleri ortadan kaldırır ve erozyonu hızlandırır."
+            }
+        ];
+
+        function loadTest() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            
+            testQuestions.forEach((item, idx) => {
+                const letters = ['A', 'B', 'C', 'D'];
+                let html = `
+                    <div class="question-card" id="q-card-${idx}">
+                        <div style="margin-bottom: 15px;">
+                            <span class="question-number">${idx + 1}</span>
+                            <span class="question-text">${item.q}</span>
+                        </div>
+                        <div class="options">`;
+                
+                item.options.forEach((opt, optIdx) => {
+                    html += `
+                        <div class="option" onclick="selectOption(${idx}, ${optIdx}, this)">
+                            <div class="option-letter">${letters[optIdx]}</div>
+                            <div>${opt}</div>
+                        </div>`;
+                });
+
+                html += `</div>
+                        <div class="explanation" id="explain-${idx}" style="display:none; margin-top:15px; padding:10px; background:#e8f8f5; border-radius:5px; color:#16a085;">
+                            <strong>Açıklama:</strong> ${item.explain}
+                        </div>
+                    </div>`;
+                
+                container.innerHTML += html;
+            });
+        }
+
+        const userAnswers = new Array(testQuestions.length).fill(null);
+
+        function selectOption(qIdx, optIdx, el) {
+            userAnswers[qIdx] = optIdx;
+            const options = document.querySelectorAll(`#q-card-${qIdx} .option`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            testQuestions.forEach((q, idx) => {
+                const options = document.querySelectorAll(`#q-card-${idx} .option`);
+                const explain = document.getElementById(`explain-${idx}`);
+                
+                // Reset visual state
+                options.forEach(opt => opt.classList.remove('correct', 'wrong'));
+                
+                if (userAnswers[idx] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[idx] !== null) {
+                    options[userAnswers[idx]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    options[q.correct].classList.add('correct'); // Show correct even if empty
+                }
+                explain.style.display = 'block';
+            });
+
+            document.getElementById('test-result').style.display = 'block';
+            document.getElementById('score').textContent = score;
+            document.getElementById('score').nextElementSibling.textContent = `/ ${testQuestions.length}`;
+            
+            let msg = '';
+            if (score === testQuestions.length) msg = "Harika! Tam puan.";
+            else if (score > testQuestions.length * 0.7) msg = "Tebrikler, gayet iyi!";
+            else msg = "Tekrar yapmanda fayda var.";
+            
+            document.getElementById('test-message').textContent = msg;
+            
+            // Scroll to results
+            document.getElementById('test-result').scrollIntoView({behavior: 'smooth'});
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            userAnswers.fill(null);
+            document.getElementById('test-result').style.display = 'none';
+            loadTest();
+            document.getElementById('test-section').scrollIntoView({behavior: 'smooth'});
+        });
+        
+        document.getElementById('clear-selections').addEventListener('click', () => {
+             userAnswers.fill(null);
+             loadTest();
+        });
+
+        // Initialize Test
+        loadTest();
+// Sesli Bölüm Mantığı
+    
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    if(audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if(backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            const audioPlayer = audioSection.querySelector('audio');
+            if(audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        });
+    }
+
+    </script>
+</body>
+</html>
