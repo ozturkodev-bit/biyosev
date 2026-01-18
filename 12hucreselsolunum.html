@@ -1,0 +1,2703 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Hücresel Solunum ve Fermantasyon Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a5276 0%, #2c3e50 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .answer-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2c3e50;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Meraklısına Section Styles */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f5eef9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">12. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Hücresel Solunum ve Fermantasyon</span>
+
+</nav>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-atom"></i> Hücresel Solunum ve Fermantasyon Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile hücresel solunumu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+                <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Hücre ve organellerin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile hücresel solunumun temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Hücresel solunum süreçlerini görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile hücresel solunum soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile hücresel solunum hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Konuyla ilgili üst düzey bilgiler, ilginç detaylar ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Hücresel Solunum Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Hücresel Solunum Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hücresel Solunumun Önemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Enerji Üretimi:</strong> Canlıların hayatsal faaliyetleri için gerekli ATP üretilir</li>
+                        <li><strong>Metabolizmanın Temeli:</strong> Yapım ve yıkım tepkimeleri için enerji sağlar</li>
+                        <li><strong>Tüm Canlılarda Ortak:</strong> Bir hücreli veya çok hücreli tüm canlılarda gerçekleşir</li>
+                        <li><strong>Süreklilik:</strong> Canlılık boyunca devam eden temel olay</li>
+                        <li><strong>ATP Kaynağı:</strong> Organik besinlerden ATP sentezi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Glikoliz</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Sitoplazmada gerçekleşir</li>
+                        <li><strong>Süreç:</strong> 1 glikoz → 2 pirüvik asit</li>
+                        <li><strong>Enerji Dengesi:</strong> 2 ATP harcanır, 4 ATP üretilir (net 2 ATP kazanç)</li>
+                        <li><strong>Koenzim:</strong> NAD⁺ indirgenerek NADH+H⁺ oluşur</li>
+                        <li><strong>Evrensellik:</strong> Tüm solunum yapan canlılarda ortak metabolik yol</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fermantasyon</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Oksijen kullanılmadan glikoliz yoluyla ATP üretimi</li>
+                        <li><strong>Türler:</strong> Etil alkol fermantasyonu ve laktik asit fermantasyonu</li>
+                        <li><strong>ATP Verimi:</strong> Düşük (net 2 ATP)</li>
+                        <li><strong>Endüstriyel Kullanım:</strong> Yoğurt, peynir, turşu, sirke, ekmek yapımı</li>
+                        <li><strong>NAD⁺ Döngüsü:</strong> NADH+H⁺'lerin yeniden NAD⁺'ye dönüşümü sağlanır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Oksijensiz Solunum</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Oksijen kullanılmadan ETS ile ATP üretimi</li>
+                        <li><strong>Son Elektron Alıcıları:</strong> Sülfat (SO₄²⁻), nitrat (NO₃⁻), karbondioksit (CO₂)</li>
+                        <li><strong>ATP Verimi:</strong> Oksijenli solunuma göre düşük</li>
+                        <li><strong>Örnek Organizmalar:</strong> Denitrifikasyon bakterileri, bataklık bakterileri</li>
+                        <li><strong>Yan Ürün:</strong> H₂S (hidrojen sülfür - çürük yumurta kokusu)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Oksijenli Solunum - Mitokondri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Organel:</strong> Mitokondri (ökaryotlarda)</li>
+                        <li><strong>Yapı:</strong> Çift zarlı, krista ve matriks içerir</li>
+                        <li><strong>DNA'sı:</strong> Kendine ait DNA, RNA ve ribozomları vardır</li>
+                        <li><strong>ATP Üretimi:</strong> Yüksek verimli (≈36-38 ATP/glikoz)</li>
+                        <li><strong>Aşamalar:</strong> Glikoliz → Asetil-CoA oluşumu → Krebs → ETS</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Oksijenli Solunum - Krebs Döngüsü</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Mitokondri matriksinde</li>
+                        <li><strong>Süreç:</strong> Asetil-CoA'nın CO₂'ye kadar yıkımı</li>
+                        <li><strong>ATP Üretimi:</strong> 2 ATP (substrat düzeyinde fosforilasyon)</li>
+                        <li><strong>Elektron Taşıyıcıları:</strong> 6 NADH+H⁺ ve 2 FADH₂ üretilir</li>
+                        <li><strong>Karbon Çıkışı:</strong> 4 CO₂ açığa çıkar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Elektron Taşıma Sistemi (ETS)</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yer:</strong> Mitokondri iç zarında (krista)</li>
+                        <li><strong>Mekanizma:</strong> Oksidatif fosforilasyon</li>
+                        <li><strong>Son Elektron Alıcısı:</strong> Oksijen (O₂)</li>
+                        <li><strong>Su Oluşumu:</strong> O₂ + 4H⁺ + 4e⁻ → 2H₂O</li>
+                        <li><strong>ATP Üretimi:</strong> ~32-34 ATP (toplam ATP'nin %90'ı)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Besinlerin Solunuma Katılımı</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Karbohidratlar:</strong> Glikoz → pirüvat → asetil-CoA</li>
+                        <li><strong>Yağlar:</strong> Yağ asitleri → asetil-CoA; gliserol → glikoliz</li>
+                        <li><strong>Proteinler:</strong> Amino asitler → deaminasyon → çeşitli ara ürünler</li>
+                        <li><strong>Enerji Önceliği:</strong> Karbohidrat → yağ → protein</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Hücresel Solunum Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-battery-full"></i> HÜCRESEL SOLUNUMUN CANLILAR İÇİN ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li>Canlılar, büyüme, gelişme, hareket, biyosentez, üreme gibi hayatsal faaliyetler için enerjiye ihtiyaç duyar.</li>
+                        <li>Bu enerji <strong>hücresel solunum</strong> ile organik besinlerden elde edilir.</li>
+                        <li>Solunum olayının temel amacı <strong>ATP (adenozin trifosfat) üretmektir</strong>.</li>
+                        <li>ATP, hücrenin evrensel enerji birimidir ve tüm metabolik olaylarda kullanılır.</li>
+                        <li>Hücresel solunum; <strong>oksijenli solunum, oksijensiz solunum ve fermantasyon</strong> olmak üzere üç şekilde gerçekleşebilir.</li>
+                        <li>Tüm solunum tiplerinde ortak olan evre <strong>glikolizdir</strong>.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-cut"></i> GLİKOLİZ</div>
+                    <ul class="summary-list">
+                        <li><strong>"Şeker parçalanması"</strong> anlamına gelir (Yunanca: gliko = şeker, lizis = parçalamak).</li>
+                        <li><strong>Sitoplazmada</strong> gerçekleşir ve tüm solunum tiplerinde ortaktır.</li>
+                        <li><strong>1 glikoz molekülü</strong>, çeşitli enzimler yardımıyla <strong>2 pirüvik asit (pirüvat)</strong> molekülüne parçalanır.</li>
+                        <li><strong>Enerji dengesi:</strong> Başlangıçta 2 ATP harcanır (aktivasyon enerjisi), sonunda 4 ATP üretilir. <strong>Net kazanç 2 ATP</strong>.</li>
+                        <li><strong>Redoks reaksiyonları:</strong> 2 NAD⁺, 2 NADH+H⁺'ye indirgenir.</li>
+                        <li><strong>Fosforilasyon tipi:</strong> Substrat düzeyinde fosforilasyon (ETS yok).</li>
+                        <li>Pirüvik asidin yapısında enerjinin büyük kısmı saklı kalır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-wine-bottle"></i> FERMANTASYON</div>
+                    <ul class="summary-list">
+                        <li>Oksijen veya ETS kullanılmadan, sadece glikoliz yoluyla ATP üretilmesidir.</li>
+                        <li><strong>NAD⁺ döngüsü:</strong> Glikolizde oluşan NADH+H⁺'ler, son ürün evresinde yeniden NAD⁺'ye dönüştürülür.</li>
+                        <li><strong>ATP verimi düşüktür</strong> (glikoz başına net 2 ATP).</li>
+                        
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Özellik</th>
+                                <th>Etil Alkol Fermantasyonu</th>
+                                <th>Laktik Asit Fermantasyonu</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Gerçekleştiği Canlılar</strong></td>
+                                <td>Bazı bakteriler, mayalar, bazı bitki tohumları</td>
+                                <td>Bazı bakteriler, mantarlar, omurgalıların çizgili kasları, memeli alyuvarları</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Son Ürün</strong></td>
+                                <td>Etil alkol + CO₂</td>
+                                <td>Laktik asit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Endüstriyel Kullanım</strong></td>
+                                <td>Sirke yapımı, ekmek mayalanması</td>
+                                <td>Yoğurt, peynir, turşu yapımı</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CO₂ Çıkışı</strong></td>
+                                <td>Var</td>
+                                <td>Yok</td>
+                            </tr>
+                        </table>
+                        
+                        <li><strong>Laktik asit fermantasyonu kaslarda:</strong> Yoğun egzersizde oksijen yetersizliğinde kaslar laktik asit fermantasyonu yapar. Oluşan laktik asit kana karışır, karaciğerde pirüvata dönüştürülür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-wind"></i> OKSİJENSİZ SOLUNUM</div>
+                    <ul class="summary-list">
+                        <li>Oksijen kullanılmadan, ancak <strong>Elektron Taşıma Sistemi (ETS)</strong> yardımıyla ATP üretilmesidir.</li>
+                        <li><strong>Son elektron alıcısı olarak oksijen yerine başka inorganik bileşikler</strong> kullanılır: nitrat (NO₃⁻), sülfat (SO₄²⁻), karbondioksit (CO₂), demir (Fe³⁺).</li>
+                        <li>Bu bileşiklerin elektron çekim güçleri oksijene göre zayıftır, bu nedenle <strong>ATP verimi oksijenli solunuma göre daha düşüktür</strong>.</li>
+                        <li><strong>Örnek organizmalar:</strong> Denitrifikasyon bakterileri (nitrat kullanır), bataklık bakterileri (sülfat kullanır, H₂S üretir).</li>
+                        <li>Bataklıklardaki çürük yumurta kokusu, üretilen hidrojen sülfürden (H₂S) kaynaklanır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-lungs"></i> OKSİJENLİ SOLUNUM - GENEL BAKIŞ</div>
+                    <ul class="summary-list">
+                        <li>Organik besinlerin oksijen varlığında CO₂ ve H₂O'ya kadar parçalanmasıdır.</li>
+                        <li><strong>Genel denklem:</strong> C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Enerji (ATP + Isı)</li>
+                        <li><strong>ATP verimi yüksektir</strong> (1 glikozdan ≈36-38 ATP).</li>
+                        <li><strong>Ökaryot canlılarda mitokondride</strong>, prokaryotlarda hücre zarında gerçekleşir.</li>
+                        <li><strong>Aşamaları:</strong> 1. Glikoliz, 2. Pirüvik asitten asetil-CoA oluşumu, 3. Krebs döngüsü, 4. Elektron Taşıma Sistemi (ETS).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> MİTOKONDRİ YAPISI</div>
+                    <ul class="summary-list">
+                        <li><strong>Çift zarlı organeldir:</strong> Dış zar düz, iç zar krista adı verilen kıvrımlar yapar.</li>
+                        <li><strong>Krista:</strong> İç zarın kıvrımları, yüzey alanını artırarak daha fazla ETS molekülü barındırır.</li>
+                        <li><strong>Matriks:</strong> İç zarın içindeki sıvı ortam. Krebs döngüsü burada gerçekleşir.</li>
+                        <li><strong>Kendine ait genetik materyal:</strong> DNA, RNA ve ribozomları vardır, bölünebilir ve protein sentezi yapabilir.</li>
+                        <li><strong>Geçirgenlik seçiciliği:</strong> Glikozu içeri almaz, ancak üretilen ATP'yi sitoplazmaya verir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sync-alt"></i> KREBS DÖNGÜSÜ (SİTRİK ASİT DÖNGÜSÜ)</div>
+                    <ul class="summary-list">
+                        <li><strong>Hans Krebs</strong> tarafından keşfedilmiş, kendisine Nobel Tıp Ödülü kazandırmıştır.</li>
+                        <li><strong>Mitokondri matriksinde</strong> gerçekleşir.</li>
+                        <li><strong>Asetil-CoA (2C)</strong>, okzaloasetik asit (4C) ile birleşerek sitrik asit (6C) oluşturur.</li>
+                        <li>1 glikozdan 2 pirüvat, dolayısıyla 2 asetil-CoA oluştuğu için <strong>Krebs döngüsü 2 kez</strong> gerçekleşir.</li>
+                        <li><strong>Ürünler (1 glikoz için):</strong>
+                            <ul>
+                                <li>2 ATP (substrat düzeyinde fosforilasyon)</li>
+                                <li>6 NADH+H⁺</li>
+                                <li>2 FADH₂</li>
+                                <li>4 CO₂</li>
+                            </ul>
+                        </li>
+                        <li>Oluşan NADH+H⁺ ve FADH₂ molekülleri ETS'ye aktarılır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bolt"></i> ELEKTRON TAŞIMA SİSTEMİ (ETS) ve OKSİDATİF FOSFORİLASYON</div>
+                    <ul class="summary-list">
+                        <li><strong>Mitokondri iç zarında (krista)</strong> yer alan protein komplekslerinden oluşur.</li>
+                        <li><strong>İşleyiş:</strong> NADH+H⁺ ve FADH₂'den gelen yüksek enerjili elektronlar, ETS boyunca taşınırken enerjileri kademeli olarak açığa çıkar.</li>
+                        <li><strong>Son elektron alıcısı:</strong> Oksijen (O₂). Elektronlar ve protonlarla birleşerek su (H₂O) oluşturur.</li>
+                        <li><strong>Proton pompası:</strong> Açığa çıkan enerji, protonların (H⁺) matriksten zarlar arası boşluğa pompalanmasını sağlar.</li>
+                        <li><strong>Kemiosmotik teori:</strong> Oluşan proton gradiyenti (yoğunluk farkı) bir potansiyel enerji depolar.</li>
+                        <li><strong>ATP sentaz:</strong> Protonların matrikse geri akışı sırasında ATP sentaz enzimi ADP'den ATP sentezler.</li>
+                        <li><strong>ATP verimi:</strong>
+                            <ul>
+                                <li>1 NADH+H⁺ → ~2.5 ATP</li>
+                                <li>1 FADH₂ → ~1.5 ATP</li>
+                            </ul>
+                        </li>
+                        <li>Toplam ATP'nin yaklaşık <strong>%90'ı ETS'de (oksidatif fosforilasyon)</strong> üretilir.</li>
+                        <li>Glikozdaki enerjinin yaklaşık %34'ü ATP'ye dönüştürülür, geri kalanı ısı olarak açığa çıkar (vücut ısısının korunmasına yardımcı olur).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-utensils"></i> BESİNLERİN SOLUNUMA KATILIMI</div>
+                    <ul class="summary-list">
+                        <li><strong>Karbohidratlar:</strong> Monosakkaritlere parçalanır → glikoliz → pirüvat → asetil-CoA → Krebs.</li>
+                        <li><strong>Yağlar:</strong> Yağ asitleri → β-oksidasyon → asetil-CoA. Gliserol → glikolize katılır.</li>
+                        <li><strong>Proteinler:</strong> Amino asitlere parçalanır → deaminasyon (NH₂ grubu kopar, NH₃ oluşur, üreye dönüşür). Kalan karbon iskeletleri:
+                            <ul>
+                                <li>Pirüvata dönüşenler (3C'lu)</li>
+                                <li>Asetil-CoA'ya dönüşenler (2C'lu)</li>
+                                <li>Doğrudan Krebs döngüsü ara ürünlerine dönüşenler (4,5,6C'lu)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> FOTOSENTEZ ve SOLUNUM İLİŞKİSİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Karşılaştırma Özelliği</th>
+                            <th>Fotosentez</th>
+                            <th>Oksijenli Solunum</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Amacı</strong></td>
+                            <td>Besin ve O₂ üretmek</td>
+                            <td>Besin ve O₂ tüketerek ATP üretmek</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kullanılan/Glikoz Başına ATP</strong></td>
+                            <td>CO₂ kullanılır, O₂ açığa çıkar</td>
+                            <td>O₂ kullanılır, CO₂ açığa çıkar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enerji Dönüşümü</strong></td>
+                            <td>Işık enerjisi → Kimyasal bağ enerjisi</td>
+                            <td>Kimyasal bağ enerjisi → ATP enerjisi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gerçekleştiği Yer (Ökaryot)</strong></td>
+                            <td>Kloroplast</td>
+                            <td>Sitoplazma ve mitokondri</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ATP Sentez Yolu</strong></td>
+                            <td>Fotofosforilasyon</td>
+                            <td>Substrat düzeyinde + Oksidatif fosforilasyon</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli İlişki:</strong> Solunumun son ürünleri (CO₂ ve H₂O) fotosentezin ham maddesidir. Fotosentezin ürünleri (organik moleküller ve O₂) ise solunumun ham maddesidir. Bu iki süreç birbirini tamamlayarak ekosistemdeki madde ve enerji döngüsünü sağlar.
+                    </div>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Bitkilerde gece-gündüz farkı:</strong> Bitkiler gece ve gündüz sürekli solunum yapar. Gündüz, fotosentez hızı solunum hızından yüksek olduğu için, solunumla ürettikleri CO₂'yi fotosentezde kullanır, atmosfere daha az CO₂ verirler.</li>
+                        <li>Teknoloji ve nüfus artışına bağlı olarak atmosfere salınan aşırı CO₂, üreticiler tarafından tutularak besin sentezinde kullanılır, ancak ekolojik dengeyi bozabilir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Hücresel Solunum Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">100 metre koşan bir sporcunun kaslarında şiddetli yanma hissi oluşur ve bir süre sonra yorulur. Bu durum hücresel solunum açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Yüksek tempolu kısa mesafe koşularda, kaslara gelen oksijen miktarı ihtiyacı karşılayamaz.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Kas hücreleri, yeterli oksijen alamadığı için oksijenli solunum yapamaz ve enerji ihtiyacını karşılamak için laktik asit fermantasyonuna başlar.</p>
+                        <p><strong>Açıklama:</strong> Yoğun egzersiz sırasında kasların oksijen ihtiyacı artar. Kan dolaşımı bu ihtiyacı tam karşılayamazsa:</p>
+                        <ol>
+                            <li>Mitokondrilerdeki oksijenli solunum yavaşlar veya durur.</li>
+                            <li>Kas hücreleri depoladığı glikojeni glikoza çevirir.</li>
+                            <li>Glikoz, glikoliz yoluyla pirüvata parçalanır.</li>
+                            <li>Oksijen olmadığı için pirüvat, laktik aside dönüştürülür (laktik asit fermantasyonu).</li>
+                            <li>Bu süreçte net 2 ATP üretilir (oksijenli solunuma göre çok daha az).</li>
+                            <li>Biriken laktik asit kaslarda yanma hissine ve yorgunluğa neden olur.</li>
+                        </ol>
+                        <p>Dinlenme sırasında laktik asit kan yoluyla karaciğere taşınır ve burada pirüvata dönüştürülerek oksijenli solunumda kullanılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir fırıncı, hamurun mayalanması sırasında hamurun kabardığını gözlemler. Bu kabarma nasıl oluşur ve maya hücreleri bu süreçte nasıl enerji elde eder?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Hamur mayalanırken içinde gaz kabarcıkları oluşur ve hamur hacmi artar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Maya hücreleri etil alkol fermantasyonu yapar. Açığa çıkan CO₂ gazı hamurun kabarmasını sağlar.</p>
+                        <p><strong>Açıklama:</strong> Maya (Saccharomyces cerevisiae) hücreleri oksijensiz ortamda fermantasyon yapar:</p>
+                        <ol>
+                            <li>Hamurdaki şeker (glikoz) maya hücreleri tarafından alınır.</li>
+                            <li>Glikoliz ile glikoz, 2 pirüvata parçalanır (net 2 ATP kazanılır).</li>
+                            <li>Pirüvat, önce asetaldehite, sonra etil alkole dönüştürülür.</li>
+                            <li>Bu dönüşüm sırasında CO₂ açığa çıkar: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + 2ATP</li>
+                            <li>Açığa çıkan CO₂ gazı hamur içinde kabarcıklar oluşturur.</li>
+                            <li>Kabarcıklar hamurun hacmini artırarak kabarmasını sağlar.</li>
+                        </ol>
+                        <p><strong>Endüstriyel önemi:</strong> Ekmek, pasta, bira, şarap gibi ürünlerin yapımında bu fermantasyon süreci kullanılır. Alkol oranı %12'yi aşarsa maya hücreleri zarar görür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Bir biyoloji öğrencisi, deney tüpünde çimlenmekte olan fasulye tohumları ile haşlanmış fasulye tohumlarını bromtimol mavisi çözeltisi içine koyuyor. Bir süre sonra çimlenen tohumların bulunduğu tüpte çözeltinin renginin sarıya döndüğünü gözlüyor. Bu renk değişimi neyi gösterir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bromtimol mavisi asit-baz indikatörüdür: Asitli ortamda sarı, bazik ortamda mavi renk alır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Çimlenen tohumlar solunum yaparak CO₂ üretir. CO₂ suda çözününce karbonik asit oluşur ve ortamın pH'sını düşürerek bromtimol mavisinin sarı renk almasına neden olur.</p>
+                        <p><strong>Açıklama:</strong> Canlı hücreler solunum yapar:</p>
+                        <ol>
+                            <li>Çimlenen fasulye tohumları metabolik olarak aktif hücrelere sahiptir.</li>
+                            <li>Bu hücreler oksijenli solunum yapar: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP</li>
+                            <li>Üretilen CO₂, tüp içindeki suda çözünür: CO₂ + H₂O ⇌ H₂CO₃ (karbonik asit)</li>
+                            <li>Karbonik asit zayıf bir asittir ve ortamı asidikleştirir: H₂CO₃ ⇌ H⁺ + HCO₃⁻</li>
+                            <li>Ortamın pH'sı düştüğü için bromtimol mavisi indikatörü sarı renge döner.</li>
+                            <li>Haşlanmış tohumlarda hücreler ölmüştür, solunum yapamaz, bu nedenle CO₂ üretilmez ve renk değişimi olmaz.</li>
+                        </ol>
+                        <p>Bu deney, canlı dokuların solunum yaptığını ve CO₂ ürettiğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Yoğurt yapımında sütün içine yoğurt bakterileri eklenir ve belirli bir sıcaklıkta bekletilir. Bu süreçte bakteriler nasıl enerji elde eder ve yoğurt oluşumu nasıl gerçekleşir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Sütte bulunan laktoz şekeri, bakteriler tarafından kullanılarak laktik asite dönüştürülür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Yoğurt bakterileri (Lactobacillus bulgaricus ve Streptococcus thermophilus) laktik asit fermantasyonu yapar. Ürettikleri laktik asit süt proteinlerini (kazein) pıhtılaştırarak yoğurt oluşumunu sağlar.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Yoğurt bakterileri, sütteki disakkarit olan laktozu (süt şekeri) monosakkaritlere parçalar.</li>
+                            <li>Monosakkaritler glikoliz ile pirüvata dönüştürülür.</li>
+                            <li>Ortamda oksijen olmadığı veya yetersiz olduğu için pirüvat, laktik aside indirgenir: Pirüvik asit + NADH+H⁺ → Laktik asit + NAD⁺</li>
+                            <li>Bu fermantasyon sonucu net 2 ATP elde edilir.</li>
+                            <li>Biriken laktik asit, sütün pH'sını düşürür (asidik hale getirir).</li>
+                            <li>Asidik ortamda süt proteinleri (özellikle kazein) denatüre olur ve pıhtılaşır, bu da yoğurt kıvamını oluşturur.</li>
+                            <li>Laktik asit aynı zamanda yoğurda karakteristik ekşi tadını verir.</li>
+                        </ol>
+                        <p><strong>Endüstriyel önemi:</strong> Benzer süreçler peynir, turşu, kefir gibi fermente gıdaların üretiminde de kullanılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Mitokondri hastalığı olan bir kişide kas güçsüzlüğü, yorgunluk ve enerji eksikliği gözlenir. Bu belirtiler hücresel solunum açısından nasıl açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Mitokondri, hücrenin enerji santralidir. Mitokondriyal disfonksiyon enerji üretimini bozar.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Mitokondri hastalıklarında, oksijenli solunumun Krebs döngüsü ve ETS basamakları bozulur, ATP üretimi azalır. Enerji gereksinimi yüksek dokular (kas, sinir) bu durumdan en çok etkilenir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Mitokondri, ökaryot hücrelerde oksijenli solunumun Krebs döngüsü ve ETS basamaklarının gerçekleştiği organeldir.</li>
+                            <li>Mitokondriyal hastalıklar (mutasyonlar, enzim eksiklikleri) bu basamaklardaki reaksiyonları bozar.</li>
+                            <li>ATP üretimi önemli ölçüde azalır (normalde 1 glikozdan ~36-38 ATP, hastalıkta çok daha az).</li>
+                            <li>Kas hücreleri yüksek enerji tüketir. ATP azlığı kas kasılmasını etkiler, güçsüzlük ve yorgunluk oluşur.</li>
+                            <li>Enerji eksikliğini telafi etmek için hücreler laktik asit fermantasyonuna başvurabilir, bu da laktik asit birikimine ve kas ağrılarına neden olabilir.</li>
+                            <li>Mitokondrinin kendi DNA'sı (mtDNA) olduğu için, mtDNA mutasyonları anneden kalıtılabilir ve çeşitli sendromlara yol açabilir.</li>
+                        </ol>
+                        <p>Bu durum, mitokondrinin hücre için ne kadar kritik olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bataklık bölgelerinden çürük yumurta kokusu gelir. Bu koku hangi mikroorganizmaların hangi solunum tipinden kaynaklanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Bataklık bakterileri (örneğin Desulfovibrio) oksijensiz solunum yapar. Son elektron alıcısı olarak sülfat (SO₄²⁻) kullanırlar ve yan ürün olarak hidrojen sülfür (H₂S) gazı üretirler. H₂S çürük yumurta kokusuna sahiptir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Bataklıkların dibi oksijensiz (anaerobik) bir ortamdır.</li>
+                            <li>Burada yaşayan bazı bakteriler, organik besinleri parçalayarak enerji elde eder.</li>
+                            <li>Elektron Taşıma Sistemi (ETS) kullanırlar, ancak son elektron alıcısı olarak oksijen yerine sülfat (SO₄²⁻) iyonunu kullanırlar.</li>
+                            <li>Redoks reaksiyonu: Organik madde + SO₄²⁻ → H₂S + CO₂ + ATP</li>
+                            <li>Üretilen hidrojen sülfür (H₂S) gazı suda çözünür ve bataklıktan çürük yumurta kokusu şeklinde algılanır.</li>
+                            <li>Bu bakterilerin ATP verimi, oksijeni son elektron alıcısı olarak kullanan canlılara göre daha düşüktür çünkü sülfatın elektron çekim gücü oksijenden zayıftır.</li>
+                        </ol>
+                        <p>Bu, oksijensiz solunumun doğadaki bir örneğidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Uzun süre aç kalan bir insanın nefesinde aseton benzeri bir koku hissedilir. Bu durum metabolizma ve solunum açısından nasıl açıklanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Açlık durumunda vücut önce karbonhidrat depolarını, sonra yağ depolarını kullanır. Yağ asitlerinin karaciğerde parçalanması sonucu keton cisimcikleri (asetoasetat, β-hidroksibütirat, aseton) oluşur. Nefesteki aseton kokusu, uçucu olan asetonun solunum yoluyla atılmasından kaynaklanır.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Besin alınmadığında kan glikoz seviyesi düşer.</li>
+                            <li>Karaciğer glikojen depolarını tüketir.</li>
+                            <li>Enerji için yağ depoları mobilize edilir: Yağlar → yağ asitleri + gliserol.</li>
+                            <li>Yağ asitleri karaciğerde β-oksidasyon ile asetil-CoA'ya parçalanır.</li>
+                            <li>Normalde asetil-CoA Krebs döngüsüne girer, ancak açlıkta karbonhidrat yetersizliği nedeniyle Krebs ara ürünleri azalır.</li>
+                            <li>Asetil-CoA birikimi olur ve karaciğerde ketogenez yoluyla keton cisimciklerine dönüştürülür.</li>
+                            <li>Keton cisimcikleri (özellikle aseton) kana geçer ve akciğerlerden atılırken nefeste aseton kokusuna neden olur.</li>
+                            <li>Beyin ve diğer dokular enerji kaynağı olarak keton cisimciklerini kullanabilir.</li>
+                        </ol>
+                        <p>Bu durum, yağların solunumda nasıl kullanıldığını ve farklı besin türlerinin enerji metabolizmasındaki ilişkisini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Sirke yapımında üzüm suyuna "sirke anası" (asetobakter) eklenir ve hava ile teması sağlanır. Bu süreçte hangi solunum tipi gerçekleşir ve sirke nasıl oluşur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Sirke bakterileri (Acetobacter) oksijenli solunum yapar. Etil alkolü (şarapta bulunur) asetik aside (sirke asidi) yükseltgerler.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Üzüm suyu önce mayalar tarafından fermente edilerek şaraba (etil alkol) dönüştürülür.</li>
+                            <li>Daha sonra Acetobacter cinsi bakteriler devreye girer.</li>
+                            <li>Bu bakteriler oksijen varlığında etil alkolü oksijenli solunumda son elektron alıcısı olarak kullanmaz, ancak onu yükseltgeyerek asetik aside dönüştürür: C₂H₅OH + O₂ → CH₃COOH + H₂O</li>
+                            <li>Bu reaksiyon bir yükseltgenme (oksidasyon) reaksiyonudur ve enerji açığa çıkarır.</li>
+                            <li>Açığa çıkan enerji bakteriler tarafından ATP üretiminde kullanılır.</li>
+                            <li>Oluşan asetik asit (sirke asidi) sirkeye karakteristik ekşi tadını ve kokusunu verir.</li>
+                            <li>Sürecin havayla temas gerektirmesi, oksijenli ortamda gerçekleştiğini gösterir.</li>
+                        </ol>
+                        <p>Bu örnek, oksijenli solunumun sadece glikozun CO₂ ve H₂O'ya yıkımı olmadığını, farklı substratların da oksitlenebileceğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Yüksek irtifa dağcılığı yapan sporcular, düşük oksijen basıncına uyum sağlamak için bir süre kampta bekler. Bu beklemeye "aklimatizasyon" denir. Düşük oksijende vücutta hangi solunum değişiklikleri olur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Düşük oksijen basıncında, hücrelere yeterli oksijen taşınamaz. Dokular oksijenli solunumu sürdüremez, laktik asit fermantasyonu artar. Uzun vadede vücut, oksijen taşıma kapasitesini artırmak için alyuvar sayısını yükseltir ve mitokondri sayısını artırır.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Yüksek irtifada atmosfer basıncı ve oksijen kısmi basıncı düşüktür.</li>
+                            <li>Akciğerlerden kana geçen oksijen miktarı azalır.</li>
+                            <li>Dokulara yeterli oksijen ulaşamaz (hipoksi).</li>
+                            <li>Mitokondrilerdeki oksijenli solunum yavaşlar, ATP üretimi azalır.</li>
+                            <li>Enerji ihtiyacını karşılamak için hücreler laktik asit fermantasyonuna başvurur.</li>
+                            <li>Laktik asit birikimi erken yorulmaya neden olur.</li>
+                            <li><strong>Uzun vadeli adaptasyon (aklimatizasyon):</strong>
+                                <ul>
+                                    <li>Böbrekler EPO (eritropoietin) salgılar, kemik iliğinde alyuvar üretimi artar.</li>
+                                    <li>Kanın oksijen taşıma kapasitesi yükselir.</li>
+                                    <li>Kas hücrelerinde mitokondri sayısı artabilir.</li>
+                                    <li>Solunum ve dolaşım sisteminde çeşitli fizyolojik değişiklikler olur.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p>Bu süreç, oksijenin solunumdaki kritik rolünü ve vücudun çevresel değişikliklere nasıl uyum sağladığını gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bazı antibiyotikler, bakterilerin protein sentezini engelleyerek etki eder. Bu antibiyotiklerin mitokondriye zarar verebileceği neden düşünülür?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Mitokondrilerin kendilerine ait DNA'sı, RNA'sı ve ribozomları vardır. Bu ribozomlar bakteriyel ribozomlara benzer (70S tipi). Bakterilerin protein sentezini hedef alan bazı antibiyotikler, mitokondriyel protein sentezini de engelleyerek mitokondriye zarar verebilir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Mitokondri, endosimbiyotik teoriye göre ökaryot hücreye katılmış eski bir prokaryot (bakteri) kökenlidir.</li>
+                            <li>Bu nedenle kendi genetik materyalini (mtDNA) ve prokaryot benzeri 70S tipi ribozomlarını korumuştur.</li>
+                            <li>Ökaryotik hücre sitoplazmasındaki ribozomlar 80S tipidir.</li>
+                            <li>Bazı antibiyotikler (tetrasiklin, kloramfenikol gibi) bakteriyel 70S ribozomlarına bağlanarak protein sentezini engeller.</li>
+                            <li>Bu antibiyotikler, benzer yapıdaki mitokondriyel 70S ribozomlarına da bağlanabilir.</li>
+                            <li>Mitokondriyel protein sentezi engellenirse, ETS proteinleri ve diğer mitokondriyel enzimler sentezlenemez.</li>
+                            <li>Bu da oksijenli solunumun bozulmasına, ATP üretiminin azalmasına ve mitokondriyel disfonksiyona yol açabilir.</li>
+                        </ol>
+                        <p>Bu durum, antibiyotiklerin yan etkilerinden birini ve mitokondrinin evrimsel kökenini anlamak açısından önemlidir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Şeker hastalığı (diyabet) olan bir kişide, hücreler glikozu kullanamadığı için enerji kaynağı olarak yağlar parçalanır. Bu durumda ne tür metabolik ürünler birikir ve bu nasıl tehlikeli olabilir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Diyabette insülin eksikliği veya direnci nedeniyle hücreler glikozu kullanamaz. Enerji için yağlar parçalanır, aşırı miktarda keton cisimcikleri (asetoasetat, β-hidroksibütirat, aseton) birikir. Kanda keton birikimi (ketoasidoz) kan pH'sını düşürür, bu da hayati tehlike oluşturabilir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Tip 1 diyabette pankreas insülin üretemez, tip 2'de hücreler insüline direnç gösterir.</li>
+                            <li>İnsülin olmadan glikoz hücre içine giremez, kanda yüksek kalır (hiperglisemi).</li>
+                            <li>Hücreler enerji açlığı çeker.</li>
+                            <li>Vücut enerji için yağ depolarını parçalamaya başlar: Lipoliz artar.</li>
+                            <li>Yağ asitleri karaciğerde β-oksidasyon ile asetil-CoA'ya dönüştürülür.</li>
+                            <li>Glikoz kullanılamadığı için Krebs döngüsü ara ürünleri azalır, asetil-CoA Krebs'e giremez.</li>
+                            <li>Asetil-CoA birikimi ketogenezi tetikler: Karaciğerde keton cisimcikleri üretilir.</li>
+                            <li>Keton cisimcikleri asidiktir. Aşırı üretimde kanda birikirler (ketonemi).</li>
+                            <li>Kan pH'sı düşer (asidoz), bu durum <strong>diyabetik ketoasidoz</strong> adını alır.</li>
+                            <li>Belirtiler: Nefeste aseton kokusu, hızlı solunum (Kussmaul solunumu), bulantı, bilinç bulanıklığı, koma.</li>
+                        </ol>
+                        <p>Bu durum, karbonhidrat ve yağ metabolizmasının birbiriyle nasıl ilişkili olduğunu ve dengenin bozulmasının ciddi sonuçlar doğurabileceğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Arke bakterilerden metanojenler, bataklık ve geviş getiren hayvanların rumeninde metan (CH₄) gazı üretir. Bu organizmalar nasıl enerji elde eder?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Metanojen arke bakterileri oksijensiz solunum yapar. Son elektron alıcısı olarak karbondioksit (CO₂) veya asetat kullanırlar ve onları metana (CH₄) indirgerler. Bu redoks reaksiyonundan ATP elde ederler.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Metanojenler, aşırı ortam canlılarıdır (ekstremofil) ve oksijensiz ortamlarda yaşar.</li>
+                            <li>Hidrojen (H₂), format, alkol veya asetat gibi basit organik bileşikleri enerji kaynağı olarak kullanırlar.</li>
+                            <li>Elektron Taşıma Sistemi vardır, ancak son elektron alıcısı olarak CO₂ veya asetat gibi bileşikleri kullanırlar.</li>
+                            <li>Örnek reaksiyon: CO₂ + 4H₂ → CH₄ + 2H₂O + Enerji</li>
+                            <li>Veya: CH₃COOH (asetat) → CH₄ + CO₂</li>
+                            <li>Bu redoks reaksiyonlarından açığa çıkan enerji, kemiosmotik mekanizma ile ATP üretiminde kullanılır.</li>
+                            <li>Üretilen metan (CH₄) gazı bataklıklardan kabarcıklar halinde çıkar veya geviş getiren hayvanlarda geğirme yoluyla atmosfere karışır.</li>
+                            <li>Metan güçlü bir sera gazıdır ve küresel ısınmaya katkıda bulunur.</li>
+                        </ol>
+                        <p>Bu örnek, oksijensiz solunumun çok çeşitli şekillerde olabileceğini ve farklı mikroorganizmaların farklı elektron alıcıları kullanabileceğini gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Balıkların solungaçlarından su geçerken, sudaki oksijen kana difüze olur. Soğuk suda yaşayan balıkların metabolizma hızı neden daha yavaştır ve bu onlara nasıl avantaj sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Soğuk suda oksijenin sudaki çözünürlüğü daha yüksektir, ancak metabolizma enzimlerinin aktivitesi düşer. Bu nedenle balıkların metabolizma hızı yavaşlar. Düşük metabolizma hızı, enerji tüketimini azaltarak besin bulmanın zor olduğu soğuk ortamlarda hayatta kalma avantajı sağlar.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>Sıcaklık, enzim aktivitesini doğrudan etkiler: Genel kural olarak, sıcaklık arttıkça enzimatik reaksiyonların hızı artar (belirli bir sınıra kadar).</li>
+                            <li>Solunum reaksiyonları enzimlerle katalizlenir: Glikoliz, Krebs, ETS'deki tüm basamaklar enzimler tarafından yürütülür.</li>
+                            <li>Soğuk suda (<10°C) balıkların vücut sıcaklığı ortam sıcaklığına yakındır (soğukkanlı canlılar).</li>
+                            <li>Düşük sıcaklıkta solunum enzimlerinin aktivitesi azalır, bu nedenle ATP üretim hızı (metabolizma hızı) düşer.</li>
+                            <li>Düşük metabolizma hızının avantajları:
+                                <ul>
+                                    <li>Enerji tüketimi azalır.</li>
+                                    <li>Daha az besine ihtiyaç duyulur.</li>
+                                    <li>Soğuk ortamda besin bulmak zor olduğu için bu bir adaptasyondur.</li>
+                                </ul>
+                            </li>
+                            <li>Soğuk suda oksijen çözünürlüğü daha yüksek olduğu için, solungaçlardan oksijen alımı daha verimli olabilir, bu da düşük metabolizma hızını destekler.</li>
+                        </ol>
+                        <p>Bu durum, sıcaklığın hücresel solunum hızı üzerindeki etkisini ve canlıların çevrelerine nasıl uyum sağladığını gösterir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Siyanür zehirlenmesinde, kişi hızla bilincini kaybeder ve ölür. Siyanürün hücresel solunumda hangi basamağı engellediği düşünülür?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Siyanür (CN⁻), Elektron Taşıma Sistemi'nde (ETS) sitokrom c oksidaz kompleksine (Kompleks IV) bağlanarak elektron transferini bloke eder. Oksijen son elektron alıcısı olduğu halde kullanılamaz, oksidatif fosforilasyon durur ve ATP üretilemez.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li>ETS, mitokondri iç zarında dört ana protein kompleksinden (I, II, III, IV) oluşur.</li>
+                            <li>Kompleks IV (sitokrom c oksidaz), elektronları sitokrom c'den alır ve oksijene aktarır: 4H⁺ + 4e⁻ + O₂ → 2H₂O</li>
+                            <li>Siyanür iyonu (CN⁻), Kompleks IV'ün demir (Fe) içeren hem grubuna sıkıca bağlanır.</li>
+                            <li>Bu bağlanma, elektronların oksijene transferini fiziksel olarak engeller.</li>
+                            <li>ETS tıkanır, elektron akışı durur.</li>
+                            <li>Proton pompalama işlemi gerçekleşemez, proton gradiyenti oluşmaz.</li>
+                            <li>ATP sentaz çalışamaz, oksidatif fosforilasyon ile ATP üretimi durur.</li>
+                            <li>NADH+H⁺ ve FADH₂ yükseltgenemez, Krebs döngüsü ve glikoliz de dolaylı olarak inhibe olur.</li>
+                            <li>Özellikle yüksek enerji ihtiyacı olan sinir ve kalp hücreleri hızla etkilenir: Bilinç kaybı, kalp durması, ölüm.</li>
+                        </ol>
+                        <p>Siyanür zehirlenmesi, ETS'nin hayati önemini ve oksijenin solunumdaki kritik rolünü dramatize eden bir örnektir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">"Kemiosmotik teori" nedir ve bu teori ATP sentaz enziminin çalışma mekanizmasını nasıl açıklar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Kemiosmotik teori (Peter Mitchell, Nobel 1978), ETS'deki elektron taşınımı sırasında açığa çıkan enerjinin, protonların (H⁺) mitokondri matriksinden zarlar arası boşluğa pompalanmasında kullanıldığını öne sürer. Oluşan proton konsantrasyon gradiyenti (ΔpH ve ΔΨ), ATP sentaz enzimi aracılığıyla ADP'den ATP sentezi için gerekli enerjiyi sağlar.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ol>
+                            <li><strong>Proton Pompalama:</strong> ETS kompleksleri (I, III, IV), elektron taşınırken açığa çıkan enerjiyi kullanarak protonları matriksten zarlar arası boşluğa pompalar.</li>
+                            <li><strong>Proton Gradiyenti Oluşumu:</strong> Bu pompalama sonucu zarlar arası boşlukta proton konsantrasyonu yükselir (daha asidik), matrikste ise düşük kalır (daha bazik). Ayrıca, pozitif yüklü protonların birikmesi nedeniyle zarlar arasında elektriksel potansiyel farkı (ΔΨ) oluşur.</li>
+                            <li><strong>Proton Motif Kuvveti:</strong> Konsantrasyon farkı (ΔpH) ve elektriksel fark (ΔΨ) bir araya gelerek "proton motif kuvveti" (PMF) adı verilen bir potansiyel enerji deposu oluşturur.</li>
+                            <li><strong>ATP Sentaz (Kompleks V):</strong> Bu enzim, mitokondri iç zarında yer alan bir tür moleküler türbündür. F₁ kısmı matrikste, F₀ kısmı zarda bulunur.</li>
+                            <li><strong>Rotasyonel Kataliz:</strong> Protonlar, PMF'nin itici gücüyle F₀ kanalından matrikse geri akar. Bu akış, F₀'nin dönmesini sağlar. F₀'nin dönüşü, F₁'in konformasyonel değişiklikler geçirmesine neden olur.</li>
+                            <li><strong>ATP Sentezi:</strong> F₁'deki konformasyon değişiklikleri, ADP ve Pᵢ'yi bağlayarak ATP sentezini katalizler. Genel denklem: ADP + Pᵢ + H⁺ → ATP + H₂O</li>
+                        </ol>
+                        <p>Bu teori, ETS ile ATP sentezi arasındaki bağlantıyı açıklar ve biyoenerjetikte temel bir ilkedir. Oksijenli solunumda üretilen ATP'nin büyük kısmı bu mekanizmayla üretilir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Hücresel Solunum Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2c3e50; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden glikoliz tüm solunum tiplerinde (oksijenli, oksijensiz, fermantasyon) ortak bir evredir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep-Sonuç İlişkisi:</strong> Glikolizin evrenselliği, ATP üretiminin en temel ve en eski yolu olmasından kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Evrimsel Mantık:</strong> İlk hücreler oksijensiz (anaerobik) ortamlarda evrimleşti. Oksijenli atmosfer henüz yoktu. Bu nedenle, yaşamın ilk enerji elde etme yolu oksijensizdi. Glikoliz, oksijene ihtiyaç duymadan, basit enzimlerle sitoplazmada gerçekleşebilen en eski metabolik yoldur.</p>
+                            <p><strong>Kimyasal Mantık:</strong> Glikoz (6C) kararlı bir moleküldür. Onu parçalamak için önce enerji yatırımı gerekir (2 ATP harcanır). Bu, glikozu "aktive ederek" daha sonraki parçalanma basamaklarının enerji açığa çıkaracak şekilde ilerlemesini sağlar. Bu strateji, birçok biyokimyasal yolun başlangıcında görülür.</p>
+                            <p><strong>Fonksiyonel Mantık:</strong> Glikoliz, diğer solunum yolları için gerekli olan iki önemli şeyi sağlar:
+                                <ol>
+                                    <li><strong>Pirüvat:</strong> Oksijenli solunumda mitokondriye girecek, oksijensiz solunum ve fermantasyonda ise son ürüne (alkol, laktik asit vb.) dönüşecek ana ara ürün.</li>
+                                    <li><strong>NADH+H⁺:</strong> ETS'ye elektron kaynağı olacak indirgenmiş koenzim. Fermantasyonda ise NAD⁺'nın yenilenmesi için gerekli.</li>
+                                </ol>
+                            </p>
+                            <p><strong>Sonuç:</strong> Tüm canlılar glikoliz reaksiyonlarını kontrol eden benzer genlere ve enzimlere sahiptir. Bu, tüm yaşamın ortak bir atadan geldiğinin (evrimin) güçlü bir kanıtıdır. Oksijenli solunum, bu kadim yola daha sonra evrimleşen mitokondri ve ETS gibi sistemleri ekleyerek verimi artırmıştır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden fermantasyonda ATP verimi oksijenli solunuma göre çok düşüktür?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu farkın nedeni, besin molekülündeki enerjinin ne kadarının "ele alınıp" ATP'ye dönüştürüldüğüyle ilgilidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Enerji Tasarrufu Açısından:</strong> Bir glikoz molekülünün kimyasal bağlarında depolanmış enerjinin büyük kısmı, molekülün kendisindedir. Bu enerjiyi tamamen açığa çıkarmak için onu en küçük ve en kararlı inorganik moleküllere (CO₂ ve H₂O) kadar parçalamak gerekir.</p>
+                            <p><strong>Fermantasyonda:</strong> Glikoz sadece pirüvata kadar parçalanır (glikoliz). Pirüvat, hâlâ 3 karbonlu organik bir moleküldür (pirüvik asit). Daha sonra pirüvat, etil alkol veya laktik aside dönüştürülür. Bu son ürünlerin (alkol, laktik asit) kimyasal bağlarında <strong>glikozun önemli bir kısmı enerji olarak hapsolmuş durumdadır</strong>. Yani enerjinin büyük kısmı "çöp" üründe kalır, ATP'ye dönüştürülemez.</p>
+                            <p><strong>Oksijenli Solunumda:</strong> Glikoz tamamen CO₂ ve H₂O'ya kadar parçalanır. Bu son ürünler çok kararlıdır, içlerinde neredeyse hiç kullanılabilir kimyasal enerji kalmaz. Glikozdaki enerjinin büyük kısmı, bu kademeli parçalanma sırasında ele geçirilir ve önce NADH/FADH₂'de, sonra da proton gradiyentinde depolanarak nihayetinde ATP'ye dönüştürülür.</p>
+                            <p><strong>Sayılarla İfade:</strong>
+                                <ul>
+                                    <li><strong>Fermantasyon:</strong> 1 Glikoz → Net 2 ATP (Verim ~%2)</li>
+                                    <li><strong>Oksijenli Solunum:</strong> 1 Glikoz → Net ~36-38 ATP (Verim ~%34)</li>
+                                </ul>
+                            </p>
+                            <p><strong>Biyolojik Mantığı:</strong> Fermantasyon, oksijen olmadığında "acil durum" enerji kaynağıdır. Hızlıdır ama verimsizdir. Oksijenli solunum ise daha yavaş başlar ama uzun vadede çok daha verimlidir. Canlı, ortamına göre bu yolları kullanır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden ETS'de elektronlar birdenbire oksijene atlamak yerine, bir dizi molekül üzerinden kademeli olarak aktarılır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu kademeli aktarım, enerjinin kontrollü bir şekilde, yararlı iş yapabilecek şekilde açığa çıkmasını sağlamak içindir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Enerji Patlaması Yerine Kontrollü Salınım:</strong> NADH'deki elektronlar çok yüksek enerji seviyesindedir. Oksijen ise elektronları çok güçlü bir şekilde çeker. Eğer bu yüksek enerjili elektronlar doğrudan oksijene aktarılsaydı, büyük miktarda enerji bir anda, kontrolsüz bir patlama şeklinde ısı olarak açığa çıkardı. Bu, hücre için yıkıcı olurdu ve enerji ATP'ye dönüştürülemezdi.</p>
+                            <p><strong>Kademeli İndirgenme Potansiyeli:</strong> ETS molekülleri (koenzim Q, sitokromlar vb.), enerji seviyeleri giderek azalan bir sırayla dizilmiştir. Her bir molekül, kendinden bir öncekinden elektronu alır, biraz daha düşük enerji seviyesine indirger ve bir sonrakine aktarır.</p>
+                            <p><strong>Enerjinin "Kademelerde" Yakalanması:</strong> Elektron bu "enerji merdivenlerinden" aşağı inerken, her basamakta açığa çıkan küçük enerji paketleri, ETS kompleksleri tarafından yakalanır ve <strong>protonların (H⁺) mitokondri matriksinden dışarı pompalanması</strong> işinde kullanılır. Yani elektronun enerjisi, önce proton gradiyenti şeklinde depolanır.</p>
+                            <p><strong>Son Basamak - Su Oluşumu:</strong> En düşük enerji seviyesine inmiş elektronlar, nihayet oksijene aktarılır. Oksijen, bu düşük enerjili elektronları ve matriksteki protonları alarak su (H₂O) oluşturur. Bu reaksiyon da enerji açığa çıkarır, ancak artık çok düşük seviyededir ve ısı olarak kaybedilir.</p>
+                            <p><strong>Sonuç:</strong> Bu kademeli sistem sayesinde, glikozdaki kimyasal enerjinin %34'ü gibi yüksek bir oranı ATP'ye dönüştürülebilir. Doğrudan yakma olsaydı verim çok düşük olurdu. Bu, biyolojik sistemlerin enerjiyi ne kadar verimli kullandığının mükemmel bir örneğidir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden mitokondrinin iç zarı kıvrımlı (krista) yapıdadır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu yapı, işlevsel bir gerekliliktir: Yüzey alanını artırmak.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>İşlev-Yapı İlişkisi:</strong> Mitokondrinin temel işlevi oksijenli solunumla ATP üretmektir. ATP üretiminin en önemli kısmı (<strong>oksidatif fosforilasyon</strong>), iç zarda yer alan Elektron Taşıma Sistemi (ETS) kompleksleri ve ATP sentaz enzimi tarafından gerçekleştirilir.</p>
+                            <p><strong>Problem:</strong> Düz bir iç zar olsaydı, üzerine sığdırılabilecek ETS kompleksi ve ATP sentaz sayısı sınırlı olurdu. Bu da ATP üretim hızını sınırlardı.</p>
+                            <p><strong>Çözüm - Krista:</strong> İç zarın kıvrımlar yapması (krista oluşumu), zarın toplam yüzey alanını büyük ölçüde artırır. Daha fazla yüzey alanı demek, daha fazla ETS proteini ve ATP sentaz molekülünün zar üzerine yerleştirilebilmesi demektir.</p>
+                            <p><strong>Sonuç:</strong>
+                                <ul>
+                                    <li><strong>Daha fazla "elektron taşıma şeridi":</strong> Daha çok NADH ve FADH₂ aynı anda oksitlenebilir.</li>
+                                    <li><strong>Daha fazla "proton pompası":</strong> Daha güçlü bir proton gradiyenti daha hızlı oluşturulabilir.</li>
+                                    <li><strong>Daha fazla "ATP üretim tesisi (ATP sentaz):</strong> Aynı anda daha çok ATP sentezlenebilir.</li>
+                                </ul>
+                            </p>
+                            <p><strong>Örnek:</strong> Yüksek enerji ihtiyacı olan hücrelerde (örneğin kas hücreleri, sinir hücreleri) mitokondriler daha fazla kristaya sahiptir. Düşük enerji ihtiyacı olan hücrelerde ise kristalar daha az gelişmiştir.</p>
+                            <p><strong>Biyolojik Prensip:</strong> Bu, biyolojide sık görülen bir ilkeyi örnekler: <strong>"İşlev, yapıyı belirler"</strong> (Form follows function). Hücre, ihtiyacı olan ATP miktarını karşılayacak şekilde mitokondrisinin yapısını optimize etmiştir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden Krebs döngüsü "döngü" olarak adlandırılır ve neden bir molekül CO₂ çıkınca hemen durmaz?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Krebs döngüsünün döngüsel yapısı, onu sürekli ve verimli kılan bir tasarımdır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Döngünün Mantığı:</strong> Krebs döngüsü bir "katalitik döngü"dür. Başlangıç molekülü olan <strong>okzaloasetik asit (4C)</strong>, döngüye giren <strong>asetil-CoA (2C)</strong> ile birleşerek sitrik asit (6C) oluşturur. Daha sonra bir dizi reaksiyonda 2 molekül CO₂ açığa çıkar ve sonunda tekrar <strong>okzaloasetik asit</strong> geri kazanılır.</p>
+                            <p><strong>Neden durmaz?</strong> Çünkü okzaloasetik asit tükenmez! Her tur sonunda yeniden oluşur. Asetil-CoA her geldiğinde, onu karşılayacak hazır bir okzaloasetik asit vardır. Okzaloasetik asit bir <strong>katalizör</strong> gibi davranır: Kendisi tükenmeden asetil-CoA'nın parçalanmasını sağlar.</p>
+                            <p><strong>Karbon Hesabı:</strong> 4C (okzaloasetat) + 2C (asetil-CoA) = 6C (sitrat). Döngüde 2C (2 CO₂ olarak) çıkar, geriye 4C kalır ve bu 4C'lik yapı tekrar okzaloasetata dönüşür. Yani net olarak, giren asetil-CoA'nın 2 karbonu CO₂ olarak çıkar, ama okzaloasetat korunur.</p>
+                            <p><strong>Avantajları:</strong>
+                                <ol>
+                                    <li><strong>Verimlilik:</strong> Başlangıç molekülünü sürekli sentezlemeye gerek kalmaz, enerji tasarrufu sağlanır.</li>
+                                    <li><strong>Hız:</strong> Döngü, reaksiyonlar için gerekli tüm enzimler matrikste hazır olduğu için hızlı işler.</li>
+                                    <li><strong>Çok Yönlülük:</strong> Döngü sadece enerji üretimi için değil, aynı zamanda ara ürünleri ile yağ asidi, amino asit sentezi gibi biyosentetik yollara da hammadde sağlar.</li>
+                                </ol>
+                            </p>
+                            <p><strong>Sonuç:</strong> Krebs döngüsü, hücrenin merkezi metabolik hub'ıdır. Karbonhidrat, yağ ve protein metabolizması burada birleşir. Döngüsel yapısı, bu birleşme noktasını sürekli ve düzenli işleyen bir fabrika haline getirir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden NADH+H⁺, FADH₂'den daha fazla ATP üretilmesini sağlar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu fark, iki molekülün ETS'ye farklı noktalardan elektron vermesinden kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>ETS Giriş Noktaları:</strong>
+                                <ul>
+                                    <li><strong>NADH+H⁺:</strong> Elektronlarını ETS'nin <strong>Kompleks I</strong>'ine (NADH dehidrojenaz) verir.</li>
+                                    <li><strong>FADH₂:</strong> Elektronlarını ETS'nin <strong>Kompleks II</strong>'sine (süksinat dehidrojenaz) verir. (Veya yağ asidi oksidasyonunda ETS'ye farklı bir yolla girebilir, ama genellikle Kompleks II seviyesinde.)</li>
+                                </ul>
+                            </p>
+                            <p><strong>Proton Pompalama Farkı:</strong>
+                                <ol>
+                                    <li><strong>NADH yolu:</strong> Kompleks I, elektronları alır ve enerjisini kullanarak <strong>4 proton (H⁺)</strong> pompalar. Elektronlar daha sonra Kompleks III ve IV'ten geçer. Kompleks III <strong>4 proton</strong>, Kompleks IV ise <strong>2 proton</strong> daha pompalar. Toplam: <strong>10 proton</strong> pompalar.</li>
+                                    <li><strong>FADH₂ yolu:</strong> Kompleks II, proton pompalayan bir kompleks <strong>değildir</strong>. Elektronlar Kompleks II'den alınıp Koenzim Q'ya, oradan Kompleks III ve IV'e aktarılır. Yani sadece Kompleks III (4 H⁺) ve Kompleks IV'ün (2 H⁺) pompaladığı protonlar sayılır. Toplam: <strong>6 proton</strong> pompalar.</li>
+                                </ol>
+                            </p>
+                            <p><strong>ATP Hesabı:</strong> ATP sentaz, belirli sayıda protonun (genelde 3 veya 4) matrikse geri akışı ile 1 ATP sentezler. NADH yoluyla pompalanan daha fazla proton, daha fazla ATP sentezlenmesi demektir.
+                                <ul>
+                                    <li>1 NADH+H⁺ → ~10 H⁺ pompalar → ~2.5 ATP</li>
+                                    <li>1 FADH₂ → ~6 H⁺ pompalar → ~1.5 ATP</li>
+                                </ul>
+                            </p>
+                            <p><strong>Biyolojik Anlamı:</strong> Bu fark, metabolik yollardan ne kadar ATP kazanılacağını belirler. Krebs döngüsünde, süksinattan FADH₂ oluşur, diğer basamaklardan NADH oluşur. Bu nedenle, Krebs'in toplam ATP verimi hesaplanırken bu fark dikkate alınır.</p>
+                            <p><strong>Sonuç:</strong> ETS'deki proton pompalama basamaklarının sayısı, farklı elektron taşıyıcılarının enerji verimini belirler. NADH, ETS'ye daha "yukarıdan" girdiği için daha uzun bir yol kat eder ve daha fazla proton pompalama fırsatı yaratır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meraklısına / İleri Biyoloji Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-history"></i> ENDOSİMBİYOTİK TEORİ ve MİTOKONDRİNİN KÖKENİ</div>
+                    <div class="advanced-content">
+                        <p><strong>Teori:</strong> Mitokondri, ökaryot hücrenin ataları tarafından fagosite edilmiş (yutulmuş) ancak sindirilmemiş, aerobik (oksijen kullanan) bir prokaryot (alfa-proteobakteri) kökenlidir. Zamanla bu bakteri ile konak hücre arasında karşılıklı yarara dayalı (simbiyotik) bir ilişki gelişmiş ve bakteri mitokondriye dönüşmüştür.</p>
+                        <p><strong>Kanıtlar:</strong></p>
+                        <ol>
+                            <li><strong>Kendi DNA'sı:</strong> Mitokondrinin kendine ait dairesel, çıplak DNA'sı vardır (tıpkı bakterilerde olduğu gibi). Ökaryotik çekirdek DNA'sı doğrusaldır ve histonlarla paketlenmiştir.</li>
+                            <li><strong>Kendi Ribozomları:</strong> Mitokondriyel ribozomlar 70S tipindedir (bakteriyel). Hücre sitoplazmasındaki ribozomlar ise 80S tipidir (ökaryotik).</li>
+                            <li><strong>Çift Zarlı Yapı:</strong> Dış zar, konak hücrenin fagozom zarından; iç zar ise bakterinin orijinal hücre zarından köken almış olabilir.</li>
+                            <li><strong>İkili Bölünme:</strong> Mitokondriler, bakteriler gibi ikili bölünme ile çoğalır.</li>
+                            <li><strong>Antibiyotik Duyarlılığı:</strong> Bazı antibiyotikler bakterilerin protein sentezini engeller. Aynı antibiyotikler mitokondriyel protein sentezini de engelleyerek mitokondriye zarar verir, çünkü ribozomları benzerdir.</li>
+                        </ol>
+                        <p><strong>Sonuç:</strong> Bu teori, ökaryotik hücrenin kompleks yapısının nasıl evrimleştiğini açıklayan en önemli teorilerden biridir. Mitokondri, hücreye oksijenli solunum yeteneğini kazandırarak çok daha verimli enerji üretimini ve dolayısıyla daha büyük, daha kompleks çok hücreli yaşamın ortaya çıkışını mümkün kılmıştır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-fire-alt"></i> TERMOGENİN (ISIL DEVRİYE GİRME) ve KAHVERENGİ YAĞ DOKUSU</div>
+                    <div class="advanced-content">
+                        <p>Normalde solunumda üretilen proton gradiyenti, ATP sentezini sürdürmek için kullanılır. Ancak bazı durumlarda bu gradiyent "kısa devre" yaparak enerjiyi doğrudan ısıya dönüştürebilir.</p>
+                        <p><strong>Kahverengi Yağ Dokusu (BAT):</strong> Memelilerde, özellikle yenidoğanlarda ve kış uykusuna yatan hayvanlarda bulunan özel bir yağ dokusudur. Adını, bol miktarda demir içeren sitokromlara sahip mitokondrilerinden alır.</p>
+                        <p><strong>Nasıl Çalışır?</strong> Kahverengi yağ hücrelerinin mitokondrilerinde <strong>termojenin (UCP1)</strong> adı verilen bir protein bulunur. Bu protein, iç zarda bir proton kanalı gibi davranır.</p>
+                        <ol>
+                            <li>Soğukta, sempatik sinir sistemi kahverengi yağı uyarır.</li>
+                            <li>Yağ asitleri β-oksidasyon ile parçalanır, NADH ve FADH₂ oluşur.</li>
+                            <li>ETS çalışır ve proton gradiyenti oluşturulur.</li>
+                            <li><strong>Ancak, termojenin (UCP1) aktivasyonu</strong> ile protonlar, ATP sentazdan geçmek yerine, bu kanaldan doğrudan matrikse geri akar.</li>
+                            <li>Proton akışının enerjisi, ATP sentezinde kullanılamaz, bunun yerine doğrudan <strong>ısı olarak açığa çıkar</strong>.</li>
+                            <li>Oluşan ısı, kan dolaşımıyla tüm vücuda yayılarak vücut sıcaklığını korur.</li>
+                        </ol>
+                        <p><strong>Önemi:</strong> Yenidoğanların vücut yüzey alanı/hacim oranı yüksektir, ısı kaybı fazladır. Kahverengi yağ dokusu, onları hipotermiden korur. Yetişkin insanlarda da az miktarda kahverengi yağ bulunur ve obezite araştırmalarında ilgi odağıdır; aktivasyonunun kilo kaybına yardımcı olabileceği düşünülmektedir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-balance-scale"></i> GLİKOLİZ ve KREBS'İN AMPERE (ENERJİ SENSÖRÜ) TARAFINDAN DÜZENLENMESİ</div>
+                    <div class="advanced-content">
+                        <p>Hücre, enerji durumuna göre solunum hızını ayarlamalıdır. ATP bolsa solunumu yavaşlatır, ATP azsa hızlandırır. Bu ince ayar, <strong>allosterik düzenleme</strong> ile yapılır.</p>
+                        <p><strong>Anahtar Molekül: AMP/ATP Oranı</strong> Hücredeki gerçek enerji sensörü ATP değil, <strong>AMP (adenozin monofosfat)</strong> seviyesidir. ATP tükendiğinde, ADP'den daha fazla ATP yapılır, ancak ADP de tükenirse şu reaksiyon olur: <strong>2ADP ⇌ ATP + AMP</strong> (adenilat kinaz enzimi). Yani ATP düşüşü, AMP'de keskin bir artışa neden olur.</p>
+                        <p><strong>Glikolizdeki Kritik Düzenleyici: Fosfofruktokinaz-1 (PFK-1)</strong></p>
+                        <ul>
+                            <li>Bu enzim, glikolizin en önemli düzenleyici noktasıdır (glikoz → glikoz-6-P → fruktoz-6-P → <strong>fruktoz-1,6-bisfosfat</strong>).</li>
+                            <li><strong>İnhibitörler (Yavaşlatıcılar):</strong> Yüksek ATP, sitrat (Krebs'ten gelir, yeterli ara ürün olduğunu gösterir).</li>
+                            <li><strong>Aktivatörler (Hızlandırıcılar):</strong> Yüksek AMP, ADP, fruktoz-2,6-bisfosfat.</li>
+                            <li><strong>Mantık:</strong> ATP bolsa (enerji iyi), PFK-1 inhibe olur, glikoliz yavaşlar. ATP azsa, AMP artar, PFK-1 aktive olur, glikoliz hızlanır.</li>
+                        </ul>
+                        <p><strong>Krebs Döngüsündeki Kritik Düzenleyici: İzositrat Dehidrojenaz & α-Ketoglutarat Dehidrojenaz</strong></p>
+                        <ul>
+                            <li>Bu enzimler de allosterik olarak düzenlenir.</li>
+                            <li><strong>İnhibitörler:</strong> Yüksek ATP, NADH (yeterli indirgeme gücü var).</li>
+                            <li><strong>Aktivatörler:</strong> Yüksek ADP, Ca²⁺ (kas kasılması sinyali, daha fazla enerji gerekecek).</li>
+                        </ul>
+                        <p><strong>Sonuç:</strong> Hücre, enerji para birimi olan ATP/ADP/AMP dengesini sürekli ölçer ve solunum hızını buna göre ayarlar. Bu, akıllı bir geri besleme mekanizmasıdır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-radiation-alt"></i> REAKTİF OKSİJEN TÜRLERİ (ROS) ve OKSİDATİF STRES</div>
+                    <div class="advanced-content">
+                        <p>Oksijenli solunum, yaşam için elzemdir ama aynı zamanda tehlikeli yan ürünler de oluşturur. ETS'de elektronların %1-2'si kaçar ve oksijen ile erken reaksiyona girerek <strong>Reaktif Oksijen Türleri (ROS)</strong> oluşturur.</p>
+                        <p><strong>Başlıca ROS'lar:</strong></p>
+                        <ul>
+                            <li><strong>Süperoksit anyonu (O₂•⁻):</strong> ETS'den, özellikle Kompleks I ve III'ten elektron kaçağı sonucu oluşur.</li>
+                            <li><strong>Hidrojen peroksit (H₂O₂):</strong> Süperoksitin süperoksit dismutaz (SOD) enzimiyle dönüştürülmesiyle oluşur.</li>
+                            <li><strong>Hidroksil radikali (•OH):</strong> En reaktif ve en tehlikelisi. H₂O₂'nin demir (Fe²⁺) varlığında parçalanmasıyla (Fenton reaksiyonu) oluşur.</li>
+                        </ul>
+                        <p><strong>Tehlikeleri:</strong> ROS'lar son derece reaktiftir. Proteinlerin, lipitlerin ve özellikle <strong>DNA'nın yapısını bozarlar</strong>. Mitokondriyel DNA (mtDNA), çekirdek DNA'sına göre korumasızdır ve daha fazla mutasyona uğrar. Bu hasar birikimi, <strong>yaşlanma teorilerinin</strong> ve birçok kronik hastalığın (kanser, nörodejeneratif hastalıklar) altında yatan önemli bir mekanizma olarak kabul edilir.</p>
+                        <p><strong>Savunma Sistemleri:</strong> Hücre bu tehditle başa çıkmak için antioksidan savunma sistemleri geliştirmiştir:
+                            <ul>
+                                <li><strong>Enzimler:</strong> Süperoksit dismutaz (SOD), katalaz, glutatyon peroksidaz.</li>
+                                <li><strong>Antioksidan Moleküller:</strong> Glutatyon, C vitamini, E vitamini, ürik asit.</li>
+                            </ul>
+                        </p>
+                        <p><strong>İlginç Paradoks:</strong> Düşük doz ROS'lar, hücre sinyallemesinde önemli rol oynar (redoks sinyallemesi). Yani oksijen, yaşam için gerekli ama aynı zamanda potansiyel olarak zararlıdır. Solunum, bu ince çizgide dengelenmiştir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-seedling"></i> CRASSULACEAN ASİT METABOLİZMASI (CAM) ve SOLUNUM İLİŞKİSİ</div>
+                    <div class="advanced-content">
+                        <p>Kaktüs gibi kurakçıl (sukkulent) bitkiler, gündüzleri stomalarını (gözenek) kapalı tutarak su kaybını önler. Ancak bu, CO₂ alımını ve dolayısıyla fotosentezi engeller. Bu bitkiler, solunum ve fotosentezi zaman içinde ayıran özel bir metabolik yol (CAM) geliştirmiştir.</p>
+                        <p><strong>Mekanizma:</strong></p>
+                        <ol>
+                            <li><strong>Gece (Stomalar Açık):</strong> Bitki stomalarını açar ve CO₂ alır. CO₂, PEP karboksilaz enzimi ile oksaloasetata, sonra malata dönüştürülür ve vakuollerde depolanır. <strong>Bu sırada bitki normal solunumuna devam eder.</strong></li>
+                            <li><strong>Gündüz (Stomalar Kapalı):</strong> Stomalar kapanır, su kaybı önlenir. Vakuollerden malat salınır, malat dekarboksilaz ile pirüvata ve CO₂'ye parçalanır. Açığa çıkan CO₂, Calvin döngüsünde RuBisCO tarafından kullanılarak fotosentezle şekere dönüştürülür. <strong>Bu sırada da bitki solunum yapmaya devam eder.</strong></li>
+                        </ol>
+                        <p><strong>Solunumla İlgili Çıkarım:</strong> Bu bitkiler gece ve gündüz sürekli solunum yapar. Gece aldıkları oksijen, hem normal oksijenli solunumda kullanılır hem de (bir kısmı) PEP karboksilaz reaksiyonu için gerekli olan PEP'in glikoliz yoluyla üretilmesi için enerji (ATP) sağlar. CAM bitkileri, su tasarrufu yaparken solunum ve fotosentezi koordine etmenin akıllı bir yolunu bulmuştur.</p>
+                        <p>Bu örnek, solunumun (enerji üretimi) bitkilerdeki diğer metabolik süreçlerle (burada CO₂ yakalama) nasıl iç içe geçtiğini gösterir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/12solunum.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+document.getElementById('audio-btn').addEventListener('click', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('audio-section').classList.add('active');
+    updateProgress('audio');
+});
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            updateProgress('advanced');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+document.getElementById('back-from-audio').addEventListener('click', () => {
+    document.getElementById('audio-section').classList.remove('active');
+    document.getElementById('dashboard').style.display = 'grid';
+});
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-advanced').addEventListener('click', () => {
+            document.getElementById('advanced-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Hücresel Solunum Sorusu (PDF'e dayalı)
+        const flashcards = [
+            {
+                question: "Hücresel solunumun canlılar için önemi nedir?",
+                answer: "Canlıların büyüme, gelişme, hareket, biyosentez, üreme gibi hayatsal faaliyetleri için gerekli enerjiyi (ATP) organik besinlerden elde etmesini sağlar. Enerji üretilemediğinde canlılık sürdürülemez."
+            },
+            {
+                question: "Glikoliz nedir ve nerede gerçekleşir?",
+                answer: "'Şeker parçalanması' anlamına gelir. Bir glikoz molekülünün çeşitli enzimlerle 2 pirüvik aside kadar parçalandığı reaksiyonlar dizisidir. Hücrenin sitoplazmasında gerçekleşir ve tüm solunum tiplerinde ortaktır."
+            },
+            {
+                question: "Glikolizdeki net ATP kazancı kaçtır?",
+                answer: "Net 2 ATP. Başlangıçta glikozu aktifleştirmek için 2 ATP harcanır, sonunda 4 ATP üretilir. Kazanç: 4 - 2 = 2 ATP."
+            },
+            {
+                question: "Fermantasyon nedir?",
+                answer: "Oksijen veya başka bir elektron taşıma sistemi kullanmaksızın, sadece glikoliz yoluyla kimyasal enerji (ATP) elde edilmesidir. Glikoliz ve son ürün evrelerinden oluşur."
+            },
+            {
+                question: "Etil alkol fermantasyonu hangi canlılarda görülür?",
+                answer: "Bazı bakterilerde, mayalarda (Saccharomyces) ve bazı bitki tohumlarında görülür. Son ürünleri etil alkol ve CO₂'dir. Ekmek mayalanması ve sirke yapımında kullanılır."
+            },
+            {
+                question: "Laktik asit fermantasyonu hangi canlılarda görülür?",
+                answer: "Bazı mantar çeşitleri, peynir/yoğurt/turşu bakterileri, omurgalıların çizgili kasları ve memelilerin olgun alyuvarlarında görülür. Son ürün laktik asittir, CO₂ oluşmaz."
+            },
+            {
+                question: "Kaslarda laktik asit fermantasyonu neden gerçekleşir?",
+                answer: "Yoğun egzersiz sırasında kaslara gelen oksijen miktarı yetersiz kalır. Kas hücreleri enerji ihtiyacını karşılamak için glikojeni glikoza çevirir ve laktik asit fermantasyonu yaparak hızlı ATP elde eder."
+            },
+            {
+                question: "Oksijensiz solunum nedir?",
+                answer: "Organik moleküllerin oksijen kullanılmadan, ancak Elektron Taşıma Sistemi (ETS) yardımıyla parçalanarak ATP üretilmesidir. Son elektron alıcısı olarak oksijen yerine nitrat, sülfat, CO₂ gibi inorganik bileşikler kullanılır."
+            },
+            {
+                question: "Bataklıklardaki çürük yumurta kokusunun sebebi nedir?",
+                answer: "Bataklık bakterilerinin oksijensiz solunum yapmasıdır. Bu bakteriler son elektron alıcısı olarak sülfat (SO₄²⁻) kullanır ve yan ürün olarak hidrojen sülfür (H₂S) gazı üretirler. H₂S çürük yumurta kokusuna sahiptir."
+            },
+            {
+                question: "Oksijenli solunumun genel denklemini yazınız.",
+                answer: "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Enerji (ATP + Isı)"
+            },
+            {
+                question: "Mitokondrinin yapısını kısaca açıklayınız.",
+                answer: "Çift zarlı organeldir. Dış zar düzdür. İç zar krista adı verilen kıvrımlar yapar; ETS ve ATP sentaz buradadır. İç zarın içindeki sıvıya matriks denir; Krebs döngüsü burada gerçekleşir."
+            },
+            {
+                question: "Mitokondrinin kendine ait DNA'sının olması ne anlama gelir?",
+                answer: "Mitokondri, ökaryot hücreye sonradan katılmış, eski bir prokaryot (bakteri) kökenli olabilir (Endosimbiyotik teori). Kendi DNA'sı, RNA'sı ve ribozomları vardır; bölünebilir ve sınırlı da olsa protein sentezi yapabilir."
+            },
+            {
+                question: "Pirüvik asitten asetil-CoA oluşumu nerede gerçekleşir?",
+                answer: "Ökaryot hücrelerde mitokondri matriksinde gerçekleşir. Glikolizle sitoplazmada oluşan pirüvik asit, mitokondriye geçer. Orada bir CO₂ ayrılır, NAD⁺ indirgenir ve koenzim A (CoA) ile birleşerek asetil-CoA oluşur."
+            },
+            {
+                question: "Krebs döngüsü (Sitrik asit döngüsü) nedir?",
+                answer: "Mitokondri matriksinde gerçekleşen, asetil-CoA'nın CO₂'ye kadar parçalandığı devirli reaksiyonlar dizisidir. Hans Krebs keşfettiği için bu adı almıştır. 1 glikoz için 2 kez gerçekleşir."
+            },
+            {
+                question: "Bir glikoz molekülünün Krebs döngüsünden geçişi sonucu neler üretilir?",
+                answer: "2 ATP (substrat düzeyinde), 6 NADH+H⁺, 2 FADH₂ ve 4 CO₂. NADH+H⁺ ve FADH₂, ETS'ye aktarılır."
+            },
+            {
+                question: "Elektron Taşıma Sistemi (ETS) nerede bulunur?",
+                answer: "Ökaryot hücrelerde mitokondrinin iç zarında (krista), prokaryot hücrelerde ise hücre zarında bulunur. Çoğunlukla proteinlerden oluşan moleküllerden meydana gelir."
+            },
+            {
+                question: "Oksidatif fosforilasyon nedir?",
+                answer: "ETS'de elektronların taşınması sırasında açığa çıkan enerjinin, ATP sentaz enzimi aracılığıyla ADP'den ATP sentezlenmesinde kullanılmasıdır. Oksijenli solunumda üretilen ATP'lerin yaklaşık %90'ı bu yolla üretilir."
+            },
+            {
+                question: "Kemiosmotik teori nedir?",
+                answer: "Peter Mitchell tarafından öne sürülen teoriye göre, ETS'de elektron taşınırken açığa çıkan enerji, protonların (H⁺) matriksten zarlar arası boşluğa pompalanmasında kullanılır. Oluşan proton gradiyentinin enerjisi, ATP sentaz ile ATP üretimini sağlar."
+            },
+            {
+                question: "Oksijenli solunumda su (H₂O) nasıl oluşur?",
+                answer: "ETS'nin son molekülüne gelen elektronlar ve bir çift hidrojen atomu (protonlar), oksijen (O₂) ile birleşerek su oluşturur: O₂ + 4H⁺ + 4e⁻ → 2H₂O. Oksijenin solunumdaki temel rolü budur."
+            },
+            {
+                question: "Karbohidratlar oksijenli solunumda hangi basamaklara katılır?",
+                answer: "Önce monosakkaritlere (glikoz gibi), daha sonra glikoliz ile pirüvata, son olarak da pirüvattan asetil-CoA'ya dönüşür. Asetil-CoA Krebs döngüsüne girer."
+            },
+            {
+                question: "Yağlar oksijenli solunumda nasıl kullanılır?",
+                answer: "Yağlar, gliserol ve yağ asitlerine parçalanır. Yağ asitleri β-oksidasyon ile asetil-CoA'ya dönüşür. Gliserol ise glikoliz evresine girerek pirüvata dönüşür."
+            },
+            {
+                question: "Proteinler oksijenli solunumda nasıl kullanılır?",
+                answer: "Proteinler amino asitlere parçalanır. Deaminasyon ile amino grubu (NH₂) kopar ve NH₃ (daha sonra üre) oluşur. Kalan karbon iskeletleri, karbon sayısına göre pirüvat, asetil-CoA veya Krebs ara ürünlerine dönüşerek solunuma katılır."
+            },
+            {
+                question: "Fotosentez ve solunum ilişkisini açıklayınız.",
+                answer: "Solunumun son ürünleri (CO₂ ve H₂O) fotosentezin ham maddesidir. Fotosentezin ürünleri (organik moleküller ve O₂) ise solunumun ham maddesidir. Bu iki süreç birbirini tamamlayarak ekosistemdeki madde ve enerji döngüsünü sağlar."
+            },
+            {
+                question: "Bitkiler gece ve gündüz solunum yapar mı?",
+                answer: "Evet, bitkiler de diğer canlılar gibi gece ve gündüz aralıksız solunum yapar. Gündüz, fotosentez hızı solunum hızından yüksek olduğu için, solunumla ürettikleri CO₂ fotosentezde kullanılır ve atmosfere daha az CO₂ verirler."
+            },
+            {
+                question: "Fotosentez ve oksijenli solunumu iki yönden karşılaştırınız.",
+                answer: "1. Enerji: Fotosentez ışık enerjisini kimyasal bağ enerjisine çevirir. Solunum kimyasal bağ enerjisini ATP enerjisine çevirir. 2. Gaz alışverişi: Fotosentez CO₂ alır O₂ verir. Solunum O₂ alır CO₂ verir."
+            }
+        ];
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'teki tüm kavramları kapsayacak şekilde)
+        const testQuestions = [
+            {
+                question: "Hücresel solunumun temel amacı nedir?",
+                options: [
+                    "Oksijen tüketmek",
+                    "Karbondioksit üretmek",
+                    "Organik besinlerden ATP enerjisi elde etmek",
+                    "Isı üretmek",
+                    "Su oluşturmak"
+                ],
+                correct: 2,
+                explanation: "Hücresel solunumun temel amacı, organik besin moleküllerindeki kimyasal bağ enerjisini, hücrenin kullanabileceği evrensel enerji birimi olan ATP'ye dönüştürmektir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi hücresel solunum çeşitlerinden biri değildir?",
+                options: [
+                    "Oksijenli solunum",
+                    "Oksijensiz solunum",
+                    "Fermantasyon",
+                    "Fotosentez",
+                    "Hepsi hücresel solunum çeşididir"
+                ],
+                correct: 3,
+                explanation: "Fotosentez, hücresel solunum değil, besin ve oksijen üretim sürecidir. Oksijenli solunum, oksijensiz solunum ve fermantasyon hücresel solunumun üç farklı şeklidir."
+            },
+            {
+                question: "Glikoliz reaksiyonları ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Sitoplazmada gerçekleşir",
+                    "Tüm solunum tiplerinde ortaktır",
+                    "1 glikozdan net 2 ATP üretilir",
+                    "Oksijen kullanılır",
+                    "2 pirüvik asit oluşur"
+                ],
+                correct: 3,
+                explanation: "Glikoliz reaksiyonları oksijen kullanılmadan gerçekleşir. Oksijenin varlığı veya yokluğu glikolizi etkilemez, bu nedenle tüm solunum tiplerinde ortaktır."
+            },
+            {
+                question: "Glikoliz sırasında gerçekleşen aşağıdaki olaylardan hangisi doğrudur?",
+                options: [
+                    "2 ATP harcanır, 4 ATP üretilir",
+                    "4 ATP harcanır, 2 ATP üretilir",
+                    "2 ATP harcanır, 2 ATP üretilir",
+                    "ATP harcanmaz, 4 ATP üretilir",
+                    "2 ATP harcanır, 6 ATP üretilir"
+                ],
+                correct: 0,
+                explanation: "Glikolizde başlangıçta glikozu aktifleştirmek için 2 ATP harcanır. Daha sonraki basamaklarda 4 ATP üretilir. Net ATP kazancı: 4 - 2 = 2 ATP."
+            },
+            {
+                question: "Fermantasyon ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Oksijen kullanılır",
+                    "Elektron Taşıma Sistemi (ETS) kullanılır",
+                    "Yalnızca glikoliz yoluyla ATP elde edilir",
+                    "Yüksek ATP verimi vardır",
+                    "Son ürün olarak CO₂ ve H₂O oluşur"
+                ],
+                correct: 2,
+                explanation: "Fermantasyon, oksijen veya ETS kullanılmadan, sadece glikoliz yoluyla ATP elde edilmesidir. ATP verimi düşüktür (net 2 ATP). Son ürünler etil alkol+CO₂ veya laktik asittir."
+            },
+            {
+                question: "Etil alkol fermantasyonu sonucu aşağıdakilerden hangisi oluşmaz?",
+                options: [
+                    "Etil alkol",
+                    "Karbondioksit",
+                    "ATP",
+                    "Laktik asit",
+                    "NAD⁺"
+                ],
+                correct: 3,
+                explanation: "Etil alkol fermantasyonunda son ürünler etil alkol ve CO₂'dir. Laktik asit, laktik asit fermantasyonunun son ürünüdür. Her iki fermantasyonda da net 2 ATP üretilir ve NAD⁺ geri kazanılır."
+            },
+            {
+                question: "Yoğurt yapımında aşağıdaki fermantasyon çeşitlerinden hangisi gerçekleşir?",
+                options: [
+                    "Etil alkol fermantasyonu",
+                    "Laktik asit fermantasyonu",
+                    "Asetik asit fermantasyonu",
+                    "Bütirik asit fermantasyonu",
+                    "Propiyonik asit fermantasyonu"
+                ],
+                correct: 1,
+                explanation: "Yoğurt yapımında Lactobacillus bulgaricus ve Streptococcus thermophilus bakterileri laktik asit fermantasyonu yapar. Ürettikleri laktik asit süt proteinlerini pıhtılaştırarak yoğurt oluşumunu sağlar."
+            },
+            {
+                question: "Kaslarda laktik asit fermantasyonu hangi durumda gerçekleşir?",
+                options: [
+                    "Dinlenme halindeyken",
+                    "Yeterli oksijen olduğunda",
+                    "Oksijen yetersizliğinde",
+                    "Uyku sırasında",
+                    "Her zaman"
+                ],
+                correct: 2,
+                explanation: "Yoğun egzersiz sırasında kaslara gelen oksijen miktarı yetersiz kalır. Kas hücreleri enerji ihtiyacını karşılamak için glikojeni glikoza çevirir ve laktik asit fermantasyonu yaparak hızlı ATP elde eder."
+            },
+            {
+                question: "Oksijensiz solunum ile fermantasyon arasındaki temel fark nedir?",
+                options: [
+                    "ATP üretilip üretilmemesi",
+                    "Glikoliz yapılıp yapılmaması",
+                    "Elektron Taşıma Sistemi (ETS) kullanılıp kullanılmaması",
+                    "Organik besin kullanılıp kullanılmaması",
+                    "CO₂ üretilip üretilmemesi"
+                ],
+                correct: 2,
+                explanation: "Oksijensiz solunumda ETS kullanılır (son elektron alıcısı oksijen dışında bir madde olur). Fermantasyonda ise ETS kullanılmaz, sadece glikoliz yoluyla ATP elde edilir."
+            },
+            {
+                question: "Bataklıklardan gelen çürük yumurta kokusunun nedeni aşağıdakilerden hangisidir?",
+                options: [
+                    "Metan gazı",
+                    "Hidrojen sülfür (H₂S)",
+                    "Amonyak (NH₃)",
+                    "Karbondioksit (CO₂)",
+                    "Etil alkol"
+                ],
+                correct: 1,
+                explanation: "Bataklık bakterileri oksijensiz solunum yapar. Son elektron alıcısı olarak sülfat (SO₄²⁻) kullanırlar ve yan ürün olarak hidrojen sülfür (H₂S) gazı üretirler. H₂S çürük yumurta kokusuna sahiptir."
+            },
+            {
+                question: "Oksijenli solunumun genel denklemi aşağıdakilerden hangisidir?",
+                options: [
+                    "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Enerji",
+                    "6CO₂ + 6H₂O + Işık → C₆H₁₂O₆ + 6O₂",
+                    "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + Enerji",
+                    "C₆H₁₂O₆ → 2C₃H₆O₃ + Enerji",
+                    "C₆H₁₂O₆ + 6H₂O → 6CO₂ + 24H⁺ + 24e⁻"
+                ],
+                correct: 0,
+                explanation: "Oksijenli solunumun genel denklemi: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Enerji (ATP + Isı). Diğer seçenekler fotosentez veya fermantasyon denklemleridir."
+            },
+            {
+                question: "Mitokondri organeli ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Çift zarlıdır",
+                    "İç zarı düzdür",
+                    "Kendine ait DNA'sı vardır",
+                    "Ökaryot hücrelerde bulunur",
+                    "Oksijenli solunumda görev alır"
+                ],
+                correct: 1,
+                explanation: "Mitokondrinin dış zarı düzdür, iç zarı ise krista adı verilen kıvrımlar yapar. Bu kıvrımlar yüzey alanını artırarak daha fazla ETS proteini barındırır."
+            },
+            {
+                question: "Mitokondrinin iç zarının kıvrımlarına ne ad verilir?",
+                options: [
+                    "Matriks",
+                    "Krista",
+                    "Stroma",
+                    "Tilakoid",
+                    "Granum"
+                ],
+                correct: 1,
+                explanation: "Mitokondrinin iç zarının kıvrımlarına 'krista' denir. İç zarın içindeki sıvı ortama ise 'matriks' denir. Kristalar ETS proteinlerini taşır, matriks ise Krebs döngüsünün gerçekleştiği yerdir."
+            },
+            {
+                question: "Pirüvik asitten asetil-CoA oluşumu sırasında aşağıdakilerden hangisi gerçekleşmez?",
+                options: [
+                    "CO₂ açığa çıkar",
+                    "NAD⁺ indirgenir",
+                    "ATP üretilir",
+                    "Koenzim A (CoA) kullanılır",
+                    "Ortamda oksijen bulunmalıdır"
+                ],
+                correct: 2,
+                explanation: "Pirüvik asitten asetil-CoA oluşumu sırasında ATP üretimi olmaz. Bu evrede 1 CO₂ açığa çıkar, NAD⁺, NADH+H⁺'ye indirgenir ve koenzim A (CoA) ile birleşerek asetil-CoA oluşur. Oksijen varlığı gereklidir."
+            },
+            {
+                question: "Krebs döngüsü ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sitoplazmada gerçekleşir",
+                    "1 glikoz için 1 kez gerçekleşir",
+                    "ETS'de gerçekleşir",
+                    "2 ATP, 6 NADH+H⁺ ve 2 FADH₂ üretir (1 glikoz için)",
+                    "Oksijen kullanılmaz"
+                ],
+                correct: 3,
+                explanation: "Krebs döngüsü mitokondri matriksinde gerçekleşir. 1 glikozdan 2 pirüvat, dolayısıyla 2 asetil-CoA oluştuğu için döngü 2 kez gerçekleşir. 1 turdan: 1 ATP, 3 NADH+H⁺, 1 FADH₂. 2 turdan: 2 ATP, 6 NADH+H⁺, 2 FADH₂. Oksijenli ortamda gerçekleşir."
+            },
+            {
+                question: "Elektron Taşıma Sistemi (ETS) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Mitokondrinin iç zarında bulunur",
+                    "Oksidatif fosforilasyonu gerçekleştirir",
+                    "Son elektron alıcısı oksijendir",
+                    "Substrat düzeyinde fosforilasyon yapar",
+                    "NADH+H⁺ ve FADH₂'den elektron alır"
+                ],
+                correct: 3,
+                explanation: "ETS, oksidatif fosforilasyon yapar. Substrat düzeyinde fosforilasyon, glikoliz ve Krebs döngüsünde enzim-substrat kompleksi düzeyinde gerçekleşen ATP sentezidir."
+            },
+            {
+                question: "Oksijenli solunumda su (H₂O) nasıl oluşur?",
+                options: [
+                    "Glikoliz sırasında",
+                    "Krebs döngüsünde",
+                    "ETS'nin sonunda oksijenin indirgenmesiyle",
+                    "Pirüvattan asetil-CoA oluşurken",
+                    "Fermantasyon sonunda"
+                ],
+                correct: 2,
+                explanation: "ETS'nin son basamağında, elektronlar son olarak oksijene aktarılır. Oksijen, elektronları ve matriksteki protonları (H⁺) alarak su oluşturur: O₂ + 4H⁺ + 4e⁻ → 2H₂O."
+            },
+            {
+                question: "Kemiosmotik teori ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "ATP doğrudan ETS'de sentezlenir",
+                    "Proton gradiyenti oluşmaz",
+                    "ETS'de açığa çıkan enerji, protonların pompalanmasında kullanılır",
+                    "Oksijen kullanılmaz",
+                    "Sadece prokaryotlarda geçerlidir"
+                ],
+                correct: 2,
+                explanation: "Kemiosmotik teoriye (Peter Mitchell) göre, ETS'de elektron taşınırken açığa çıkan enerji, protonların (H⁺) matriksten zarlar arası boşluğa pompalanmasında kullanılır. Oluşan proton gradiyentinin enerjisi, ATP sentaz ile ATP üretimini sağlar."
+            },
+            {
+                question: "Oksijenli solunumda 1 NADH+H⁺'nin ETS'de oksitlenmesi sonucu yaklaşık kaç ATP üretilir?",
+                options: [
+                    "1 ATP",
+                    "1.5 ATP",
+                    "2 ATP",
+                    "2.5 ATP",
+                    "3 ATP"
+                ],
+                correct: 3,
+                explanation: "1 NADH+H⁺'nin ETS'de oksitlenmesi sonucu yaklaşık 2.5 ATP üretilir. 1 FADH₂'nin oksitlenmesi sonucu ise yaklaşık 1.5 ATP üretilir. Bu fark, elektronların ETS'ye farklı noktalardan girmesinden kaynaklanır."
+            },
+            {
+                question: "Yağ asitleri oksijenli solunumda hangi moleküle dönüşerek enerji verir?",
+                options: [
+                    "Pirüvik asit",
+                    "Glikoz",
+                    "Asetil-CoA",
+                    "Laktik asit",
+                    "Etil alkol"
+                ],
+                correct: 2,
+                explanation: "Yağ asitleri, β-oksidasyon adı verilen bir süreçle parçalanarak asetil-CoA moleküllerine dönüşür. Asetil-CoA daha sonra Krebs döngüsüne girerek enerji (ATP) üretimine katkıda bulunur."
+            },
+            {
+                question: "Proteinler oksijenli solunumda kullanıldığında aşağıdakilerden hangisi oluşmaz?",
+                options: [
+                    "ATP",
+                    "CO₂",
+                    "NH₃ (amonyak)",
+                    "H₂O",
+                    "Etil alkol"
+                ],
+                correct: 4,
+                explanation: "Proteinler amino asitlere parçalanır. Deaminasyon ile amino grubu (NH₂) kopar ve NH₃ (amonyak) oluşur. Kalan karbon iskeletleri solunuma katılarak ATP, CO₂ ve H₂O üretimine yol açar. Etil alkol fermantasyonunun ürünüdür."
+            },
+            {
+                question: "Fotosentez ve oksijenli solunum karşılaştırıldığında aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Her ikisi de ışık enerjisi kullanır",
+                    "Her ikisi de kloroplastta gerçekleşir",
+                    "Fotosentez CO₂ alır O₂ verir, solunum O₂ alır CO₂ verir",
+                    "Her ikisi de sadece bitkilerde gerçekleşir",
+                    "Her ikisinde de net CO₂ tüketimi olur"
+                ],
+                correct: 2,
+                explanation: "Fotosentez: CO₂ + H₂O + Işık → Glikoz + O₂. Oksijenli solunum: Glikoz + O₂ → CO₂ + H₂O + ATP. Gaz alışverişleri birbirinin tersidir. Diğer seçenekler yanlıştır."
+            },
+            {
+                question: "Bitkilerle ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sadece geceleri solunum yaparlar",
+                    "Sadece gündüzleri solunum yaparlar",
+                    "Gece ve gündüz sürekli solunum yaparlar",
+                    "Hiç solunum yapmazlar",
+                    "Sadece yapraklarında solunum yaparlar"
+                ],
+                correct: 2,
+                explanation: "Bitkiler de diğer canlılar gibi gece ve gündüz aralıksız solunum yapar. Gündüz, fotosentez hızı solunum hızından yüksek olduğu için net O₂ üretimi, gece ise net CO₂ üretimi olur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi oksijenli solunumda görev yapmaz?",
+                options: [
+                    "Mitokondri",
+                    "Kloroplast",
+                    "Glikoz",
+                    "Oksijen",
+                    "Enzim"
+                ],
+                correct: 1,
+                explanation: "Kloroplast, fotosentezin gerçekleştiği organeldir. Oksijenli solunum ökaryotlarda mitokondride, prokaryotlarda sitoplazma ve hücre zarında gerçekleşir. Glikoz solunumun başlangıç molekülü, oksijen son elektron alıcısı, enzimler ise tüm reaksiyonları katalizler."
+            },
+            {
+                question: "Oksijenli solunumun fermantasyona göre daha verimli olmasının temel nedeni nedir?",
+                options: [
+                    "Daha hızlı olması",
+                    "Daha az enzim gerektirmesi",
+                    "Besin molekülünü tamamen CO₂ ve H₂O'ya parçalaması",
+                    "Oksijen kullanması",
+                    "Sadece bitkilerde gerçekleşmesi"
+                ],
+                correct: 2,
+                explanation: "Oksijenli solunumda besin molekülü (glikoz) tamamen en küçük ve kararlı inorganik moleküllere (CO₂ ve H₂O) parçalanır, böylece içindeki enerjinin büyük kısmı ATP'ye dönüştürülür. Fermantasyonda ise enerjinin büyük kısmı son üründe (alkol, laktik asit) kalır."
+            },
+            {
+                question: "Aşağıdaki ifadelerden hangisi yanlıştır?",
+                options: [
+                    "Fermantasyonda net 2 ATP üretilir",
+                    "Glikoliz oksijensiz ortamda da gerçekleşebilir",
+                    "Krebs döngüsü oksijensiz ortamda gerçekleşir",
+                    "ETS oksijen varlığında çalışır",
+                    "Mitokondri çift zarlıdır"
+                ],
+                correct: 2,
+                explanation: "Krebs döngüsü, oksijenli solunumun bir parçasıdır ve oksijenli ortamda gerçekleşir. Oksijen yoksa Krebs döngüsü durur. Diğer seçenekler doğrudur."
+            },
+            {
+                question: "Bir canlı hücrede oksijenli solunum hızını artırmak için aşağıdakilerden hangisi yapılabilir?",
+                options: [
+                    "Ortam sıcaklığını düşürmek",
+                    "Ortamdaki oksijen miktarını azaltmak",
+                    "Ortamdaki glikoz miktarını artırmak",
+                    "Enzim inhibitörleri eklemek",
+                    "Mitokondri sayısını azaltmak"
+                ],
+                correct: 2,
+                explanation: "Substrat (glikoz) konsantrasyonu artırılırsa, enzim-substrat çarpışma sıklığı artar ve reaksiyon hızı (solunum hızı) belirli bir noktaya kadar artar. Diğer seçenekler solunum hızını düşürür."
+            },
+            {
+                question: "Aşağıdaki moleküllerden hangisi elektron taşıyıcısı değildir?",
+                options: [
+                    "NAD⁺",
+                    "FAD⁺",
+                    "ATP",
+                    "NADH+H⁺",
+                    "FADH₂"
+                ],
+                correct: 2,
+                explanation: "ATP enerji taşıyıcısıdır, elektron taşıyıcısı değildir. NAD⁺ ve FAD⁺ oksitlenmiş (elektron almamış) elektron taşıyıcılarıdır. NADH+H⁺ ve FADH₂ ise indirgenmiş (elektron almış) elektron taşıyıcılarıdır."
+            },
+            {
+                question: "Oksijenli solunumda açığa çıkan ısı enerjisinin canlılar için önemi nedir?",
+                options: [
+                    "ATP sentezinde kullanılır",
+                    "Vücut sıcaklığının korunmasına yardımcı olur",
+                    "Fotosentez için gereklidir",
+                    "Enzim aktivitesini durdurur",
+                    "Hücre bölünmesini hızlandırır"
+                ],
+                correct: 1,
+                explanation: "Oksijenli solunumda glikozdaki enerjinin yaklaşık %34'ü ATP'ye dönüştürülür, geri kalanı ısı olarak açığa çıkar. Bu ısı, özellikle sıcakkanlı canlılarda (memeliler, kuşlar) vücut sıcaklığının sabit tutulmasına yardımcı olur."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Hücresel solunum konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

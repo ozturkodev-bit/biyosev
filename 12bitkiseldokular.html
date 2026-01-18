@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Bitkisel Dokular Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Genel Stiller (11lenf.html'den uyarlanmıştır) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2d7d46 0%, #4a9e6a 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        /* Dashboard (Kart Sistemi) */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #27ae60;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2d7d46;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d7d46;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* İçerik Bölümleri */
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Geri Dön Butonu */
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Bilgi Kartları Stilleri */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #27ae60, #219653);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2d7d46;
+            transform: rotateY(180deg);
+            border: 3px solid #27ae60;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2d7d46;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #246b3d;
+            transform: translateY(-2px);
+        }
+
+        /* Zihin Haritası Stilleri */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2d7d46;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d7d46;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2d7d46;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2d7d46;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Detaylı Özet Stilleri */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2d7d46;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2d7d46;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2d7d46;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2d7d46;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2d7d46;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Bağlam Temelli Sorular Stilleri */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d7d46;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .answer-btn {
+            background: #2d7d46;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #246b3d;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Bölümü Stilleri */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #27ae60;
+        }
+
+        .option.selected {
+            background: #2d7d46;
+            color: white;
+            border-color: #2d7d46;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2d7d46;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2d7d46, #4a9e6a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Mantık Yürütme Bölümü Stilleri */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2d7d46;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Meraklısına Bölümü Stilleri */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2d7d46;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f5eef9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #27ae60);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Responsive Tasarım */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">12. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Bitkisel Dokular</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Bitkisel Dokular Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile bitkisel dokular konusunu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard (Ana Menü) -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile bitkisel dokuların temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Bitkisel dokuları görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Bitkisel dokuların tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile bitkisel dokular soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile bitkisel dokular hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Konuyla ilgili üst düzey bilgiler, ilginç detaylar ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- 1️⃣ BİLGİ KARTLARI BÖLÜMÜ -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Bitkisel Dokular Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🌱</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- 2️⃣ ZİHİN HARİTASI BÖLÜMÜ -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Bitkisel Dokular Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">MERİSTEM (BÖLÜNÜR) DOKU</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Bitkinin büyüme bölgelerinde bulunan, sürekli bölünebilen embriyonik doku</li>
+                        <li><strong>Özellikleri:</strong> İnce çeperli, bol sitoplazmalı, büyük çekirdekli, kofulları az veya yok</li>
+                        <li><strong>Bulunduğu Yere Göre:</strong>
+                            <ul>
+                                <li><strong>Uç (Apikal) Meristem:</strong> Kök ve gövde uçlarında, boyca büyümeyi sağlar</li>
+                                <li><strong>Yanal (Lateral) Meristem:</strong> Kök ve gövdede enine kalınlaşmayı sağlar</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kökenine Göre:</strong>
+                            <ul>
+                                <li><strong>Primer Meristem:</strong> Embriyodan gelir, primer büyümeyi sağlar</li>
+                                <li><strong>Sekonder Meristem:</strong> Parankima hücrelerinin yeniden bölünme yeteneği kazanmasıyla oluşur (kambiyum, mantar kambiyumu)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">TEMEL DOKU SİSTEMİ</div>
+                    <ul class="mindmap-content">
+                        <li><strong>PARANKİMA:</strong> İnce çeperli, canlı, çok görevli hücreler
+                            <ul>
+                                <li><strong>Özümleme Parankiması:</strong> Kloroplastlı, fotosentez yapar (yaprakta)</li>
+                                <li><strong>Havalandırma Parankiması:</strong> Hücreler arası boşluklu, gaz depolama (su bitkileri)</li>
+                                <li><strong>İletim Parankiması:</strong> Besin ve su iletiminde yardımcı</li>
+                                <li><strong>Depo Parankiması:</strong> Besin, su ve organik madde depolar (kök, gövde, tohum)</li>
+                            </ul>
+                        </li>
+                        <li><strong>KOLLENKİMA (Pek Doku):</strong> Canlı, esnek, mekanik destek sağlar
+                            <ul>
+                                <li><strong>Köşe Kollenkiması:</strong> Kalınlaşma hücre köşelerinde</li>
+                                <li><strong>Levha Kollenkiması:</strong> Kalınlaşma karşılıklı yüzeylerde</li>
+                            </ul>
+                        </li>
+                        <li><strong>SKLERENKİMA (Sert Doku):</strong> Ölü, lignin birikmiş, sert destek dokusu
+                            <ul>
+                                <li><strong>Sklerenkima Lifleri:</strong> Uzun, ince, lif şeklinde</li>
+                                <li><strong>Taş Hücreleri (Sklereitler):</strong> Kısa, geniş, sert yapılı</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">İLETİM DOKU SİSTEMİ</div>
+                    <ul class="mindmap-content">
+                        <li><strong>KSİLEM (Odun Boruları):</strong> Cansız, su ve mineral iletimi + destek
+                            <ul>
+                                <li><strong>Trake:</strong> Geniş, açık borular, hızlı iletim</li>
+                                <li><strong>Trakeit:</strong> İnce çeperli, geçitli, destek görevi de var</li>
+                            </ul>
+                        </li>
+                        <li><strong>FLOEM (Soymuk Boruları):</strong> Canlı, organik besin iletimi
+                            <ul>
+                                <li><strong>Kalburlu Borular:</strong> Çekirdeksiz, organik madde taşır</li>
+                                <li><strong>Arkadaş Hücreleri:</strong> Kalburlu boruların metabolizmasını kontrol eder</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">ÖRTÜ DOKU SİSTEMİ</div>
+                    <ul class="mindmap-content">
+                        <li><strong>EPİDERMİS:</strong> Genç bitki kısımlarını örten koruyucu doku
+                            <ul>
+                                <li><strong>Kütikula:</strong> Mum tabakası, su kaybını önler</li>
+                                <li><strong>Stoma:</strong> Gaz alışverişi ve terlemeyi düzenler</li>
+                                <li><strong>Tüyler:</strong> Emici, savunma, salgı, örtü, tırmanma görevleri</li>
+                                <li><strong>Hidatod:</strong> Fazla suyu sıvı halde atar (damlama/gutasyon)</li>
+                                <li><strong>Emergensler:</strong> Dikenler, savunma ve tutunma</li>
+                            </ul>
+                        </li>
+                        <li><strong>PERİDERM (Mantar Doku):</strong> Çok yıllık bitkilerde epidermisin yerini alır
+                            <ul>
+                                <li><strong>Süberin:</strong> Su geçirmez mumsu madde</li>
+                                <li><strong>Lentisel:</strong> Gaz alışverişi açıklıkları</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3️⃣ DETAYLI ÖZET BÖLÜMÜ -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Bitkisel Dokular Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> MERİSTEM (BÖLÜNÜR) DOKU</div>
+                    <ul class="summary-list">
+                        <li>Bitkilerin büyüme bölgelerinde (kök ve gövde uçları) bulunur.</li>
+                        <li>Sürekli bölünerek yeni hücreler oluşturur, bitkinin büyümesini sağlar.</li>
+                        <li><strong>Uç (Apikal) Meristem:</strong> Kök ve gövde uçlarında, bitkinin boyca uzamasını (primer büyüme) sağlar.</li>
+                        <li><strong>Yanal (Lateral) Meristem:</strong> Kök ve gövdede enine kalınlaşmayı (sekonder büyüme) sağlar.</li>
+                        <li><strong>Otsu bitkilerde sadece primer büyüme, odunsu bitkilerde hem primer hem sekonder büyüme görülür.</strong></li>
+                        <li>Meristem hücreleri ince çeperli, bol sitoplazmalı, büyük çekirdekli ve kofulları azdır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> TEMEL DOKU SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Parankima:</strong> İnce çeperli, canlı, çok görevli hücreler.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Özümleme Parankiması:</strong> Kloroplastlı, fotosentez yapar (yapraktaki palizat ve sünger parankiması).</li>
+                                <li><strong>Havalandırma Parankiması:</strong> Hücreler arası boşluklu, su bitkilerinde gaz depolama.</li>
+                                <li><strong>İletim Parankiması:</strong> Besin ve su iletimine yardımcı.</li>
+                                <li><strong>Depo Parankiması:</strong> Kök, gövde, tohum gibi yapılarda besin ve su depolar (kaktüs, soğan, patates).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kollenkima (Pek Doku):</strong> Canlı, esnek, mekanik destek sağlar. Hücre çeperleri selüloz ve pektin birikimiyle kalınlaşmıştır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Köşe Kollenkiması:</strong> Kalınlaşma hücre köşelerinde (örnek: mürver).</li>
+                                <li><strong>Levha Kollenkiması:</strong> Kalınlaşma karşılıklı yüzeylerde (örnek: ıhlamur).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sklerenkima (Sert Doku):</strong> Ölü, lignin birikmiş, sert destek dokusu.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Sklerenkima Lifleri:</strong> Uzun, ince lifler (keten, kenevirdeki lifler).</li>
+                                <li><strong>Taş Hücreleri (Sklereitler):</strong> Kısa, geniş, sert yapılar (armut, ayva, ceviz, fındıktaki sert dokular).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tint"></i> İLETİM DOKU SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Ksilem (Odun Boruları):</strong> Cansız hücrelerden oluşur. Kökten yapraklara su ve mineral taşır. Ayrıca bitkiye mekanik destek sağlar.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Trake:</strong> Geniş, açık borular, hızlı su iletimi.</li>
+                                <li><strong>Trakeit:</strong> İnce çeperli, geçitli, hem iletim hem destek.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Floem (Soymuk Boruları):</strong> Canlı hücrelerden oluşur. Yapraklarda üretilen organik besinleri bitkinin diğer kısımlarına taşır.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kalburlu Borular:</strong> Çekirdeksiz, organik madde taşır.</li>
+                                <li><strong>Arkadaş Hücreleri:</strong> Kalburlu boruların metabolizmasını kontrol eder.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Ksilem ve floem bir arada iletim demetlerini oluşturur. Ksilem su ve mineralleri yukarı, floem organik besinleri aşağı ve yukarı (çift yönlü) taşır.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-shield-alt"></i> ÖRTÜ DOKU SİSTEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Epidermis:</strong> Bitkinin genç kısımlarını örten tek sıralı koruyucu doku.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Kütikula:</strong> Epidermis hücrelerinin salgıladığı mum tabakası. Su kaybını önler, kurak bölge bitkilerinde kalındır.</li>
+                                <li><strong>Stoma:</strong> İki bekçi hücresinden oluşur. Gaz alışverişi (O₂, CO₂) ve terlemeyi düzenler. Yapraklarda bol bulunur.</li>
+                                <li><strong>Tüyler:</strong>
+                                    <ul style="margin-left: 15px;">
+                                        <li><strong>Emici tüyler:</strong> Kökte, su ve mineral alımı.</li>
+                                        <li><strong>Savunma tüyleri:</strong> Isırgan otu gibi bitkilerde.</li>
+                                        <li><strong>Salgı tüyleri:</strong> Kokulu maddeler salgılar.</li>
+                                        <li><strong>Örtü tüyleri:</strong> Su kaybını azaltır, Güneş ışınlarını yansıtır.</li>
+                                        <li><strong>Tırmanma tüyleri:</strong> Sarmaşık gibi bitkilerde tutunmayı sağlar.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Hidatod (Su Savağı):</strong> Fazla suyu sıvı halde atar (damlama/gutasyon).</li>
+                                <li><strong>Emergensler (Dikenler):</strong> Sadece epidermis değil, alt dokuları da içeren çıkıntılar (gül, böğürtlen).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Periderm (Mantar Doku):</strong> Çok yıllık bitkilerde epidermisin parçalanmasıyla oluşur.
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li><strong>Süberin:</strong> Hücre çeperinde biriken su geçirmez mumsu madde.</li>
+                                <li><strong>Lentisel (Kovucuk):</strong> Periderm üzerindeki açıklıklar, gaz alışverişi sağlar.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> STOMA, LENTİSEL VE HİDATOD KARŞILAŞTIRMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Stoma</th>
+                            <th>Lentisel</th>
+                            <th>Hidatod</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Bulunduğu Yer</strong></td>
+                            <td>Epidermiste (yaprak, genç gövde)</td>
+                            <td>Peridermde (odunsu gövde)</td>
+                            <td>Epidermiste (yaprak kenarı)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canlılık</strong></td>
+                            <td>Canlı (bekçi hücreleri)</td>
+                            <td>Cansız</td>
+                            <td>Canlı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Açılıp Kapanma</strong></td>
+                            <td>Açılıp kapanabilir</td>
+                            <td>Devamlı açık</td>
+                            <td>Devamlı açık</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Başlıca Görevi</strong></td>
+                            <td>Gaz alışverişi, terleme, fotosentez</td>
+                            <td>Gaz alışverişi</td>
+                            <td>Su ve mineral atılımı (damlama)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bitki Tipi</strong></td>
+                            <td>Tüm bitkiler (su bitkileri hariç)</td>
+                            <td>Çok yıllık odunsu bitkiler</td>
+                            <td>Nemli ortam bitkileri</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4️⃣ BAĞLAM TEMELLİ SORULAR BÖLÜMÜ -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Bitkisel Dokular Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Bahçenizdeki gül bitkisinin dikenleri elinize battığında canınız yanar. Ancak aynı bitkinin yapraklarına dokunduğunuzda acı hissetmezsiniz. Bu farkın nedeni bitkisel dokular açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Gül dikenleri, yapraklardan farklı bir doku yapısına sahiptir ve işlevleri de farklıdır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Gül dikenleri emergens (diken) yapısındadır ve savunma görevi görür. Yapraklar ise fotosentez için özelleşmiş epidermisle kaplıdır.</p>
+                        <p><strong>Açıklama:</strong> Gül dikenleri sadece epidermisten değil, epidermis altındaki parankima ve iletim dokularını da içeren çıkıntılardır (emergens). Bu yapılar sert, sivri uçlu olup bitkiyi otçul hayvanlara karşı korur. Yaprakların epidermisi ise ince bir kütikula ile kaplıdır, iç kısmında fotosentez yapan palizat ve sünger parankiması bulunur. Dikenler mekanik savunma için özelleşirken, yapraklar fotosentez için özelleşmiştir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Kurak bölgelerde yetişen kaktüslerin gövdeleri kalın ve etlidir, yaprakları ise diken şeklindedir. Bu adaptasyon bitkisel dokular açısından nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Kurak ortamlarda su kaybını en aza indirmek ve su depolamak hayati önem taşır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Kaktüslerin kalın gövdesi depo parankiması ile su biriktirir, diken şeklindeki yaprakları ise stoma sayısını azaltarak terlemeyi minimuma indirir.</p>
+                        <p><strong>Açıklama:</strong> Kaktüs gövdesinde bol miktarda depo parankiması bulunur. Bu hücreler büyük kofullarında su depolar. Normal yapraklar yerine dikenlerin olması, yüzey alanını azaltır ve stoma sayısını minimize eder. Ayrıca kaktüs epidermisi kalın bir kütikula tabakasına sahiptir. Tüm bu adaptasyonlar su kaybını önlemeye yöneliktir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Ağaç gövdelerinin enine kesitinde iç içe halkalar görülür. Bu halkalar neden oluşur ve yaşlı ağaçlarda neden daha geniş aralıklıdır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ağaç halkaları büyüme mevsimlerine göre oluşur ve iklim koşullarından etkilenir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Halkalar, kambiyumun mevsimsel aktivitesi sonucu oluşan sekonder ksilem (odun) tabakalarıdır. İyi büyüme koşullarında geniş, kötü koşullarda dar halkalar oluşur.</p>
+                        <p><strong>Açıklama:</strong> Kambiyum (yanal meristem) her büyüme mevsiminde içe doğru ksilem, dışa doğru floem hücreleri oluşturur. İlkbaharda oluşan ksilem hücreleri geniş ve ince çeperli (açık renkli), yaz sonunda oluşanlar ise dar ve kalın çeperlidir (koyu renkli). Bu fark bir halka oluşturur. Yaşlı ağaçlarda merkezdeki halkalar daha geniş olabilir çünkü gençken ağaç hızlı büyür. Kurak veya soğuk yıllarda halkalar dar, yağışlı ve sıcak yıllarda geniş olur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Isırgan otuna dokunulduğunda ciltte kızarıklık, yanma ve kaşıntı oluşur. Bu reaksiyona neden olan yapı bitkisel dokular açısından nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Isırgan otundaki savunma tüyleri (epidermis çıkıntıları) dokunulduğunda kırılarak içlerindeki histamin ve formik asit gibi tahriş edici kimyasalları salar.</p>
+                        <p><strong>Açıklama:</strong> Isırgan otunun epidermisinde bulunan savunma tüyleri, ince cam benzeri bir uca sahiptir. Dokunulduğunda bu uç kırılır ve tüyün içindeki kimyasal madde karışımı cilde enjekte olur. Bu kimyasallar ağrı reseptörlerini uyararak yanma, kaşıntı ve kızarıklığa neden olur. Bu, bitkinin otçul hayvanlara karşı geliştirdiği kimyasal bir savunma mekanizmasıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Sabah erken saatlerde çimenlerin üzerinde su damlacıkları görülür. Bu damlacıklar çiy değildir, çünkü hava açık ve nemli değildir. Bu olay bitkisel dokular açısından nasıl açıklanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu damlacıklar gutasyon (damlama) olayıdır ve hidatod adı verilen yapılar aracılığıyla bitkinin fazla suyu ve mineralleri sıvı halde atması sonucu oluşur.</p>
+                        <p><strong>Açıklama:</strong> Bitki köklerinden emilen su, ksilemle yukarı taşınır. Yapraklardan terleme (transpirasyon) ile su buharı atılır. Ancak hava nemliyse (örneğin sabah saatlerinde) terleme yavaşlar. Kök basıncı devam ettiği için fazla su, yaprak kenarlarındaki hidatodlardan sıvı halde dışarı atılır. Bu olaya gutasyon denir. Damlacıkların içinde az miktarda mineral de bulunur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Limon ağacının gövdesine zarar verildiğinde (kabuk soyulduğunda) ağaç bir süre sonra ölebilir. Ancak aynı zarar yapraklara verildiğinde ağaç yaşamaya devam eder. Bu farkın nedeni nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Gövde kabuğu soyulduğunda floem (soymuk boruları) zarar görür ve bitkinin organik besin iletimi kesilir. Yaprak kaybı ise fotosentez kapasitesini azaltsa da, diğer yapraklar ve depo dokular bir süre destek sağlayabilir.</p>
+                        <p><strong>Açıklama:</strong> Gövde kabuğunun iç kısmında floem bulunur. Floem, yapraklarda üretilen organik besinleri (şekerler, amino asitler) kök gibi fotosentez yapmayan organlara taşır. Kabuk soyulunca bu iletim yolu kesilir. Kökler besin alamayınca ölür, bu da tüm bitkinin ölümüne yol açar. Yaprak kaybı ise fotosentez yüzeyini azaltır ama bitki depo dokularındaki besinleri kullanarak ve yeni yapraklar oluşturarak hayatta kalabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Keten ve kenevir bitkilerinin gövdelerinden elde edilen lifler tekstilde kullanılır. Bu lifler bitkide hangi dokuya aittir ve neden dayanıklıdır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Bu lifler sklerenkima lifleridir. Hücre çeperlerinde lignin birikmesi sonucu ölü, sert ve esnek yapı kazanmışlardır.</p>
+                        <p><strong>Açıklama:</strong> Sklerenkima lifleri, bitkinin gövdesinde, özellikle kabuk kısmında bulunur. Bu hücreler olgunlaşınca çekirdek ve sitoplazmalarını kaybeder (ölür). Çeperlerine lignin ve selüloz birikir, bu da onları çok dayanıklı, esnek ve uzun ömürlü yapar. Bu özellikler keten ve kenevir liflerinin iplik, kumaş, halat yapımında kullanılmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Armut ve ayva gibi meyvelerde bazen sert, odunsu noktalar (taşlık) bulunur. Bu yapılar nedir ve neden oluşur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Bu sert noktalar taş hücreleri (sklereitler) kümeleridir. Sklerenkima dokusunun bir çeşidi olup, meyveye sertlik verir ve belki de tohumları korur.</p>
+                        <p><strong>Açıklama:</strong> Taş hücreleri, sklerenkima dokusunun kısa ve geniş yapılı formudur. Hücre çeperleri lignin birikmesiyle kalınlaşmış ve odunlaşmıştır. Armut ve ayva gibi meyvelerde, özellikle çekirdek evresine yakın bölgelerde gruplar halinde bulunur. Bu, meyvenin yumuşak kısmına destek sağlamak veya hayvanlar tarafından yenilirken tohumların aşırı çiğnenmesini engellemek için evrimleşmiş olabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Sardunya ve lavanta gibi bitkiler güzel koku yayar. Bu kokular bitkinin hangi yapıları tarafından üretilir ve salgılanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Kokulu uçucu yağlar ve maddeler, salgı tüyleri (epidermis çıkıntıları) tarafından üretilir ve salgılanır.</p>
+                        <p><strong>Açıklama:</strong> Salgı tüyleri, epidermis hücrelerinin dışa doğru uzamasıyla oluşan özelleşmiş yapılardır. Bu tüylerin uç kısımlarında salgı kesecikleri bulunur. Sardunya, lavanta, nane, fesleğen gibi bitkilerde bu tüyler, uçucu organik bileşikler (terpenler, esterler) sentezler ve salgılar. Bu kokular böcekleri çekerek tozlaşmaya yardımcı olur veya otçul hayvanları uzak tutar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Çam ağacı gibi açık tohumlu bitkilerin odunu (kerestesi), meşe gibi kapalı tohumlu bitkilerin odunundan yapısal olarak farklıdır. Bu farklılık iletim dokuları açısından nasıl açıklanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Çam gibi açık tohumluların odununda su iletimi sadece trakeitlerle sağlanır. Meşe gibi kapalı tohumluların odununda ise hem trakeit hem de daha geniş ve verimli trakeler bulunur.</p>
+                        <p><strong>Açıklama:</strong> Açık tohumlu (kozalaklı) bitkilerin ksilem dokusu neredeyse tamamen trakeitlerden oluşur. Trakeitler hem su iletimi hem de destek sağlar, bu da odunun daha homojen ve "yumuşak" olmasına neden olur. Kapalı tohumlu (çiçekli) bitkilerde ise su iletimi daha çok trakelerle, destek ise trakeitler ve liflerle sağlanır. Bu ayrışmış iş bölümü, meşe gibi ağaçların odununun daha sert ve farklı dokuda olmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Soğan bitkisinin etli katmanları yenilebilir ve büyük ölçüde sudan oluşur. Bu katmanlar hangi dokuya aittir ve işlevi nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Soğanın etli katmanları depo parankimasıdır. Su, şeker ve diğer besin maddelerini depolar ve bitkinin yeni bir büyüme dönemine başlaması için enerji kaynağı oluşturur.</p>
+                        <p><strong>Açıklama:</strong> Soğan bir depo organıdır (yassı gövde). Etli yaprakları (katmanları) büyük, ince çeperli parankima hücreleriyle doludur. Bu hücrelerin büyük kofullarında su, sitoplazmalarında ise nişasta ve şekerler (özellikle fruktoz) depolanır. Soğan, uygun koşullar oluştuğunda bu depolanmış besinleri kullanarak yeni kök ve yapraklar oluşturur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Mısır bitkisinin gövdesinin içi boş gibi görünür ve kolay kırılır. Ancak rüzgara dayanıklıdır. Bu özellik hangi doku ile ilişkilidir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Mısır gövdesinde, dış kısımda destek sağlayan sklerenkima halkaları ve iç kısımda havalandırmayı sağlayan büyük boşluklar (hücreler arası boşluklar) vardır. Bu tasarım hem hafiflik hem de dayanıklılık sağlar.</p>
+                        <p><strong>Açıklama:</strong> Mısır gibi otsu bitkilerin gövdeleri genellikle içi boş (silindirik) veya bölmeli yapıdadır. Gövdenin dış kısmında sklerenkima lifleri veya kollenkima hücrelerinden oluşan bir destek halkası bulunur. İç kısımda ise parankima hücreleri arasında geniş boşluklar (aerenkima) vardır. Bu boşluklar gaz alışverişini kolaylaştırır ve bitkiyi hafifletir. Dıştaki destek halkası ise rüzgar gibi bükülme kuvvetlerine karşı direnç sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Bitkiler fotosentez için CO₂ alırken stomalarını açar, ancak bu aynı zamanda su kaybına yol açar. Kurak ortam bitkileri bu ikilemi nasıl çözer?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Kurak ortam bitkileri (kserofitler) stomalarını gündüz kapalı tutup gece açarak (CAM fotosentezi), derin kök sistemleriyle su toplayarak, kalın kütikula ve örtü tüyleriyle su kaybını azaltarak bu sorunu çözer.</p>
+                        <p><strong>Açıklama:</strong> Kaktüs gibi bitkiler CAM fotosentezi yapar: Stomalarını sıcak ve kurak gündüz saatlerinde kapalı, serin gece saatlerinde açarak CO₂ alır ve organik asitlerde depolar. Gündüz ise bu depolanan CO₂'yi fotosentezde kullanır. Ayrıca bu bitkilerde stomalar yaprağın iç çukurunda veya az sayıdadır, epidermiste kalın kütikula ve örtü tüyleri bulunur, kökler derine gider. Tüm bunlar su kaybını minimize eder.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Patates yumrusu toprak altında büyür ve üzerindeki "gözlerden" (tomurcuk) yeni patates bitkileri filizlenebilir. Patates yumrusu hangi dokuları içerir ve nasıl depo görevi görür?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Patates yumrusu, genişlemiş bir gövdedir (yumru gövde). Büyük oranda nişasta depolayan depo parankimasından oluşur. Üzerindeki gözler ise sürgün meristemleri (tomurcuklar) içerir.</p>
+                        <p><strong>Açıklama:</strong> Patates yumrusu, toprak altı gövdesinin (rizom) şişkinleşmiş halidir. Temel dokusu, büyük kofullarında nişasta granülleri biriktiren depo parankima hücreleridir. Epidermisi ince bir periderm (mantar doku) ile kaplıdır. Yumru üzerindeki her bir "göz", meristem hücrelerinden oluşan bir tomurcuktur. Uygun koşullarda bu tomurcuklardan, depolanmış nişastayı kullanarak yeni sürgünler (dallar) ve kökler gelişir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Bitkilerde su, köklerden yapraklara kadar yerçekimine karşı nasıl taşınır? Bu işlemde ksilemin yapısı nasıl bir rol oynar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Suyun yükselmesinde üç ana kuvvet etkilidir: Kök basıncı, kılcallık (adhezyon/kohezyon) ve terleme-çekme (transpirasyon-çekme) kuvveti. Ksilemin cansız, boru şeklindeki trake ve trakeitleri bu kuvvetlerin etkisiyle suyu taşımak için ideal bir sistem oluşturur.</p>
+                        <p><strong>Açıklama:</strong> Köklerdeki osmotik basınç suyu ksileme iter (kök basıncı). Su molekülleri birbirine hidrojen bağlarıyla sıkıca bağlanır (kohezyon) ve ksilem çeperlerine yapışır (adhezyon). Bu, ince ksilem borularında kılcal yükselmeye neden olur. En önemli kuvvet ise yapraklardaki terlemedir (transpirasyon). Yapraktan su buharı çıkarken, su sütununda bir çekme kuvveti oluşturur. Kohezyon kuvveti sayesinde bu çekme, köklerden yapraklara kadar kesintisiz bir su sütununu yukarı çeker. Ksilemin cansız ve içi boş boruları bu süreçte direnç oluşturmaz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5️⃣ TEST SORULARI BÖLÜMÜ -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Bitkisel Dokular Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test soruları JavaScript ile yüklenecek -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2d7d46; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- 6️⃣ MANTIK YÜRÜTME BÖLÜMÜ -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden meristem doku hücreleri büyük çekirdekli, bol sitoplazmalı ve küçük kofulludur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep-Sonuç İlişkisi:</strong> Hücrenin yapısı, işlevine uygun olarak evrimleşmiştir. Meristem hücrelerinin temel işlevi hızlı ve sürekli bölünmektir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Büyük Çekirdek:</strong> Hücre bölünmesi sırasında DNA'nın kopyalanması (replikasyon) ve transkripsiyon için gerekli genetik materyalin bol olması gerekir. Büyük çekirdek, daha fazla kromatin (DNA+protein) içerir, bu da bölünme ve protein sentezi için gerekli genetik talimatların hızlıca okunmasını sağlar.</p>
+                            <p><strong>Bol Sitoplazma:</strong> Sitoplazma, ribozomlar, enzimler, amino asitler, nükleotidler gibi bölünme ve büyüme için gerekli tüm yapı taşlarını ve makinaları içerir. Bol sitoplazma, yeni organellerin sentezi ve hücrenin ikiye ayrılması süreçleri için gerekli ham madde ve enerji kaynağını sağlar.</p>
+                            <p><strong>Küçük Koful veya Yokluğu:</strong> Kofullar esas olarak depo, atık toplama ve hücre turgorunu sağlama işlevi görür. Meristem hücrelerinde depolama öncelikli değildir. Ayrıca büyük bir koful, bölünme sırasında hücrenin ikiye bölünmesini fiziksel olarak zorlaştırabilir. Küçük kofullar, hücre içi düzeni bozmadan gerekli işlevleri yerine getirebilir.</p>
+                            <p><strong>Sonuç:</strong> Bu yapısal özellikler, meristem hücrelerinin yaşam döngüsünün büyük bir kısmını bölünme (mitoz) evresinde geçirmesine olanak tanır. Bitki büyüdükçe, bu hücrelerden farklılaşan hücreler, görevlerine uygun olarak (örneğin depo parankimasında büyük koful, iletim dokusunda çekirdek kaybı gibi) değişiklik gösterir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Sklerenkima hücreleri neden ölüdür ve bu özellik onlara nasıl bir avantaj sağlar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Canlılığın temel göstergeleri (solunum, büyüme, üreme) aynı zamanda hücrenin zayıf noktalarıdır. Sklerenkimanın işlevi saf mekanik destektir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Neden Ölüdürler?</strong> Sklerenkima hücreleri, olgunlaşma sürecinde çeperlerine lignin adı verilen çok sert ve su geçirmez bir polimer biriktirir. Lignin birikimi o kadar yoğundur ki, hücrenin sitoplazmasına besin ve oksijen ulaşamaz, atıklar da atılamaz. Bu nedenle hücredeki metabolik aktiviteler durur ve hücre ölür.</p>
+                            <p><strong>Bu Ölü Durumun Avantajları:</strong></p>
+                            <ol>
+                                <li><strong>Enerji Tasarrufu:</strong> Canlı bir hücre sürekli enerji (ATP) harcar. Ölü bir destek hücresi hiç enerji harcamaz, bu da bitki için büyük bir tasarruftur.</li>
+                                <li><strong>Dayanıklılık:</strong> Canlı hücreler fiziksel darbelere, aşırı sıcak/soğuğa, kuraklığa karşı hassastır. Ölü bir hücrede bu tür streslerden etkilenecek metabolik süreç yoktur. Ligninli çeper fiziksel ve kimyasal bozunmaya karşı son derece dayanıklıdır.</li>
+                                <li><strong>İşlevsel Özgürlük:</strong> Ölü hücrenin tek amacı destektir. Canlılık için gerekli olan esneklik, geçirgenlik gibi özelliklerden vazgeçilerek tamamen sertlik ve direnç özellikleri maksimize edilmiştir.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Sklerenkima, bitkinin "iskeleti" gibidir. Tıpkı insan kemiklerinin canlı hücreler (osteositler) içermesine rağmen, kemik matriksinin büyük kısmının mineral birikimiyle cansız olması gibi, sklerenkima da lignin birikimiyle cansızlaşarak en etkin destek yapısını oluşturur. Kollenkima ise canlı kalarak büyüyen genç kısımlara esnek destek sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden floemde taşıma yavaşken ksilemde hızlıdır? Bu farkın yapısal nedenleri nelerdir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Taşınan maddenin fiziksel hali ve hücrelerin canlılık durumu, iletim hızını doğrudan etkiler.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Ksilemde Hızlı İletimin Nedenleri:</strong></p>
+                            <ol>
+                                <li><strong>Cansız Borular:</strong> Trake ve trakeitler ölü hücrelerdir. İçleri tamamen boşaltılmıştır, sitoplazma ve çekirdek gibi akışa direnç oluşturacak hiçbir iç yapı yoktur. Su, engelsiz bir borudan akar gibi hareket eder.</li>
+                                <li><strong>Fiziksel Kuvvetlerin Etkinliği:</strong> Suyun yukarı çıkmasını sağlayan terleme-çekme kuvveti ve kohezyon/adhezyon, sıvılar için çok etkili fiziksel kuvvetlerdir. Bu kuvvetler, sürekli bir su sütunu oluşturarak hızlı bir akış sağlar.</li>
+                                <li><strong>Taşınan Madde:</strong> Su ve içindeki inorganik iyonlar küçük moleküllerdir, viskozitesi (akışkanlığa direnci) düşüktür.</li>
+                            </ol>
+                            <p><strong>Floemde Yavaş İletimin Nedenleri:</strong></p>
+                            <ol>
+                                <li><strong>Canlı Hücreler:</strong> Kalburlu borular canlıdır (çekirdekleri olmasa da). İçlerinde sitoplazma ve bazı organeller bulunur. Organik maddelerin sitoplazmadan geçişi, suyun boş bir borudan geçişinden daha yavaştır.</li>
+                                <li><strong>Aktif Süreçler:</strong> Floemde taşıma tamamen pasif değildir. "Basınç Akışı Teorisi"ne göre, kaynak (yaprak) ve havuz (kök) arasında ozmotik basınç farkı oluşturmak için aktif taşıma (şekerlerin kalburlu borulara yüklenmesi ve boşaltılması) gerekir. Bu aktif süreçler zaman alır ve hızı sınırlar.</li>
+                                <li><strong>Taşınan Madde:</strong> Şekerler (sükroz), amino asitler gibi büyük organik moleküllerin sulu çözeltileri daha viskozdur.</li>
+                                <li><strong>Kalburlu Levhalar:</strong> Kalburlu boruları oluşturan hücrelerin uç çeperlerinde, adını veren "kalbur" delikleri vardır. Bu delikler sitoplazma ile doludur (plazmodezmata benzer) ve akışa bir miktar direnç gösterir.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Ksilem, fiziksel kuvvetlerle çalışan yüksek kapasiteli bir "su şebekesi" gibidir. Floem ise daha yavaş, kontrollü ve enerji harcayarak çalışan bir "besin dağıtım ağı" gibidir. Bitkinin ihtiyaçları için bu hız farkı uygundur: Su kaybı hızlı telafi edilmeli, besinler ise ihtiyaç duyulan yerlere kontrollü şekilde dağıtılmalıdır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden kütikula kurak bölge bitkilerinde kalın, nemli ortam bitkilerinde incedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bitkilerin karşılaştığı en büyük tehditlerden biri su kaybıdır (transpirasyon). Kütikulanın temel işlevi bu kaybı önlemektir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kurak Bölge (Kserofit) Bitkileri:</strong></p>
+                            <ol>
+                                <li><strong>Yüksek Su Kaybı Riski:</strong> Hava kuru, sıcaklık yüksek ve rüzgar fazla olabilir. Bu koşullar terlemeyi (su buharı kaybını) hızlandırır.</li>
+                                <li><strong>Kalın Kütikulanın Görevi:</strong> Epidermis hücrelerinin üzerinde kalın bir mum (kütin) tabakası, su buharının dışarı çıkışını fiziksel bir bariyer gibi engeller. Su molekülleri bu kalın, yağlı tabakadan difüzyonla geçmekte zorlanır.</li>
+                                <li><strong>Ek Adaptasyonlar:</strong> Kalın kütikula, genellikle stomaların çökük olması, yaprakların küçülmesi, örtü tüyleri gibi diğer su koruma adaptasyonlarıyla birlikte görülür.</li>
+                            </ol>
+                            <p><strong>Nemli Ortam (Higrofit) Bitkileri:</strong></p>
+                            <ol>
+                                <li><strong>Düşük Su Kaybı Riski:</strong> Hava neme doygun veya doygunluğa yakındır. Terleme hızı düşüktür çünkü hava ile yaprak arasındaki su buharı yoğunluk farkı azdır.</li>
+                                <li><strong>İnce Kütikulanın Mantığı:</strong> Su kaybı tehlikesi az olduğu için kalın bir bariyere ihtiyaç yoktur. Ayrıca ince kütikula, ışığın yaprak içindeki fotosentez dokularına (palizat parankiması) daha kolay geçmesini sağlar. Kalın kütikula ışığı yansıtabilir veya soğurabilir.</li>
+                                <li><strong>Farklı Zorluklar:</strong> Nemli ortam bitkilerinin asıl sorunu yeterli gaz alışverişi (özellikle CO₂) ve mantar/bakteri enfeksiyonlarıdır. Bu nedenle stomaları daha bol ve açık olabilir.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Kütikula kalınlığı, su mevcudiyeti ile fotosentez ihtiyacı arasındaki dengeye göre evrimleşmiştir. Kurakçıl bitkiler "su kaybetmemek" için ışık geçirgenliğinden fedakarlık ederken, nemcil bitkiler "fotosentez verimliliğini" artırmak için su bariyerini inceltir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden kök epidermisi kütikula içermez ve emici tüyler bulundurur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Kök ve sürgün sisteminin (gövde+yaprak) işlevleri tamamen zıttır. Biri madde alır, diğeri madde kaybeder ve üretir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kökün Temel İşlevi:</strong> Topraktan su ve mineral almak, bitkiyi toprağa bağlamak.</p>
+                            <p><strong>Neden Kütikula Yoktur?</strong></p>
+                            <ol>
+                                <li><strong>Su Alımı Engel Olmaz:</strong> Kütikula su geçirmez bir bariyerdir. Kök hücrelerinin toprak çözeltisinden suyu osmozla alabilmesi için hücre çeperinin geçirgen olması gerekir. Kütikula bu geçirgenliği ortadan kaldırırdı.</li>
+                                <li><strong>Gaz Alışverişi:</strong> Kök hücrelerinin de solunum yapması için oksijen alması gerekir (toprak havasından). Kütikula gaz alışverişini de engeller.</li>
+                            </ol>
+                            <p><strong>Neden Emici Tüyler Vardır?</strong></p>
+                            <ol>
+                                <li><strong>Yüzey Alanını Artırma:</strong> Emici tüyler, kök epidermisinin toprakla temas eden yüzey alanını muazzam ölçüde artırır. Bu, su ve mineral iyonlarının alım hızını büyük ölçüde artırır.</li>
+                                <li><strong>Mikoriza İlişkisi:</strong> Emici tüyler bazen mikoriza mantarlarıyla iş birliği yapar. Mantar hifleri topraktaki su ve fosfor gibi mineralleri daha verimli alır ve tüylere aktarır.</li>
+                                <li><strong>Korunma:</strong> Tüyler aynı zamanda kökü mekanik sürtünmeden ve bazı toprak patojenlerinden koruyabilir.</li>
+                            </ol>
+                            <p><strong>Karşılaştırma (Gövde/Yaprak Epidermisi):</strong> Gövde ve yaprak epidermisi dış ortamla temas halindedir. Burada amaç su kaybını önlemek (kütikula), kontrollü gaz alışverişi yapmak (stoma) ve ışığı içeri almak/gerektiğinde yansıtmaktır (tüyler).</p>
+                            <p><strong>Sonuç:</strong> Kök ve sürgün sisteminin epidermisi, zıt işlevlere hizmet edecek şekilde farklılaşmıştır. Kök "alıcı" bir yüzey olarak tasarlanmışken, sürgün "koruyucu ve üretici" bir yüzey olarak tasarlanmıştır. Bu, bitkinin toprak ve hava gibi iki farklı ortamda yaşamasının doğal bir sonucudur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden stomalar genellikle yaprağın alt yüzeyinde daha fazladır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Stomaların konumu, su kaybı (transpirasyon) ve fotosentez verimliliği arasında bir uzlaşıdır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Fiziksel ve Çevresel Faktörler:</strong></p>
+                            <ol>
+                                <li><strong>Doğrudan Güneş Işığı ve Isı:</strong> Yaprağın üst yüzeyi gün boyunca doğrudan güneş ışığına maruz kalır, bu da daha yüksek sıcaklık ve daha hızlı su buharlaşması demektir. Alt yüzey daha gölgeli ve serindir. Stomaların alt yüzeyde olması, açıkken bile buharlaşma hızını bir miktar azaltır.</li>
+                                <li><strong>Rüzgar Etkisi:</strong> Rüzgar, yaprak yüzeyindeki nemli havayı uzaklaştırarak terlemeyi hızlandırır. Alt yüzey, rüzgarın doğrudan etkisine daha az maruz kalır.</li>
+                                <li><strong>Yağmur Suyu:</strong> Üst yüzeydeki stomalar yağmur suyu veya çiy ile tıkanabilirdi. Alt yüzey bu riskten daha korunaklıdır.</li>
+                            </ol>
+                            <p><strong>Fotosentezle İlişkisi:</strong></p>
+                            <ol>
+                                <li><strong>CO₂ Kaynağı:</strong> Stomaların asıl görevlerinden biri CO₂ almaktır. CO₂ havadan gelir ve havada homojen dağılır. Alt yüzeyde olması CO₂ alımını engellemez.</li>
+                                <li><strong>Işık ve Palizat Parankiması:</strong> Fotosentezin en yoğun yapıldığı doku, üst epidermisin hemen altındaki palizat parankimasıdır. Stomaların alt yüzeyde olması, üst yüzeyin tamamen ışık alan palizat parankimasına ayrılmasını sağlar. Üst yüzeyde stoma olsaydı, bu bölgelerde palizat hücreleri yerine epidermis hücreleri olurdu ve fotosentez verimi düşerdi.</li>
+                            </ol>
+                            <p><strong>İstisnalar:</strong></p>
+                            <ul>
+                                <li><strong>Yüzen Yapraklar (Nilüfer):</strong> Alt yüzeyi suyla temas ettiği için stomalar SADECE üst yüzeydedir.</li>
+                                <li><strong>Dik Duran İğne Yapraklar (Çam):</strong> Her iki yüzey de benzer koşullara maruz kaldığı için stomalar her tarafta olabilir veya çizgiler halinde dizilir.</li>
+                                <li><strong>Kurakçıl Bitkiler:</strong> Stomalar genellikle alt yüzeyde ve hatta yaprağın içine çökük (stoma çukuru) haldedir, bu da su kaybını daha da azaltır.</li>
+                            </ul>
+                            <p><strong>Sonuç:</strong> Stomaların alt yüzeyde yoğunlaşması, bitkinin "su tasarrufu yaparken, fotosentezi maksimize etme" stratejisinin bir parçasıdır. Bu, yüz milyonlarca yıllık bitki evrimi sonucunda ortaya çıkmış verimli bir tasarımdır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7️⃣ MERAKLISINA BÖLÜMÜ -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2d7d46; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-dna"></i> LİGNİN: BİTKİLERİN KARAYA ÇIKIŞININ ANAHTAR MOLECÜLÜ</div>
+                    <div class="advanced-content">
+                        <p>Lignin, bitkiler aleminin en önemli keşiflerinden biridir. Selüloz ve hemiselülozdan sonra bitkilerde en bol bulunan üçüncü organik bileşiktir.</p>
+                        <p><strong>Yapısı ve Özellikleri:</strong></p>
+                        <ul>
+                            <li>Karmaşık, düzensiz bir aromatik polimerdir. Temel yapı taşları sinapil, koniferil ve kumaril alkollerdir.</li>
+                            <li>Selüloz liflerinin etrafını sararak onları bir "beton gibi" sağlamlaştırır. Bu yapıya <strong>lignoselüloz</strong> denir.</li>
+                            <li>Suya ve enzimlere karşı son derece dirençlidir. Bu, odunun çürümesini yavaşlatır ve fosilleşmeye izin verir.</li>
+                        </ul>
+                        <p><strong>Evrimsel Önemi:</strong></p>
+                        <ol>
+                            <li><strong>Karaya Çıkış:</strong> Yaklaşık 470 milyon yıl önce, ilk karasal bitkiler (karayosunları gibi) küçük ve yere yakındı. Lignin sentezinin evrimi, bitkilerin <strong>dik durmasını</strong> sağladı. Sklerenkima ve ksilemdeki lignin birikimi, bitkilerin yerçekimine karşı desteklenmesini ve suyu yukarı taşıyan ksilem borularının çökmeden dayanmasını sağladı.</li>
+                            <li><strong>Dev Ormanların Doğuşu:</strong> Karbonifer döneminde (360-300 milyon yıl önce) ligninli bitkiler (eğrelti otları, atkuyrukları) dev boyutlara ulaştı. Bu bitkilerin kalıntıları, günümüz kömür yataklarını oluşturdu.</li>
+                            <li><strong>Bir Evrimsel Çıkmaz Sokak:</strong> İlginçtir ki lignin, bitkiler için o kadar yeni ve özgün bir moleküldü ki, o dönemdeki hiçbir mikroorganizma (bakteri veya mantar) onu parçalayacak enzimlere sahip değildi! Bu nedenle ölü bitkiler çok yavaş ayrıştı ve karbon yeryüzünde birikerek atmosferdeki oksijen oranının artmasına neden oldu.</li>
+                        </ol>
+                        <p><strong>Modern Önemi ve Zorluklar:</strong></p>
+                        <ul>
+                            <li><strong>Biyoyakıt Üretimi:</strong> Lignoselüloz, biyoyakıt (biyoetanol) üretimi için mükemmel bir hammaddedir. Ancak ligninin ayrıştırılması zor ve pahalıdır. Bilim insanları, ligninaz enzimi üreten mantarları (beyaz çürükçül mantarlar) veya genetik mühendisliği yöntemlerini kullanarak bu sorunu çözmeye çalışıyor.</li>
+                            <li><strong>Kağıt Endüstrisi:</strong> Kağıt yapımında selüloza ihtiyaç vardır. Odunun lignininden arındırılması (kağıt hamuru) için kimyasal (kraft prosesi) veya mekanik yöntemler kullanılır, bu da çevre kirliliğine neden olabilir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-code-branch"></i> FLOEM İLETİMİNİN SIRLARI: BASINÇ AKIŞI TEORİSİ VE VİRÜSLERİN YOLCULUĞU</div>
+                    <div class="advanced-content">
+                        <p>Floemde organik madde taşınması, "Basınç Akışı Teorisi" (Pressure Flow Hypothesis - Münch hipotezi) ile açıklanır. Bu teoriyi anlamak, bitki fizyolojisinin ve hatta bitki hastalıklarının temelini anlamaktır.</p>
+                        <p><strong>Basınç Akışı Teorisinin Adımları:</strong></p>
+                        <ol>
+                            <li><strong>Kaynakta Yükleme:</strong> Yapraktaki (kaynak) fotosentez ürünü şekerler (genellikle sükroz), aktif taşıma ile kalburlu boruların içine pompalanır. Bu, floem özsuyunun ozmotik konsantrasyonunu artırır.</li>
+                            <li><strong>Su Girişi:</strong> Yüksek ozmotik konsantrasyon, komşu ksilemden floeme su girişini sağlar (osmoz). Bu, floemde <strong>turgor basıncını</strong> artırır.</li>
+                            <li><strong>Havuzda Boşaltma:</strong> Kök, meyve veya büyüyen uç gibi bir havuzda, şekerler aktif taşıma ile floemden çıkarılır ve kullanılır veya depolanır.</li>
+                            <li><strong>Su Çıkışı:</strong> Şekerlerin çıkmasıyla floemin ozmotik konsantrasyonu düşer, su da osmozla floemden çıkar (genellikle ksileme geri döner).</li>
+                            <li><strong>Basınç Farkı ve Akış:</strong> Kaynakta yüksek turgor basıncı, havuzda düşük turgor basıncı oluşur. Bu basınç farkı, floem özsuyunun (şeker+su) kaynaktan havuz doğru akmasını sağlar. Taşıma pasiftir, enerji sadece yükleme ve boşaltma aşamalarında harcanır.</li>
+                        </ol>
+                        <p><strong>Bitki Virüslerinin Akıllı Sırt Çantası:</strong></p>
+                        <p>Birçok bitki virüsü (örneğin, Tütün Mozaik Virüsü - TMV), yapraktan yaprağa yayılmak için floem yolunu kullanır. Virüs, bir hücreden diğerine plazmodezmata üzerinden yavaşça hareket ederken, floeme ulaştığında "otobana binmiş" gibi olur. Basınç akışı sayesinde tüm bitkiye hızla yayılır. Virüsün hareket proteinleri, onun floem elemanlarına girmesini ve çıkmasını sağlar. Bu nedenle bir yapraktaki viral enfeksiyon kısa sürede köklere ve diğer yapraklara ulaşır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-user-secret"></i> EPİDERMİSİN GİZLİ DİLİ: KUTİKULER HİDROKARBONLAR VE BİTKİ KİMLİĞİ</div>
+                    <div class="advanced-content">
+                        <p>Kütikula sadece su geçirmez bir bariyer değildir. Yüzeyinde bulunan karmaşık kimyasal karışım, bitkilerin gizli bir kimlik kartı gibidir.</p>
+                        <p><strong>Kütiküler Mumlar:</strong> Kütinin üzerinde veya içinde, uzun zincirli alkoller, alkanlar, ketonlar, esterler ve özellikle <strong>kütiküler hidrokarbonlar</strong> bulunur. Bu mumlar kristal yapılar oluşturarak bitki yüzeyine mavimsi, beyazımsı bir görünüm (pruin) verir (örneğin, bazı lahana türleri, erik meyvesi).</p>
+                        <p><strong>Bu Kimyasal İmzanın İşlevleri:</strong></p>
+                        <ol>
+                            <li><strong>Su İticilik (Superhidrofobiklik):</strong> Lotus yaprağı efekti. Mikroskobik çıkıntılar ve mumlar, su damlacıklarının yapışmasını engeller, damlacıklar yuvarlanarak gider ve yüzeyi temizler.</li>
+                            <li><strong>UV Filtresi:</strong> Bazı mumlar zararlı UV-B ışınlarını absorbe eder.</li>
+                            <li><strong>Böcekler İçin Kimyasal Sinyal:</strong> Birçok böcek, konak bitkisini bu kütiküler hidrokarbon profiline göre tanır. Yaprak bitleri, beyaz sinekler ve kelebek yumurtaları, doğru bitkiyi bulmak için bu kimyasal imzayı kullanır. Bazı bitkiler, böceklerin sevmediği kimyasalları salgılayarak onları uzak tutar.</li>
+                            <li><strong>Taksonomik Belirteç:</strong> Bitki sistematikçileri, kütiküler hidrokarbon profillerini kullanarak türleri veya çeşitleri birbirinden ayırt edebilir. Bu, özellikle morfolojik olarak benzer türlerde kullanışlıdır.</li>
+                            <li><strong>Patojen Savunması:</strong> Mum tabakası, fungal sporların ve bakterilerin yapışmasını ve çimlenmesini zorlaştırabilir.</li>
+                        </ol>
+                        <p>Bu nedenle epidermis, bitkinin çevreyle olan etkileşimlerinin (biotik ve abiotik) düzenlendiği, son derece aktif ve dinamik bir arayüzdür.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-brain"></i> AĞAÇ HALKALARI: DOĞANIN KAYIT DEFTERİ (DENDROKRONOLOJİ)</div>
+                    <div class="advanced-content">
+                        <p>Ağaç halkaları sadece yaşı saymak için değil, geçmiş iklim koşullarını okumak için de kullanılır. Bu bilim dalına <strong>dendrokronoloji</strong> denir.</p>
+                        <p><strong>Halkalar Nasıl Oluşur?</strong></p>
+                        <ul>
+                            <li><strong>Erken odun (İlkbahar odunu):</strong> Büyüme mevsiminin başında kambiyum tarafından oluşturulur. Hücreler geniş, ince çeperli ve açık renklidir. Görevi bol su iletimidir.</li>
+                            <li><strong>Geç odun (Yaz odunu):</strong> Büyüme mevsiminin sonuna doğru oluşur. Hücreler dar, kalın çeperli, lignin bakımından zengin ve koyu renklidir. Görevi destektir.</li>
+                            <li>Bu iki farklı doku bir araya geldiğinde gözle görülür bir halka oluşturur. Bir halka = bir büyüme mevsimi (genellikle bir yıl).</li>
+                        </ul>
+                        <p><strong>Dendrokronolojinin İlkeleri:</strong></p>
+                        <ol>
+                            <li><strong>Bireysellik:</strong> Her ağaç kendi büyüme modeline sahiptir ama aynı bölgedeki ağaçlar benzer iklimsel baskılara maruz kalır.</li>
+                            <li><strong>Eşzamanlılık:</strong> Aynı bölgedeki ağaçlar, aynı yıllarda benzer halka genişlikleri oluşturur (örneğin, hepsinde 1601 yılı çok dar bir halkadır).</li>
+                            <li><strong>Süreklilik:</strong> Yaşayan ağaçlardan başlayarak, eski keresteler, tarihi binalar, gömülü kütükler kullanılarak geriye doğru bir "zaman çizelgesi" (kronoloji) oluşturulabilir. Bu bazen binlerce yıl geriye gidebilir.</li>
+                        </ol>
+                        <p><strong>Halkalardan Okunan Bilgiler:</strong></p>
+                        <ul>
+                            <li><strong>İklim:</strong> Geniş halkalar = yağışlı, sıcak, uzun büyüme mevsimi. Dar halkalar = kurak, soğuk, kısa mevsim veya yangın, böcek istilası gibi stres.</li>
+                            <li><strong>Volkanik Patlamalar:</strong> Büyük patlamalar (örn. Tambora 1815) stratosfere kül püskürtür, Güneş ışınlarını engeller ve küresel soğumaya ("Yazsız Yıl") neden olur. Bu, tüm dünyadaki ağaçlarda o yıla ait çok dar bir halka olarak görülür.</li>
+                            <li><strong>Karbon-14 Kalibrasyonu:</strong> Ağaç halkaları kesin tarihlidir. Bu, radyokarbon (C-14) tarihleme yönteminin kalibrasyonunda altın standart olarak kullanılır.</li>
+                            <li><strong>Arkeoloji:</strong> Tarihi bir yapıdaki ahşabın halka deseni, yerel kronolojiyle eşleştirilerek yapının inşa tarihi belirlenebilir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-history"></i> TRAKE/TRAKEİT EVRİMİ: SU TAŞIMANIN FARKLI YOLLARI</div>
+                    <div class="advanced-content">
+                        <p>Ksilemin su taşıma elemanları, bitki grupları arasında farklılık gösterir. Bu farklılıklar, bitkilerin karasal ortama uyum sağlama ve daha verimli su taşıma sistemleri geliştirme sürecindeki evrimsel adımları yansıtır.</p>
+                        <p><strong>1. En İlkel: Hidroidler (Su Yosunları ve Bazı İlkel Karasal Bitkiler)</strong></p>
+                        <ul>
+                            <li>Gerçek ksilem dokusu yoktur.</li>
+                            <li>Su, birbirine bağlı canlı hücrelerin içinden osmozla yavaşça ilerler.</li>
+                            <li>Örnek: Karayosunları (Bryophyta).</li>
+                        </ul>
+                        <p><strong>2. Ara Form: Trakeitler (Eğrelti Otları ve Açık Tohumlular)</strong></p>
+                        <ul>
+                            <li>İlk gerçek ksilem elemanlarıdır.</li>
+                            <li><strong>Trakeitler</strong> hakimdir. Bunlar sivri uçlu, uzun hücrelerdir. Uç çeperleri tamamen erimemiştir, geçitlerle (pitler) birbirine bağlanır.</li>
+                            <li>Su, geçitlerden ve hücrelerin içinden geçerek ilerler. Bu, suya bir miktar direnç gösterir.</li>
+                            <li>Trakeitler hem su iletimi hem de destek sağlar. Bu nedenle açık tohumluların (çamlar) odunu daha yumuşak ve homojendir.</li>
+                            <li>Örnek: Eğrelti otları (Pteridophyta), kozalaklılar (Coniferophyta).</li>
+                        </ul>
+                        <p><strong>3. Gelişmiş Form: Trakeler (Kapalı Tohumlular)</strong></p>
+                        <ul>
+                            <li>Kapalı tohumlu bitkilerde (çiçekli bitkiler) görülür.</li>
+                            <li><strong>Trakeler</strong> hakimdir veya trakeitlerle birlikte bulunur.</li>
+                            <li>Trakeler, birçok hücrenin uç çeperleri tamamen eriyerek oluşan <strong>kesintisiz uzun borulardır</strong>. Su, engelsiz bir borudan akar gibi çok hızlı hareket eder.</li>
+                            <li>Destek işlevi, trakelerden ayrılmıştır ve sklerenkima lifleri veya destek trakeitleri tarafından sağlanır.</li>
+                            <li>Bu iş bölümü (trakeler = hızlı iletim, lifler = destek) çiçekli bitkilerin daha verimli su taşımasını ve çeşitli yaşam formlarına (dev ağaçlar, hızlı büyüyen otsular) evrilebilmesini sağlamıştır.</li>
+                            <li>Örnek: Meşe, gül, mısır (Angiosperms).</li>
+                        </ul>
+                        <p><strong>Evrimsel Eğilim:</strong> İlkelden gelişmişe doğru: <strong>Canlı hücreler → Ölü trakeitler (geçitli) → Ölü trakeler (kesintisiz borular).</strong> Bu eğilim, su iletim hızını ve verimliliğini artırmaya yöneliktir ve bitkilerin daha kurak ortamlara yayılmasına, daha büyük boyutlara ulaşmasına olanak tanımıştır.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/12bitkiseldokular.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // === DASHBOARD NAVİGASYONU ===
+        const dashboard = document.getElementById('dashboard');
+        const contentSections = {
+            audio: document.getElementById('audio-section'), 
+            flashcards: document.getElementById('flashcard-section'),
+            mindmap: document.getElementById('mindmap-section'),
+            summary: document.getElementById('summary-section'),
+            contextual: document.getElementById('contextual-section'),
+            test: document.getElementById('test-section'),
+            reasoning: document.getElementById('reasoning-section'),
+            advanced: document.getElementById('advanced-section')
+        };
+        
+        const backButtons = {
+    flashcards: document.getElementById('back-from-flashcards'),
+    mindmap: document.getElementById('back-from-mindmap'),
+    summary: document.getElementById('back-from-summary'),
+    contextual: document.getElementById('back-from-contextual'),
+    test: document.getElementById('back-from-test'),
+    reasoning: document.getElementById('back-from-reasoning'),
+    advanced: document.getElementById('back-from-advanced'),
+    audio: document.getElementById('back-from-audio') // Bu satırı ekleyin
+};
+        
+        // Kartlara tıklama olayları
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.flashcards.classList.add('active');
+            updateProgress('flashcard');
+        });
+document.getElementById('audio-btn').addEventListener('click', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('audio-section').classList.add('active');
+    updateProgress('audio');
+});
+        
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.mindmap.classList.add('active');
+            updateProgress('mindmap');
+        });
+        
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.summary.classList.add('active');
+            updateProgress('summary');
+        });
+        
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.contextual.classList.add('active');
+            updateProgress('contextual');
+        });
+        
+        document.getElementById('test-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.test.classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+        
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.reasoning.classList.add('active');
+            updateProgress('reasoning');
+        });
+        
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            contentSections.advanced.classList.add('active');
+            updateProgress('advanced');
+        });
+        
+        // Geri dön butonları
+        Object.keys(backButtons).forEach(key => {
+            if (backButtons[key]) {
+                backButtons[key].addEventListener('click', () => {
+                    contentSections[key].classList.remove('active');
+                    dashboard.style.display = 'grid';
+                    if (key === 'test') {
+                        document.getElementById('test-result').style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // === İLERLEME TAKİBİ ===
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+        
+        // === 1️⃣ BİLGİ KARTLARI SİSTEMİ ===
+        const flashcardsData = [
+            {
+                question: "Meristem doku nedir?",
+                answer: "Bitkinin büyüme bölgelerinde bulunan, sürekli bölünebilme yeteneğine sahip embriyonik dokudur. İnce çeperli, bol sitoplazmalı ve büyük çekirdeklidir."
+            },
+            {
+                question: "Uç (Apikal) meristemin görevi nedir?",
+                answer: "Kök ve gövde uçlarında bulunur. Bitkinin boyuna doğru uzamasını (primer büyüme) sağlar."
+            },
+            {
+                question: "Yanal (Lateral) meristemin görevi nedir?",
+                answer: "Kök ve gövdenin enine kalınlaşmasını (sekonder büyüme) sağlar. Kambiyum ve mantar kambiyumu örnekleridir."
+            },
+            {
+                question: "Parankima dokusunun genel özellikleri nelerdir?",
+                answer: "İnce çeperli, canlı, bol sitoplazmalı, küçük kofullu hücrelerdir. Depolama, fotosentez, iletim gibi çok çeşitli görevleri vardır."
+            },
+            {
+                question: "Özümleme (Asimilasyon) parankiması nedir?",
+                answer: "Kloroplast içeren, fotosentez yapan parankima dokusudur. Yapraklardaki palizat ve sünger parankiması bu gruba girer."
+            },
+            {
+                question: "Kollenkima (Pek doku) nedir?",
+                answer: "Canlı, esnek, mekanik destek sağlayan dokudur. Hücre çeperleri selüloz ve pektin birikimiyle kalınlaşmıştır. Köşe ve levha kollenkiması olarak iki türü vardır."
+            },
+            {
+                question: "Sklerenkima (Sert doku) nedir?",
+                answer: "Ölü, lignin birikmiş, sert destek dokusudur. Sklerenkima lifleri ve taş hücreleri (sklereitler) olmak üzere iki türü vardır."
+            },
+            {
+                question: "Ksilem (Odun boruları) nedir?",
+                answer: "Cansız hücrelerden oluşan iletim dokusudur. Köklerden alınan su ve mineralleri yapraklara taşır. Trake ve trakeitlerden oluşur."
+            },
+            {
+                question: "Floem (Soymuk boruları) nedir?",
+                answer: "Canlı hücrelerden oluşan iletim dokusudur. Yapraklarda üretilen organik besinleri bitkinin diğer kısımlarına taşır. Kalburlu borular ve arkadaş hücrelerinden oluşur."
+            },
+            {
+                question: "Epidermis nedir?",
+                answer: "Bitkinin genç kısımlarını örten tek sıralı koruyucu dokudur. Kütikula salgılar, stoma, tüyler, hidatod gibi yapıları oluşturur."
+            },
+            {
+                question: "Kütikula nedir?",
+                answer: "Epidermis hücrelerinin salgıladığı mumsu (kütin) tabakadır. Su kaybını önler. Kurak bölge bitkilerinde kalın, nemli ortam bitkilerinde incedir."
+            },
+            {
+                question: "Stoma nedir?",
+                answer: "Gaz alışverişi (O₂, CO₂) ve terlemeyi düzenleyen yapılardır. İki bekçi hücresinden oluşur. Genellikle yaprağın alt yüzeyinde daha fazladır."
+            },
+            {
+                question: "Hidatod (Su savağı) nedir?",
+                answer: "Bitkinin fazla suyu ve mineralleri sıvı halde (damlama/gutasyon) attığı, epidermisteki sürekli açık yapılardır."
+            },
+            {
+                question: "Emici tüyler hangi görevi yapar?",
+                answer: "Kök epidermisinde bulunur. Topraktan su ve mineral alımını artırmak için yüzey alanını genişletir."
+            },
+            {
+                question: "Periderm (Mantar doku) nedir?",
+                answer: "Çok yıllık bitkilerde epidermisin yerini alan koruyucu dokudur. Süberin birikimiyle su geçirmez hale gelir. Üzerinde lentiseller bulunur."
+            },
+            {
+                question: "Lentisel (Kovucuk) nedir?",
+                answer: "Periderm üzerindeki açıklıklardır. Gövdedeki canlı hücrelerin dış ortamla gaz alışverişini (O₂, CO₂) sağlar."
+            },
+            {
+                question: "Palizat parankiması nedir?",
+                answer: "Yaprağın üst epidermisi altında, dikine dizilmiş, bol kloroplastlı parankima hücreleridir. Fotosentezin en yoğun yapıldığı dokudur."
+            },
+            {
+                question: "Sünger parankiması nedir?",
+                answer: "Palizat parankimasının altında, düzensiz şekilli, aralarında boşluklar olan, az kloroplastlı parankima hücreleridir. Gaz alışverişine yardımcı olur, fotosentez de yapar."
+            },
+            {
+                question: "Trake ve trakeit arasındaki fark nedir?",
+                answer: "Trake: Geniş, açık borular, hızlı su iletimi. Trakeit: İnce çeperli, geçitli, hem iletim hem destek sağlar."
+            },
+            {
+                question: "Arkadaş hücreleri nedir?",
+                answer: "Floemde, kalburlu boruların yanında bulunan küçük, bol sitoplazmalı hücrelerdir. Kalburlu boruların metabolizmasını kontrol eder ve besin yükleme/boşaltmada görev alır."
+            },
+            {
+                question: "Primer ve sekonder büyüme nedir?",
+                answer: "Primer büyüme: Uç meristemle boyca uzama. Sekonder büyüme: Yanal meristemle (kambiyum) enine kalınlaşma. Otsularda sadece primer, odunlularda her ikisi de görülür."
+            },
+            {
+                question: "Taş hücreleri (Sklereitler) nerelerde bulunur?",
+                answer: "Armut, ayva gibi meyvelerdeki sert noktalar; ceviz, fındık kabuğu; bazı bitki gövdelerinde. Sklerenkima dokusunun bir çeşididir."
+            },
+            {
+                question: "Savunma tüyleri nedir? Örnek verin.",
+                answer: "Bitkiyi otçul hayvanlara karşı koruyan tüylerdir. Isırgan otundaki, dokunulduğunda kırılıp tahriş edici kimyasal salan tüyler buna örnektir."
+            },
+            {
+                question: "Salgı tüyleri hangi maddeleri salgılar?",
+                answer: "Uçucu yağlar, reçineler, bal özü (nektar), enzimler gibi maddeleri salgılar. Sardunya, lavanta, nane gibi kokulu bitkilerde bulunur."
+            },
+            {
+                question: "Emergens (Diken) nedir?",
+                answer: "Sadece epidermisten değil, altındaki dokuları da içeren sivri çıkıntılardır. Savunma veya tutunma görevi görür. Gül, böğürtlen dikenleri örnektir."
+            }
+        ];
+        
+        // Bilgi kartları değişkenleri
+        let currentCardIndex = 0;
+        const totalCards = flashcardsData.length;
+        
+        // DOM elementleri
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+        
+        // Kartları başlat
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+        
+        function loadCard() {
+            const currentCard = flashcardsData[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+        
+        // Kart olay dinleyicileri
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+        
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+        
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+        
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+        
+        shuffleButton.addEventListener('click', () => {
+            // Kartları karıştır
+            for (let i = flashcardsData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcardsData[i], flashcardsData[j]] = [flashcardsData[j], flashcardsData[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+        
+        // === 4️⃣ BAĞLAM TEMELLİ SORULAR - CEVAP AÇ/KAPA ===
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+        
+        // === 5️⃣ TEST SİSTEMİ ===
+        const testQuestions = [
+            {
+                question: "Aşağıdakilerden hangisi meristem dokunun özelliklerinden değildir?",
+                options: [
+                    "İnce çeperli olması",
+                    "Bol sitoplazmalı olması",
+                    "Büyük kofullu olması",
+                    "Sürekli bölünebilmesi",
+                    "Büyük çekirdekli olması"
+                ],
+                correct: 2,
+                explanation: "Meristem hücrelerinin kofulları küçüktür veya yoktur. Büyük koful, depo veya diğer işlevler için özelleşmiş hücrelerde (örneğin parankima) görülür."
+            },
+            {
+                question: "Bitkinin boyuna uzamasını sağlayan meristem çeşidi aşağıdakilerden hangisidir?",
+                options: [
+                    "Yanal meristem",
+                    "Kambiyum",
+                    "Mantar kambiyumu",
+                    "Uç (Apikal) meristem",
+                    "Sekonder meristem"
+                ],
+                correct: 3,
+                explanation: "Uç (apikal) meristem, kök ve gövde uçlarında bulunur ve bitkinin boyuna doğru uzamasını (primer büyüme) sağlar."
+            },
+            {
+                question: "Aşağıdakilerden hangisi parankima dokusunun görevlerinden biri değildir?",
+                options: [
+                    "Fotosentez yapmak",
+                    "Depolama yapmak",
+                    "Mekanik destek sağlamak",
+                    "Solunum yapmak",
+                    "Salgı yapmak"
+                ],
+                correct: 2,
+                explanation: "Mekanik destek sağlamak, kollenkima ve sklerenkima dokularının görevidir. Parankima fotosentez, depolama, solunum, salgı gibi çeşitli görevler yapar."
+            },
+            {
+                question: "Kurak bölge bitkilerinin gövdelerinde su depolayan doku aşağıdakilerden hangisidir?",
+                options: [
+                    "Özümleme parankiması",
+                    "Depo parankiması",
+                    "Kollenkima",
+                    "Sklerenkima",
+                    "İletim parankiması"
+                ],
+                correct: 1,
+                explanation: "Kaktüs gibi kurak bölge bitkilerinin kalın gövdelerinde bol miktarda depo parankiması bulunur. Bu hücreler büyük kofullarında su depolar."
+            },
+            {
+                question: "Hücre çeperlerinde lignin birikmesi sonucu ölü hale gelen, sert destek dokusu aşağıdakilerden hangisidir?",
+                options: [
+                    "Parankima",
+                    "Kollenkima",
+                    "Sklerenkima",
+                    "Epidermis",
+                    "Periderm"
+                ],
+                correct: 2,
+                explanation: "Sklerenkima hücreleri olgunlaşırken çeperlerine lignin birikir. Bu, hücrenin ölmesine neden olur, ancak çok sert ve dayanıklı bir destek dokusu oluşturur."
+            },
+            {
+                question: "Aşağıdaki bitkilerden hangisinin gövdesinden elde edilen lifler (sklerenkima lifleri) tekstilde kullanılır?",
+                options: [
+                    "Elma ağacı",
+                    "Keten bitkisi",
+                    "Çam ağacı",
+                    "Buğday bitkisi",
+                    "Gül bitkisi"
+                ],
+                correct: 1,
+                explanation: "Keten (Linum usitatissimum) bitkisinin gövdesindeki kabuk kısmından elde edilen sklerenkima lifleri, keten kumaş yapımında kullanılır. Kenevir de benzer şekilde kullanılır."
+            },
+            {
+                question: "Ksilem (odun boruları) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Su ve mineral taşır",
+                    "Cansız hücrelerden oluşur",
+                    "Trake ve trakeitlerden oluşur",
+                    "Organik besin taşır",
+                    "Bitkiye mekanik destek sağlar"
+                ],
+                correct: 3,
+                explanation: "Organik besin taşımak floemin görevidir. Ksilem, köklerden alınan su ve suda çözünmüş mineralleri yapraklara taşır."
+            },
+            {
+                question: "Floem (soymuk boruları) ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sadece yapraklardan köklere doğru tek yönlü taşıma yapar",
+                    "Su ve mineral taşır",
+                    "Cansız hücrelerden oluşur",
+                    "Kalburlu borular ve arkadaş hücrelerinden oluşur",
+                    "Taşıma hızı ksilemden daha hızlıdır"
+                ],
+                correct: 3,
+                explanation: "Floem, kalburlu borular (çekirdeksiz) ve onların metabolizmasını kontrol eden arkadaş hücrelerinden (çekirdekli) oluşur. Çift yönlü organik besin taşır, canlıdır ve taşıma hızı ksileme göre yavaştır."
+            },
+            {
+                question: "Epidermisin salgıladığı, su kaybını önleyen mumsu tabakaya ne ad verilir?",
+                options: [
+                    "Kütikula",
+                    "Süberin",
+                    "Lignin",
+                    "Pektin",
+                    "Selüloz"
+                ],
+                correct: 0,
+                explanation: "Kütikula, epidermis hücrelerinin salgıladığı kütin adlı mumsu maddeden oluşan tabakadır. Su kaybını önler, kurak bölge bitkilerinde kalındır."
+            },
+            {
+                question: "Gaz alışverişi ve terlemeyi düzenleyen, açılıp kapanabilen yapı aşağıdakilerden hangisidir?",
+                options: [
+                    "Lentisel",
+                    "Hidatod",
+                    "Stoma",
+                    "Emergens",
+                    "Emici tüy"
+                ],
+                correct: 2,
+                explanation: "Stoma, iki bekçi hücresinden oluşan ve açılıp kapanarak gaz alışverişi (O₂, CO₂) ve terlemeyi düzenleyen yapılardır. Genellikle yapraklarda bulunur."
+            },
+            {
+                question: "Çok yıllık bitkilerin odunsu gövdelerinde, epidermisin yerini alan ve üzerinde lentiseller bulunan doku aşağıdakilerden hangisidir?",
+                options: [
+                    "Epidermis",
+                    "Parankima",
+                    "Periderm (Mantar doku)",
+                    "Kollenkima",
+                    "Sklerenkima"
+                ],
+                correct: 2,
+                explanation: "Çok yıllık bitkilerde epidermis parçalanır ve yerini periderm (mantar doku) alır. Periderm su geçirmezdir (süberinli) ve üzerinde gaz alışverişi için lentiseller bulunur."
+            },
+            {
+                question: "Yaprağın üst epidermisi altında, dikine dizilmiş, bol kloroplastlı ve fotosentezin en yoğun yapıldığı doku aşağıdakilerden hangisidir?",
+                options: [
+                    "Sünger parankiması",
+                    "Palizat parankiması",
+                    "Depo parankiması",
+                    "Havalandırma parankiması",
+                    "İletim parankiması"
+                ],
+                correct: 1,
+                explanation: "Palizat parankiması, yaprağın üst kısmında, ışığı en iyi alacak şekilde dikine dizilmiş, silindirik, bol kloroplastlı hücrelerdir. Fotosentezin en verimli gerçekleştiği dokudur."
+            },
+            {
+                question: "Aşağıdaki yapılardan hangisi hem epidermis hem de altındaki dokuları içeren bir çıkıntıdır?",
+                options: [
+                    "Stoma",
+                    "Emici tüy",
+                    "Salgı tüyü",
+                    "Emergens (Diken)",
+                    "Hidatod"
+                ],
+                correct: 3,
+                explanation: "Emergensler (dikenler), sadece epidermisten değil, altındaki parankima ve iletim dokularını da içeren çıkıntılardır. Gül, böğürtlen dikenleri örnektir."
+            },
+            {
+                question: "Bitkilerin fazla suyu yaprak kenarlarından sıvı halde (damlama) atması olayına ne ad verilir ve hangi yapı ile gerçekleşir?",
+                options: [
+                    "Terleme - Stoma",
+                    "Gutasyon - Hidatod",
+                    "Fotosentez - Stoma",
+                    "Solunum - Lentisel",
+                    "Difüzyon - Epidermis"
+                ],
+                correct: 1,
+                explanation: "Gutasyon (damlama), bitkinin fazla su ve mineralleri sıvı halde, yaprak kenarlarındaki hidatodlardan atması olayıdır. Genellikle sabah erken saatlerde, nemli havada görülür."
+            },
+            {
+                question: "Kök epidermisinde bulunan ve topraktan su ile mineral alımını artırmak için yüzey alanını genişleten yapılar aşağıdakilerden hangisidir?",
+                options: [
+                    "Stomalar",
+                    "Lentiseller",
+                    "Emici tüyler",
+                    "Salgı tüyleri",
+                    "Savunma tüyleri"
+                ],
+                correct: 2,
+                explanation: "Emici tüyler, kök epidermisinin dışa doğru uzantılarıdır. Kökün toprakla temas eden yüzey alanını büyük ölçüde artırarak su ve mineral alımını hızlandırır."
+            },
+            {
+                question: "Aşağıdakilerden hangisi kollenkima dokusunun özelliklerinden biridir?",
+                options: [
+                    "Hücreleri ölüdür",
+                    "Lignin içerir",
+                    "Esnek bir destek sağlar",
+                    "Sadece odunsu bitkilerde bulunur",
+                    "Su iletimi yapar"
+                ],
+                correct: 2,
+                explanation: "Kollenkima, canlı hücrelerden oluşur, lignin içermez (selüloz ve pektin içerir), esnek bir destek sağlar ve genç bitki kısımlarında (çiçek sapı, genç gövde) bulunur."
+            },
+            {
+                question: "Armut ve ayva gibi meyvelerde bulunan sert, odunsu noktalar hangi dokuya aittir?",
+                options: [
+                    "Kollenkima lifleri",
+                    "Sklerenkima lifleri",
+                    "Taş hücreleri (Sklereitler)",
+                    "Trakeitler",
+                    "Depo parankiması"
+                ],
+                correct: 2,
+                explanation: "Armut, ayva, ceviz, fındık gibi yapılardaki sert dokular, sklerenkima dokusunun bir çeşidi olan taş hücrelerinden (sklereitler) oluşur."
+            },
+            {
+                question: "Aşağıdaki eşleştirmelerden hangisi yanlıştır?",
+                options: [
+                    "Ksilem - Su ve mineral iletimi",
+                    "Floem - Organik besin iletimi",
+                    "Parankima - Fotosentez",
+                    "Kollenkima - Su geçirmez örtü",
+                    "Epidermis - Koruma"
+                ],
+                correct: 3,
+                explanation: "Kollenkima esnek destek dokusudur. Su geçirmez örtü görevi, epidermisin salgıladığı kütikula veya peridermdeki süberin tarafından sağlanır."
+            },
+            {
+                question: "Otsu bitkilerde büyüme nasıl gerçekleşir?",
+                options: [
+                    "Sadece sekonder büyüme ile",
+                    "Sadece primer büyüme ile",
+                    "Hem primer hem sekonder büyüme ile",
+                    "Ne primer ne de sekonder büyüme ile",
+                    "Sadece yanal büyüme ile"
+                ],
+                correct: 1,
+                explanation: "Otsu bitkiler (tek yıllık veya çok yıllık otsular) sadece primer büyüme (uç meristemle boyca uzama) gösterir. Sekonder büyüme (enine kalınlaşma) odunsu bitkilere özgüdür."
+            },
+            {
+                question: "Periderm üzerinde bulunan ve gövdedeki canlı hücrelerin gaz alışverişini sağlayan yapılar aşağıdakilerden hangisidir?",
+                options: [
+                    "Stomalar",
+                    "Hidatodlar",
+                    "Lentiseller",
+                    "Emici tüyler",
+                    "Emergensler"
+                ],
+                correct: 2,
+                explanation: "Lentiseller (kovucuklar), periderm (mantar doku) üzerindeki açıklıklardır. Gövdedeki canlı dokuların dış ortamla O₂ ve CO₂ alışverişini sağlar."
+            },
+            {
+                question: "Aşağıdakilerden hangisi stoma, lentisel ve hidatodun ortak özelliğidir?",
+                options: [
+                    "Epidermiste bulunmaları",
+                    "Gaz alışverişi sağlamaları",
+                    "Bitki yüzeyinde açıklık olmaları",
+                    "Açılıp kapanabilmeleri",
+                    "Sadece yaprakta bulunmaları"
+                ],
+                correct: 2,
+                explanation: "Üçü de bitki yüzeyinde madde alışverişi için açıklık oluşturur: Stoma (gaz+su), lentisel (gaz), hidatod (su+mineral). Diğer seçenekler ortak değildir."
+            },
+            {
+                question: "Isırgan otunun dokunulduğunda acı ve kaşıntıya neden olan yapıları aşağıdakilerden hangisidir?",
+                options: [
+                    "Salgı tüyleri",
+                    "Savunma tüyleri",
+                    "Emici tüyler",
+                    "Örtü tüyleri",
+                    "Tırmanma tüyleri"
+                ],
+                correct: 1,
+                explanation: "Isırgan otunun epidermisinde bulunan savunma tüyleri, dokunulduğunda kırılarak içlerindeki histamin ve formik asit gibi tahriş edici kimyasalları cilde enjekte eder."
+            },
+            {
+                question: "Floemde organik besinlerin taşınmasında, kalburlu boruların metabolizmasını kontrol eden ve besin yükleme/boşaltmada görev alan hücreler aşağıdakilerden hangisidir?",
+                options: [
+                    "Trakeitler",
+                    "Trake hücreleri",
+                    "Arkadaş hücreleri",
+                    "Taş hücreleri",
+                    "Bekçi hücreleri"
+                ],
+                correct: 2,
+                explanation: "Arkadaş hücreleri, floemdeki kalburlu boruların yanında bulunan küçük, bol sitoplazmalı, çekirdekli hücrelerdir. Kalburlu boruların (çekirdeksiz) metabolizmasını kontrol eder ve organik madde taşınmasına yardım eder."
+            },
+            {
+                question: "Aşağıdakilerden hangisi sklerenkima ve kollenkima dokularının ortak özelliğidir?",
+                options: [
+                    "Hücrelerinin canlı olması",
+                    "Mekanik destek sağlaması",
+                    "Lignin içermesi",
+                    "Sadece odunsu bitkilerde bulunması",
+                    "Su iletimi yapması"
+                ],
+                correct: 1,
+                explanation: "Her iki doku da bitkiye mekanik destek sağlar. Kollenkima canlı, esnek destek; sklerenkima ölü, sert destek sağlar. Lignin sadece sklerenkımada bulunur."
+            },
+            {
+                question: "Bitkide madde iletimini sağlayan ksilem ve floem dokuları birlikte ne oluşturur?",
+                options: [
+                    "Epidermis",
+                    "Meristem",
+                    "Parankima",
+                    "İletim demeti",
+                    "Periderm"
+                ],
+                correct: 3,
+                explanation: "Ksilem ve floem bir arada bulunarak iletim demetlerini oluşturur. Bu demetler kök, gövde ve yapraklarda su, mineral ve organik besinlerin taşınmasını sağlar."
+            },
+            {
+                question: "Aşağıdakilerden hangisi parankima dokusunun bir çeşidi değildir?",
+                options: [
+                    "Palizat parankiması",
+                    "Sünger parankiması",
+                    "Depo parankiması",
+                    "Levha parankiması",
+                    "Havalandırma parankiması"
+                ],
+                correct: 3,
+                explanation: "Levha parankiması diye bir terim yoktur. 'Levha', kollenkima dokusunun bir çeşididir (levha kollenkiması). Parankima çeşitleri: özümleme (palizat, sünger), depo, havalandırma, iletim parankiması."
+            },
+            {
+                question: "Kök ve gövdenin enine kesitinde, her yıl oluşan ve bitkinin yaşını gösteren halkalar hangi doku ile ilgilidir?",
+                options: [
+                    "Epidermis",
+                    "Parankima",
+                    "Kollenkima",
+                    "Kambiyum (Sekonder büyüme)",
+                    "Meristem"
+                ],
+                correct: 3,
+                explanation: "Ağaç halkaları, kambiyumun (yanal meristem) her büyüme mevsiminde içe doğru oluşturduğu sekonder ksilem (odun) tabakalarıdır. İlkbahar odunu (geniş, açık) ve yaz odunu (dar, koyu) birleşerek bir halka oluşturur."
+            },
+            {
+                question: "Sardunya, lavanta gibi bitkilerin güzel kokuları, hangi epidermis çıkıntıları tarafından salgılanır?",
+                options: [
+                    "Savunma tüyleri",
+                    "Salgı tüyleri",
+                    "Emici tüyler",
+                    "Örtü tüyleri",
+                    "Tırmanma tüyleri"
+                ],
+                correct: 1,
+                explanation: "Salgı tüyleri, uçucu yağlar, reçineler, nektar gibi maddeleri salgılar. Sardunya, lavanta, nane, fesleğen gibi aromatik bitkilerin kokuları bu tüylerden kaynaklanır."
+            },
+            {
+                question: "Aşağıdaki bitkisel dokulardan hangisi bölünme yeteneğini kaybetmiş hücrelerden oluşur?",
+                options: [
+                    "Meristem doku",
+                    "Parankima doku",
+                    "Kollenkima doku",
+                    "Epidermis doku",
+                    "Hepsi"
+                ],
+                correct: 4,
+                explanation: "Meristem doku dışındaki tüm dokular (parankima, kollenkima, epidermis, iletim dokuları) bölünme yeteneğini kaybetmiş, farklılaşmış dokulardır. Meristem ise sürekli bölünebilme yeteneğine sahiptir."
+            }
+        ];
+        
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+        
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+        
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        
+            // Seçeneklere tıklama olayı ekle
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Aynı sorudaki önceki seçimi temizle
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Seçili seçeneği işaretle
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+        
+        // Testi gönder butonu
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+        
+            // Cevapları kontrol et
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // Cevaplanmamışsa bile doğru cevabı göster
+                    options[q.correct].classList.add('correct');
+                }
+            });
+        
+            // Sonuçları göster
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Bitkisel dokular konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Detaylı sonuç
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Testi yeniden başlat butonu
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+        
+        // Seçimleri temizle butonu
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+        
+        // === KLAVYE KISAYOLLARI (Bilgi Kartları için) ===
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+        
+        // Sayfa yüklendiğinde test sorularını hazırla
+        window.addEventListener('DOMContentLoaded', () => {
+            // İlerleme çubuğunu sıfırla
+            document.getElementById('completed-count').textContent = '0';
+            document.getElementById('progress-percent').textContent = '0%';
+            document.getElementById('progress-fill').style.width = '0%';
+        });
+    </script>
+</body>
+</html>

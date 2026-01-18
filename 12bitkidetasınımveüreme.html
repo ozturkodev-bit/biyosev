@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Bitkilerde Madde Taşınması ve Eşeyli Üreme Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #27ae60;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #27ae60;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .answer-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #27ae60;
+        }
+
+        .option.selected {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2c3e50;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Advanced Section Styles */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f5eef9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Audio Section */
+        .audio-container {
+            text-align: center;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">12. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Bitkide Taşınım ve Üreme </span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Bitkilerde Madde Taşınması ve Eşeyli Üreme Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile bitki biyolojisini keşfedin</div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile bitkilerde madde taşınması ve eşeyli üreme konusunun temel kavramlarını öğrenin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Bitkilerde madde taşınması ve eşeyli üreme mekanizmalarını görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Bitkilerde madde taşınması ve eşeyli üremenin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile bitki biyolojisi soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile bitkilerde madde taşınması ve eşeyli üreme hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Konuyla ilgili üst düzey bilgiler, ilginç detaylar ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Bitkilerde Madde Taşınması ve Eşeyli Üreme Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Bitkilerde Madde Taşınması ve Eşeyli Üreme Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Köklerde Su ve Mineral Emilimi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Emici tüyler:</strong> Kök epidermisinin uzantıları, emilim yüzeyini artırır</li>
+                        <li><strong>Ozmotik basınç:</strong> Emici tüylerdeki ozmotik basınç topraktan yüksek olmalı</li>
+                        <li><strong>Aktif taşıma:</strong> Minerallerin alımı aktif taşıma ile olur</li>
+                        <li><strong>Nodül:</strong> Baklagillerde Rhizobium bakterileri ile simbiyoz, azot fiksasyonu</li>
+                        <li><strong>Mikoriza:</strong> Kök-mantar simbiyozu, fosfor alımı kolaylaşır</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Su ve Minerallerin Taşınması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ksilem (odun boruları):</strong> Su ve minerallerin taşınması</li>
+                        <li><strong>Taşınma yönü:</strong> Kökten yapraklara doğru (yukarı)</li>
+                        <li><strong>Apoplast yol:</strong> Hücre çeperleri ve hücre dışı alanlar boyunca</li>
+                        <li><strong>Simplast yol:</strong> Hücreden hücreye plazmodezmata ile</li>
+                        <li><strong>Kaspari şeridi:</strong> Endodermiste su geçirmez bant, kontrol noktası</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Suyun Yükselme Mekanizmaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Kılcallık:</strong> Adhezyon kuvveti, ince borularda su yükselmesi</li>
+                        <li><strong>Kök basıncı:</strong> Osmotik basınç farkı ile suyu yukarı itme</li>
+                        <li><strong>Gutasyon:</strong> Kök basıncı ile hidatodlardan su damlaması</li>
+                        <li><strong>Kohezyon-gerilim teorisi:</strong> Su moleküllerinin birbirini çekmesi</li>
+                        <li><strong>Terleme-çekim kuvveti:</strong> Yapraklarda terleme ile su kaybı, su sütununu yukarı çeker</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Stomalar ve Terleme</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Stoma yapısı:</strong> İki bekçi hücresi ve stoma açıklığı</li>
+                        <li><strong>Bekçi hücreleri:</strong> Kloroplast içerir, turgor basıncı ile açılıp kapanır</li>
+                        <li><strong>Stoma açılması:</strong> K⁺ iyonu alımı, osmotik basınç artışı, turgor artışı</li>
+                        <li><strong>Stoma kapanması:</strong> K⁺ iyonu kaybı, osmotik basınç azalışı, turgor azalışı</li>
+                        <li><strong>Terleme hızını etkileyen faktörler:</strong> Sıcaklık, nem, rüzgar, ışık</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotosentez Ürünlerinin Taşınması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Floem (soymuk boruları):</strong> Organik madde taşınması</li>
+                        <li><strong>Taşınma yönü:</strong> Çift yönlü (yapraklardan köklere ve tersi)</li>
+                        <li><strong>Kaynak hücreler:</strong> Fotosentez yapan olgun yapraklar</li>
+                        <li><strong>Havuz hücreler:</strong> Besin kullanan veya depolayan kök, meyve, genç yapraklar</li>
+                        <li><strong>Basınç-akış teorisi:</strong> Şeker yüklenmesi, osmotik su girişi, hidrostatik basınç</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Çiçekli Bitkilerde Eşeyli Üreme</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Çiçek yapısı:</strong> Çanak yaprak, taç yaprak, erkek organ, dişi organ</li>
+                        <li><strong>Erkek organ:</strong> Başçık (anter) ve sapçık (filament)</li>
+                        <li><strong>Polen oluşumu:</strong> Polen ana hücresi → mayoz → mikrospor → mitoz → polen</li>
+                        <li><strong>Dişi organ:</strong> Yumurtalık, tepecik, dişicik borusu</li>
+                        <li><strong>Embriyo kesesi oluşumu:</strong> Megaspor ana hücresi → mayoz → megaspor → mitoz → 8 çekirdekli embriyo kesesi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Tozlaşma ve Döllenme</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tozlaşma:</strong> Polenlerin erkek organdan dişi organ tepeciğine taşınması</li>
+                        <li><strong>Kendi kendine tozlaşma:</strong> Aynı çiçek veya aynı bitki üzerinde</li>
+                        <li><strong>Çapraz tozlaşma:</strong> Aynı tür farklı bitkiler arasında</li>
+                        <li><strong>Çift döllenme:</strong> 1. sperm + yumurta → zigot (2n); 2. sperm + polar çekirdekler → endosperm (3n)</li>
+                        <li><strong>Tozlaştırıcılar:</strong> Rüzgar, su, böcekler, kuşlar, yarasalar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Tohum ve Meyve Oluşumu</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tohum yapısı:</strong> Tohum kabuğu, endosperm (besi doku), embriyo</li>
+                        <li><strong>Embriyo:</strong> Embriyonik kök (radikula), embriyonik gövde (plumula), çenek (kotiledon)</li>
+                        <li><strong>Meyve oluşumu:</strong> Döllenmiş yumurtalığın gelişmesiyle</li>
+                        <li><strong>Meyve çeşitleri:</strong> Basit meyve, bileşik meyve, kümeli meyve, yalancı meyve</li>
+                        <li><strong>Tohum yayılımı:</strong> Rüzgar, su, hayvanlar, patlama mekanizmaları</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Çimlenme ve Etkili Faktörler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Çimlenme:</strong> Tohumun uygun şartlarda genç bitkiyi oluşturması</li>
+                        <li><strong>Su:</strong> Metabolik aktiviteleri başlatır, enzimleri aktifleştirir</li>
+                        <li><strong>Sıcaklık:</strong> Enzim aktivitesini ve difüzyonu etkiler</li>
+                        <li><strong>Oksijen:</strong> Oksijenli solunum için gerekli</li>
+                        <li><strong>Dormansi (uyku hali):</strong> Uygun olmayan şartlarda çimlenmenin gecikmesi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Bitkilerde Madde Taşınması ve Eşeyli Üreme Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-root"></i> 1. KÖKLERDE SU VE MİNERAL EMİLİMİ</div>
+                    <ul class="summary-list">
+                        <li>Bitkiler su ve mineralleri <strong>kök emici tüyleri</strong> ile alır. Emici tüyler, epidermis hücrelerinin toprağa yönelmiş uzantılarıdır ve emilim yüzeyini artırır.</li>
+                        <li>Su alımı için <strong>emici tüylerdeki ozmotik basıncın topraktakinden yüksek olması</strong> gerekir. Su osmozla geçer.</li>
+                        <li>Mineral alımı genellikle <strong>aktif taşıma</strong> ile olur, çünkü minerallerin topraktaki derişimi daha düşüktür.</li>
+                        <li><strong>Nodül:</strong> Baklagillerin köklerinde Rhizobium bakterileri ile simbiyotik ilişki. Bakteriler atmosfer azotunu bitkinin kullanabileceği forma çevirir.</li>
+                        <li><strong>Mikoriza:</strong> Köklerle mantarların simbiyotik ilişkisi. Mantar, başta fosfor olmak üzere mineralleri bitkiye sağlar; bitki de mantara organik besin verir.</li>
+                        <li><strong>Minimum Kuralı (Liebig):</strong> Bitki gelişimini, miktarı en az olan gelişim faktörü sınırlar. Eksik element diğerleri yeterli olsa da bitkiyi sınırlar.</li>
+                        <li><strong>Gübreler:</strong> Bitkilerin beslenmesi için gerekli mineralleri içerir. Organik gübreler yavaş, inorganik gübreler hızlı çözünür.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tint"></i> 2. SU VE MİNERALLERİN TAŞINMASI</div>
+                    <ul class="summary-list">
+                        <li>Su ve mineraller <strong>ksilem (odun boruları)</strong> ile taşınır. Taşınma kökten yapraklara doğru, <strong>tek yönlüdür</strong>.</li>
+                        <li>Su ve minerallerin kök içinde taşınması iki yoldan olur:
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li><strong>Apoplast yol:</strong> Hücre çeperleri ve hücre dışı alanlar boyunca. Daha hızlıdır.</li>
+                                <li><strong>Simplast yol:</strong> Hücreden hücreye plazmodezmatalarla. Daha yavaştır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kaspari şeridi:</strong> Endodermis hücrelerinde su geçirmez kuşak. Su ve minerallerin kontrolsüz geçişini engeller, seçici geçirgenliği sağlar.</li>
+                        <li><strong>Suyun yükselme mekanizmaları:</strong>
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li><strong>Kılcallık:</strong> Adhezyon kuvvetiyle ince borularda su yükselmesi. Tek başına yetersiz.</li>
+                                <li><strong>Kök basıncı:</strong> Kökteki osmotik basınç artışı ile suyun yukarı itilmesi. <strong>Gutasyon</strong> (hidatodlardan su damlaması) kök basıncıyla olur.</li>
+                                <li><strong>Kohezyon-gerilim teorisi:</strong> En önemli mekanizma. Su moleküllerinin birbirine yapışması (kohezyon), ksilem çeperine yapışması (adhezyon) ve yapraklarda terlemeyle oluşan emme kuvveti sayesinde su sütunu yukarı çekilir.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> 3. STOMALAR VE TERLEME</div>
+                    <ul class="summary-list">
+                        <li><strong>Stoma:</strong> Gaz alışverişi ve terlemeyi düzenleyen yapı. İki bekçi hücresi ve aralarındaki açıklıktan oluşur.</li>
+                        <li>Bekçi hücreleri <strong>kloroplast</strong> içerir, komşu epidermis hücreleri içermez.</li>
+                        <li><strong>Stoma açılması:</strong>
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li>Işıkla K⁺ iyonları bekçi hücrelerine pompalanır.</li>
+                                <li>Osmotik basınç artar, komşu hücrelerden su alınır.</li>
+                                <li>Turgor basıncı artar, stoma açılır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Stoma kapanması:</strong> K⁺ iyonlarının aktif taşıma ile dışarı atılması, osmotik basınç düşmesi, turgor kaybı.</li>
+                        <li><strong>Terleme:</strong> Yapraklardan su buharı kaybı. Suyun taşınmasına yardım eder, bitkiyi serinletir.</li>
+                        <li><strong>Terleme hızını etkileyen faktörler:</strong> Sıcaklık (artarsa artar), nem (artarsa azalır), rüzgar (artarsa artar), ışık şiddeti (artarsa artar).</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-exchange-alt"></i> 4. FOTOSENTEZ ÜRÜNLERİNİN TAŞINMASI</div>
+                    <ul class="summary-list">
+                        <li>Fotosentez ürünleri (şekerler, aminoasitler vb.) <strong>floem (soymuk boruları)</strong> ile taşınır.</li>
+                        <li>Taşınma <strong>çift yönlüdür</strong> (yapraklardan köklere, köklerden yapraklara). Floemde taşınma ksileme göre daha yavaştır.</li>
+                        <li><strong>Kaynak hücreler:</strong> Fotosentez yapan olgun yapraklar gibi organik madde üreten organlar.</li>
+                        <li><strong>Havuz hücreler:</strong> Kök, meyve, genç yapraklar gibi organik madde kullanan veya depolayan organlar.</li>
+                        <li><strong>Basınç-akış teorisi:</strong> Floemde taşınmayı açıklar:
+                            <ol style="margin-left: 25px;">
+                                <li>Kaynak hücrelerden floeme şeker aktif taşımayla yüklenir → ozmotik basınç artar.</li>
+                                <li>Ksilemden floeme su osmozla girer → hidrostatik basınç oluşur.</li>
+                                <li>Floem özsuyu basınçla havuz hücrelere doğru akar.</li>
+                                <li>Havuz hücrelerde şekerler alınır → ozmotik basınç düşer → su ksileme geri döner.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flower"></i> 5. ÇİÇEKLİ BİTKİLERDE EŞEYLİ ÜREME</div>
+                    <ul class="summary-list">
+                        <li><strong>Çiçek yapısı:</strong> Dıştan içe: çanak yaprak (koruma), taç yaprak (renk, tozlaştırıcı çekme), erkek organ (polen üretimi), dişi organ (yumurta üretimi).</li>
+                        <li><strong>Tam çiçek:</strong> Dört yapı da var. <strong>Eksik çiçek:</strong> Bir veya daha fazla yapı eksik.</li>
+                        <li><strong>Erkek üreme hücresi (polen) oluşumu:</strong>
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li>Polen ana hücresi (2n) → mayoz → 4 mikrospor (n)</li>
+                                <li>Mikrospor → mitoz → iki çekirdekli polen (vejetatif ve generatif çekirdek)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dişi üreme hücresi oluşumu:</strong>
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li>Megaspor ana hücresi (2n) → mayoz → 4 megaspor (n)</li>
+                                <li>3'ü erir, 1 megaspor → 3 mitoz → 8 çekirdekli embriyo kesesi</li>
+                                <li>Embriyo kesesinde: 1 yumurta, 2 sinerjit, 3 antipod, 2 polar çekirdek (birleşince 2n)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-bee"></i> 6. TOZLAŞMA VE DÖLLENME</div>
+                    <ul class="summary-list">
+                        <li><strong>Tozlaşma:</strong> Polenin erkek organdan dişi organ tepecikine taşınması.</li>
+                        <li><strong>Kendi kendine tozlaşma:</strong> Aynı çiçek veya aynı bitki üzerinde. Genetik çeşitlilik az.</li>
+                        <li><strong>Çapraz tozlaşma:</strong> Aynı tür farklı bitkiler arasında. Genetik çeşitlilik fazla.</li>
+                        <li><strong>Tozlaştırıcılar:</strong> Rüzgar, su, böcekler (arı, kelebek), kuşlar, yarasalar.</li>
+                        <li><strong>Çift döllenme:</strong> Sadece kapalı tohumlularda görülür:
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li>1. sperm (n) + yumurta (n) → zigot (2n) → embriyo</li>
+                                <li>2. sperm (n) + polar çekirdekler (2n) → endosperm (3n) → besi doku</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> 7. TOHUM, MEYVE OLUŞUMU VE ÇİMLENME</div>
+                    <ul class="summary-list">
+                        <li><strong>Tohum yapısı:</strong> Tohum kabuğu (koruma), endosperm (besi doku, 3n), embriyo (2n).</li>
+                        <li><strong>Embriyo:</strong> Embriyonik kök (radikula), embriyonik gövde (plumula), çenek (kotiledon).</li>
+                        <li><strong>Meyve:</strong> Döllenmiş yumurtalığın gelişmesiyle oluşur. Tohumları korur ve yayılmasını sağlar.</li>
+                        <li><strong>Meyve çeşitleri:</strong>
+                            <ul style="margin-left: 25px; list-style-type: circle;">
+                                <li><strong>Basit meyve:</strong> Tek yumurtalıktan (üzüm, kiraz)</li>
+                                <li><strong>Bileşik meyve:</strong> Çok sayıda çiçeğin yumurtalıklarının kaynaşması (incir, ananas)</li>
+                                <li><strong>Kümeli meyve:</strong> Tek çiçeğin çok sayıda yumurtalığından (çilek, dut)</li>
+                                <li><strong>Yalancı meyve:</strong> Yumurtalık dışındaki çiçek kısımlarının da gelişmesiyle (elma, armut)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Çimlenme:</strong> Tohumun uygun ortamda genç bitkiyi oluşturması.</li>
+                        <li><strong>Çimlenme için gerekli faktörler:</strong> Su (metabolizmayı başlatır), uygun sıcaklık (enzim aktivitesi), oksijen (solunum için), karanlık (bazı türlerde).</li>
+                        <li><strong>Dormansi:</strong> Tohumun uygun olmayan şartlarda çimlenmeden bekleme hali. Tohum kabuğu kalınlığı, hormonlar etkilidir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Bitki Biyolojisi Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Fasulye, bezelye gibi baklagilleri yetiştiren bir çiftçi, bu bitkilerin diğer bitkilere göre daha az azotlu gübreye ihtiyaç duyduğunu fark ediyor. Bu durumun nedeni nedir ve baklagiller azotu nasıl elde eder?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Baklagillerin köklerinde özel yapılar bulunur. Bu yapılar havadaki serbest azotu bitkinin kullanabileceği forma dönüştürür.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Baklagillerin köklerinde Rhizobium bakterileri ile simbiyotik ilişki sonucu oluşan nodüller vardır. Bu bakteriler atmosfer azotunu (N₂) bitkinin kullanabileceği amonyum (NH₄⁺) formuna dönüştürür.</p>
+                        <p><strong>Açıklama:</strong> Baklagiller, Rhizobium cinsi bakterilerle mutualistik (karşılıklı yarar) bir ilişki kurar. Bakteriler kök hücrelerine yerleşerek nodül oluşturur. Nodüllerdeki bakteriler, nitrojenaz enzimi ile atmosferdeki serbest N₂'yi NH₃'e (amonyak) indirger. Amonyak da bitki tarafından amino asit ve diğer azotlu bileşiklere dönüştürülür. Karşılığında bitki, bakterilere fotosentez ürünleri (şeker) sağlar. Bu simbiyoz sayede baklagiller azotça fakir topraklarda bile gelişebilir ve toprağa azot kazandırır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Sabah erken saatlerde çimenlerin üzerinde veya bazı bitkilerin yaprak kenarlarında su damlacıkları görülür. Bu damlacıklar çiy değildir. Bu olayın adı nedir ve nasıl oluşur?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bitkiler gece boyunca su almaya devam eder ancak terleyemez. Biriken suyun dışarı atılması gerekir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Bu olaya <strong>gutasyon</strong> denir. Kök basıncı etkisiyle ksilemde yukarı itilen su, yaprak kenarlarındaki hidatod adlı yapılardan damlalar halinde dışarı atılır.</p>
+                        <p><strong>Açıklama:</strong> Gece veya sabahın erken saatlerinde hava nemi yüksek olduğu için terleme azalır veya durur. Ancak kökler osmozla su almaya devam eder. Kökte biriken su, kök basıncı ile ksileme itilir. Ksilemde yukarı çıkan su, yaprak kenarlarındaki sürekli açık olan hidatodlardan (su gözenekleri) damlalar halinde dışarı atılır. Bu olay terlemeden farklıdır; terleme stomalardan su buharı çıkışıdır, gutasyon ise sıvı su damlacıklarının çıkışıdır. Genellikle nemli ortamlarda, hızlı büyüyen bitkilerde görülür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Orman içinde yaşayan bir bitki ile açık alanda yaşayan aynı tür bitki karşılaştırıldığında, ormandaki bitkinin yapraklarında daha az stoma bulunuyor. Bu farkın nedeni nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Orman ortamı daha nemli ve gölgelidir. Açık alan ise daha kuru ve güneşlidir.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Orman ortamı nemli olduğu için bitkinin aşırı su kaybetmesi riski yoktur. Açık alandaki bitki ise kuraklık riskine karşı daha az stoma ile su kaybını sınırlamaya çalışır.</p>
+                        <p><strong>Açıklama:</strong> Stoma sayısı ve dağılımı bitkinin yaşadığı ortama adaptasyonudur. Orman gibi nemli ortamlarda hava nem oranı yüksektir, bu nedenle bitki terlemeyle fazla su kaybetmez. Daha fazla stoma ile daha fazla gaz alışverişi (CO₂ alımı, O₂ çıkışı) yaparak fotosentezi artırabilir. Açık alanlarda (kurak, rüzgarlı, güneşli) ise aşırı terleme bitkiyi susuz bırakabilir ve öldürebilir. Bu nedenle açık alan bitkileri su kaybını azaltmak için daha az stoma bulundurur, stomalarını yaprak alt yüzeyine veya girintilere yerleştirir, hatta yaprak yüzeyini mumsu tabaka (kütikula) ile kaplar. Bu adaptasyon bitkinin hayatta kalmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Bir çiftçi, ağaçlarındaki meyvelerin küçük ve bol sayıda olduğunu görüyor. Daha az sayıda ama daha iri meyve elde etmek için bazı genç meyveleri koparıyor. Bu işlem neden işe yarar?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bitkiler fotosentez ürünlerini (şeker) "havuz" hücrelere taşır. Havuz sayısı azalırsa, her havuz daha fazla şeker alır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Meyveler şeker havuzlarıdır. Havuz sayısı azaltılınca, kalan her meyve daha fazla şeker (fotosentez ürünü) alır ve daha iri olur.</p>
+                        <p><strong>Açıklama:</strong> Bitkilerde floem yoluyla taşınan organik maddeler (şekerler) basınç-akış teorisine göre hareket eder. Kaynak hücrelerden (yapraklar) üretilen şekerler, en yakın ve en güçlü şeker çekimine sahip havuzlara (meyveler, büyüyen uçlar, kökler) taşınır. Çok sayıda meyve (havuz) varsa, şekerler bunlara paylaştırılır ve her biri az miktarda şeker alır, küçük kalır. Bazı genç meyveler koparıldığında havuz sayısı azalır, kalan meyveler daha fazla şeker çeker, daha hızlı büyür ve irileşir. Bu uygulama tarımda "seyreltme" olarak bilinir ve kaliteli meyve elde etmek için kullanılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Çapraz tozlaşma, kendi kendine tozlaşmaya göre neden daha avantajlıdır? Çiçekli bitkiler çapraz tozlaşmayı teşvik etmek için hangi adaptasyonları geliştirmiştir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Genetik çeşitlilik, türün değişen çevre şartlarına uyum sağlamasını kolaylaştırır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Çapraz tozlaşma, genetik çeşitliliği artırarak populasyonun hastalıklara, zararlılara ve çevre değişikliklerine karşı daha dayanıklı olmasını sağlar. Bitkiler çapraz tozlaşmayı teşvik etmek için erkek ve dişi organların farklı zamanlarda olgunlaşması, erkek ve dişi çiçeklerin farklı bitkilerde bulunması, kendine tozlaşmayı engelleyen kimyasal bariyerler gibi adaptasyonlar geliştirmiştir.</p>
+                        <p><strong>Açıklama:</strong> Kendi kendine tozlaşmada, aynı bitkinin genetik materyali birleştiği için genetik çeşitlilik artmaz. Bu durum populasyonu homojen yapar; bir hastalık veya çevresel stres tüm bireyleri aynı şekilde etkileyebilir. Çapraz tozlaşmada ise iki farklı bireyin genleri birleşir, yeni gen kombinasyonları oluşur, populasyon heterojen olur. Bu genetik çeşitlilik, doğal seleksiyonda avantaj sağlar. Bitkiler çapraz tozlaşmayı teşvik etmek için:
+                        <ol>
+                            <li><strong>Dikogami:</strong> Erkek ve dişi organların farklı zamanlarda olgunlaşması.</li>
+                            <li><strong>İki evciklik (Dioecy):</strong> Erkek ve dişi çiçeklerin ayrı bitkilerde bulunması.</li>
+                            <li><strong>Yapısal engeller:</strong> Erkek ve dişi organların farklı konumlarda olması.</li>
+                            <li><strong>Kendine kısırlık:</strong> Kendi polenlerinin dişi organda çimlenmesini engelleyen kimyasallar.</li>
+                            <li><strong>Renk, koku, nektar:</strong> Tozlaştırıcıları çekmek için.</li>
+                        </ol>
+                        Böylece gen havuzu zenginleşir ve türün devamlılığı güçlenir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Çift döllenme olayı sadece kapalı tohumlu bitkilere özgüdür. Bu olayın bitki için avantajı nedir? Endosperm (besi doku) neden triploit (3n) kromozomludur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Çift döllenmenin avantajı, endospermin (besi dokunun) sadece döllenme gerçekleştiğinde oluşmasıdır. Bu sayede besin kaynağı boş yere harcanmaz. Endosperm, bir sperm (n) ile iki polar çekirdeğin (2n) birleşmesiyle oluştuğu için triploittir (3n).</p>
+                        <p><strong>Açıklama:</strong> Açık tohumlularda (kozalaklılar) endosperm, döllenmeden önce dişi gametofit dokusundan (n) oluşur ve döllenme olmasa da besin üretmeye devam eder, bu enerji israfıdır. Kapalı tohumlularda ise endosperm, çift döllenme sonucu oluşur: bir sperm (n) + iki polar çekirdek (n+n=2n) → endosperm (3n). Bu mekanizmanın avantajları:
+                        <ol>
+                            <li><strong>Enerji tasarrufu:</strong> Endosperm sadece döllenme (tohum oluşumu garantisi) olduğunda gelişir. Döllenme olmazsa besin dokusu oluşmaz, kaynak israfı olmaz.</li>
+                            <li><strong>Embriyo ile uyum:</strong> Endosperm ve embriyo aynı anda (çift döllenme ile) oluştuğu için, embriyonun gelişim ihtiyaçlarına göre endosperm gelişimini düzenleyebilir.</li>
+                            <li><strong>Genetik kontrol:</strong> Endosperm hem maternal (2n polar çekirdek) hem paternal (1n sperm) genetik materyal taşır. Bu, gen ifadesinde esneklik sağlayabilir.</li>
+                        </ol>
+                        Triploit endosperm, hızlı hücre bölünmesi ve besin depolama için avantajlı olabilir. Endosperm, çimlenme sırasında embriyoya besin sağlar, daha sonra (fasulye gibi bitkilerde) tükenir veya (mısır gibi bitkilerde) çimlenmeden sonra da kalır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Tohum kabuğu kalın olan bazı tohumlar (bazı ağaç tohumları, bazı çöl bitkileri) toprakta yıllarca çimlenmeden kalabilir. Bu durumun adı nedir ve bitkiye nasıl bir avantaj sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Bu duruma <strong>dormansi (uyku hali)</strong> denir. Tohumun uygun olmayan çevre şartlarında (kuraklık, soğuk vb.) çimlenmeyi ertelemesi, türün devamlılığı için hayati önem taşır.</p>
+                        <p><strong>Açıklama:</strong> Dormansi, tohumun metabolizmasının minimuma indiği bir bekletme durumudur. Sebepleri:
+                        <ol>
+                            <li><strong>Tohum kabuğunun fiziksel engeli:</strong> Kalın, sert kabuk su ve oksijen geçişini engeller.</li>
+                            <li><strong>Kimyasal engeller:</strong> Kabukta veya tohumda bulunan inhibitör maddeler çimlenmeyi engeller.</li>
+                            <li><strong>Embriyo olgunluğu:</strong> Embriyo tam olgunlaşmamış olabilir.</li>
+                            <li><strong>Fizyolojik mekanizmalar:</strong> Belirli sıcaklık, ışık veya soğuklama gereksinimleri.</li>
+                        </ol>
+                        <strong>Avantajları:</strong>
+                        <ol>
+                            <li><strong>Zamanlama:</strong> Tohum, en uygun mevsimde (ilkbahar yağmurlarından sonra) çimlenir.</li>
+                            <li><strong>Risk dağılımı:</strong> Tüm tohumlar aynı yıl çimlenmez; bazıları gelecek yıllara "yedek" kalır. Böylece bir yıldaki olumsuz koşullar (don, kuraklık) tüm populasyonu yok etmez.</li>
+                            <li><strong>Yayılma şansı:</strong> Tohumlar farklı yıllarda çimlenerek populasyonun geniş bir alana yayılmasına katkı sağlar.</li>
+                            <li><strong>Ortama uyum:</strong> Dormansi, tohumun çevre şartlarını "hissetmesini" ve en uygun anı beklemesini sağlar.</li>
+                        </ol>
+                        Çiftçiler ve bahçıvanlar, dormansiyi kırmak için tohumları soğukta katlama (stratifikasyon), kabuğu çizme (skarifikasyon) veya suda bekletme gibi yöntemler kullanır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Suyun ksilemde 100 metreden daha yükseğe çıkabilmesini sağlayan kohezyon-gerilim teorisini açıklayınız. Su sütunu neden kopmaz?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Kohezyon-gerilim teorisine göre, yapraklarda terlemeyle su kaybı oluşunca ksilemde bir gerilim (negatif basınç) oluşur. Su molekülleri arasındaki hidrojen bağları (kohezyon) ve su moleküllerinin ksilem çeperine yapışması (adhezyon) sayesinde su sütunu kopmadan yukarı çekilir.</p>
+                        <p><strong>Açıklama:</strong> Bu teori üç temel kuvvete dayanır:
+                        <ol>
+                            <li><strong>Terleme-çekim kuvveti:</strong> Yapraklardaki stomalardan su buharlaşınca, mezofil hücrelerinin ozmotik basıncı artar, komşu hücrelerden su çeker. Bu zincirleme reaksiyon ksileme kadar ulaşır ve ksilemde bir "gerilim" (negatif basınç veya emme kuvveti) oluşturur.</li>
+                            <li><strong>Kohezyon (iç yapışma):</strong> Su molekülleri arasındaki hidrojen bağları, molekülleri bir arada tutar. Bu, suyun kopmadan uzun bir sütun halinde kalmasını sağlar. Suyun kohezyon kuvveti yüksektir.</li>
+                            <li><strong>Adhezyon (dış yapışma):</strong> Su moleküllerinin ksilem çeperine (selüloz liflerine) yapışması. Bu, su sütununun çökmemesine ve kılcal etkiye katkı sağlar.</li>
+                        </ol>
+                        Bu üç kuvvet bir arada çalışır: Terleme ile üstten bir emme kuvveti oluşur, bu kuvvet kohezyonla tüm su sütununu aşağıdan yukarı çeker, adhezyon da sütunun yerinde kalmasına yardım eder. Su sütununun kopmamasının nedeni, hidrojen bağlarının kopması için gereken enerjinin, terleme ile oluşan gerilimden daha büyük olmasıdır. Su sütununda hava kabarcığı (emboli) oluşursa, su akışı o ksilem borusunda durur, ancak diğer borularla devam eder.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Bazı bitki türlerinde (örneğin muz, çekirdeksiz üzüm) meyve oluşumu için döllenme gerekmez. Bu nasıl mümkün olur? Bu tür meyvelere ne ad verilir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Bu olaya <strong>partenokarpi</strong> (döllenmesiz meyve tutumu) denir. Meyve oluşumu için döllenme gerekmez, ancak genellikle tozlaşma uyarısı gerekebilir. Oluşan meyveler genellikle tohumsuzdur (çekirdeksiz).</p>
+                        <p><strong>Açıklama:</strong> Normalde meyve, döllenmiş yumurtalığın gelişmesiyle oluşur. Partenokarpide ise yumurtalık, döllenme olmadan da gelişimini sürdürür ve meyveye dönüşür. İki türü vardır:
+                        <ol>
+                            <li><strong>Doğal partenokarpi:</strong> Bitki genetik olarak döllenme olmadan meyve oluşturma yeteneğine sahiptir (muz, çekirdeksiz üzüm, bazı portakal çeşitleri).</li>
+                            <li><strong>Uyarılmış (indüklenmiş) partenokarpi:</strong> Tozlaşma (polinin tepeciğe gelmesi) veya hormon uygulamaları (giberellin, oksin) ile meyve oluşumu tetiklenir. Domates, patlıcan gibi sebzelerde seralarda hormon kullanılarak yapılır.</li>
+                        </ol>
+                        <strong>Mekanizma:</strong> Tozlaşma veya hormonlar, yumurtalık dokusunda büyüme hormonlarının (özellikle oksin ve giberellin) sentezini tetikler. Bu hormonlar hücre bölünmesini ve genişlemesini uyararak meyve gelişimini başlatır.
+                        <br><strong>Avantajı:</strong> Tohumsuz meyveler tüketici tarafından tercih edilir. Ayrıca, tozlaştırıcı (arı vb.) yokluğunda veya olumsuz hava şartlarında bile meyve verimi garanti edilebilir.
+                        <br><strong>Dezavantajı:</strong> Tohum olmadığı için bitki eşeyli çoğalamaz, vejetatif yollarla (çelik, doku kültürü) çoğaltılır. Genetik çeşitlilik azalır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Mineral alımı genellikle aktif taşıma ile gerçekleşir. Neden mineraller difüzyonla değil de aktif taşımayla alınır? Bu süreçte enerji nasıl sağlanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Çünkü minerallerin topraktaki derişimi, kök emici tüylerindeki derişiminden genellikle daha düşüktür. Bu nedenle mineraller derişim gradientine karşı (düşük derişimden yüksek derişime doğru) taşınmak zorundadır, bu da aktif taşıma gerektirir. Enerji, emici tüylerdeki mitokondrilerde üretilen ATP'den sağlanır.</p>
+                        <p><strong>Açıklama:</strong> Bitki hücreleri, hayati fonksiyonlar için belirli minerallere (K⁺, Ca²⁺, NO₃⁻, PO₄³⁻ vb.) ihtiyaç duyar. Toprak çözeltisinde bu iyonların derişimi genellikle hücre içine göre düşüktür.
+                        <br><strong>Difüzyon</strong>, maddelerin yüksek derişimden düşük derişime doğru pasif hareketidir. Eğer mineraller difüzyonla alsaydı, hücre içindeki mineraller toprağa doğru diffüze olurdu (kaybedilirdi).
+                        <br><strong>Aktif taşıma</strong>, maddelerin düşük derişimden yüksek derişime doğru, enerji (ATP) harcanarak taşınmasıdır. Kök emici tüylerinin membranlarında bulunan <strong>iyon pompaları</strong> (proton pompası H⁺-ATPaz gibi) ve <strong>taşıyıcı proteinler</strong> bu işi yapar.
+                        <br><strong>Süreç:</strong>
+                        <ol>
+                            <li>Proton pompası (H⁺-ATPaz) ATP harcayarak H⁺ iyonlarını hücre dışına pompalar. Bu, hücre dışında pozitif yük ve asitlik (düşük pH) oluşturur.</li>
+                            <li>Oluşan elektrokimyasal gradient (H⁺ gradienti), diğer iyonların (NO₃⁻, K⁺ vb.) taşınması için itici güç olarak kullanılır.</li>
+                            <li>Örneğin, NO₃⁻ iyonları, H⁺ ile birlikte taşıyıcı proteinler aracılığıyla (kotransport) hücre içine alınır. H⁺ gradientine karşı hareket eden NO₃⁻ için enerji dolaylı olarak H⁺ pompasından sağlanmış olur.</li>
+                        </ol>
+                        Bu aktif taşıma sayesinde bitki, topraktaki düşük mineral derişimine rağmen ihtiyaç duyduğu mineralleri yüksek derişimde hücre içinde tutabilir. Enerji kaynağı olan ATP, emici tüylerdeki mitokondrilerde oksijenli solunumla üretilir. Bu nedenle köklerin yeterli oksijen alması (iyi havalanan toprak) mineral alımı için kritiktir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Toprağa aşırı gübre (özellikle inorganik gübre) verilmesi neden tohum çimlenmesini engelleyebilir? Bu durum hangi mekanizma ile gerçekleşir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Aşırı gübre, toprak çözeltisinin ozmotik basıncını artırır. Tohumun su alabilmesi için tohum içi ozmotik basıncın toprak ozmotik basıncından yüksek olması gerekir. Toprak ozmotik basıncı çok yükselirse, tohum su alamaz ve çimlenme gerçekleşmez.</p>
+                        <p><strong>Açıklama:</strong> Tohum çimlenmesinin ilk ve en kritik adımı <strong>su alımıdır</strong> (imbibisyon). Tohum kuru haldeyken (%5-15 su içerir) metabolizması minimumdur. Su alınınca:
+                        <ol>
+                            <li>Hücreler şişer, tohum kabuğu çatlar.</li>
+                            <li>Enzimler aktifleşir, depo besinler sindirilir.</li>
+                            <li>Solunum hızlanır, ATP üretilir.</li>
+                            <li>Hücre bölünmesi ve embriyo büyümesi başlar.</li>
+                        </ol>
+                        Suyun tohum tarafından alınması <strong>osmoz</strong> ile olur. Osmozda su, düşük ozmotik basınçlı ortamdan yüksek ozmotik basınçlı ortama doğru geçer. Normalde tohum içi ozmotik basıncı topraktakinden yüksektir, bu yüzden su tohum içine girer.
+                        <br><strong>Problem:</strong> Aşırı miktarda inorganik gübre (özellikle suda hızlı çözünen tuzlar: NH₄⁺, NO₃⁻, K⁺ iyonları) toprak çözeltisindeki iyon derişimini artırır. Bu da toprak çözeltisinin <strong>ozmotik basıncını yükseltir</strong>. Toprak ozmotik basıncı tohumunkini aşarsa, suyun yönü tersine döner: tohumdan toprağa doğru su kaybı olur (plazmoliz benzeri). Tohum su alamaz, hatta su kaybederek kuruyabilir. Bu duruma <strong>fizyolojik kuraklık</strong> da denir; toprakta su var ama bitki/tohum onu alamaz.
+                        <br><strong>Sonuç:</strong> Çimlenme olmaz veya çok zayıf olur. Genç fideler de benzer şekilde zarar görür. Bu nedenle gübrelemede dozaj çok önemlidir. Organik gübreler genellikle yavaş çözündüğü ve tuz içeriği düşük olduğu için bu risk daha azdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Tek çenekli ve çift çenekli bitkilerin çimlenme süreçleri nasıl farklılık gösterir? Bu farklılıklar neden kaynaklanır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Çift çenekli bitkilerde (fasulye) çenekler toprak üstüne çıkar ve fotosentez yapar. Tek çenekli bitkilerde (mısır) ise çenek toprak altında kalır, endosperm toprak altında tükenir veya kalır, embriyonik gövde doğrudan toprak üstüne çıkar.</p>
+                        <p><strong>Açıklama:</strong> Bu farklılıklar, embriyo yapısı ve besin deposunun konumundan kaynaklanır.
+                        <br><strong>Çift çenekliler (Fasulye örneği):</strong>
+                        <ol>
+                            <li>Tohum iki büyük çenek (kotiledon) içerir. Çenekler, endospermi tüketmiş ve besinleri depolamıştır (endospermsiz tohum).</li>
+                            <li>Çimlenme sırasında hipokotil (kökçük ile çenekler arası) uzar ve çenekleri toprak üstüne iter.</li>
+                            <li>Toprak üstüne çıkan çenekler yeşil renk alır (klorofil sentezi) ve fotosentez yapmaya başlar. Bu, genç fideye ek besin kaynağı sağlar.</li>
+                            <li>Çenekler bir süre sonra besinlerini tüketir ve dökülür, gerçek yapraklar gelişir.</li>
+                        </ol>
+                        <br><strong>Tek çenekliler (Mısır örneği):</strong>
+                        <ol>
+                            <li>Tohumda tek çenek (skutellum) vardır. Besinler çenekte değil, ayrı bir endosperm dokusunda depolanmıştır.</li>
+                            <li>Çimlenmede koleoptil (embriyonik gövdeyi saran koruyucu kılıf) uzar ve toprak yüzeyine çıkar.</li>
+                            <li>Çenek (skutellum) toprak altında kalır. Endosperm de toprak altında kalır ve çenek enzim salgılayarak endospermdeki besinleri sindirir, embriyoya iletir.</li>
+                            <li>Koleoptil toprak üstüne çıktığında, ilk gerçek yaprak koleoptili yararak çıkar.</li>
+                            <li>Çenekler toprak üstüne çıkmaz, fotosentez yapmaz.</li>
+                        </ol>
+                        <strong>Neden farklı?</strong> Bu farklılıklar evrimsel adaptasyonlardır. Çift çeneklilerde çeneklerin toprak üstüne çıkması, genç bitkinin daha erken fotosentez yaparak bağımsız olmasını sağlar. Tek çeneklilerde ise besin deposu (endosperm) daha büyük ve korunaklıdır, embriyo daha hızlı büyüyebilir. Her iki strateji de türün yaşadığı ortama uyum sağlamıştır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Stomaların açılıp kapanmasında bekçi hücrelerindeki K⁺ iyonları kritik rol oynar. K⁺ iyonlarının hareketi nasıl düzenlenir ve bu hareket stoma açıklığını nasıl etkiler?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Işık varlığında, bekçi hücrelerindeki proton pompaları aktifleşir, H⁺ dışarı atılır, hücre dışı pozitif yük artar. Bu elektrokimyasal gradient, K⁺ iyonlarının komşu hücrelerden bekçi hücrelerine girişini sağlar. K⁺ artışı osmotik basıncı artırır, su girişi olur, turgor artar, stoma açılır. Karanlıkta veya su stresinde tersi olur, K⁺ dışarı çıkar, su kaybı, turgor kaybı, stoma kapanır.</p>
+                        <p><strong>Detaylı Açıklama:</strong>
+                        <br><strong>A) Stoma Açılması (Işıkta):</strong>
+                        <ol>
+                            <li>Işık, bekçi hücrelerindeki kloroplastlarda fotosentezi başlatır.</li>
+                            <li>Fotosentezle ATP üretilir, şeker (glikoz) sentezi artar.</li>
+                            <li>ATP, plazma membranındaki H⁺-ATPaz proton pompasını çalıştırır. Pompa, H⁺ iyonlarını aktif taşımayla hücre dışına atar.</li>
+                            <li>Hücre dışında H⁺ birikimiyle pozitif yük ve asitlik artar (pH düşer), hücre içi negatifleşir.</li>
+                            <li>Oluşan elektrokimyasal gradient (dışarı pozitif, içeri negatif), potasyum kanallarını açar.</li>
+                            <li>K⁺ iyonları komşu epidermis hücrelerinden bekçi hücrelerine diffüze olur (pasif taşıma, elektrokimyasal gradiyente göre).</li>
+                            <li>Bekçi hücrelerinde K⁺ ve glikoz derişimi artar → osmotik basınç artar.</li>
+                            <li>Yüksek osmotik basınç, komşu hücrelerden suyun osmozla bekçi hücrelerine girmesini sağlar.</li>
+                            <li>Su girişi ile turgor basıncı artar.</li>
+                            <li>Bekçi hücrelerinin iç çeperi kalın, dış çeperi ince olduğu için, turgor artınca hücreler dışa doğru bombeleşir, stoma açıklığı genişler.</li>
+                        </ol>
+                        <br><strong>B) Stoma Kapanması (Karanlıkta veya Su Stresinde):</strong>
+                        <ol>
+                            <li>Karanlıkta fotosentez durur, ATP ve şeker üretimi azalır.</li>
+                            <li>H⁺ pompası yavaşlar veya durur.</li>
+                            <li>Bekçi hücrelerindeki K⁺ iyonları, aktif taşımayla dışarı atılır (K⁺ kanalları açılır).</li>
+                            <li>K⁺ kaybı ile osmotik basınç düşer.</li>
+                            <li>Bekçi hücrelerinden komşu hücrelere su çıkışı olur (osmoz).</li>
+                            <li>Turgor basıncı azalır.</li>
+                            <li>Bekçi hücreleri gevşer, stoma açıklığı kapanır.</li>
+                        </ol>
+                        Bu mekanizma, bitkinin su dengesini ve gaz alışverişini optimize etmesini sağlar. Ayrıca absisik asit (ABA) hormonu su stresinde stoma kapanmasını tetikler.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Meyvelerin renk, koku, tat gibi özellikleri tohumların yayılımı ile nasıl ilişkilidir? Hayvanlar meyve yiyerek tohumların yayılmasına nasıl katkı sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Meyvelerin çekici renk, koku ve tatları, hayvanları kendine çekerek tohumların hayvanlar tarafından yenmesini ve uzak mesafelere taşınmasını sağlar. Bu, bitkinin yayılım alanını genişletir.</p>
+                        <p><strong>Detaylı Açıklama:</strong> Tohum yayılımı (dispersiyon) bitkiler için hayati önem taşır. Yavru bitkilerin ana bitkinin yakınında yoğunlaşması rekabeti artırır, hastalık ve zararlı riskini yükseltir. Yayılım, türün yeni alanlara kolonize olmasını sağlar.
+                        <br><strong>Hayvanlarla yayılım adaptasyonları:</strong>
+                        <ol>
+                            <li><strong>Yenilebilir meyve eti:</strong> Meyvenin etli, sulu, besleyici kısmı hayvanlar için ödüldür. Hayvan meyveyi yer, tohumları sindirmeden dışkıyla uzak bir yere bırakır. Dışkı aynı zamanda gübre görevi görür (örnek: kuşlar, memeliler).</li>
+                            <li><strong>Çekici renkler:</strong> Olgunlaşan meyvelerin renk değiştirmesi (yeşilden kırmızı, sarı, mora) hayvanlara "yenmeye hazır" sinyali verir. Kuşlar kırmızıyı, memeliler sarı/turuncuyu daha iyi görür.</li>
+                            <li><strong>Koku:</strong> Özellikle gece aktif hayvanlar (yarasa, bazı memeliler) için koku önemli bir çekicidir.</li>
+                            <li><strong>Tatlı tat:</strong> Şeker içeriği hayvanlar için enerji kaynağıdır.</li>
+                            <li><strong>Tohum koruması:</strong> Tohumlar genellikle sert kabukla korunur, sindirilmeden geçer. Bazı tohumların çimlenmesi için mide asidi veya sindirim enzimleriyle muamele gerekir (skarisikasyon).</li>
+                            <li><strong>Yapışkanlık veya kanca:</strong> Bazı meyveler (pitrak, dulavrat otu) hayvan kürküne veya insan giysisine yapışarak pasif taşınır.</li>
+                        </ol>
+                        <br><strong>Örnekler:</strong>
+                        <ul>
+                            <li><strong>Kuşlar:</strong> Kiraz, üzüm, dut gibi küçük, renkli, yumuşak meyveleri yer, tohumları uzaklara taşır.</li>
+                            <li><strong>Memeliler:</strong> Elma, armut, böğürtlen gibi meyveler. Ayı, domuz, maymun gibi hayvanlar.</li>
+                            <li><strong>Yarasalar:</strong> Gece aktif, büyük meyveleri (mango, guava) taşır, tohumları dışkıyla bırakır.</li>
+                            <li><strong>Karıncalar:</strong> Bazı tohumların üzerinde yağlı elaiyozom denilen yapılar vardır, karıncalar bunları yuvalarına taşır, tohumu yer, elaiyozomu yavrularına besin olarak verir.</li>
+                        </ul>
+                        Bu karşılıklı ilişki (mutualizm) bitkinin yayılmasını, hayvanın da beslenmesini sağlar. Meyve özellikleri, hedef hayvan türüne göre evrimleşmiştir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Basınç-akış teorisi floemde organik madde taşınmasını nasıl açıklar? Kaynak ve havuz hücreleri arasındaki basınç farkı nasıl oluşur ve korunur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevap Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Basınç-akış teorisine göre, kaynak hücrelerden floeme şeker yüklenmesiyle floemde ozmotik basınç artar, ksilemden su girer, hidrostatik basınç oluşur. Havuz hücrelerde şekerlerin boşaltılmasıyla ozmotik basınç düşer, su ksileme geri döner. Kaynak ve havuz arasındaki bu basınç farkı, floem özsuyunun akışını sağlar.</p>
+                        <p><strong>Detaylı Açıklama:</strong>
+                        <br><strong>1. Kaynakta (örneğin olgun yaprak):</strong>
+                        <ol>
+                            <li>Fotosentezle üretilen şekerler (sükroz) kaynak hücrelerde birikir.</li>
+                            <li>Şekerler, arkadaş hücreleri aracılığıyla <strong>floem kalburlu borularına aktif taşıma</strong> ile yüklenir. Bu, ATP harcanarak yapılır.</li>
+                            <li>Floemde şeker derişimi artınca <strong>ozmotik basınç</strong> yükselir.</li>
+                            <li>Yüksek ozmotik basınç, komşu ksilemden floeme <strong>su girişine</strong> (osmoz) neden olur.</li>
+                            <li>Su girişi, floemde <strong>hidrostatik basıncın</strong> artmasına yol açar.</li>
+                        </ol>
+                        <br><strong>2. Havuzda (örneğin kök veya büyüyen meyve):</strong>
+                        <ol>
+                            <li>Havuz hücrelerde şekerler, floemden <strong>aktif taşıma</strong> ile boşaltılır (şeker kullanılır veya nişasta gibi depo formuna çevrilir).</li>
+                            <li>Floemde şeker derişimi düşer, buna bağlı olarak <strong>ozmotik basınç</strong> azalır.</li>
+                            <li>Düşük ozmotik basınç, floemden ksileme <strong>su çıkışına</strong> neden olur.</li>
+                            <li>Su kaybı, havuzdaki floemde <strong>hidrostatik basıncın</strong> düşmesine yol açar.</li>
+                        </ol>
+                        <br><strong>3. Akış:</strong>
+                        Kaynaktaki yüksek hidrostatik basınç ile havuzdaki düşük hidrostatik basınç arasında bir <strong>basınç gradienti</strong> oluşur. Bu basınç farkı, floem özsuyunun (şeker, amino asit, hormon içeren) kaynaktan havuzlara doğru <strong>akmasını</strong> sağlar. Akış, floem borularının uçlarındaki kalburlu plakalardaki gözeneklerden geçerek olur.
+                        <br><strong>Önemli noktalar:</strong>
+                        <ul>
+                            <li>Taşınma sadece basınç farkıyla değil, aynı zamanda <strong>aktif yükleme ve boşaltma</strong> ile sürdürülür. ATP harcanır.</li>
+                            <li>Akış hızı yavaştır (saatte birkaç cm ila 1 m).</li>
+                            <li>Taşınma çift yönlü olabilir ama genellikle aynı floem borularında aynı anda zıt yönlü akış olmaz. Farklı floem demetleri farklı yönlerde taşıma yapabilir.</li>
+                            <li>Bu teori, floemdeki şeker taşınmasını açıklar, ancak diğer organik moleküllerin (amino asitler, hormonlar) taşınması da benzer şekilde olur.</li>
+                        </ul>
+                        Bu sistem, bitkinin enerji üreten bölgelerinden (yapraklar) enerji tüketen veya depolayan bölgelere (kökler, meyveler, büyüme uçları) besin dağıtımını verimli bir şekilde sağlar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Bitkilerde Madde Taşınması ve Eşeyli Üreme Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2c3e50; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Köklerde su alımı osmozla gerçekleşirken, mineral alımı neden genellikle aktif taşıma gerektirir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep-Sonuç İlişkisi:</strong> Bu farklılık, su ve minerallerin topraktaki derişimleri ile bitki hücrelerindeki derişimleri arasındaki gradient farkından kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Su için:</strong> Toprak suyu genellikle saf suya yakın ozmotik basınca sahiptir. Kök emici tüylerinin vakuollerinde ise şeker, organik asit ve iyonlar bulunur, bu da ozmotik basıncı yükseltir. Yani, emici tüylerdeki ozmotik basınç topraktakinden <strong>yüksektir</strong>. Osmoz prensibine göre su, düşük ozmotik basınçlı ortamdan (toprak) yüksek ozmotik basınçlı ortama (kök) doğru <strong>pasif olarak (enerji harcanmadan)</strong> hareket eder. Bu gradient her zaman kök lehine olduğu için su alımı osmozla kolayca gerçekleşir.</p>
+                            <p><strong>Mineraller için:</strong> Durum farklıdır. Bitki hücreleri, metabolizmaları için bazı mineralleri (K⁺, Ca²⁺, NO₃⁻, PO₄³⁻) çok yüksek derişimde tutmak zorundadır. Oysa toprak çözeltisinde bu iyonların derişimi genellikle hücre içindekinden <strong>daha düşüktür</strong>. Yani mineral iyonları için derişim gradienti hücre dışından içine doğru değil, tam tersidir (hücre içi > hücre dışı).</p>
+                            <p><strong>Sonuç:</strong> Minerallerin <strong>düşük derişimden yüksek derişime doğru</strong> (gradiente karşı) taşınması gerekir. Bu, enerji harcanmasını zorunlu kılar. İşte bu nedenle mineral alımı <strong>aktif taşıma</strong> ile olur. Aktif taşıma için gerekli ATP, emici tüylerdeki mitokondrilerde solunumla üretilir. Bu mantık, bitkinin neden iyi havalanan (oksijenli) toprağa ihtiyaç duyduğunu da açıklar: Kökler oksijensiz kalırsa solunum yapamaz, ATP üretemez, aktif taşıma durur ve mineral alımı azalır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Nodül (baklagil kökündeki yumru) oluşumu bitki için pahalı bir süreç olmasına rağmen neden evrimleşmiştir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Nodül oluşturmak, bakterilere barınak ve besin sağlamak anlamına gelir (enerji maliyeti). Ancak karşılığında elde edilen fayda, bu maliyeti kat kat aşar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Maliyet:</strong> Bitki, bakteriler için özel bir niş (nodül) oluşturur, onları besler (fotosentez ürünlerinden şeker verir). Bu, bitkinin enerji kaynaklarının bir kısmını bakterilere aktarması demektir.</p>
+                            <p><strong>Kazanç:</strong> Karşılığında, Rhizobium bakterileri bitkinin kesinlikle yapamayacağı bir şeyi yapar: <strong>Atmosferdeki serbest azotu (N₂) amonyağa (NH₃) indirger.</strong> N₂ gazı çok kararlı bir moleküldür, kırılması çok yüksek enerji gerektirir. Bitkiler ve hayvanlar N₂'yi doğrudan kullanamaz.</p>
+                            <p><strong>Azotun Önemi:</strong> Azot, proteinlerin, nükleik asitlerin (DNA, RNA), klorofilin ve birçok hormonun yapı taşıdır. Bitkiler azotu genellikle topraktan NO₃⁻ veya NH₄⁺ iyonları şeklinde alır. Ancak topraktaki azot genellikle sınırlayıcı besindir.</p>
+                            <p><strong>Sonuç:</strong> Nodül oluşturan baklagiller, topraktaki azot miktarından bağımsız olarak, havadaki sınırsız N₂ kaynağını kullanabilir. Bu, onlara büyük bir rekabet avantajı sağlar. Azotça fakir topraklarda diğer bitkiler gelişemezken, baklagiller gelişir. Hatta öldüklerinde köklerindeki azotlu bileşikler toprağa karışarak toprağı zenginleştirir (yeşil gübre). Bu nedenle tarımda ürün rotasyonunda baklagiller kullanılır. Evrimsel olarak, bu simbiyotik ilişkinin sağladığı hayatta kalma ve üreme başarısı, enerji maliyetini fazlasıyla karşılamıştır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Kılcallık etkisi suyun bitkide yükselmesinde tek başına neden yeterli değildir? Bitkiler neden daha kompleks mekanizmalar (kohezyon-gerilim) geliştirmiştir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Fizik yasaları kılcallık için bir yükseklik limiti belirler. Bitkilerin boyu bu limiti çoktan aşmıştır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kılcallık Nedir?</strong> Çok ince borularda (kılcal borular), adhezyon (sıvının boru çeperine yapışması) ve yüzey gerilimi etkisiyle sıvının yerçekimine karşı yükselmesidir. Boru ne kadar ince ve sıvının yüzey gerilimi ne kadar yüksekse, yükselme o kadar fazla olur.</p>
+                            <p><strong>Limit:</strong> Saf su için, 0.1 mm çapındaki bir cam kılcal boruda maksimum yükselme yaklaşık <strong>30 cm</strong> civarındadır. Bitkilerdeki ksilem borularının çapı genellikle 0.01-0.2 mm arasındadır. Teorik olarak kılcallıkla su belirli bir yüksekliğe çıkabilir.</p>
+                            <p><strong>Sorun:</strong> Birçok ağaç ve bitki (sekoya, okaliptüs) 30-100 metreye kadar boylanır. Kılcallık fiziksel olarak bu yüksekliğe su çıkaramaz. Ayrıca kılcallık hızı da düşüktür, bitkinin su ihtiyacını karşılayamaz.</p>
+                            <p><strong>Çözüm: Kohezyon-Gerilim Teorisi</strong>
+                            <br>Bitkiler, kılcallığın üstüne iki ek güç daha ekleyerek bu sorunu aşmıştır:
+                            <ol>
+                                <li><strong>Kohezyon (İç Yapışma):</strong> Su molekülleri arasındaki güçlü hidrojen bağları, suyu uzun, kopmaz bir sütun haline getirir. Bu sütun, bir ip gibi düşünülebilir.</li>
+                                <li><strong>Terleme-Çekim Kuvveti:</strong> Yapraklardaki terleme, su moleküllerini atmosfere kaybeder. Bu kayıp, su sütununun en üstünden bir çekme kuvveti oluşturur. Tıpkı bir bardaktan pipetle su içerken, ağızla yaptığımız emme kuvvetinin pipetteki suyu yukarı çekmesi gibi, terleme de ksilemdeki su sütununu yukarı çeker.</li>
+                            </ol>
+                            <strong>Sonuç:</strong> Kılcallık başlangıçta ve dar borularda küçük bir katkı sağlar, ancak asıl işi kohezyon (sütunu bir arada tutmak) ve terleme-çekim (sütunu yukarı çekmek) yapar. Bu kombinasyon, suyun 100 metreden fazla yüksekliklere çıkabilmesini sağlar. Bu, bitkilerin karada yükseklere doğru evrimleşmesinin önünü açan kritik bir adaptasyondur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Çift döllenme, neden sadece kapalı tohumlu bitkilere özgü bir avantajdır? Bu mekanizma bitkiye ne kazandırır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Çift döllenme, endospermin (besi dokunun) oluşum zamanlamasını ve kontrolünü değiştirir. Bu, enerji tasarrufu ve embriyo ile uyum sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kapalı Tohumlular (Çiçekli Bitkiler) vs Açık Tohumlular (Kozalaklılar):</strong>
+                            <br><strong>Açık tohumlularda:</strong> Endosperm, döllenmeden <strong>önce</strong> dişi gametofit dokusundan (n) oluşur. Yani, polen gelmeden, tohum taslağında besin birikmeye başlar. Eğer döllenme olmazsa, bu besin dokusu boşa gitmiş olur (enerji israfı). Ayrıca, endosperm ile embriyo farklı dokulardan geldiği için gelişim uyumu daha az olabilir.</p>
+                            <p><strong>Kapalı tohumlularda (Çift Döllenme ile):</strong>
+                            <ol>
+                                <li>Endosperm, <strong>sadece döllenme olduğunda</strong> oluşur. 2. sperm (n) + iki polar çekirdek (2n) → endosperm (3n).</li>
+                                <li>Bu, büyük bir enerji tasarrufu sağlar. Döllenme garantisi olmadan besin dokusu yatırımı yapılmaz.</li>
+                                <li>Endosperm ve embriyo <strong>aynı anda, aynı olay sonucu</strong> (çift döllenme) oluştuğu için, gelişimleri birbiriyle senkronizedir. Endosperm, embriyonun ihtiyaçlarına göre gelişimini ayarlayabilir.</li>
+                                <li>Triploit (3n) endosperm, belki daha hızlı hücre bölünmesi ve daha fazla besin depolama kapasitesi sağlar.</li>
+                            </ol>
+                            <p><strong>Avantajlar Özeti:</strong>
+                            <ul>
+                                <li><strong>Enerji Verimliliği:</strong> Besin kaynağı boşa harcanmaz.</li>
+                                <li><strong>Gelişimsel Uyum:</strong> Embriyo ve besi dokusu uyum içinde gelişir.</li>
+                                <li><strong>Genetik Esneklik:</strong> Endosperm, hem anne (2n polar çekirdek) hem baba (1n sperm) genlerini taşır. Bu, gen ifadesinde yeni kombinasyonlara izin verebilir.</li>
+                            </ul>
+                            <strong>Sonuç:</strong> Çift döllenme, kapalı tohumluların (angiospermler) gezegendeki en başarılı ve çeşitli bitki grubu olmasının önemli nedenlerinden biridir. Bu verimli üreme sistemi, onların kısa sürede çok sayıda tohum üretmelerine ve çeşitli habitatlara yayılmalarına katkıda bulunmuştur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Basınç-akış teorisine göre floemde taşınma neden çift yönlü olabilir, ksilemde neden tek yönlüdür?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu farklılık, iki sistemin taşıdığı maddelerin "kaynak" ve "havuz" ilişkisindeki dinamiklerden kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Ksilem (Su ve Mineraller):</strong>
+                            <br><strong>Kaynak:</strong> Su ve minerallerin sürekli kaynağı <strong>topraktır</strong> (kökler). Suyun itici gücü (kök basıncı) veya çekici gücü (terleme) her zaman aşağıdan yukarı doğrudur.
+                            <br><strong>Havuz:</strong> Suyun sürekli tüketicisi <strong>yapraklardır</strong> (terleme ve fotosentez için). Ayrıca, tüm bitki dokuları su kullanır, ancak suyu geri vermezler (geri dönüşüm yok).
+                            <br><strong>Yön:</strong> Bu nedenle ksilemdeki akış her zaman <strong>tek yönlüdür: kökten → yapraklara doğru</strong>. Suyun ksilemde aşağı doğru hareketi söz konusu değildir, çünkü itici/çekici güç yoktur ve su yapraklardan ksileme geri giremez.</p>
+                            <p><strong>Floem (Organik Maddeler):</strong>
+                            <br>Durum çok daha dinamiktir.
+                            <br><strong>Kaynaklar ve Havuzlar Değişkendir:</strong>
+                            <ul>
+                                <li>İlkbaharda: Depo organlar (soğan, patates) besinleri çözerek büyüyen filizlere gönderir (kök/havuz → gövde/kaynak).</li>
+                                <li>Yazın: Olgun yapraklar (kaynak) besinleri köklere (havuz) veya meyvelere (havuz) gönderir.</li>
+                                <li>Gelişmekte olan bir tomurcuk hem havuz (besin alır) hem de bir süre sonra kaynak (fotosentez yapmaya başlar) olabilir.</li>
+                            </ul>
+                            <br><strong>Taşınan Maddeler Çeşitlidir:</strong> Sadece şeker değil, amino asitler, hormonlar, sinyal molekülleri taşınır. Bunlar farklı yönlerde hareket edebilir.
+                            <br><strong>Basınç-Akış Teorisi ve Çift Yönlülük:</strong> Teori, aynı floem demetinde aynı anda zıt yönlü akış olmadığını söyler. Ancak, bir bitkide farklı floem demetleri farklı yönlerde taşıma yapabilir. Örneğin, alt yapraklardan köklere şeker taşınırken, aynı anda üst yapraklardan büyüyen uçlara şeker taşınabilir. Hatta aynı floem demetinde, farklı zamanlarda akış yönü değişebilir (kaynak ve havuz ilişkisinin değişmesiyle).
+                            <br><strong>Sonuç:</strong> Ksilemdeki akış, su döngüsünün basit bir yönünü yansıtır (aşağıdan yukarı). Floemdeki akış ise, bitkinin karmaşık besin dağıtım ağını yansıtır; dinamiktir, değişkendir ve bitkinin büyüme aşamalarına, mevsimlere ve organların ihtiyaçlarına göre ayarlanır. Bu esneklik, bitkinin verimli bir şekilde büyümesini ve üremesini sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Dormansi (tohum uyku hali) neden evrimsel bir avantajdır? Tohumlar neden hemen çimlenmez?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Tohumun hemen çimlenmesi, uygun olmayan koşullarda ölüm riski taşır. Dormansi, tohumun "geleceğe yatırım" yapmasını ve riski dağıtmasını sağlar.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Riskler:</strong> Bir tohum düştüğü yerde hemen çimlenirse karşılaşabileceği tehlikeler:
+                            <ol>
+                                <li><strong>Mevsimsel Uyumsuzluk:</strong> Sonbaharda düşen bir tohum hemen çimlenirse, kış soğuğunda ölür.</li>
+                                <li><strong>Kuraklık:</strong> Yağmur mevsimi başlamadan çimlenirse, susuz kalır ve ölür.</li>
+                                <li><strong>Rekabet:</strong> Ana bitkinin gölgesinde ve besin için şiddetli rekabet ortamında çimlenirse, hayatta kalamaz.</li>
+                                <li><strong>Yırtıcılar ve Hastalıklar:</strong> Tüm tohumlar aynı anda çimlenirse, bir hastalık veya otobur popülasyonu tüm nesli yok edebilir.</li>
+                            </ol>
+                            <p><strong>Dormansinin Sağladığı Stratejik Avantajlar:</strong>
+                            <ol>
+                                <li><strong>Zamanlama (Senkronizasyon):</strong> Dormansi, tohumun çevre koşullarını "hissetmesini" ve en uygun zamanda (ilkbahar yağmurları, uygun sıcaklık) çimlenmesini sağlar. Bu, fidecik için hayatta kalma şansını maksimize eder.</li>
+                                <li><strong>Risk Dağılımı (Bet-hedging):</strong> Tüm tohumlar aynı yıl çimlenmez. Populasyondaki tohumların bir kısmı bir yıl, diğer kısmı ertesi yıl, bazıları da daha sonraki yıllarda çimlenir. Bu, "tüm yumurtaları aynı sepete koymamak" gibidir. Bir yıldaki felaket (don, kuraklık, yangın) tüm nesli yok etmez. Popülasyon, dormant tohum bankası sayesinde hayatta kalır.</li>
+                                <li><strong>Yayılma Şansı:</strong> Tohumlar farklı zamanlarda çimlenerek, populasyonun geniş bir zaman dilimine ve dolayısıyla farklı çevre koşullarına yayılmasını sağlar. Bu, genetik çeşitliliği korumaya yardım eder.</li>
+                                <li><strong>Ani Boşalan Nişlere Yerleşme:</strong> Bir yangın veya sel sonrası boşalan bir alanda, topraktaki tohum bankasından çıkan bireyler hızla bu alanı kolonize edebilir.</li>
+                            </ol>
+                            <p><strong>Mekanizma:</strong> Dormansi, tohum kabuğunun kalınlığı, hormon dengesi (ABA inhibitör, giberellin uyarıcı) veya embriyo olgunluğu ile kontrol edilir. Çevresel ipuçları (soğuklama, ışık, su, yangın dumanı) bu dormansiyi kırar.
+                            <br><strong>Sonuç:</strong> Dormansi, bitkilerin öngörülemeyen ve değişken çevre koşullarına karşı geliştirdiği akıllı bir hayatta kalma stratejisidir. Kısa vadede "ertelenmiş çimlenme" gibi görünse de, uzun vadede türün devamlılığını garanti altına alır. Bu nedenle, birçok bitki türünde evrimleşmiş temel bir özelliktir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Bitki Biyolojisi
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-water"></i> KSİLEM EMBOLİZMASI: AĞAÇLARDA "HAVA KILICI"</div>
+                    <div class="advanced-content">
+                        <p>Kohezyon-gerilim teorisinin en büyük zayıflığı, su sütununun kopma (emboli) riskidir. Ksilemdeki su sütunu yüksek gerilim altındadır (negatif basınç). Eğer bu sütuna hava girişi olursa (örneğin don çözülmesi, yaralanma, aşırı kuraklık), su molekülleri arasındaki hidrojen bağları kopar ve sütunun içine bir hava kabarcığı (emboli) girer. Bu kabarcık, o ksilem borusunun su taşıma işlevini geçici olarak durdurur.</p>
+                        <p><strong>Bitki Nasıl Başa Çıkar?</strong></p>
+                        <ol>
+                            <li><strong>Yedekleme:</strong> Bir ağaçta binlerce ksilem borusu vardır. Birkaçında emboli oluşması genel su akışını engellemez.</li>
+                            <li><strong>Onarım:</strong> Bazı bitkiler (özellikle otsular) embolize olmuş boruları basınçla temizleyebilir. Kök basıncı (gece) suyu zorlayarak hava kabarcığını itmeye veya çözündürmeye çalışır.</li>
+                            <li><strong>Yeni Boru Oluşumu:</strong> Büyüme mevsiminde yeni ksilem boruları oluşur, eskileri devre dışı kalır.</li>
+                            <li><strong>Su Akışını Yeniden Yönlendirme:</strong> Komşu sağlam borular daha fazla su taşır.</li>
+                        </ol>
+                        <p><strong>İlginç Detay:</strong> Yapraklardaki küçük stomalar, terlemeyi düzenleyerek ksilemdeki gerilimi kontrol eder ve emboli riskini azaltır. Aşırı kuraklıkta stomalar kapanır, terleme durur, gerilim azalır, emboli riski düşer ama fotosentez de durur. Bu hassas denge bitkinin hayatta kalma stratejisidir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-network-wired"></i> FLOEMİN SİNYAL İLETİM ROLÜ: BİTKİNİN "İNTERNETİ"</div>
+                    <div class="advanced-content">
+                        <p>Floem sadece şeker taşımaz; aynı zamanda bitkinin iletişim ağıdır. Floem özsuyunda taşınan sinyal molekülleri, bitkinin uzak organları arasında haberleşmeyi sağlar.</p>
+                        <p><strong>Taşınan Sinyaller:</strong></p>
+                        <ul>
+                            <li><strong>Proteinler ve mRNA'lar:</strong> Örneğin, FT (Flowering Locus T) proteini yapraklarda üretilir, floemle büyüme konisine taşınır ve "çiçeklenme zamanı geldi" sinyalini verir. Bu, fotoperiyodizmin (gün uzunluğuna göre çiçeklenme) moleküler mekanizmasının temelidir.</li>
+                            <li><strong>Küçük RNA'lar (siRNA, miRNA):</strong> Gen ifadesini düzenler, viral enfeksiyonlarda sistemik savunma sinyali olarak hareket eder. Bir yaprak virüsle enfekte olunca, küçük RNA'lar floemle tüm bitkiye yayılarak diğer yaprakları virüse karşı "uyarır".</li>
+                            <li><strong>Hormonlar:</strong> Oksin, sitokinin, jasmonik asit, salisilik asit gibi hormonlar floemde taşınarak büyüme, savunma ve stres yanıtlarını koordine eder.</li>
+                            <li><strong>Elektriksel Sinyaller:</strong> Bazı araştırmalar, floemde yaralanma gibi durumlarda hızlı elektriksel sinyallerin (potansiyel değişiklikleri) taşınabileceğini düşündürmektedir.</li>
+                        </ul>
+                        <p><strong>Önemi:</strong> Bu sistemik sinyalizasyon sayesinde bitki, tek bir organizma gibi davranır. Köklerdeki su stresi sinyali yapraklara ulaşır ve stomalar kapanır. Yapraktaki bir böcek saldırısı sinyali köklere ulaşır ve kökler savunma kimyasalları salgılamaya başlar. Floem, bitkinin "nöral ağı" gibi çalışır (sinir sistemi olmamasına rağmen).</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-dna"></i> POLEN TÜPÜ YÖN BULMASI: BİTKİDEKİ "KİMYASAL FÜZE"</div>
+                    <div class="advanced-content">
+                        <p>Tozlaşma sonrası, polen tüpü dişicik borusundan aşağı yumurtalığa doğru büyümek zorundadır. Bu yolculuk 2-3 cm'yi bulabilir (bitki ölçeğinde çok uzun). Polen tüpü nasıl hedefi (mikropil) bulur?</p>
+                        <p><strong>Kimyasal Rehberlik:</strong> Yumurtalık ve özellikle tohum taslağı, polen tüpünü kendine çeken kimyasal sinyaller (kemoatraktanlar) salgılar. Bu sinyaller genellikle küçük peptitler veya lipitlerdir.</p>
+                        <p><strong>Süreç:</strong>
+                        <ol>
+                            <li><strong>Tepecikten Yola Çıkış:</strong> Tepecikteki nem ve özel kimyasallar polenin çimlenmesini ve tüp oluşturmasını tetikler.</li>
+                            <li><strong>Dişicik Borusunda İlerleme:</strong> Borunun iç yüzeyindeki kılavuz moleküller tüpün aşağı doğru büyümesini sağlar.</li>
+                            <li><strong>Son Hedefe Kilitlenme:</strong> Tohum taslağından salgılanan spesifik kemoatraktanlar (örneğin LURE peptitleri bazı bitkilerde), polen tüpünün doğrudan mikropile (tohum taslağının girişi) yönelmesini sağlar.</li>
+                            <li><strong>Doğru Tohum Taslağını Bulma:</strong> Bir yumurtalıkta çok sayıda tohum taslağı olabilir. Her biri muhtemelen farklı oranda veya türde sinyal salgılar. Polen tüpü, sinyali en güçlü olan (belki de en sağlıklı) tohum taslağına yönelir.</li>
+                        </ol>
+                        <p><strong>Önemi ve İlginçlik:</strong> Bu sistem, döllenmenin verimliliğini artırır. Ayrıca, çapraz tozlaşmada, genellikle aynı türün sinyalleri etkilidir; farklı tür sinyallerini tanımaz. Bu, türler arası melezlenmeyi sınırlayan bir bariyerdir. Polen tüpünün büyüme hızı saatte birkaç mm ila cm arasında değişir; bu, hücresel ölçekte çok hızlıdır ve sitoskeleton (aktin filamentleri) ve vezikik trafiği ile sağlanır.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-seedling"></i> ENDOSPERMİN GENOMİK İMPRİNTİNG'İ: ANNELİK VE BABALIK SAVAŞI</div>
+                    <div class="advanced-content">
+                        <p>Endosperm triploittir (3n): 2 set kromozom anneden (polar çekirdekler), 1 set babadan (sperm). Ancak bu kromozomlar eşit şekilde ifade edilmez. Bazı genler, hangi ebeveynden geldiğine bağlı olarak "sessizleştirilir" (ifade edilmez). Bu olaya <strong>genomik imprinting</strong> denir.</p>
+                        <p><strong>Teori (Ebeveyn Çatışması Hipotezi):</strong>
+                        <br>Baba genomunun (sperm) çıkarları: Mümkün olduğunca büyük, besleyici bir endosperm oluşturmak, böylece kendi embriyosunun (yavrusunun) daha iyi beslenip büyümesini sağlamak. Bu nedenle, babadan gelen genler endospermin <strong>aşırı büyümesini</strong> teşvik eder.
+                        <br>Anne genomunun (polar çekirdekler) çıkarları: Kaynakları (annesel bitkinin kaynakları) tek bir yavruya değil, tüm yavrulara (meyvelere) adil dağıtmak. Ayrıca, aşırı büyük bir endosperm, annenin enerjisini tüketebilir. Bu nedenle, anneden gelen genler endospermin <strong>büyümesini sınırlamaya</strong> çalışır.</p>
+                        <p><strong>Sonuç:</strong> Endosperm gelişimi, bu "çekişme" sonucu dengelenir. İmprinting mekanizması, bazı genlerin sadece maternal veya sadece paternal kopyasının aktif olmasını sağlayarak bu dengeyi kurar.
+                        <br><strong>Kanıt:</strong> Deneysel olarak, sadece maternal genom içeren endosperm (gynogenesis) küçük ve gelişemezken, sadece paternal genom içeren endosperm (androgenesis) aşırı büyür ama düzensizdir. Normal 2:1 (maternal:paternal) oranı sağlıklı gelişim için kritiktir.
+                        <br>Bu, bitkilerdeki eşeyli üremenin sadece genetik materyal karışımı değil, aynı zamanda karmaşık bir epigenetik (gen ifadesi kontrolü) düzenleme içerdiğini gösteren ilginç bir örnektir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-tree"></i> AĞAÇ HALKALARI (YILLIK HALKALAR) NELERİ ANLATIR?</div>
+                    <div class="advanced-content">
+                        <p>Ksilemdeki su iletim boruları (trake ve trakeitler) her yıl yeniden oluşur. İlkbahar ve yaz büyüme koşulları, halkaların genişliğini ve yapısını etkiler. Bu halkalar sadece yaşı değil, geçmiş iklim koşulları hakkında da "kayıt" tutar.</p>
+                        <p><strong>Nasıl Oluşur?</strong>
+                        <br><strong>İlkbahar Odunu (Erken odun):</strong> İlkbaharda büyüme hızlıdır. Oluşan ksilem boruları <strong>geniş çaplı</strong>, ince çeperlidir. Su iletimi için daha verimli ama mekanik dayanımı daha azdır. Açık renkli görünür.
+                        <br><strong>Yaz Odunu (Geç odun):</strong> Yaz sonuna doğru büyüme yavaşlar. Oluşan ksilem boruları <strong>dar çaplı</strong>, kalın çeperlidir. Su iletimi daha az verimli ama mekanik dayanımı yüksektir. Koyu renkli görünür.
+                        <br>Bu iki farklı dokunun art arda gelmesi, mikroskopta görülebilen bir <strong>halka</strong> oluşturur. Her halka bir yılı temsil eder (tropiklerde mevsimsel fark az olduğu için halka oluşmayabilir).</p>
+                        <p><strong>İklim Kayıtları (Dendrokronoloji):</strong>
+                        <ul>
+                            <li><strong>Geniş Halka:</strong> O yıl büyüme koşulları iyiydi (bol yağış, uzun büyüme mevsimi, uygun sıcaklık).</li>
+                            <li><strong>Dar Halka:</strong> O yıl büyüme koşulları kötüydü (kuraklık, soğuk yaz, yangın, böcek istilası).</li>
+                            <li><strong>Asimetrik Halka:</strong> Ağacın bir tarafı daha iyi koşullara maruz kalmıştır (rüzgar, ışık yönü).</li>
+                            <li><strong>Yangın İzi:</strong> Halka içinde kömürleşmiş bir bölge geçmiş bir yangını işaret edebilir.</li>
+                        </ul>
+                        <p><strong>İlginç Uygulamalar:</strong>
+                        <ul>
+                            <li><strong>Arkeolojik Tarihleme:</strong> Eski yapılardaki ahşap kirişlerin halkaları, canlı ağaçlardaki halka dizileriyle eşleştirilerek yapının yapıldığı yıl belirlenebilir.</li>
+                            <li><strong>İklim Değişikliği Çalışmaları:</strong> Binlerce yıllık ölü ağaçlardan (subfosil) ve canlı ağaçlardan oluşturulan uzun kronolojiler, geçmiş iklim değişikliklerini (sıcaklık, yağış) ortaya çıkarır.</li>
+                            <li><strong>Kozmik Olaylar:</strong> Belirli yıllardaki halkalarda radyokarbon (14C) ani artışları, geçmişteki büyük güneş patlamaları veya süpernova patlamalarına işaret edebilir.</li>
+                        </ul>
+                        <p>Böylece, bir ağaç gövdesi sadece bir destek yapısı değil, aynı zamanda doğanın tuttuğu detaylı bir günlüktür.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="BURAYA_GITHUB_LINKINI_YAPISTIRIN" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+document.getElementById('audio-btn').addEventListener('click', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('audio-section').classList.add('active');
+    updateProgress('audio');
+});
+
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        // Back buttons
+        const backButtons = ['flashcards', 'mindmap', 'summary', 'contextual', 'test', 'reasoning', 'advanced', 'audio'];
+        backButtons.forEach(section => {
+            document.getElementById(`back-from-${section}`).addEventListener('click', () => {
+                document.getElementById(`${section}-section`).classList.remove('active');
+                document.getElementById('dashboard').style.display = 'grid';
+                window.scrollTo(0, 0);
+                if (section === 'test') {
+                    document.getElementById('test-result').style.display = 'none';
+                }
+            });
+        });
+
+        // FLASHCARD SYSTEM - 30 Bitki Biyolojisi Sorusu
+        const flashcards = [
+            { question: "Ksilem (odun boruları) nedir?", answer: "Bitkilerde su ve minerallerin kökten yapraklara taşındığı cansız iletim borularıdır. Taşınma tek yönlüdür (yukarı)." },
+            { question: "Floem (soymuk boruları) nedir?", answer: "Bitkilerde fotosentez ürünleri (şeker, amino asit) ve diğer organik maddelerin taşındığı canlı iletim borularıdır. Taşınma çift yönlüdür." },
+            { question: "Stoma nedir?", answer: "Yaprak epidermisinde gaz alışverişi (CO₂ girişi, O₂ çıkışı) ve terlemeyi (su buharı çıkışı) düzenleyen açıklıklardır. İki bekçi hücresi tarafından kontrol edilir." },
+            { question: "Apoplast ve simplast yollar nedir?", answer: "Su ve minerallerin kökte taşınma yollarıdır. Apoplast: Hücre çeperleri ve hücre dışı boşluklar boyunca (hızlı). Simplast: Hücreden hücreye plazmodezmatalarla (yavaş)." },
+            { question: "Kaspari şeridi nedir?", answer: "Endodermis hücrelerinde bulunan su geçirmez kuşak. Apoplast yolunu keser, su ve minerallerin kontrollü (aktif) geçişini sağlar." },
+            { question: "Kılcallık nedir?", answer: "İnce borularda (ksilem gibi) adhezyon kuvvetiyle suyun yerçekimine karşı yükselmesidir. Bitkilerde su taşınmasında tek başına yetersiz bir mekanizmadır." },
+            { question: "Kök basıncı nedir?", answer: "Kök hücrelerindeki ozmotik basınç farkından kaynaklanan, suyu ksileme iten kuvvettir. Gutasyon olayının nedenidir." },
+            { question: "Kohezyon-gerilim teorisi nedir?", answer: "Suyun ksilemde yükselmesini açıklayan en önemli teoridir. Su moleküllerinin birbirine yapışması (kohezyon), ksilem çeperine yapışması (adhezyon) ve yapraklardaki terlemenin oluşturduğu çekme kuvveti ile su sütunu yukarı çekilir." },
+            { question: "Gutasyon nedir?", answer: "Kök basıncı etkisiyle, yaprak kenarlarındaki hidatodlardan sıvı su damlacıklarının dışarı atılmasıdır. Genellikle nemli sabahlarda görülür." },
+            { question: "Terleme nedir?", answer: "Yapraklardan (özellikle stomalardan) su buharının atmosfere verilmesidir. Suyun yukarı taşınmasına yardım eder ve bitkiyi serinletir." },
+            { question: "Stoma nasıl açılır?", answer: "Işık varlığında bekçi hücrelerine K⁺ iyonları girer, ozmotik basınç artar, su alınır, turgor basıncı artar ve stoma açılır." },
+            { question: "Minimum Kuralı (Liebig) nedir?", answer: "Bitki gelişimini, miktarı en az olan gelişim faktörünün sınırladığını söyler. Diğer faktörler yeterli olsa bile, eksik olan faktör bitkiyi sınırlar." },
+            { question: "Nodül nedir?", answer: "Baklagil köklerinde Rhizobium bakterileri ile simbiyotik ilişki sonucu oluşan yumrulardır. Bakteriler atmosfer azotunu bitkinin kullanabileceği forma dönüştürür." },
+            { question: "Mikoriza nedir?", answer: "Köklerle bazı mantarlar arasındaki karşılıklı yarar ilişkisidir. Mantar, bitkiye su ve mineral (özellikle fosfor) sağlar; bitki de mantara organik besin verir." },
+            { question: "Basınç-akış teorisi nedir?", answer: "Floemde organik madde taşınmasını açıklar. Kaynak hücrelerden floeme şeker yüklenir → ozmotik basınç artar → ksilemden su girer → hidrostatik basınç oluşur → floem özsuyu basınç farkıyla havuz hücrelere akar." },
+            { question: "Kaynak ve havuz hücreleri nedir?", answer: "Kaynak: Fotosentezle organik madde üreten hücreler (olgun yapraklar). Havuz: Organik maddeyi kullanan veya depolayan hücreler (kök, meyve, büyüyen uçlar)." },
+            { question: "Tam çiçek ve eksik çiçek nedir?", answer: "Tam çiçek: Çanak yaprak, taç yaprak, erkek organ, dişi organın hepsi bulunur. Eksik çiçek: Bu dört yapıdan biri veya daha fazlası eksiktir." },
+            { question: "Polen (erkek gametofit) nasıl oluşur?", answer: "Polen ana hücresi (2n) → mayoz → 4 mikrospor (n) → her mikrospor mitoz geçirir → iki çekirdekli (vejetatif ve generatif) polen oluşur." },
+            { question: "Embriyo kesesi (dişi gametofit) nasıl oluşur?", answer: "Megaspor ana hücresi (2n) → mayoz → 4 megaspor (n), 3'ü erir → kalan megaspor 3 mitoz geçirir → 8 çekirdekli embriyo kesesi oluşur (1 yumurta, 2 sinerjit, 3 antipod, 2 polar çekirdek)." },
+            { question: "Tozlaşma nedir?", answer: "Polenlerin erkek organ başçığından dişi organ tepeciğine taşınmasıdır. Rüzgar, su, böcekler, kuşlar, yarasalar ile olabilir." },
+            { question: "Kendi kendine tozlaşma ve çapraz tozlaşma nedir?", answer: "Kendi kendine: Aynı çiçek veya aynı bitki üzerinde. Çapraz: Aynı tür farklı bitkiler arasında (genetik çeşitlilik artar)." },
+            { question: "Çift döllenme nedir?", answer: "Kapalı tohumlularda görülür. 1. sperm (n) + yumurta (n) → zigot (2n) → embriyo. 2. sperm (n) + iki polar çekirdek (2n) → endosperm (3n) → besi doku." },
+            { question: "Tohumun yapısı nasıldır?", answer: "Tohum kabuğu (koruma), endosperm (besi doku, 3n), embriyo (2n). Embriyoda: radikula (embriyonik kök), plumula (embriyonik gövde), kotiledon (çenek)." },
+            { question: "Meyve nedir ve nasıl oluşur?", answer: "Döllenmiş yumurtalığın gelişmesiyle oluşur. Tohumları korur ve yayılmasını sağlar. Çeşitleri: basit, bileşik, kümeli, yalancı meyve." },
+            { question: "Çimlenme nedir?", answer: "Tohumun uygun ortam koşullarında (su, sıcaklık, oksijen) genç bitkiyi (fide) oluşturmasıdır." },
+            { question: "Çimlenmeye etki eden faktörler nelerdir?", answer: "Su (metabolizmayı başlatır), uygun sıcaklık (enzim aktivitesi), oksijen (solunum için), bazen ışık veya karanlık (türe göre)." },
+            { question: "Dormansi nedir?", answer: "Tohumun uygun olmayan çevre koşullarında, metabolizmasını minimuma indirerek çimlenmeden bekleme halidir. Hayatta kalma stratejisidir." },
+            { question: "Emici tüyler nerede bulunur ve görevi nedir?", answer: "Kök epidermisinde bulunur. Emilim yüzeyini artırarak su ve mineral alımını sağlar." },
+            { question: "Endodermis nedir?", answer: "Kökün korteks ile merkezi silindiri arasında bulunan tek sıra hücre tabakasıdır. Hücrelerinde kaspari şeridi bulunur, su ve mineral geçişini kontrol eder." },
+            { question: "Hidatod nedir?", answer: "Yaprak kenarlarında bulunan, stoma benzeri ama sürekli açık olan yapılardır. Gutasyon sırasında su damlacıklarının çıktığı yerlerdir." }
+        ];
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'teki tüm kavramları kapsayacak şekilde)
+        const testQuestions = [
+            {
+                question: "Aşağıdakilerden hangisi ksilemin özelliklerinden biri değildir?",
+                options: [
+                    "Su ve mineralleri taşır",
+                    "Taşıma tek yönlüdür (kökten yapraklara)",
+                    "Hücreleri canlıdır",
+                    "Kılcallık özelliği gösterir",
+                    "Kohezyon-gerilim teorisi ile açıklanır"
+                ],
+                correct: 2,
+                explanation: "Ksilem boruları (trake ve trakeitler) olgunlaştıklarında çekirdek ve sitoplazmalarını kaybeder, yani cansızdır. Floem hücreleri canlıdır."
+            },
+            {
+                question: "Floemde organik madde taşınmasını açıklayan teori aşağıdakilerden hangisidir?",
+                options: [
+                    "Kohezyon-gerilim teorisi",
+                    "Basınç-akış teorisi",
+                    "Kütle akış teorisi",
+                    "Aktif taşıma teorisi",
+                    "Difüzyon teorisi"
+                ],
+                correct: 1,
+                explanation: "Floemde organik madde taşınması Basınç-akış teorisi ile açıklanır. Kaynak hücrelerden şeker yüklenmesi, su girişi, basınç oluşması ve havuz hücrelere akış şeklinde gerçekleşir."
+            },
+            {
+                question: "Stomaların açılıp kapanması aşağıdakilerden hangisine bağlıdır?",
+                options: [
+                    "Kloroplast sayısına",
+                    "Bekçi hücrelerindeki turgor basıncına",
+                    "Yaprak yaşına",
+                    "Kök basıncına",
+                    "Ksilem genişliğine"
+                ],
+                correct: 1,
+                explanation: "Stomaların açılıp kapanması, bekçi hücrelerindeki turgor basıncı değişikliği ile kontrol edilir. Turgor artarsa stoma açılır, azalırsa kapanır."
+            },
+            {
+                question: "Aşağıdaki minerallerden hangisinin alımı için köklerde aktif taşıma gereklidir?",
+                options: [
+                    "Su",
+                    "Oksijen",
+                    "Azot (NO₃⁻)",
+                    "Karbon dioksit",
+                    "Hidrojen"
+                ],
+                correct: 2,
+                explanation: "Azot (NO₃⁻ iyonu) gibi minerallerin topraktaki derişimi, kök hücrelerindekinden genellikle daha düşüktür. Bu nedenle derişim gradientine karşı taşınmaları gerekir, bu da aktif taşıma ile olur."
+            },
+            {
+                question: "Baklagil köklerindeki nodüllerin temel işlevi nedir?",
+                options: [
+                    "Su depolamak",
+                    "Fotosentez yapmak",
+                    "Atmosfer azotunu bağlamak",
+                    "Hormon salgılamak",
+                    "Vejetatif üremeyi sağlamak"
+                ],
+                correct: 2,
+                explanation: "Baklagil köklerindeki nodüllerde, Rhizobium bakterileri simbiyotik olarak yaşar ve atmosferdeki serbest azotu (N₂) bitkinin kullanabileceği amonyum (NH₄⁺) formuna dönüştürür (azot fiksasyonu)."
+            },
+            {
+                question: "Liebig'in Minimum Kuralı'na göre aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Bitki en çok ihtiyaç duyduğu elementi alır",
+                    "Bitki gelişimini, miktarı en az olan faktör sınırlar",
+                    "Bitkiler tüm elementleri eşit miktarda kullanır",
+                    "Fazla olan element bitkiye zarar verir",
+                    "Elementler birbirinin alımını engeller"
+                ],
+                correct: 1,
+                explanation: "Minimum Kuralı'na göre, bitki gelişimini sağlayan faktörlerden (su, ışık, mineral vb.) birinin eksikliği, diğerleri yeterli olsa bile bitki gelişimini sınırlar. En az olan faktör belirleyicidir."
+            },
+            {
+                question: "Apoplast ve simplast yolları ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Apoplast yolu simplast yolundan daha yavaştır",
+                    "Simplast yolu sadece ölü hücre çeperlerinden geçer",
+                    "Kaspari şeridi apoplast yolunu keser",
+                    "Her iki yol da endodermisten sonra devam eder",
+                    "Mineraller sadece simplast yolu ile taşınır"
+                ],
+                correct: 2,
+                explanation: "Endodermis hücrelerindeki kaspari şeridi su geçirmezdir ve apoplast yolunu (hücre çeperleri yoluyla ilerleyişi) keser. Su ve minerallerin endodermisten geçmesi için simplast yoluna (hücre içine) girmesi gerekir."
+            },
+            {
+                question: "Bitkilerde suyun yapraklara taşınmasında en etkili mekanizma aşağıdakilerden hangisidir?",
+                options: [
+                    "Kök basıncı",
+                    "Kılcallık",
+                    "Kohezyon-gerilim teorisi",
+                    "Gutasyon",
+                    "Aktif taşıma"
+                ],
+                correct: 2,
+                explanation: "Kohezyon-gerilim teorisi, suyun özellikle uzun bitkilerde (ağaçlarda) yapraklara kadar taşınmasını açıklayan en önemli mekanizmadır. Su moleküllerinin birbirine ve ksilem çeperine yapışması (kohezyon ve adhezyon) ile yapraklardaki terlemenin oluşturduğu çekme kuvveti suyu yukarı çeker."
+            },
+            {
+                question: "Gutasyon olayı aşağıdakilerden hangisi ile doğrudan ilişkilidir?",
+                options: [
+                    "Stomaların açılması",
+                    "Kök basıncı",
+                    "Fotosentez hızı",
+                    "Terleme",
+                    "Minerallerin aktif taşınması"
+                ],
+                correct: 1,
+                explanation: "Gutasyon, kök basıncı etkisiyle ksilemde yukarı itilen suyun, yaprak kenarlarındaki hidatodlardan damlalar halinde dışarı atılmasıdır. Genellikle sabah erken saatlerde, havanın nemli olduğu ve terlemenin az olduğu zamanlarda görülür."
+            },
+            {
+                question: "Floemde taşınma ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Çift yönlü olabilir",
+                    "Taşınma hızı ksilemden daha yavaştır",
+                    "Sadece şeker taşır",
+                    "Basınç-akış teorisi ile açıklanır",
+                    "Kaynak ve havuz hücreler arasında gerçekleşir"
+                ],
+                correct: 2,
+                explanation: "Floem sadece şeker değil, amino asitler, hormonlar, vitaminler ve sinyal moleküllerini de taşır. Taşınan başlıca organik madde şeker (sükroz) olmakla birlikte, diğer maddeler de önemli rol oynar."
+            },
+            {
+                question: "Çift döllenme olayı sonucunda aşağıdakilerden hangisi oluşmaz?",
+                options: [
+                    "Zigot (2n)",
+                    "Endosperm (3n)",
+                    "Polar çekirdek (2n)",
+                    "Embriyo",
+                    "Tohum taslağı"
+                ],
+                correct: 2,
+                correct: 2,
+                explanation: "Çift döllenme sırasında, 2. sperm çekirdeği (n) ile iki polar çekirdek (n+n=2n) birleşerek endospermi (3n) oluşturur. Polar çekirdekler döllenme olayına katıldığı için sonuçta polar çekirdek olarak kalmaz, endosperme dönüşür."
+            },
+            {
+                question: "Aşağıdakilerden hangisi tohum çimlenmesi için mutlaka gereklidir?",
+                options: [
+                    "Işık",
+                    "Yüksek sıcaklık (40°C)",
+                    "Su",
+                    "Karbondioksit",
+                    "Azotlu gübre"
+                ],
+                correct: 2,
+                explanation: "Tohum çimlenmesi için su mutlaka gereklidir. Su, tohumun şişmesini, enzimlerin aktivasyonunu, depo besinlerin sindirimini ve metabolik faaliyetlerin başlamasını sağlar. Diğer faktörler (sıcaklık, oksijen) de önemlidir ama su olmadan çimlenme hiç başlayamaz."
+            },
+            {
+                question: "Dormansi (tohum uyku hali) ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Tüm tohumlar dormansi geçirir",
+                    "Dormansi bitkiye zararlı bir durumdur",
+                    "Tohum kabuğu kalınlığı dormansiye neden olabilir",
+                    "Dormansi sırasında metabolizma hızlıdır",
+                    "Dormansi sadece çöl bitkilerinde görülür"
+                ],
+                correct: 2,
+                explanation: "Kalın ve sert tohum kabuğu, su ve oksijen geçişini engelleyerek dormansiye neden olabilir. Dormansi bir adaptasyondur, tohumun uygun olmayan koşullarda çimlenmeyi ertelemesini sağlar. Metabolizma minimumdur."
+            },
+            {
+                question: "Mikoriza ilişkisi ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Bitki mantara organik besin sağlar",
+                    "Mantar bitkiye su ve mineral sağlar",
+                    "Özellikle fosfor alımını kolaylaştırır",
+                    "Sadece baklagillerde görülür",
+                    "Bitkinin büyümesini hızlandırır"
+                ],
+                correct: 3,
+                explanation: "Mikoriza birçok bitki türünde (orman ağaçları, tarım bitkileri) görülen yaygın bir simbiyotik ilişkidir. Sadece baklagillere özgü değildir. Baklagillere özgü olan nodül oluşumudur (Rhizobium ile)."
+            },
+            {
+                question: "Çiçekli bir bitkide embriyo kesesi içinde aşağıdakilerden hangisi bulunmaz?",
+                options: [
+                    "Yumurta hücresi",
+                    "Sinerjit çekirdekler",
+                    "Antipot çekirdekler",
+                    "Polen tüpü",
+                    "Polar çekirdekler"
+                ],
+                correct: 3,
+                explanation: "Embriyo kesesi megasporun mitoz bölünmeleri sonucu oluşan 8 çekirdekli yapıdır. İçinde yumurta, sinerjitler, antipotlar ve polar çekirdekler bulunur. Polen tüpü ise polenden çıkan ve embriyo kesesine spermleri taşıyan yapıdır, embriyo kesesinin bir parçası değildir."
+            },
+            {
+                question: "Kök emici tüyleri ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Kloroplast içerirler",
+                    "Fotosentez yaparlar",
+                    "Epidermis hücrelerinin uzantılarıdır",
+                    "Sadece su alımından sorumludur",
+                    "Kalın çeperlidirler"
+                ],
+                correct: 2,
+                explanation: "Kök emici tüyleri, kök epidermis hücrelerinin dışa doğru uzanan ince uzantılarıdır. Emilim yüzeyini büyük ölçüde artırarak su ve mineral alımını kolaylaştırır. Kloroplast içermez, fotosentez yapmaz."
+            },
+            {
+                question: "Aşağıdakilerden hangisi basınç-akış teorisinde 'kaynak' hücrelere örnek değildir?",
+                options: [
+                    "Olgun yeşil yapraklar",
+                    "Fotosentez yapan kotiledonlar",
+                    "Nişasta depolayan kökler",
+                    "Genç, gelişmekte olan yapraklar",
+                    "Fotosentez yapan gövde"
+                ],
+                correct: 3,
+                explanation: "Basınç-akış teorisinde 'kaynak', fotosentez yaparak şeker üreten veya depo besinleri şekere çeviren organlardır. 'Havuz' ise şekeri kullanan veya depolayan organlardır. Nişasta depolayan kökler (patates yumrusu gibi) ilkbaharda kaynak olabilir ama genelde havuzdur. Genç, gelişmekte olan yapraklar ise şeker kullandığı için havuzdur."
+            },
+            {
+                question: "Tozlaşma aracıları ile ilgili aşağıdaki eşleştirmelerden hangisi yanlıştır?",
+                options: [
+                    "Rüzgar - küçük, hafif polenler",
+                    "Böcekler - renkli, kokulu çiçekler",
+                    "Kuşlar - genellikle kırmızı çiçekler",
+                    "Su - su bitkilerinde polen taşınması",
+                    "Yarasalar - küçük, sapsız çiçekler"
+                ],
+                correct: 4,
+                explanation: "Yarasalar genellikle gece açan, büyük, beyaz veya soluk renkli, bol nektarlı ve güçlü kokulu (meyvemsi veya mayamsı) çiçekleri tozlaştırır. Küçük, sapsız çiçekler yarasalar için uygun değildir."
+            },
+            {
+                question: "Çift döllenme sonucu oluşan endosperm (besi doku) kaç kromozomludur?",
+                options: [
+                    "n (haploit)",
+                    "2n (diploit)",
+                    "3n (triploit)",
+                    "4n (tetraploit)",
+                    "5n (pentaploit)"
+                ],
+                correct: 2,
+                explanation: "Endosperm, çift döllenme olayında ikinci sperm çekirdeği (n) ile iki polar çekirdeğin (n+n=2n) birleşmesiyle oluşur. n + 2n = 3n (triploit) kromozom sayısına sahiptir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi çimlenme sırasında artmaz?",
+                options: [
+                    "Su emilimi",
+                    "Solunum hızı",
+                    "Enzim aktivitesi",
+                    "Kuru ağırlık",
+                    "Hücre bölünmesi"
+                ],
+                correct: 3,
+                explanation: "Çimlenme sırasında su emilimi, solunum hızı, enzim aktivitesi ve hücre bölünmesi artar. Ancak kuru ağırlık (organik madde miktarı) başlangıçta azalır, çünkü depo besinler solunumla tüketilir ve karbondioksit olarak açığa çıkar. Fotosentez başlayınca kuru ağırlık tekrar artmaya başlar."
+            },
+            {
+                question: "Stomaların kapanmasına neden olan durum aşağıdakilerden hangisidir?",
+                options: [
+                    "Işık şiddetinin artması",
+                    "Kök basıncının artması",
+                    "K⁺ iyonlarının bekçi hücrelere girmesi",
+                    "ABA (absisik asit) hormonunun artması",
+                    "Fotosentez hızının artması"
+                ],
+                correct: 3,
+                explanation: "ABA (absisik asit) bitkide su stresi (kuraklık) olduğunda salgılanan bir hormondur. Stomaların kapanmasını tetikleyerek su kaybını azaltır. Işık, K⁺ girişi, fotosentez artışı ise stoma açılmasını uyarır."
+            },
+            {
+                question: "Hidatodlar ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Stomalardan daha küçüktürler",
+                    "Sürekli açıktırlar",
+                    "Gaz alışverişi yaparlar",
+                    "Sadece gece açılırlar",
+                    "Kloroplast içerirler"
+                ],
+                correct: 1,
+                explanation: "Hidatodlar, yaprak kenarlarında bulunan ve stomalara benzer ancak sürekli açık olan yapılardır. Gutasyon sırasında sıvı suyun dışarı atıldığı deliklerdir. Gaz alışverişi için değildir."
+            },
+            {
+                question: "Meyve oluşumu ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Meyve, döllenmiş yumurtalığın gelişmesiyle oluşur",
+                    "Tohumları korur ve yayılmasını sağlar",
+                    "Tüm meyveler yenebilir",
+                    "Bazı meyveler döllenme olmadan da oluşabilir (partenokarpi)",
+                    "Meyve çeşitleri vardır (basit, bileşik vb.)"
+                ],
+                correct: 2,
+                explanation: "Tüm meyveler yenebilir değildir. Örneğin, meşe palamudu, akçaağaç tohumu, kapsül şeklindeki meyveler (gelincik) teknik olarak meyvedir ama insanlar tarafından yenmez. 'Meyve' botanik bir terimdir, tatlı veya yenilebilir olmak zorunda değildir."
+            },
+            {
+                question: "Aşağıdaki element çiftlerinden hangisi bitkiler için makro element değildir?",
+                options: [
+                    "Karbon - Hidrojen",
+                    "Azot - Fosfor",
+                    "Demir - Çinko",
+                    "Potasyum - Kalsiyum",
+                    "Magnezyum - Kükürt"
+                ],
+                correct: 2,
+                explanation: "Bitkilerin çok miktarda ihtiyaç duyduğu elementlere makro element denir: C, H, O, N, P, K, Ca, Mg, S. Çok az miktarda ihtiyaç duyduklarına mikro (iz) element denir: Fe, Zn, Cu, Mn, B, Mo, Cl, Ni. Demir ve Çinko mikro elementtir."
+            },
+            {
+                question: "Ksilem ve floem karşılaştırıldığında aşağıdakilerden hangisi floeme ait bir özelliktir?",
+                options: [
+                    "Hücreleri cansızdır",
+                    "Taşıma tek yönlüdür",
+                    "Taşınan madde su ve minerallerdir",
+                    "Hücreleri canlıdır",
+                    "Kılcallık etkisi görülür"
+                ],
+                correct: 3,
+                explanation: "Floem hücreleri (kalburlu borular, arkadaş hücreleri) olgunlaşmalarına rağmen çekirdek ve bazı organelleri korurlar, yani canlıdır. Ksilem hücreleri ise olgunlaşınca ölüdür. Diğer seçenekler ksilemin özellikleridir."
+            },
+            {
+                question: "Bitkilerde terleme hızını artıran faktör aşağıdakilerden hangisidir?",
+                options: [
+                    "Havanın neminin artması",
+                    "Rüzgarın şiddetlenmesi",
+                    "Sıcaklığın düşmesi",
+                    "Stomaların kapanması",
+                    "Toprak suyunun azalması"
+                ],
+                correct: 1,
+                explanation: "Rüzgar, yaprak yüzeyindeki nemli havayı uzaklaştırarak terlemeyi hızlandırır. Havanın nemi artarsa terleme yavaşlar, sıcaklık düşerse yavaşlar, stomalar kapanırsa durur, toprak suyu azalırsa bitki stomaları kapatarak terlemeyi azaltır."
+            },
+            {
+                question: "Çiçekli bir bitkide tohum taslağında meydana gelen megaspor ana hücresi mayoz bölünme geçirirse kaç tane megaspor oluşur?",
+                options: [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "8"
+                ],
+                correct: 3,
+                explanation: "Megaspor ana hücresi diploittir (2n). Mayoz bölünme geçirerek 4 tane haploit (n) megaspor oluşturur. Genellikle bu 4 megasporun 3'ü erir, 1 tanesi gelişerek embriyo kesesini oluşturur."
+            },
+            {
+                question: "Aşağıdakilerden hangisi floem öz suyunda bulunmaz?",
+                options: [
+                    "Sükroz (şeker)",
+                    "Amino asitler",
+                    "Hormonlar",
+                    "Su",
+                    "Nişasta"
+                ],
+                correct: 4,
+                explanation: "Floem öz suyunda şekerler (başta sükroz), amino asitler, hormonlar, bazı iyonlar ve bol miktarda su bulunur. Nişasta suda çözünmeyen bir polisakkarittir ve floemde taşınmaz. Taşınma formu şekerdir."
+            },
+            {
+                question: "Bitkilerde su ve minerallerin taşınmasında 'kaspari şeridi'nin görevi nedir?",
+                options: [
+                    "Taşınma hızını artırmak",
+                    "Su kaybını önlemek",
+                    "Apoplast yolunu kesmek ve geçişi kontrol altına almak",
+                    "Fotosentezi hızlandırmak",
+                    "Kök basıncını artırmak"
+                ],
+                correct: 2,
+                explanation: "Kaspari şeridi, endodermis hücrelerinin yanal ve radyal çeperlerinde bulunan su geçirmez (lignin ve süberin birikimi) bir banttır. Apoplast yolunu keser, böylece su ve minerallerin endodermisten geçmek için simplast yoluna (hücre içine) girmesini zorunlu kılar. Bu da bitkinin su ve mineral geçişini kontrol etmesini sağlar."
+            },
+            {
+                question: "Çimlenmekte olan bir fasulye tohumunda ilk olarak toprak yüzeyine çıkan kısım aşağıdakilerden hangisidir?",
+                options: [
+                    "Kökçük (radikula)",
+                    "Gövdecik (plumula)",
+                    "Çenekler (kotiledonlar)",
+                    "Endosperm",
+                    "Yapraklar"
+                ],
+                correct: 0,
+                explanation: "Çimlenme başladığında ilk olarak embriyonik kök (radikula) tohum kabuğunu yırtarak dışarı çıkar ve toprağa doğru büyür. Daha sonra hipokotil uzayarak çenekleri toprak yüzeyine iter."
+            },
+            {
+                question: "Aşağıdakilerden hangisi partenokarpiye örnektir?",
+                options: [
+                    "Çekirdekli üzüm",
+                    "Çekirdeksiz üzüm",
+                    "Kiraz",
+                    "Şeftali",
+                    "Erik"
+                ],
+                correct: 1,
+                explanation: "Partenokarpi, döllenme olmadan meyve oluşumudur. Çekirdeksiz üzüm, döllenme olmadan gelişen tohumsuz bir meyvedir. Çekirdekli üzüm, kiraz, şeftali, erik normal döllenme ile oluşur ve tohum (çekirdek) içerir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text" style="font-size: 1.2rem; font-weight: 600; line-height: 1.5;">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Bitkilerde madde taşınması ve eşeyli üreme konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+
+        // Initialize test questions on page load
+        // (They will be loaded when test section is opened)
+    </script>
+</body>
+</html>

@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Bitki Organları ve Hormonları Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #27ae60;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #27ae60, #219653);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #27ae60;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .answer-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2c3e50;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Meraklısına Section Styles */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f5eef9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+        
+        /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+        .breadcrumb-container {
+            padding: 15px 20px;
+            background-color: #f1f3f5;
+            border-bottom: 2px solid #e9ecef;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .breadcrumb-container a {
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        .breadcrumb-container a:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+        }
+
+        .separator {
+            margin: 0 10px;
+            color: #95a5a6;
+            font-weight: bold;
+        }
+
+        .current-page {
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">12. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Bitkisel Organlar ve Hormonlar</span>
+
+</nav>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Bitki Organları ve Hormonları Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile bitki organları ve hormonlar konusunu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+
+<div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">30 adet soru-cevap kartı ile bitki organları ve hormonların temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Bitki organları ve hormonlarını görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Bitki organları ve hormonların tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile bitki organları ve hormonlar soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile bitki organları ve hormonlar hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Konuyla ilgili üst düzey bilgiler, ilginç detaylar ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Bitki Organları ve Hormonlar Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">30</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Bitki Organları ve Hormonlar Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bitki Yapıları ve Emergensler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Emergensler (Dikenler):</strong> Sadece epidermis hücrelerinden oluşmayan, epidermis, parankima ve iletim dokuları içeren çıkıntılar</li>
+                        <li><strong>Görevleri:</strong> Salgı, savunma, tutunma (gül, böğürtlen dikenleri)</li>
+                        <li><strong>Periderm (Mantar doku):</strong> Çok yıllık bitkilerde epidermis parçalanınca oluşan koruyucu doku</li>
+                        <li><strong>Süberin:</strong> Mantar dokuda su geçirmez mumsu madde</li>
+                        <li><strong>Lentisel (Kovucuk):</strong> Peridermde gaz alışverişini sağlayan açıklıklar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Kök Yapısı ve Çeşitleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Ana kök:</strong> Radikulanın gelişimiyle oluşan ilk kök</li>
+                        <li><strong>Kazık kök:</strong> Ana kök iyi gelişmiş, yan kökler az gelişmiş (çift çenekli bitkiler)</li>
+                        <li><strong>Saçak kök:</strong> Ana kök baskın değil, yan köklerle aynı kalınlıkta (tek çenekliler)</li>
+                        <li><strong>Kök bölgeleri:</strong> Kök şapkası, hücre bölünme bölgesi, uzama bölgesi, olgunlaşma bölgesi</li>
+                        <li><strong>Kök tabakaları:</strong> Epidermis, korteks, endodermis, merkezi silindir</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Gövde Yapısı ve Çeşitleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Gövde görevleri:</strong> Taşıma, destek, besin depolama (patates)</li>
+                        <li><strong>Otsu gövde:</strong> Tek çenekli ve çift çenekli olabilir, kambiyum yok</li>
+                        <li><strong>Odunsu gövde:</strong> Çift çenekli, kambiyum var, enine kalınlaşır</li>
+                        <li><strong>Yaş halkaları:</strong> İlkbahar (açık renk) ve sonbahar (koyu renk) odunu oluşur</li>
+                        <li><strong>Apikal dormansi:</strong> Üst tomurcukların alt tomurcukları baskılaması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Yaprak Yapısı ve Tipleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Yaprak bölümleri:</strong> Yaprak ayası ve yaprak sapı</li>
+                        <li><strong>Basit yapraklar:</strong> Yaprak ayası tam, parçalara ayrılmamış</li>
+                        <li><strong>Bileşik yapraklar:</strong> Yaprak ayası parçalara ayrılmış</li>
+                        <li><strong>Damarlanma:</strong> Tek çeneklilerde paralel, çift çeneklilerde ağsı</li>
+                        <li><strong>Yaprak yapısı:</strong> Epidermis, mezofil (palizat ve sünger parankiması), iletim sistemi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bitkisel Hormonlar - Temel Bilgiler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Hormon tanımı:</strong> Bitkide iç düzenlemeyi sağlayan kimyasal maddeler</li>
+                        <li><strong>Hedef hücre:</strong> Hormonun etki ettiği hücre, hormonu tanıyan reseptörleri var</li>
+                        <li><strong>Başlıca hormonlar:</strong> Oksin, giberellin, sitokinin, etilen, absisik asit</li>
+                        <li><strong>Hormonların genel etkileri:</strong> Büyüme, gelişme, üreme, farklılaşma, yara onarımı</li>
+                        <li><strong>Taşınma:</strong> İletim dokusu ile taşınırlar</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bitkisel Hormonlar - Fonksiyonlar</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Oksin:</strong> Gövde uzaması, yan kök oluşumu, fototropizma, yaprak dökülmesini geciktirme</li>
+                        <li><strong>Giberellin:</strong> Tohum çimlenmesi, gövde uzaması, çiçeklenme, meyve büyümesi</li>
+                        <li><strong>Sitokinin:</strong> Hücre bölünmesi, yanal tomurcuk büyümesi, yaprak yaşlanmasını geciktirme</li>
+                        <li><strong>Etilen:</strong> Meyve olgunlaşması, yaprak dökülmesi, gaz halinde hormon</li>
+                        <li><strong>Oksin-Sitokinin ilişkisi:</strong> Oksin sitokinini engelleyerek yan dal büyümesini durdurur</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Bitki Organları ve Hormonlar Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> BİTKİ DOKULARI VE YAPILARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Emergensler (Dikenler):</strong> Sadece epidermis hücrelerinden oluşmayan, epidermis, parankima ve iletim dokuları içeren çıkıntılardır. Gül, böğürtlen gibi bitkilerde dikenler, bitkinin savunma emergensleridir.</li>
+                        <li><strong>Periderm (Mantar doku):</strong> Çok yıllık bitkilerin kök ve gövdelerindeki epidermis parçalanır ve yerini periderm alır. Mantar doku hücrelerinin çeperleri süberin adlı su geçirmez mumsu madde biriktirir.</li>
+                        <li><strong>Lentisel (kovucuk):</strong> Periderm üzerinde bulunan açıklıklardır. Gövdedeki canlı hücrelerin dış ortamla gaz alışverişini sağlar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tree"></i> KÖK YAPISI VE ÇEŞİTLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Kök Çeşidi</th>
+                            <th>Özellikleri</th>
+                            <th>Örnek Bitkiler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Kazık Kök</strong></td>
+                            <td>Ana kök iyi gelişmiş, yan kökler ana köke bağlı ve az gelişmiş. Çift çenekli bitkilerde bulunur.</td>
+                            <td>Havuç, gül, fasulye, bakla, lahana</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Saçak Kök</strong></td>
+                            <td>Ana kök baskın değil, yan köklerle aynı kalınlıkta. Tek çenekli bitkilerde bulunur.</td>
+                            <td>Soğan, buğday, mısır, arpa, çim</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Kökün Bölümleri:</strong> Kök şapkası (kaliptra), hücre bölünme bölgesi, uzama bölgesi, olgunlaşma bölgesi. Kök enine kesitinde dıştan içe: epidermis, korteks, endodermis, merkezi silindir.
+                    </div>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Kök şapkası (Kaliptra):</strong> Kök ucu meristemini koruyan, müsilaj içeren yapı. Kök ucunun toprak içinde kayarak uzamasını sağlar.</li>
+                        <li><strong>Endodermis:</strong> Korteksin en iç tabakası, topraktan merkezi silindire madde girişini denetleyen seçici engel.</li>
+                        <li><strong>Kökü besin olarak tüketilen bitkiler:</strong> Havuç, turp, şalgam, kereviz, pancar.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> GÖVDE YAPISI VE ÇEŞİTLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Gövde Çeşidi</th>
+                            <th>Özellikleri</th>
+                            <th>Örnek Bitkiler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Otsu Gövde</strong></td>
+                            <td>En dışı epidermis ile örtülü. Tek çenekli ve çift çenekli olabilir. Kambiyum yoksa enine büyüyemez.</td>
+                            <td>Buğday, lale, mısır, çim (tek çenekli); fasulye, domates (çift çenekli)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Odunsu Gövde</strong></td>
+                            <td>Çift çenekli, kambiyum var, enine kalınlaşır. Yaş halkaları bulunur.</td>
+                            <td>Elma, çam, gül, meşe</td>
+                        </tr>
+                    </table>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Gövde görevleri:</strong> Taşıma, destek, besin depolama (patates), fotosentez (genç gövdeler).</li>
+                        <li><strong>Düğüm (nodyum):</strong> Yaprağın çıktığı nokta. İki düğüm arası internodyum.</li>
+                        <li><strong>Apikal dormansi:</strong> Üst tomurcukların alt tomurcukları baskılaması. Uç kısımlar budanınca diğer tomurcuklar hızla gelişir.</li>
+                        <li><strong>Yaş halkaları:</strong> Ağaçların enine kesitinde görülen halkalar. İlkbahar odunu (açık renk, hücre duvarları ince) ve sonbahar odunu (koyu renk, hücre duvarları kalın).</li>
+                        <li><strong>Gövdesini besin olarak tüketilen bitkiler:</strong> Patates, yer elması.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-leaf"></i> YAPRAK YAPISI VE TİPLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Yaprak Tipi</th>
+                            <th>Özellikleri</th>
+                            <th>Örnek Bitkiler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Basit Yaprak</strong></td>
+                            <td>Yaprak ayası tam, parçalara ayrılmamış. Yaprak sapı olabilir veya olmayabilir.</td>
+                            <td>Elma, kiraz, gül</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bileşik Yaprak</strong></td>
+                            <td>Yaprak ayası parçalara ayrılmış. Yaprakçıklar bulunur.</td>
+                            <td>Yonca, akasya, gül (bazı türleri)</td>
+                        </tr>
+                    </table>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Yaprak bölümleri:</strong> Yaprak ayası (fotosentez bölgesi) ve yaprak sapı (yaprak ayasını gövdeye bağlar).</li>
+                        <li><strong>Damarlanma:</strong> Tek çeneklilerde paralel damarlanma, çift çeneklilerde ağsı damarlanma.</li>
+                        <li><strong>Yaprak enine kesiti:</strong> Epidermis (kütikula ile örtülü), mezofil (palizat ve sünger parankiması), iletim sistemi (ksilem ve floem).</li>
+                        <li><strong>Stomalar:</strong> Epidermiste, gaz alışverişini ve terlemeyi sağlayan özel yapılar. Bitkinin yetişme ortamına göre üst epidermiste, alt epidermiste veya her ikisinde bulunabilir.</li>
+                        <li><strong>Yaprağı besin olarak tüketilen bitkiler:</strong> Ispanak, lahana, marul, semizotu, dereotu, nane.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> BİTKİSEL HORMONLAR</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Hormon</th>
+                            <th>Sentezlendiği Yer</th>
+                            <th>Başlıca Etkileri</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Oksin</strong></td>
+                            <td>Uç meristem, genç yapraklar</td>
+                            <td>Gövde uzaması, yan kök oluşumu, fototropizma, meyve gelişimi, yaprak dökülmesini geciktirme</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Giberellin</strong></td>
+                            <td>Kökler, genç yapraklar, embriyolar</td>
+                            <td>Tohum çimlenmesi, gövde uzaması, çiçeklenme, meyve büyümesi, cüce bitkilerde büyümeyi teşvik</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sitokinin</strong></td>
+                            <td>Embriyolar, kök hücreler, meyveler</td>
+                            <td>Hücre bölünmesi, yanal tomurcuk büyümesi, yaprak yaşlanmasını geciktirme, doku onarımı</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Etilen</strong></td>
+                            <td>Bitkinin birçok kısmında</td>
+                            <td>Meyve olgunlaşması, yaprak dökülmesi, çiçeklenme, stres tepkisi</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Hormon Etkileşimleri:</strong> Oksin, sitokinini engelleyerek yan dal büyümesini durdurur. Sitokinin, oksinler ile etkileşerek meristematik hücrelerin farklılaşmasını sağlar.
+                    </div>
+                    
+                    <ul class="summary-list">
+                        <li><strong>Hormon tanımı:</strong> Bitkide iç düzenlemeyi sağlayan kimyasal maddeler. Yunanca "uyarma" anlamına gelir.</li>
+                        <li><strong>Hedef hücre:</strong> Hormonun etki ettiği hücre, zarında hormonu tanıyan reseptörler bulunur.</li>
+                        <li><strong>Taşınma:</strong> Hormonlar genellikle iletim dokusu ile taşınır.</li>
+                        <li><strong>Bitki gelişimindeki rolleri:</strong> Büyüme, gelişme, üreme, farklılaşma, yara onarımı.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> TEK ÇENEKLİ VE ÇİFT ÇENEKLİ BİTKİLERİN KARŞILAŞTIRILMASI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Tek Çenekli (Monokotiledon) Bitkiler</th>
+                            <th>Çift Çenekli (Dikotiledon) Bitkiler</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Kök</strong></td>
+                            <td>Saçak kök tipi</td>
+                            <td>Kazık kök tipi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gövde</strong></td>
+                            <td>Genellikle otsu, ince, kambiyum yok, iletim demetleri dağınık</td>
+                            <td>Genellikle odunsu, kalın, kambiyum var, iletim demetleri halka şeklinde</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yaprak</strong></td>
+                            <td>İnce, uzun, şerit şeklinde, paralel damarlanma, yaprak sapı yok</td>
+                            <td>Geniş, ağsı damarlanma, yaprak sapı var</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Çiçek</strong></td>
+                            <td>Taç yaprak sayısı 3 veya 3'ün katları</td>
+                            <td>Taç yaprak sayısı 4, 5 veya bunların katları</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Örnekler</strong></td>
+                            <td>Mısır, buğday, lale, sümbül, soğan</td>
+                            <td>Fasulye, elma, gül, domates, havuç</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Bitki Organları ve Hormonlar Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Bir bahçıvan, domates fidelerinin uç kısımlarını budadığında, bitkilerin yan dallarının daha fazla geliştiğini gözlemliyor. Bu durum hangi bitkisel olgu ile açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bahçıvan, domates bitkilerinin daha dallı budaklı olmasını ve daha fazla meyve vermesini istiyor. Bunun için bitkilerin uç kısımlarını kesiyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Apikal dormansi (uç baskınlığı) ve oksin hormonunun etkisi ile açıklanır.</p>
+                        <p><strong>Açıklama:</strong> Bitkilerde üst tomurcuklar (apikal tomurcuk) alt tomurcukları (lateral tomurcuk) baskılar. Üst tomurcuklarda sentezlenen oksin hormonu, yan tomurcukların gelişimini engeller. Bahçıvan uç tomurcuğu kesince oksin kaynağı ortadan kalkar ve yan tomurcuklardaki baskı kalkar. Bu durumda yan tomurcuklar hızla gelişerek bitkinin daha dallı budaklı olmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Markette satılan muzlar genellikle yeşilken toplanır, sonradan sararır ve olgunlaşır. Bu olgunlaşma süreci hangi bitkisel hormon ile hızlandırılabilir? Bu hormon nasıl etki eder?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Muz gibi tropikal meyveler olgunlaşınca çabuk bozulduğu için, taşınma ve depolama sırasında bozulmayı önlemek için yeşilken toplanır, satış noktasında olgunlaştırılır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Etilen hormonu ile hızlandırılır. Etilen, meyve olgunlaşmasını tetikleyen gaz halinde bir hormondur.</p>
+                        <p><strong>Açıklama:</strong> Etilen, meyve olgunlaşmasını sağlayan bir hormondur. Olgunlaşma sürecinde nişastanın şekerlere parçalanması, organik asitlerin azalması, meyvenin yumuşaması ve renginin değişmesi gibi değişikliklere neden olur. Marketlerde yeşil muzların yanına olgun meyveler (elma gibi) konulduğunda, olgun meyvelerden yayılan etilen gazı, muzların daha hızlı olgunlaşmasını sağlar. Ayrıca muz depolanan odalara kontrollü şekilde etilen gazı verilerek de bu süreç hızlandırılabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Bir öğrenci, fasulye tohumlarını çimlendirme deneyi yapıyor. Bir grup tohumu normal suda, diğer grubu ise giberellin çözeltisinde bekletiyor. Giberellin çözeltisindeki tohumların daha erken ve daha yüksek oranda çimlendiğini gözlemliyor. Bu sonuç nasıl açıklanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Öğrenci, bitki hormonlarının tohum çimlenmesine etkisini araştıran bir deney yapıyor. Deneyde iki farklı ortamda tohum çimlenmesini karşılaştırıyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Giberellin hormonu tohum çimlenmesini uyarır ve tohumun uyku halinin (dormansi) bozulmasını sağlar.</p>
+                        <p><strong>Açıklama:</strong> Bazı tohumlar, olumsuz çevre koşullarından korunmak için dormansi (uyku hali) adı verilen bir döneme girer. Bu dönemde tohum çimlenmez. Giberellin hormonu, tohumdaki embriyoyu uyararak çimlenmeyi başlatır. Giberellin, embriyodaki enzim aktivitesini artırarak endospermdeki (besin deposu) nişastanın şekerlere parçalanmasını sağlar. Bu şekerler embriyonun büyümesi için enerji kaynağı olur. Ayrıca giberellin, absisik asit hormonunun (çimlenmeyi engelleyen hormon) etkisini azaltır. Bu nedenle giberellin çözeltisindeki tohumlar daha erken ve daha yüksek oranda çimlenir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Çiftçi Ahmet, tarlasındaki mısır bitkilerinin boylarının beklenenden kısa kaldığını fark ediyor. Bir ziraat mühendisi, bitkilere giberellin hormonu uygulamasını öneriyor. Bu hormon mısır bitkilerinin boylarını nasıl etkiler?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Çiftçi, mısır bitkilerinin normalden daha kısa boylu olması nedeniyle verim kaybı yaşıyor. Ziraat mühendisi, bitki büyümesini teşvik edici bir hormon öneriyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Giberellin hormonu, mısır bitkilerinin gövde uzamasını teşvik ederek boylarının artmasını sağlar.</p>
+                        <p><strong>Açıklama:</strong> Giberellinler, bitkilerde gövde uzamasını sağlayan önemli hormonlardır. Gövdedeki hücre bölünmesini ve hücre uzamasını uyarırlar. Özellikle cüce bitkilerde ve gövdeleri az uzayan bitkilerde giberellin uygulandığında, gövde uzaması belirgin şekilde artar. Mısır gibi tek çenekli bitkilerde giberellin, internodyum (düğümler arası) uzamasını artırır. Bu sayede bitkinin boyu artar. Ayrıca giberellin, yaprakların büyümesini de teşvik eder.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Bir botanik bahçesinde çalışan Zeynep, bazı bitkilerin gövdelerinin üzerinde ince yarıklar veya kabartılar olduğunu fark ediyor. Bu yapıların ne olduğunu ve görevini merak ediyor. Bu yapılar nelerdir ve hangi işlevi görür?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Zeynep, özellikle odunsu gövdeli bitkilerin (ağaçların) gövdelerinde belirgin yarıklar ve kabartılar gözlemliyor. Bunların bitki için ne işe yaradığını araştırıyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Bu yapılar lentisellerdir (kovucuk). Gövdedeki canlı hücrelerin dış ortamla gaz alışverişini sağlarlar.</p>
+                        <p><strong>Açıklama:</strong> Lentiseller, odunsu gövdeli bitkilerin periderm (mantar doku) üzerinde bulunan açıklıklardır. Stomaların yapraklarda yaptığı gaz alışverişini, lentiseller gövdelerde yapar. Bu açıklıklardan oksijen (O₂) alınır, karbondioksit (CO₂) ve su buharı dışarı verilir. Lentiseller sürekli açıktır, stomalar gibi açılıp kapanmazlar. Özellikle kışın yapraklarını döken ağaçlarda, lentiseller gövdelerin gaz alışverişinde hayati öneme sahiptir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6-15 için aynı yapıda devam edilecek -->
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bir fen bilgisi öğretmeni öğrencilerine, havuç ve soğan bitkilerinin köklerini inceletiyor. Öğrenciler havuç kökünün tek ve kalın, soğan kökünün ise çok sayıda ve ince olduğunu gözlemliyor. Bu farkın nedeni nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Havuç çift çenekli (dikotil), soğan ise tek çenekli (monokotil) bitkidir. Çift çeneklilerde kazık kök, tek çeneklilerde saçak kök görülür.</p>
+                        <p><strong>Açıklama:</strong> Havuç, çift çenekli bir bitkidir ve çift çenekli bitkilerde ana kök iyi gelişerek kazık kök tipini oluşturur. Soğan ise tek çenekli bir bitkidir ve tek çeneklilerde ana kök iyi gelişmez, onun yerine çok sayıda yan kök aynı kalınlıkta gelişerek saçak kök tipini oluşturur. Bu kök yapısı farkı, bitkilerin sınıflandırılmasında önemli bir özelliktir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Orman işçileri, ağaçların enine kesitlerindeki halkalara bakarak ağaçların yaşını tahmin edebiliyor. Bu halkalar nasıl oluşur ve neden bazı halkalar açık, bazıları koyu renklidir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Yaş halkaları, lateral meristem (kambiyum) faaliyeti sonucu oluşur. Açık renkli halkalar ilkbahar odunu, koyu renkli halkalar sonbahar odunudur.</p>
+                        <p><strong>Açıklama:</strong> Odunsu bitkilerde kambiyum, büyüme mevsimi boyunca faaliyet gösterir. İlkbaharda hızlı büyüme döneminde oluşan oduna ilkbahar odunu denir. Bu odunun hücreleri büyük, hücre duvarları incedir, bu nedenle açık renklidir. Sonbaharda büyüme yavaşlar, oluşan oduna sonbahar odunu denir. Bu odunun hücreleri küçük, hücre duvarları kalındır, bu nedenle koyu renklidir. Bir açık ve bir koyu halka birlikte bir yıllık büyümeyi gösterir. Halkaların sayılmasıyla ağacın yaşı tahmin edilebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Bir çiçekçi, kesilmiş güllerin daha uzun süre taze kalması için suyuna sitokinin hormonu ekliyor. Bu hormon kesilmiş çiçeklerin tazeliğini nasıl korur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Sitokinin hormonu, yaprakların yaşlanmasını geciktirir ve yeşil kalmalarını sağlar.</p>
+                        <p><strong>Açıklama:</strong> Sitokininler, bitkilerde hücre bölünmesini uyaran, yaprak yaşlanmasını geciktiren ve yeşil kalmalarını sağlayan hormonlardır. Kesilmiş çiçeklerde yaprakların sararıp solması (senesens), klorofil yıkımı ve proteinlerin parçalanmasıyla olur. Sitokinin, bu süreci yavaşlatır ve yaprakların daha uzun süre yeşil kalmasını sağlar. Ayrıca sitokinin, besin maddelerinin yapraklara taşınmasını teşvik eder. Bu nedenle çiçekçiler, kesilmiş çiçeklerin ömrünü uzatmak için sitokinin spreyleri veya çözeltileri kullanır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Bir öğrenci, sınıf penceresinin önünde duran saksı bitkisinin ışığa doğru yöneldiğini fark ediyor. Bitki neden ışığa doğru yönelir? Bu olayda hangi hormon görev alır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Bu olaya fototropizma denir ve oksin hormonu ile gerçekleşir.</p>
+                        <p><strong>Açıklama:</strong> Fototropizma, bitkilerin ışığa doğru yönelmesidir. Işığın geldiği taraftaki oksin hormonu, ışık nedeniyle parçalanır veya azalır. Işık almayan tarafta ise oksin birikir. Oksin, bitkilerde hücre uzamasını sağlar. Işık almayan tarafta daha fazla oksin biriktiği için, o taraftaki hücreler daha fazla uzar. Bu durumda gövde, uzayan tarafa doğru eğilir ve bitki ışığa yönelmiş olur. Bu mekanizma sayesinde bitkiler fotosentez için gerekli olan ışığa ulaşabilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir çiftçi, domates bitkilerine çok fazla oksin hormonu uyguladığında bitkilerin büyümesinin durduğunu gözlemliyor. Normalde büyümeyi teşvik eden bir hormon neden büyümeyi durdurur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Oksin hormonu düşük derişimlerde büyümeyi uyarırken, yüksek derişimlerde büyümeyi engeller.</p>
+                        <p><strong>Açıklama:</strong> Hormonların etkileri derişime bağlıdır. Oksin hormonu için optimal (en uygun) bir derişim aralığı vardır. Bu aralıkta oksin, gövde uzamasını uyarır, hücre bölünmesini teşvik eder. Ancak oksin derişimi optimal aralığın üzerine çıktığında, etkisi tersine döner ve büyümeyi engeller, hatta toksik etki yapabilir. Bu duruma "hormonal inhibisyon" denir. Bu nedenle tarımda hormon uygulamaları dozajı çok önemlidir; aşırı doz bitkiye zarar verir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Mutfakta bekleyen patateslerin üzerinde filizler çıktığı görülür. Bu filizlerin oluşumunda hangi hormon etkilidir? Bu hormon nasıl çalışır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Patateslerde filiz oluşumunda giberellin hormonu etkilidir.</p>
+                        <p><strong>Açıklama:</strong> Patates, yumru gövde olarak besin depolayan bir bitkidir. Depolama sırasında patateslerde dormansi (uyku hali) görülür. Zamanla veya uygun koşullarda (sıcaklık, nem) dormansi kırılır. Bu süreçte giberellin hormonu üretimi artar. Giberellin, patates yumrusundaki tomurcukların (gözlerin) uyanmasını ve filizlenmesini sağlar. Ayrıca, ilkbaharda sıcaklığın artmasıyla birlikte absisik asit (dormansi hormonu) etkisi azalır, giberellin etkisi artar ve tomurcuklanma başlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Kaktüs gibi kurakçıl bitkilerin yaprakları küçük, kütikulası kalın ve su depolayabilme özelliğine sahiptir. Bu özellikler bitkiye ne gibi avantajlar sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Bu özellikler kurak ortamlara adaptasyonu sağlar, su kaybını azaltır ve su depolamayı kolaylaştırır.</p>
+                        <p><strong>Açıklama:</strong> Kurak ortamlarda yaşayan bitkiler (kserofitler), su kaybını en aza indirmek için adaptasyonlar geliştirmiştir. Küçük yapraklar, terleme yüzeyini azaltır. Kalın kütikula, yaprak yüzeyinden suyun buharlaşmasını engeller. Su depolama dokuları (parankima), kurak dönemlerde bitkinin su ihtiyacını karşılar. Ayrıca bu bitkilerde stomalar derinde veya az sayıdadır, gündüzleri kapalı, geceleri açıktır. Tüm bu adaptasyonlar, bitkinin kurak koşullarda hayatta kalmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Çift çenekli bir bitkinin gövdesi hem boyuna hem enine büyüyebilirken, tek çenekli bir bitkinin gövdesi sadece boyuna büyür. Bu farkın nedeni nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Çift çenekli bitkilerde kambiyum bulunur ve enine büyümeyi sağlar. Tek çenekli bitkilerde kambiyum yoktur, bu nedenle sadece boyuna büyüyebilirler.</p>
+                        <p><strong>Açıklama:</strong> Çift çenekli bitkilerin gövdelerinde iletim demetleri arasında kambiyum bulunur. Kambiyum, lateral (yan) meristemdir ve bölünerek içe doğru ksilemi (odun), dışa doğru floemi (soymuk) oluşturur. Bu sayede gövde enine kalınlaşır. Tek çenekli bitkilerde ise kambiyum yoktur. İletim demetleri dağınık halde parankima hücreleri arasına yerleşmiştir. Bu nedenle tek çenekliler sadece apikal (uç) meristemle boyuna büyüyebilir, enine kalınlaşamaz.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Bazı bitkilerin yaprakları sonbaharda renk değiştirir ve dökülür. Bu süreçte hangi hormonlar görev alır? Yaprak dökülmesi bitki için neden önemlidir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Yaprak dökülmesinde etilen hormonu artar, oksin hormonu azalır. Yaprak dökülmesi, kışın su kaybını önler ve boşaltımı sağlar.</p>
+                        <p><strong>Açıklama:</strong> Sonbaharda günler kısalıp sıcaklık düştüğünde, yaprak sapının gövdeyle birleştiği yerde absisyon (ayrılma) tabakası oluşur. Bu süreçte:
+                        1. Oksin hormonu azalır (oksin yaprak dökülmesini geciktirir).
+                        2. Etilen hormonu artar (etilen yaprak dökülmesini hızlandırır).
+                        3. Absisyon tabakasındaki hücre çeperleri parçalanır.
+                        4. Yaprak sapı zayıflar ve yaprak dökülür.
+                        Yaprak dökülmesi, kışın yapraklardan terlemeyle su kaybını önler. Ayrıca yapraklarda biriken metabolik atıkların (örneğin, oksalat kristalleri) dökülmeyle uzaklaştırılmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Bir bitki yetiştiricisi, doku kültürü yöntemiyle yeni bitkiler üretiyor. Bu yöntemde oksin ve sitokinin hormonları birlikte kullanılıyor. Bu iki hormon doku kültüründe nasıl etkileşir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Oksin ve sitokinin hormonları belirli oranlarda kullanıldığında, hücre bölünmesini, farklılaşmayı ve organogenezi (organ oluşumunu) teşvik eder.</p>
+                        <p><strong>Açıklama:</strong> Doku kültüründe bitki hücrelerinin gelişimi oksin/sitokinin oranına bağlıdır:
+                        1. Yüksek oksin / düşük sitokinin: Kallus (farklılaşmamış hücre kütlesi) oluşumunu teşvik eder.
+                        2. Yüksek sitokinin / düşük oksin: Sürgün (gövde ve yaprak) oluşumunu teşvik eder.
+                        3. Dengeli oksin/sitokinin: Hem kök hem sürgün gelişimini sağlar.
+                        Bu hormonlar, meristematik hücrelerin farklılaşmasını yönlendirir. Örneğin, kök oluşumu için daha yüksek oksin, sürgün oluşumu için daha yüksek sitokinin gereklidir. Bu şekilde tek bir bitki hücresinden tam bir bitki üretilebilir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Bitki Organları ve Hormonlar Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2c3e50; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden çok yıllık bitkilerde epidermis yerini periderm (mantar doku) alır? Mantar doku neden ölü hücrelerden oluşur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep-Sonuç İlişkisi:</strong> Bitkinin korunma ihtiyacı ve hücre yapısı arasındaki ilişki.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Neden periderm oluşur?</strong> Çok yıllık bitkiler (ağaçlar, çalılar) uzun süre yaşar ve kalınlaşır. Epidermis ince ve esnektir, gövde kalınlaştıkça çatlar ve parçalanır. Bu nedenle epidermis yerini daha dayanıklı olan periderm alır.</p>
+                            <p><strong>Neden mantar doku ölü hücrelerden oluşur?</strong> Mantar doku hücreleri olgunlaşınca, çeperlerinde süberin adlı mumsu, su geçirmez bir madde birikir. Süberin hücre çeperini tamamen kaplar ve bu kaplama:</p>
+                            <ol>
+                                <li><strong>Hücrenin ölmesine neden olur:</strong> Süberin, hücrenin madde alışverişini engeller. Hücre beslenemez, solunum yapamaz hale gelir ve ölür.</li>
+                                <li><strong>İçleri hava ile dolar:</strong> Ölen hücrelerin içi hava ile dolar. Bu hava tabakası ısı yalıtımı sağlar.</li>
+                            </ol>
+                            <p><strong>Mantar dokunun avantajları:</strong></p>
+                            <ol>
+                                <li><strong>Su kaybını önler:</strong> Süberin suya geçirgen değildir. Bitkinin su kaybetmesini engeller.</li>
+                                <li><strong>Mekanik koruma sağlar:</strong> Kalın çeperli ölü hücreler bitkiyi fiziksel hasarlardan korur.</li>
+                                <li><strong>Isı yalıtımı yapar:</strong> Hava ile dolu hücreler bitkinin aşırı ısınmasını veya soğumasını önler.</li>
+                                <li><strong>Mikroorganizmalara karşı bariyerdir:</strong> Mantar doku, patojenlerin bitki içine girmesini zorlaştırır.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Periderm, bitkinin uzun ömürlü olması için geliştirdiği bir adaptasyondur. Ölü hücrelerden oluşması, koruyucu işlev için avantajdır çünkü ölü hücreler çevresel koşullardan etkilenmez ve sürekli koruma sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Kökün uç kısmında neden kök şapkası (kaliptra) bulunur? Kök şapkası olmasaydı ne olurdu?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Kökün toprak içinde ilerleme mekanizması ve korunma ihtiyacı.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kök şapkasının (kaliptra) görevleri:</strong></p>
+                            <ol>
+                                <li><strong>Apikal meristemi korur:</strong> Kökün en uç kısmında sürekli bölünebilen hücreler (apikal meristem) vardır. Kaliptra bu değerli dokuyu mekanik hasarlardan korur.</li>
+                                <li><strong>Kayganlık sağlar:</strong> Kaliptra hücreleri müsilaj (jelatinimsi bir madde) salgılar. Bu madde:
+                                    <ul>
+                                        <li>Kök ucunun toprak içinde kayarak ilerlemesini kolaylaştırır.</li>
+                                        <li>Sürtünmeyi azaltır, enerji tasarrufu sağlar.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Yön tayininde rol oynar:</strong> Kaliptra, yerçekimini algılayarak kökün aşağı doğru büyümesini (jeotropizma) sağlar. Kaliptra hücrelerinde statolit denilen tanecikler yerçekimine göre yer değiştirir ve bu sinyal kökün büyüme yönünü belirler.</li>
+                            </ol>
+                            <p><strong>Kök şapkası olmasaydı ne olurdu?</strong></p>
+                            <ol>
+                                <li><strong>Apikal meristem zarar görürdü:</strong> Kök toprakta ilerlerken sürtünme ve çakıl taşları gibi sert partiküller meristem hücrelerini yıpratırdı. Hücre bölünmesi yavaşlar veya dururdu.</li>
+                                <li><strong>Kök yavaş ilerlerdi:</strong> Sürtünme artardı, kök toprakta ilerlemek için daha fazla enerji harcardı.</li>
+                                <li><strong>Yönelim bozulurdu:</strong> Jeotropizma (yerçekimine yönelim) düzgün çalışmazdı, kökler yanlış yöne büyüyebilirdi.</li>
+                                <li><strong>Kök ucu enfeksiyonlara açık olurdu:</strong> Koruyucu bariyer olmadığı için topraktaki patojenler meristeme kolayca girebilirdi.</li>
+                            </ol>
+                            <p><strong>Biyolojik Mantığı:</strong> Kaliptra, kökün toprak gibi zorlu bir ortamda hayatta kalması ve verimli çalışması için geliştirilmiş mükemmel bir adaptasyondur. Koruma, kayganlık ve yönelim gibi kritik işlevleri bir arada sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Neden tek çenekli bitkiler enine kalınlaşamazken, çift çenekli bitkiler kalınlaşabilir? Bu farkın bitki yaşamındaki sonuçları nelerdir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Kambiyum varlığı/ yokluğu ve bitki yapısı arasındaki ilişki.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kambiyum nedir?</strong> Kambiyum, lateral (yan) meristemdir. Bölünerek içe doğru ksilem (odun), dışa doğru floem (soymuk) dokularını oluşturur. Bu sayede gövde enine kalınlaşır.</p>
+                            <p><strong>Çift çeneklilerde kambiyum vardır:</strong></p>
+                            <ol>
+                                <li>İletim demetleri halka şeklinde düzenlenmiştir.</li>
+                                <li>Demetler arasında kambiyum bulunur.</li>
+                                <li>Kambiyum faaliyetiyle her yıl yeni ksilem ve floem tabakaları eklenir.</li>
+                                <li>Sonuç: Gövde kalınlaşır, odunsu yapı oluşur, bitki yıllarca yaşayabilir (çok yıllık).</li>
+                            </ol>
+                            <p><strong>Tek çeneklilerde kambiyum yoktur:</strong></p>
+                            <ol>
+                                <li>İletim demetleri dağınık halde parankima içine gömülüdür.</li>
+                                <li>Demetler arasında kambiyum bulunmaz.</li>
+                                <li>Sadece apikal (uç) meristemle boyuna büyüme olur.</li>
+                                <li>Sonuç: Gövde kalınlaşamaz, otsu yapıda kalır, genellikle bir yıllıktır.</li>
+                            </ol>
+                            <p><strong>Bu farkın sonuçları:</strong></p>
+                            <table class="comparison-table">
+                                <tr>
+                                    <th>Özellik</th>
+                                    <th>Tek Çenekliler (Kambiyumsuz)</th>
+                                    <th>Çift Çenekliler (Kambiyumlu)</th>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yaşam süresi</strong></td>
+                                    <td>Genellikle bir yıllık (buğday, mısır)</td>
+                                    <td>Çok yıllık (ağaçlar, çalılar)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Gövde yapısı</strong></td>
+                                    <td>Otsu, ince</td>
+                                    <td>Odunsu, kalın</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Boyut</strong></td>
+                                    <td>Genellikle küçük boylu</td>
+                                    <td>Çok büyük boylara ulaşabilir (sekoya ağacı)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Destek sistemi</strong></td>
+                                    <td>Parankima hücreleriyle destek</td>
+                                    <td>Kalın odun dokusuyla destek</td>
+                                </tr>
+                            </table>
+                            <p><strong>Evrimsel mantık:</strong> Tek çenekliler genellikle otçul hayvanlara yem olma riski yüksek ortamlarda evrimleşmiştir. Hızlı büyüyüp çabuk üremeleri avantajdır. Çift çenekliler ise uzun ömürlü olup rakiplerine karşı yüksekliği ve kalınlığı ile avantaj sağlar. İki strateji de farklı ekolojik nişlerde başarılıdır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden ağaç gövdesinde yaş halkaları oluşur? İlkbahar odunu neden açık, sonbahar odunu neden koyu renklidir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Büyüme hızı, hücre yapısı ve renk ilişkisi.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Yaş halkaları neden oluşur?</strong> Ilıman iklimlerde ağaçlar, büyüme mevsimi boyunca (ilkbahar-yaz) aktif büyür, kışın ise büyüme durur. Bu döngüsel büyüme, her yıl için bir halka oluşturur.</p>
+                            <p><strong>İlkbahar odunu (erken odun):</strong></p>
+                            <ol>
+                                <li><strong>Oluştuğu dönem:</strong> İlkbahar, büyümenin hızlı olduğu dönem.</li>
+                                <li><strong>Hücre yapısı:</strong> Kambiyum hızlı bölünür. Oluşan ksilem hücreleri:
+                                    <ul>
+                                        <li>Geniş çaplıdır (su iletimi için daha verimli).</li>
+                                        <li>Hücre çeperleri incedir (hızlı büyüme için az madde harcanır).</li>
+                                        <li>Lümen (hücre boşluğu) geniştir.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Neden açık renk?</strong> İnce çeperler daha az lignin (odunlaşma maddesi) içerir. Lignin koyu renklidir. Az lignin = açık renk.</li>
+                            </ol>
+                            <p><strong>Sonbahar odunu (geç odun):</strong></p>
+                            <ol>
+                                <li><strong>Oluştuğu dönem:</strong> Sonbahar, büyümenin yavaşladığı dönem.</li>
+                                <li><strong>Hücre yapısı:</strong> Kambiyum yavaş bölünür. Oluşan ksilem hücreleri:
+                                    <ul>
+                                        <li>Dar çaplıdır.</li>
+                                        <li>Hücre çeperleri kalındır (daha dayanıklı).</li>
+                                        <li>Lümen dardır.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Neden koyu renk?</strong> Kalın çeperler daha çok lignin içerir. Çok lignin = koyu renk.</li>
+                            </ol>
+                            <p><strong>Halkaların işlevsel mantığı:</strong></p>
+                            <ol>
+                                <li><strong>İlkbahar odunu:</strong> Su iletimini optimize eder. Geniş trakeitlerle su hızlı taşınır (yaprakların fotosentez için suya ihtiyacı vardır).</li>
+                                <li><strong>Sonbahar odunu:</strong> Mekanik destek sağlar. Kalın çeperli hücreler gövdeye dayanıklılık kazandırır.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Bir açık + bir koyu halka = 1 yıllık büyüme. Halkaların genişliği o yılki büyüme koşulları (yağış, sıcaklık) hakkında bilgi verir. Kurak yıllarda halkalar dar, yağışlı yıllarda geniş olur.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden oksin hormonu düşük derişimlerde büyümeyi uyarırken, yüksek derişimlerde engeller? Bu mekanizma bitki için nasıl bir avantaj sağlar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Hormonal düzenleme ve homeostazis (iç denge) prensibi.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Oksinin etki mekanizması:</strong> Oksin, hücre çeperinin esnekliğini artıran proteinleri (ekspansinler) aktive eder. Bu proteinler hücre çeperindeki mikrofibrilleri gevşetir. Hücre içine su girişi olur, turgor basıncı artar ve hücre uzar.</p>
+                            <p><strong>Düşük derişimde (optimal aralık):</strong></p>
+                            <ol>
+                                <li>Oksin, ekspansinleri aktive eder.</li>
+                                <li>Hücre çeperi gevşer.</li>
+                                <li>Su girişi ile hücre uzar.</li>
+                                <li>Büyüme teşvik edilir.</li>
+                            </ol>
+                            <p><strong>Yüksek derişimde (toksik seviye):</strong></p>
+                            <ol>
+                                <li>Aşırı oksin, hücrede asitlenmeye neden olur (proton pompasını aşırı çalıştırır).</li>
+                                <li>Asidik ortamda hücre çeperini parçalayan enzimler (selülaz, pektinaz) aktive olur.</li>
+                                <li>Hücre çeperi zayıflar, hatta parçalanır.</li>
+                                <li>Hücre bütünlüğü bozulur, büyüme durur, hücre ölebilir.</li>
+                            </ol>
+                            <p><strong>Bu mekanizmanın bitkiye avantajları:</strong></p>
+                            <ol>
+                                <li><strong>Homeostazis (iç denge) sağlar:</strong> Hormon üretimi ve parçalanmasıyla optimal seviye korunur. Aşırı büyüme engellenir.</li>
+                                <li><strong>Strese karşı korur:</strong> Aşırı oksin birikimi (örneğin, yaralanma sonrası) bölgesel hücre ölümüne neden olarak patojenlerin yayılmasını sınırlayabilir.</li>
+                                <li><strong>Uyum sağlar:</strong> Farklı dokular farklı oksin duyarlılığına sahiptir. Kökler oksine daha hassastır (düşük derişimde bile inhibe olur), gövdeler daha az hassastır. Bu sayede bitki organları farklı büyüme hızlarına sahip olur.</li>
+                                <li><strong>Apikal dominansi sağlar:</strong> Üst tomurcukta yüksek oksin, yan tomurcukların büyümesini engeller. Böylece bitki enerjisini ana gövdeye yönlendirir, önce yüksekliği artırır (ışık için rekabet).</li>
+                            </ol>
+                            <p><strong>Biyolojik Mantığı:</strong> Hormonların derişim-bağımlı etkisi, bitkinin büyümesini ince bir şekilde kontrol etmesini sağlar. "Ne kadar çok o kadar iyi" mantığı hormonlar için geçerli değildir. Optimal bir aralık vardır ve bitki bu aralıkta çalışacak şekilde evrimleşmiştir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden etilen gaz halinde bir hormondur? Gaz halinde olması bitki için ne gibi avantajlar sağlar?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Hormon taşınma şekli ve bitki içi iletişim.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Etilen gaz halinde neden özeldir?</strong> Diğer bitki hormonları (oksin, giberellin, sitokinin, absisik asit) sıvı ortamda taşınır. Etilen ise küçük bir hidrokarbon gazıdır (C₂H₄). Bu farklılık önemli avantajlar sağlar.</p>
+                            <p><strong>Gaz halinde olmanın avantajları:</strong></p>
+                            <ol>
+                                <li><strong>Hızlı yayılma:</strong> Gazlar hızla difüzyonla yayılır. Bir meyvede üretilen etilen, komşu meyvelere ve bitkinin diğer kısımlarına hızla ulaşır.</li>
+                                <li><strong>Hücre zarlarından kolay geçiş:</strong> Küçük ve lipofilik (yağı seven) yapısı sayesinde hücre zarlarından kolayca difüzyonla geçer. Özel taşıyıcılara ihtiyaç duymaz.</li>
+                                <li><strong>Bitkiler arası iletişim:</strong> Havaya salınan etilen, yakındaki bitkileri bile etkileyebilir. Örneğin, olgun bir meyve, yanındaki yeşil meyvelerin olgunlaşmasını hızlandırabilir.</li>
+                                <li><strong>Stres sinyali olarak:</strong> Bir bitki zarar gördüğünde veya stres altındayken (kuraklık, su baskını, yaralanma, enfeksiyon) etilen üretimini artırır. Bu gaz halindeki sinyal, bitkinin diğer kısımlarına hızla ulaşarak savunma mekanizmalarının aktive olmasını sağlar.</li>
+                            </ol>
+                            <p><strong>Etilenin olumsuz etkilerinden korunma:</strong></p>
+                            <ol>
+                                <li><strong>Havalandırma:</strong> Depolarda meyvelerin çürümesini önlemek için iyi havalandırma yapılır. Böylece birikmiş etilen uzaklaştırılır.</li>
+                                <li><strong>Etilen tutucu filtreler:</strong> Bazı meyve-sebze depolarında etileni tutan özel filtreler kullanılır.</li>
+                                <li><strong>Etilen inhibitörleri:</strong> Ticari olarak etilen üretimini engelleyen kimyasallar (örneğin, 1-MCP) kullanılır. Bunlar meyvelerin raf ömrünü uzatır.</li>
+                            </ol>
+                            <p><strong>Biyolojik Mantığı:</strong> Etilenin gaz halinde olması, bitkiye acil durumlarda hızlı ve yaygın bir sinyal sistemi sağlar. Özellikle meyve olgunlaşması ve stres tepkileri gibi süreçlerde zamanlamanın doğru olması kritiktir. Etilen, bu süreçleri senkronize etmek için ideal bir hormondur.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meraklısına / İleri Biyoloji Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-dna"></i> HORMON SİNYAL İLETİM YOLLARI: HORMON NASIL "KONUŞUR"?</div>
+                    <div class="advanced-content">
+                        <p>Bir hormon hedef hücreye ulaştığında, hücre bu mesajı nasıl "anlar" ve tepki verir? Bu, hormon sinyal iletim yolları ile olur.</p>
+                        <p><strong>1. Reseptör Bağlanması:</strong> Hormon, hücre zarındaki veya hücre içindeki spesifik reseptör proteinine bağlanır. Her hormonun kendine özgü reseptörü vardır.</p>
+                        <p><strong>2. Sinyal Kaskadı:</strong> Reseptör-hormon kompleksi, hücre içinde bir dizi protein aktivasyonu başlatır. Bu zincirleme reaksiyona "sinyal kaskadı" denir. Küçük bir hormonal sinyal, kaskatla büyütülür (amplifikasyon).</p>
+                        <p><strong>3. İkinci Haberciler:</strong> Bazı hormonlar (oksin gibi) doğrudan gen ekspresyonunu değiştirirken, diğerleri ikinci habercileri kullanır. Örneğin, kalsiyum iyonları (Ca²⁺) bitkilerde yaygın bir ikinci habercidir.</p>
+                        <p><strong>4. Gen Ekspresyonunun Değişmesi:</strong> Sinyal nihayetinde çekirdeğe ulaşır ve transkripsiyon faktörlerini aktive/deaktive eder. Bu, belirli genlerin okunup okunmayacağını belirler.</p>
+                        <p><strong>5. Hücresel Yanıt:</strong> Yeni proteinler sentezlenir veya mevcut proteinler modifiye edilir. Sonuçta hücre bölünür, uzar, farklılaşır veya ölür (apoptoz).</p>
+                        <p><strong>İlginç Gerçek:</strong> Bazı patojenler (örneğin, Agrobacterium tumefaciens) bu sinyal yollarını taklit ederek bitki hücrelerini kontrolsüz bölünmeye zorlar ve tümör (gal) oluşturur.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-code-branch"></i> HORMONAL KROSSTALK: HORMONLARIN KONUŞMASI</div>
+                    <div class="advanced-content">
+                        <p>Bitki hormonları tek başına değil, sürekli birbirleriyle etkileşim halinde çalışır. Buna "hormonal crosstalk" (hormonal çapraz konuşma) denir.</p>
+                        <p><strong>Oksin ve Sitokinin Dengesi:</strong> Bu ikili, bitki gelişimini yönlendiren ana dümen gibidir.</p>
+                        <ul>
+                            <li><strong>Yüksek Oksin / Düşük Sitokinin:</strong> Kök oluşumunu teşvik eder. Doku kültüründe kallus oluşumu.</li>
+                            <li><strong>Düşük Oksin / Yüksek Sitokinin:</strong> Sürgün (gövde, yaprak) oluşumunu teşvik eder.</li>
+                            <li><strong>Dengeli Oran:</strong> Kök ve sürgün gelişimi birlikte olur.</li>
+                        </ul>
+                        <p><strong>Giberellin ve Absisik Asit (ABA) Savaşı:</strong></p>
+                        <ul>
+                            <li><strong>Giberellin:</strong> Tohum çimlenmesini, büyümeyi teşvik eder.</li>
+                            <li><strong>ABA:</strong> Tohum dormansisini (uyku halini), büyümenin durmasını sağlar.</li>
+                            <li>Çimlenmede, giberellin seviyesi artarken ABA seviyesi düşer. ABA, giberellin üretimini engelleyen genleri aktive eder.</li>
+                        </ul>
+                        <p><strong>Etilen ve Oksin İşbirliği:</strong></p>
+                        <ul>
+                            <li>Etilen, oksin taşınmasını ve dağılımını etkiler.</li>
+                            <li>Yaprak dökülmesinde, oksin azalırken etilen artar. Etilen, oksin sentezini ve taşınmasını inhibe eder.</li>
+                        </ul>
+                        <p><strong>Jasmonatlar ve Savunma:</strong> Jasmonik asit türevleri (jasmonatlar), böcek saldırılarına karşı savunma sinyali olarak çalışır. Salisilik asit (başka bir hormon) ile etkileşerek sistemik kazanılmış direnç oluşturur.</p>
+                        <p><strong>Sonuç:</strong> Bitki, bu karmaşık hormonal ağ sayesinde çevresel koşullara ve içsel ihtiyaçlara ince ayarlı yanıtlar verebilir. Hormonlar bir orkestra gibidir; tek tek melodileri vardır ama uyum içinde çalıştıklarında bitki senfonisini oluştururlar.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-user-secret"></i> BİTKİLERDE HAFIZA: PRİMİNG VE SİSTEMİK KAZANILMIŞ DİRENÇ</div>
+                    <div class="advanced-content">
+                        <p>Bitkilerin beyni yoktur ama "hafızaları" vardır. Bu, bağışıklık sistemine benzer bir şekilde çalışır.</p>
+                        <p><strong>Priming (Hazırlık):</strong> Bir bitki hafif bir stresle (örneğin, hafif bir patojen saldırısı veya belirli kimyasallar) karşılaştığında, ikinci bir saldırıya karşı "hazır" hale gelir. İlk saldırıda büyük bir savunma tepkisi vermez ama savunma genlerinin ifadesini değiştirir. İkinci saldırıda çok daha hızlı ve güçlü tepki verir.</p>
+                        <p><strong>Sistemik Kazanılmış Direnç (SAR):</strong> Bir yaprak patojenle enfekte olduğunda, bitki tüm vücuduna bir sinyal yayar (sinyal molekülü genellikle salisilik asittir). Bu sinyal, enfekte olmayan uzak yaprakların da savunma mekanizmalarını aktive eder. Yani bitki, "sadece hasta olan kısmı değil, tüm vücudu korumaya alır."</p>
+                        <p><strong>Mekanizma:</strong> Bu hafıza, epigenetik modifikasyonlarla (DNA metilasyonu, histon modifikasyonu) sağlanır. Savunma ile ilgili genlerin promotor bölgeleri, daha kolay transkripsiyona açık hale getirilir.</p>
+                        <p><strong>Uygulamalar:</strong> Çiftçiler, bitkilere hafif stres uygulayarak veya bitki aktivatörü denilen kimyasallar vererek onları hastalıklara karşı "aşılayabilir". Bu, tarım ilacı kullanımını azaltan sürdürülebilir bir yöntemdir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-brain"></i> BİTKİ NÖROBİYOLOJİSİ: BİTKİLER "DÜŞÜNÜR" MÜ?</div>
+                    <div class="advanced-content">
+                        <p>Bitkilerin sinir sistemi yoktur ama elektriksel sinyaller kullanarak iletişim kurabilir ve çevrelerine karmaşık tepkiler verebilirler.</p>
+                        <p><strong>Bitki Aksiyon Potansiyelleri:</strong> Hayvan sinir hücrelerindeki aksiyon potansiyeline benzer şekilde, bitkilerde de elektriksel sinyaller oluşabilir. Özellikle Venüs sinek kapanı (Dionaea muscipula) ve küstüm otu (Mimosa pudica) gibi bitkilerde hızlı hareketler bu sinyallerle kontrol edilir.</p>
+                        <p><strong>Sinyal İletim Yolları:</strong> Bitkilerde elektriksel sinyaller, özelleşmiş iletim dokuları (floem) veya hücreler arası bağlantılar (plazmodezmata) aracılığıyla iletilir.</p>
+                        <p><strong>Çevresel Bilgi İşleme:</strong> Bitkiler, ışık, dokunma, yerçekimi, su, besin maddeleri, sıcaklık, patojenler ve herbivorlar hakkında sürekli bilgi toplar. Bu bilgileri entegre ederek optimal büyüme ve savunma stratejileri geliştirirler. Örneğin, komşu bitkilerin gölgesini algılayıp ona göre büyüme yönü belirlerler (gölgeden kaçınma tepkisi).</p>
+                        <p><strong"Kök Beyin" Hipotezi:</strong> Bazı bilim insanları, kök uçlarındaki meristem bölgelerinin ve çevresindeki hücrelerin, hayvanlardaki nöron ağlarına benzer şekilde bilgi işlediğini öne sürer. Kök uçları sürekli topraktaki su, besin, toksin ve mikroorganizmaları "tadarak" ve "koklayarak" analiz eder.</p>
+                        <p><strong>Bitki Zekası:</strong> Bu terim tartışmalıdır. Bitkiler, öğrenme, hafıza, karar verme ve problem çözme gibi bilişsel süreçlerin basit formlarını sergiler. Ancak merkezi bir beyinleri olmadığı için bu süreçler dağınık bir şekilde, tüm vücut hücrelerinin iletişimiyle gerçekleşir. Belki de bitkiler, "dağınık zeka"nın en iyi örnekleridir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-history"></i> EVRİMSEL BAKIŞ: BİTKİ HORMONLARI NASIL ORTAYA ÇIKTI?</div>
+                    <div class="advanced-content">
+                        <p>Bitki hormonları bir anda mı ortaya çıktı? Hayır, uzun bir evrimsel sürecin ürünüdür.</p>
+                        <p><strong>Kökler Alglerde:</strong> Oksin, giberellin ve sitokinin benzeri maddelere bazı alglerde (özellikle karaya en yakın alg gruplarında) rastlanır. Bu, hormon sistemlerinin karaya çıkmadan önce basit formlarda evrimleşmeye başladığını gösterir.</p>
+                        <p><strong>Karaya Çıkış ve Büyük Adaptasyon:</strong> Karasal yaşam, su kaybı, yerçekimiyle mücadele ve destek gibi büyük sorunlar getirdi. Hormon sistemleri, bu sorunlara çözüm olarak karmaşıklaştı:</p>
+                        <ul>
+                            <li><strong>Oksin:</strong> Yerçekimine yönelim (jeotropizma) ve ışığa yönelim (fototropizma) için kritik hale geldi.</li>
+                            <li><strong>Giberellin:</strong> Dikey büyüme ve uzun boylu olma rekabetinde avantaj sağladı.</li>
+                            <li><strong>Sitokinin/Oksin Dengesi:</strong> Dallanma ve yaprak oluşumunu düzenleyerek fotosentetik verimi artırdı.</li>
+                        </ul>
+                        <p><strong>Çiçekli Bitkilerde İnovasyon:</strong> Etilen, meyve oluşumu ve olgunlaşması ile özellikle çiçekli bitkilerde (angiospermler) önem kazandı. Meyveler, tohumların hayvanlar tarafından dağıtılmasını sağlayan bir adaptasyondur. Etilen, bu süreci kontrol eder.</p>
+                        <p><strong>Hormonlar ve Patojenlerin Ortak Evrimi:</strong> Birçok bitki patojeni (bakteri, mantar), konak bitkinin hormon sistemini taklit ederek onu manipüle eder. Örneğin, "sürgün yanıklığı" yapan bakteriler (Pseudomonas syringae), konak bitkide aşırı oksin ve sitokinin üretimini tetikleyerek anormal büyümeye (gal) neden olur. Bu da bitki kaynaklarını patojenin lehine kullanır. Bu, sürekli bir "silah yarışıdır".</p>
+                        <p><strong>Sonuç:</strong> Bitki hormon sistemleri, basit kimyasal sinyallerden, bitkinin tüm yaşam döngüsünü ve çevreyle etkileşimini koordine eden sofistike bir iletişim ağına evrimleşmiştir. Bu sistem olmasaydı, bugün gördüğümüz muazzam bitki çeşitliliği ve karmaşıklığı asla oluşamazdı.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="https://github.com/ozturkodev-bit/biyosev/raw/main/12bitkiselorganvehormon.m4a" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+document.getElementById('audio-btn').addEventListener('click', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('audio-section').classList.add('active');
+    updateProgress('audio');
+});
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            updateProgress('advanced');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+document.getElementById('back-from-audio').addEventListener('click', () => {
+    document.getElementById('audio-section').classList.remove('active');
+    document.getElementById('dashboard').style.display = 'grid';
+});
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-advanced').addEventListener('click', () => {
+            document.getElementById('advanced-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 30 Bitki Organları ve Hormonlar Sorusu
+        const csvData = `Emergensler (dikenler) nedir?,"Sadece epidermis hücrelerinden oluşmayan, epidermis, parankima ve iletim dokuları içeren çıkıntılardır. Salgı, savunma ve tutunma görevleri yapar. Gül, böğürtlen dikenleri örnektir."`
+        + `\nPeriderm (mantar doku) nedir?,"Çok yıllık bitkilerde epidermis parçalanınca oluşan koruyucu doku. Hücre çeperlerinde süberin birikir. Su geçirmez, bitkiyi su kaybından korur."`
+        + `\nLentisel (kovucuk) nedir?,"Periderm üzerindeki açıklıklar. Gövdedeki canlı hücrelerin dış ortamla gaz alışverişini sağlar. O₂ alınır, CO₂ verilir."`
+        + `\nKazık kök nedir?,"Ana kök iyi gelişmiş, yan kökler az gelişmiş kök tipi. Çift çenekli bitkilerde görülür. Havuç, gül, fasulye örnektir."`
+        + `\nSaçak kök nedir?,"Ana kök baskın değil, yan köklerle aynı kalınlıkta kök tipi. Tek çenekli bitkilerde görülür. Soğan, buğday, mısır örnektir."`
+        + `\nKök şapkası (kaliptra) nedir?,"Kök ucu meristemini koruyan, müsilaj salgılayan yapı. Kök ucunun toprak içinde kayarak uzamasını sağlar."`
+        + `\nEndodermis nedir?,"Korteksin en iç tabakası. Topraktan merkezi silindire madde girişini denetleyen seçici engeldir."`
+        + `\nApikal dormansi nedir?,"Üst tomurcukların alt tomurcukları baskılaması. Uç kısımlar budanınca diğer tomurcuklar hızla gelişir."`
+        + `\nOtsu gövde nedir?,"Epidermis ile örtülü, kambiyumu olmayan veya az olan gövde tipi. Tek ve çift çeneklilerde olabilir."`
+        + `\nOdunsu gövde nedir?,"Kambiyumu olan, enine kalınlaşan gövde tipi. Çift çenekli bitkilerde görülür. Yaş halkaları bulunur."`
+        + `\nYaş halkaları nedir?,"Odunsu gövdelerde her yıl oluşan halkalar. İlkbahar odunu (açık) ve sonbahar odunu (koyu) bir yıllık büyümeyi gösterir."`
+        + `\nYaprak ayası nedir?,"Yaprağın yassılaşmış, yeşil renkli, damarların bulunduğu bölge. Fotosentezin yapıldığı ve gaz alışverişinin olduğu bölüm."`
+        + `\nYaprak sapı nedir?,"Yaprak ayasını belli bir açıyla gövdeye bağlayan kısım. İletim demetlerini yaprağa taşır. Bazı bitkilerde yoktur."`
+        + `\nBasit yaprak nedir?,"Yaprak ayası tam, parçalara ayrılmamış yaprak tipi. Elma, gül yaprakları örnektir."`
+        + `\nBileşik yaprak nedir?,"Yaprak ayası parçalara ayrılmış yaprak tipi. Yonca, akasya yaprakları örnektir."`
+        + `\nParalel damarlanma nedir?,"Tek çenekli bitkilerin yapraklarında görülen damarlanma tipi. Damarlar birbirine paralel uzanır."`
+        + `\nAğsı damarlanma nedir?,"Çift çenekli bitkilerin yapraklarında görülen damarlanma tipi. Damarlar ağ şeklinde dallanır."`
+        + `\nEpidermis nedir?,"Yaprağın dış yüzeyini örten doku. Üzeri kütikula ile kaplıdır. Stomaları içerir."`
+        + `\nMezofil nedir?,"Yaprakta epidermisler arasında kalan, kloroplastlı parankima dokusu. Palizat ve sünger parankimasından oluşur."`
+        + `\nPalizat parankiması nedir?,"Mezofilin üst kısmında, bol kloroplastlı, silindirik hücreler. Fotosentezin en yoğun yapıldığı bölgedir."`
+        + `\nSünger parankiması nedir?,"Palizat parankimasının altında, düzensiz şekilli, hücreler arası boşlukları geniş parankima. Gaz alışverişini kolaylaştırır."`
+        + `\nBitkisel hormon nedir?,"Bitkide iç düzenlemeyi sağlayan, hedef hücrelerde etki gösteren kimyasal maddeler. Büyüme, gelişme, üreme, farklılaşmayı düzenler."`
+        + `\nOksin nedir?,"Uç meristem ve genç yapraklarda sentezlenen hormon. Gövde uzaması, yan kök oluşumu, fototropizma, yaprak dökülmesini geciktirme gibi etkileri vardır."`
+        + `\nGiberellin nedir?,"Kökler, genç yapraklar ve embriyolarda sentezlenen hormon. Tohum çimlenmesi, gövde uzaması, çiçeklenme, meyve büyümesini sağlar."`
+        + `\nSitokinin nedir?,"Embriyolar, kök hücreler ve meyvelerde sentezlenen hormon. Hücre bölünmesi, yanal tomurcuk büyümesi, yaprak yaşlanmasını geciktirme etkileri vardır."`
+        + `\nEtilen nedir?,"Gaz halinde bir hormondur. Meyve olgunlaşması, yaprak dökülmesi, çiçeklenme, stres tepkisinde görev alır."`
+        + `\nOksin ve sitokinin ilişkisi nedir?,"Oksin, sitokinini engelleyerek yan dal büyümesini durdurur. Doku kültüründe dengeli kullanımı kök ve sürgün oluşumunu sağlar."`
+        + `\nTek çenekli bitkilerin özellikleri nelerdir?,"Saçak kök, otsu gövde (kambiyum yok), paralel damarlanma, yaprak sapı yok, çiçek parçaları 3 veya katları. Mısır, buğday örnektir."`
+        + `\nÇift çenekli bitkilerin özellikleri nelerdir?,"Kazık kök, odunsu gövde (kambiyum var), ağsı damarlanma, yaprak sapı var, çiçek parçaları 4-5 veya katları. Fasulye, gül örnektir."`
+        + `\nAbsisik asit nedir?,"Stres hormonu olarak bilinir. Tohum dormansisi, stoma kapanması, büyümenin durması gibi etkileri vardır."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'teki tüm kavramları kapsayacak şekilde)
+        const testQuestions = [
+            {
+                question: "Emergensler (dikenler) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Sadece epidermis hücrelerinden oluşurlar",
+                    "Epidermis, parankima ve iletim dokuları içerirler",
+                    "Salgı, savunma ve tutunma görevleri yaparlar",
+                    "Gül ve böğürtlen dikenleri emergens örneğidir",
+                    "Bitki tohumlarının yayılmasını sağlayan emergensler vardır"
+                ],
+                correct: 0,
+                explanation: "Emergensler sadece epidermis hücrelerinden oluşmaz; epidermis, parankima ve iletim dokuları içerirler. Bu onları basit tüylerden ayıran önemli bir özelliktir."
+            },
+            {
+                question: "Periderm (mantar doku) ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Tek yıllık bitkilerde epidermis parçalanınca oluşur",
+                    "Hücre çeperlerinde süberin birikir",
+                    "Hücreleri canlıdır ve bol kloroplast içerir",
+                    "Gaz alışverişini engeller",
+                    "Bitkinin su kaybetmesini kolaylaştırır"
+                ],
+                correct: 1,
+                explanation: "Periderm, çok yıllık bitkilerde epidermis parçalanınca oluşan koruyucu dokudur. Hücre çeperlerinde süberin adlı su geçirmez mumsu madde birikir. Hücreleri ölüdür, içleri hava ile doludur."
+            },
+            {
+                question: "Lentiseller (kovucuklar) ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Periderm üzerinde bulunur",
+                    "Gövdedeki canlı hücrelerin gaz alışverişini sağlar",
+                    "Stomalara benzer işlev görür",
+                    "Devamlı açıktır, açılıp kapanmaz",
+                    "Yapraklarda bulunur, gövdelerde bulunmaz"
+                ],
+                correct: 4,
+                explanation: "Lentiseller, odunsu gövdelerin peridermi üzerinde bulunur ve gövdedeki gaz alışverişini sağlar. Yapraklarda bulunmaz, yapraklarda stomalar bulunur."
+            },
+            {
+                question: "Kazık kök tipi ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Ana kök iyi gelişmemiştir",
+                    "Yan kökler ana kökten daha kalındır",
+                    "Tek çenekli bitkilerde görülür",
+                    "Havuç, gül, fasulye gibi bitkilerde bulunur",
+                    "Saçak kök olarak da adlandırılır"
+                ],
+                correct: 3,
+                explanation: "Kazık kök tipinde ana kök iyi gelişmiştir, yan kökler ana köke bağlı ve az gelişmiştir. Çift çenekli bitkilerde görülür. Havuç, gül, fasulye kazık kök örnekleridir."
+            },
+            {
+                question: "Saçak kök tipi ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Ana kök baskın değildir",
+                    "Yan köklerle aynı kalınlıktadır",
+                    "Tek çenekli bitkilerde görülür",
+                    "Soğan, buğday, mısır gibi bitkilerde bulunur",
+                    "Ana kök çok uzun ve kalındır"
+                ],
+                correct: 4,
+                explanation: "Saçak kök tipinde ana kök baskın değildir, yan köklerle aynı kalınlıktadır. Tek çenekli bitkilerde görülür. Ana kökün çok uzun ve kalın olması kazık kök özelliğidir."
+            },
+            {
+                question: "Kök şapkası (kaliptra) ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Kök ucundaki meristemi korur",
+                    "Fotosentez yapar",
+                      "Su ve mineral emilimini sağlar",
+                      "Ölü hücrelerden oluşur",
+                      "Bitkinin yaprak dökümünü kontrol eder"
+                ],
+                correct: 0,
+                explanation: "Kök şapkası (kaliptra), kök ucundaki meristemi koruyan, müsilaj salgılayan canlı parankima hücrelerinden oluşan bir yapıdır. Kök ucunun toprak içinde kayarak uzamasını sağlar."
+            },
+            {
+                question: "Kökün enine kesitinde dıştan içe doğru sıralanan yapılar hangisinde doğru verilmiştir?",
+                options: [
+                    "Epidermis - endodermis - korteks - merkezi silindir",
+                    "Epidermis - korteks - endodermis - merkezi silindir",
+                    "Korteks - epidermis - endodermis - merkezi silindir",
+                    "Endodermis - korteks - epidermis - merkezi silindir",
+                    "Merkezi silindir - endodermis - korteks - epidermis"
+                ],
+                correct: 1,
+                explanation: "Kökün enine kesitinde en dışta epidermis, sonra korteks, daha sonra endodermis ve en içte merkezi silindir bulunur. Endodermis korteks ile merkezi silindiri birbirinden ayırır."
+            },
+            {
+                question: "Apikal dormansi ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Köklerin uyku halidir",
+                    "Üst tomurcukların alt tomurcukları baskılamasıdır",
+                    "Yaprakların sonbaharda dökülmesidir",
+                    "Tohumun çimlenmemesidir",
+                    "Bitkilerin kış uykusudur"
+                ],
+                correct: 1,
+                explanation: "Apikal dormansi (uç baskınlığı), üst tomurcukların alt tomurcukları baskılaması durumudur. Bitkilerin uç kısımları budandığında bu baskı kalkar ve diğer tomurcuklar hızla gelişir."
+            },
+            {
+                question: "Otsu gövde ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "En dışı epidermis ile örtülüdür",
+                    "Tek çenekli ve çift çenekli olabilir",
+                    "Kambiyum yoksa enine büyüyemez",
+                    "Genellikle çok yıllıktır",
+                    "Buğday, lale, mısır örnekleridir"
+                ],
+                correct: 3,
+                explanation: "Otsu gövdeli bitkiler genellikle bir yıllıktır. Çok yıllık olanlar da vardır ama odunsu gövdeli bitkilere göre daha azdır. Tek çeneklilerde kambiyum olmadığı için enine büyüyemezler."
+            },
+            {
+                question: "Odunsu gövde ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Kambiyum yoktur",
+                    "Enine kalınlaşamaz",
+                    "Yaş halkaları bulunur",
+                    "Genellikle tek yıllıktır",
+                    "Sadece tek çenekli bitkilerde görülür"
+                ],
+                correct: 2,
+                explanation: "Odunsu gövdeli bitkilerde kambiyum vardır ve enine kalınlaşırlar. Bu kalınlaşma sonucu her yıl ilkbahar ve sonbahar odunu oluşur ve yaş halkaları meydana gelir. Genellikle çift çenekli ve çok yıllıktırlar."
+            },
+            {
+                question: "Yaş halkaları ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Ağaç gövdesinin enine kesitinde görülür",
+                    "Her halka bir yıllık büyümeyi gösterir",
+                    "İlkbahar odunu koyu, sonbahar odunu açık renklidir",
+                    "Lateral meristem (kambiyum) faaliyeti ile oluşur",
+                    "Ağacın yaşı halkalar sayılarak tahmin edilebilir"
+                ],
+                correct: 2,
+                explanation: "İlkbahar odunu açık renkli (hücre duvarları ince), sonbahar odunu koyu renklidir (hücre duvarları kalın). Bir açık bir koyu halka birlikte bir yıllık büyümeyi gösterir."
+            },
+            {
+                question: "Yaprak ayası ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Yaprağın gövdeye bağlandığı kısımdır",
+                    "Fotosentezin yapıldığı ve gaz alışverişinin olduğu bölümdür",
+                    "Sadece su iletimini sağlar",
+                      "Kütikula içermez",
+                      "Sadece çift çenekli bitkilerde bulunur"
+                ],
+                correct: 1,
+                explanation: "Yaprak ayası, yaprağın yassılaşmış, yeşil renkli, damarların bulunduğu bölgedir. Fotosentezin yapıldığı ve gaz alışverişinin gerçekleştiği bölümdür. Üzeri kütikula ile kaplıdır."
+            },
+            {
+                question: "Basit yaprak ve bileşik yaprak arasındaki fark nedir?",
+                options: [
+                    "Basit yaprakta yaprak ayası parçalı, bileşik yaprakta tamdır",
+                    "Basit yaprak tek çeneklilerde, bileşik yaprak çift çeneklilerde bulunur",
+                    "Basit yaprakta yaprak ayası tam, bileşik yaprakta parçalıdır",
+                    "Basit yaprak besin depolar, bileşik yaprak depolamaz",
+                    "Basit yaprak fotosentez yapmaz, bileşik yaprak yapar"
+                ],
+                correct: 2,
+                explanation: "Basit yapraklarda yaprak ayası tamdır, parçalara ayrılmamıştır. Bileşik yapraklarda ise yaprak ayası parçalara ayrılmıştır (yaprakçıklar). Her iki tip de hem tek hem çift çeneklilerde bulunabilir."
+            },
+            {
+                question: "Tek çenekli ve çift çenekli bitkilerin yapraklarındaki damarlanma farkı nedir?",
+                options: [
+                    "Tek çeneklilerde ağsı, çift çeneklilerde paralel damarlanma",
+                    "Tek çeneklilerde paralel, çift çeneklilerde ağsı damarlanma",
+                    "Her ikisinde de sadece paralel damarlanma",
+                    "Her ikisinde de sadece ağsı damarlanma",
+                    "Damarlanma farkı yoktur"
+                ],
+                correct: 1,
+                explanation: "Tek çenekli bitkilerin yapraklarında paralel damarlanma görülür (mısır, buğday). Çift çenekli bitkilerin yapraklarında ise ağsı damarlanma görülür (elma, gül)."
+            },
+            {
+                question: "Yaprağın enine kesitinde bulunan mezofil tabakası ile ilgili hangisi doğrudur?",
+                options: [
+                    "Epidermisin üstündedir",
+                    "Kütikuladan oluşur",
+                    "Palizat ve sünger parankimasından oluşur",
+                    "İletim demetlerini içerir",
+                      "Su depolama görevi vardır"
+                ],
+                correct: 2,
+                explanation: "Mezofil, yaprakta alt ve üst epidermis arasında kalan, kloroplastlı parankima dokusudur. Palizat parankiması (üstte, silindirik hücreler) ve sünger parankiması (altta, düzensiz hücreler) olmak üzere iki kısımdan oluşur."
+            },
+            {
+                question: "Bitkisel hormonlar ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Bitkide iç düzenlemeyi sağlarlar",
+                    "Hedef hücrelerde etki gösterirler",
+                    "Sadece büyümeyi düzenlerler",
+                    "İletim dokusu ile taşınırlar",
+                      "Kimyasal uyarıcılardır"
+                ],
+                correct: 2,
+                explanation: "Bitkisel hormonlar sadece büyümeyi değil, gelişmeyi, üremeyi, farklılaşmayı ve yaraların onarımını da gerçekleştirirler. Büyüme dışında çok çeşitli işlevleri vardır."
+            },
+            {
+                question: "Oksin hormonu ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Uç meristem ve genç yapraklarda sentezlenir",
+                    "Gövde uzamasını uyarır (düşük derişimde)",
+                    "Yan köklerin oluşumunu sağlar",
+                    "Fototropizmada görev yapar",
+                      "Yaprakların dökülmesini hızlandırır"
+                ],
+                correct: 4,
+                explanation: "Oksin hormonu yaprakların dökülmesini geciktirir, hızlandırmaz. Yaprak dökülmesini hızlandıran hormon etilendir. Oksin ayrıca meyve ve çiçek gelişimini düzenler, kambiyumun bölünmesini uyarır."
+            },
+            {
+                question: "Giberellin hormonu ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Tohumun uyku halini (dormansi) artırır",
+                    "Gövde uzamasını engeller",
+                    "Cüce bitkilerde büyümeyi teşvik eder",
+                    "Sadece köklerde sentezlenir",
+                      "Yaprak yaşlanmasını hızlandırır"
+                ],
+                correct: 2,
+                explanation: "Giberellin hormonu, tohumun uyku halini bozarak çimlenmesini sağlar, gövde uzamasını teşvik eder. Cüce bitkilere uygulandığında normal boya ulaşmalarını sağlar. Köklerde, genç yapraklarda ve embriyolarda sentezlenir."
+            },
+            {
+                question: "Sitokinin hormonu ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Hücre bölünmesini uyarır",
+                    "Yanal tomurcuk büyümesini hızlandırır",
+                    "Yaprakların yaşlanmasını geciktirir",
+                    "Kesilmiş çiçeklerin tazeliğini korumak için kullanılır",
+                      "Sadece köklerde sentezlenir"
+                ],
+                correct: 4,
+                explanation: "Sitokininler embriyolarda, kök hücrelerde ve meyvelerde sentezlenir, sadece köklerde değil. Hücre bölünmesini uyarır, yanal tomurcuk büyümesini hızlandırır, yaprak yaşlanmasını geciktirir."
+            },
+            {
+                question: "Etilen hormonu ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Sıvı halde bir hormondur",
+                    "Meyve olgunlaşmasını yavaşlatır",
+                    "Yaprak dökülmesini engeller",
+                    "Gaz halinde bir hormondur",
+                      "Sadece köklerde üretilir"
+                ],
+                correct: 3,
+                explanation: "Etilen, gaz halinde bir hormondur. Meyve olgunlaşmasını hızlandırır, yaprak ve çiçek dökülmesini sağlar. Bitkinin birçok kısmında üretilebilir, stres durumunda üretimi artar."
+            },
+            {
+                question: "Oksin ve sitokinin hormonları arasındaki ilişki ile ilgili hangisi doğrudur?",
+                options: [
+                    "Oksin sitokinini engelleyerek yan dal büyümesini durdurur",
+                    "Sitokinin oksini engelleyerek gövde uzamasını durdurur",
+                    "Her ikisi de aynı etkiyi gösterir",
+                    "Birbirlerinden bağımsız çalışırlar",
+                      "Sadece birlikte çalıştıklarında etkili olurlar"
+                ],
+                correct: 0,
+                explanation: "Oksin, sitokinini engelleyerek yan dal büyümesini durdurur. Bu nedenle üst tomurcuk kesilince (oksin kaynağı ortadan kalkınca) yan tomurcuklar büyür. Doku kültüründe belirli oranlarda kullanıldıklarında farklılaşmayı yönlendirirler."
+            },
+            {
+                question: "Tek çenekli bitkilerin özellikleri ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Saçak kök tipi görülür",
+                    "Genellikle otsu bitkilerdir, gövdeleri incedir",
+                    "Kambiyum yoktur, enine büyüyemezler",
+                    "Paralel damarlanma görülür",
+                      "Yaprak sapı vardır"
+                ],
+                correct: 4,
+                explanation: "Tek çenekli bitkilerin çoğunda yaprak sapı yoktur, yaprak ayası doğrudan gövdeye bağlanır. Saçak kök, otsu gövde, kambiyum yokluğu ve paralel damarlanma tek çeneklilerin özellikleridir."
+            },
+            {
+                question: "Çift çenekli bitkilerin özellikleri ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Saçak kök tipi görülür",
+                    "Genellikle otsu bitkilerdir",
+                    "Kambiyum yoktur",
+                    "Ağsı damarlanma görülür",
+                      "Çiçek parçaları 3 veya katlarıdır"
+                ],
+                correct: 3,
+                explanation: "Çift çenekli bitkilerde ağsı damarlanma görülür. Kazık kök tipi, genellikle odunsu gövde, kambiyum varlığı ve çiçek parçalarının 4-5 veya katları olması diğer özellikleridir."
+            },
+            {
+                question: "Hangi bitkinin kökü besin olarak tüketilir?",
+                options: [
+                    "Gül",
+                    "Elma",
+                    "Havuç",
+                    "Zambak",
+                      "Çam"
+                ],
+                correct: 2,
+                explanation: "Havuç kökü besin olarak tüketilir. Ayrıca şalgam, turp, kereviz, pancar gibi bitkilerin kökleri de besin olarak tüketilir. Gül, elma, zambak, çamın kökü besin olarak tüketilmez."
+            },
+            {
+                question: "Hangi bitkinin gövdesi besin olarak tüketilir?",
+                options: [
+                    "Patates",
+                    "Havuç",
+                    "Turp",
+                    "Pancar",
+                      "Şalgam"
+                ],
+                correct: 0,
+                explanation: "Patates, yumru gövde olarak besin depolayan ve gövdesi besin olarak tüketilen bir bitkidir. Havuç, turp, pancar, şalgam ise kökü besin olarak tüketilen bitkilerdir."
+            },
+            {
+                question: "Hangi bitkinin yaprağı besin olarak tüketilmez?",
+                options: [
+                    "Ispanak",
+                    "Lahana",
+                    "Marul",
+                    "Çam",
+                      "Dereotu"
+                ],
+                correct: 3,
+                explanation: "Çam ağacının yaprakları besin olarak tüketilmez. Ispanak, lahana, marul, dereotu gibi bitkilerin yaprakları besin olarak tüketilir."
+            },
+            {
+                question: "Stomalar ile ilgili aşağıdakilerden hangisi yanlıştır?",
+                options: [
+                    "Epidermiste bulunur",
+                    "Gaz alışverişini sağlar",
+                    "Terlemeyi sağlar",
+                    "Devamlı açıktır, açılıp kapanmaz",
+                      "Bitkinin yetişme ortamına göre farklı konumlarda bulunabilir"
+                ],
+                correct: 3,
+                explanation: "Stomalar açılıp kapanabilen yapılardır. Lentiseller devamlı açıktır. Stomalar epidermis üzerinde bulunur, gaz alışverişini ve terlemeyi sağlar. Sulak, kurak veya normal bölgelerde farklı konumlarda bulunabilir."
+            },
+            {
+                question: "Kütikula ile ilgili aşağıdakilerden hangisi doğrudur?",
+                options: [
+                    "Yaprak epidermisinin altındaki tabakadır",
+                    "Gaz alışverişini kolaylaştırır",
+                    "Yaprağın su kaybını önleyen mumsu maddedir",
+                    "Sadece köklerde bulunur",
+                      "Kloroplast içerir"
+                ],
+                correct: 2,
+                explanation: "Kütikula, yaprak epidermisinin üst yüzeyini örten şeffaf, ince, mumsu bir maddedir. Yaprağın su kaybını önler. Gaz alışverişini engeller, bu nedenle stomalar gaz alışverişini sağlar."
+            },
+            {
+                question: "Tek çenekli ve çift çenekli bitkilerin kök yapıları arasındaki fark nedir?",
+                options: [
+                    "Tek çeneklilerde kazık kök, çift çeneklilerde saçak kök",
+                    "Tek çeneklilerde saçak kök, çift çeneklilerde kazık kök",
+                    "Her ikisinde de sadece kazık kök",
+                    "Her ikisinde de sadece saçak kök",
+                      "Kök yapısında fark yoktur"
+                ],
+                correct: 1,
+                explanation: "Tek çenekli bitkilerde saçak kök tipi, çift çenekli bitkilerde kazık kök tipi görülür. Bu, iki grup arasındaki temel farklardan biridir."
+            },
+            {
+                question: "Hangi hormon gaz halindedir?",
+                options: [
+                    "Oksin",
+                    "Giberellin",
+                    "Sitokinin",
+                    "Etilen",
+                      "Absisik asit"
+                ],
+                correct: 3,
+                explanation: "Etilen, gaz halinde bir hormondur. Diğer hormonlar (oksin, giberellin, sitokinin, absisik asit) sıvı ortamda taşınır. Etilenin gaz halinde olması hızlı yayılmasını ve bitkiler arası iletişimi sağlar."
+            },
+            {
+                question: "Doku kültürü ile bitki üretiminde hangi hormonlar birlikte kullanılır?",
+                options: [
+                    "Sadece oksin",
+                    "Sadece sitokinin",
+                    "Oksin ve sitokinin",
+                    "Sadece giberellin",
+                      "Sadece etilen"
+                ],
+                correct: 2,
+                explanation: "Doku kültürü ile bitki üretiminde oksin ve sitokinin hormonları birlikte kullanılır. Bu hormonların oranı, hücrelerin farklılaşmasını ve organ oluşumunu yönlendirir. Yüksek oksin/kök, yüksek sitokinin/sürgün oluşumunu teşvik eder."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Bitki organları ve hormonlar konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

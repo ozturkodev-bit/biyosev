@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Bitkilerde Hareket ve Fotoperiyodizm Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .answer-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #9b59b6;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #f1f8ff;
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2c3e50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #2c3e50;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #2c3e50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Meraklısına Section Styles */
+        .advanced-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .advanced-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .advanced-section:hover {
+            transform: translateX(5px);
+        }
+
+        .advanced-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .advanced-title i {
+            color: #9b59b6;
+        }
+
+        .advanced-content {
+            background: #f5eef9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #9b59b6;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">12. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Bitkisel Hareket ve Fotoperiyodizm</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Bitkilerde Hareket ve Fotoperiyodizm Öğrenme Portalı</h1>
+            <div class="subtitle">7 farklı öğrenme yöntemi ile bitkilerde hareket ve fotoperiyodizm konusunu keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/7</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+<div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile bitkilerde hareket ve fotoperiyodizmin temel kavramlarını tekrar edin.</div>
+            </div>
+            
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Bitkilerde hareket ve fotoperiyodizmi görsel olarak öğrenin ve bileşenler arasındaki bağlantıları keşfedin.</div>
+            </div>
+            
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Bitkilerde hareket ve fotoperiyodizmin tüm detaylarını kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile bitkilerde hareket ve fotoperiyodizm soruları çözün ve cevaplarını görün.</div>
+            </div>
+            
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile bitkilerde hareket ve fotoperiyodizm hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            
+            <div class="card" id="advanced-btn">
+                <i class="fas fa-microscope"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Konuyla ilgili üst düzey bilgiler, ilginç detaylar ve merak uyandıran gerçekler.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Bitkilerde Hareket ve Fotoperiyodizm Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            Soru buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🌱</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            Cevap buraya gelecek
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #9b59b6;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Bitkilerde Hareket ve Fotoperiyodizm Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bitkilerde Hareket Türleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tropizma (Yönelim):</strong> Uyaranın yönüne bağlı hareket</li>
+                        <li><strong>Nasti (Irganım):</strong> Uyaranın yönüne bağlı olmayan hareket</li>
+                        <li><strong>Fototropizma:</strong> Işığa yönelim (oksin hormonu etkisi)</li>
+                        <li><strong>Geotropizma:</strong> Yer çekimine yönelim</li>
+                        <li><strong>Haptotropizma:</strong> Dokunmaya yönelim</li>
+                        <li><strong>Hidrotropizma:</strong> Suya yönelim</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Tropizma Hareketleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Pozitif tropizma:</strong> Uyarana doğru hareket</li>
+                        <li><strong>Negatif tropizma:</strong> Uyarandan uzaklaşma</li>
+                        <li><strong>Fototropizma:</strong> Gövde → pozitif, kök → negatif</li>
+                        <li><strong>Geotropizma:</strong> Kök → pozitif, gövde → negatif</li>
+                        <li><strong>Travmatropizma:</strong> Yaralanmaya karşı tepki</li>
+                        <li><strong>Kemotropizma:</strong> Kimyasallara karşı tepki</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Nasti Hareketleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Fotonasti:</strong> Işık etkisiyle hareket (akşam sefası)</li>
+                        <li><strong>Termonasti:</strong> Sıcaklık etkisiyle hareket (lale)</li>
+                        <li><strong>Sismonasti:</strong> Sarsıntı/dokunma ile hareket (küstüm otu)</li>
+                        <li><strong>Periyodik hareketler:</strong> Gece-gündüz tekrarlanan hareketler</li>
+                        <li><strong>Turgor basıncı:</strong> Nasti hareketlerinin temel mekanizması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fototropizma Mekanizması</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Koleoptil:</strong> Çimen fidelerinin kınla kuşatılmış gövdesi</li>
+                        <li><strong>Oksin hormonu:</strong> Büyümeyi uyaran kimyasal</li>
+                        <li><strong>Asimetrik büyüme:</strong> Işık almayan tarafta hızlı büyüme</li>
+                        <li><strong>Işık algılama:</strong> Koleoptil ucu tarafından yapılır</li>
+                        <li><strong>Kimyasal sinyal:</strong> Oksinin taşınmasıyla hareket oluşur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Fotoperiyodizm</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Fotoperiyodizm:</strong> Gün/gece uzunluğuna biyolojik yanıt</li>
+                        <li><strong>Uzun gün bitkileri:</strong> 12+ saat ışık gerektiren bitkiler</li>
+                        <li><strong>Kısa gün bitkileri:</strong> 12 saatten az ışık gerektiren bitkiler</li>
+                        <li><strong>Nötr gün bitkileri:</strong> Gün uzunluğundan etkilenmeyenler</li>
+                        <li><strong>Çiçeklenme kontrolü:</strong> Gece uzunluğu ile kontrol edilir</li>
+                        <li><strong>Kritik süre:</strong> Çiçeklenme için gereken minimum/ışık süresi</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bitki Örnekleri ve Özellikleri</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Uzun gün bitkileri:</strong> Ispanak, dereotu, şeker pancarı, marul</li>
+                        <li><strong>Kısa gün bitkileri:</strong> Soya fasulyesi, çilek, patates, kasımpatı</li>
+                        <li><strong>Nötr gün bitkileri:</strong> Ayçiçeği, karanfil, domates, pamuk</li>
+                        <li><strong>Sismonasti örnekleri:</strong> Küstüm otu, böcekçil bitkiler</li>
+                        <li><strong>Fotonasti örnekleri:</strong> Akşam sefası çiçekleri</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Bitkilerde Hareket ve Fotoperiyodizm Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-seedling"></i> BİTKİLERDE HAREKET TÜRLERİ</div>
+                    <ul class="summary-list">
+                        <li>Bitkiler toprağa bağlı oldukları için yer değiştirme hareketi yapamazlar, ancak <strong>yön ve durum değiştirme hareketi</strong> yapabilirler.</li>
+                        <li>Bitkilerde hareketler iki ana grupta incelenir: <strong>Tropizma (yönelim)</strong> ve <strong>Nasti (ırganım)</strong>.</li>
+                        <li><strong>Tropizma:</strong> Uyaranın yönüne bağlı olarak gerçekleşen yönelim hareketleridir. <strong>Oksin hormonunun</strong> etkisiyle organların asimetrik büyümesi sonucu oluşur.</li>
+                        <li><strong>Nasti:</strong> Uyaranın yönüne bağlı olmayan, <strong>turgor basıncı değişimi</strong> ile gerçekleşen durum değiştirme hareketleridir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-sun"></i> TROPİZMA HAREKETLERİNİN ÇEŞİTLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Tropizma Türü</th>
+                            <th>Uyaran</th>
+                            <th>Örnek</th>
+                            <th>Pozitif/Negatif</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Fototropizma</strong></td>
+                            <td>Işık</td>
+                            <td>Çimen fidesi koleoptili</td>
+                            <td>Gövde: pozitif, Kök: negatif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Geotropizma</strong></td>
+                            <td>Yer çekimi</td>
+                            <td>Tohum çimlenmesi</td>
+                            <td>Kök: pozitif, Gövde: negatif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Haptotropizma</strong></td>
+                            <td>Dokunma</td>
+                            <td>Sarmaşık, asma</td>
+                            <td>Pozitif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hidrotropizma</strong></td>
+                            <td>Su</td>
+                            <td>Bitki kökleri</td>
+                            <td>Pozitif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kemotropizma</strong></td>
+                            <td>Kimyasal madde</td>
+                            <td>Bitki kökleri</td>
+                            <td>Yararlıya: pozitif, Zararlıdan: negatif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Travmatropizma</strong></td>
+                            <td>Yaralanma</td>
+                            <td>Bitki kökleri</td>
+                            <td>Yaralanan kısımdan uzaklaşma</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-lightbulb"></i> FOTOTROPİZMA MEKANİZMASI VE OKSİN</div>
+                    <ul class="summary-list">
+                        <li>1880'de yapılan deneylerde, koleoptil ucunun ışığı algılamada ve fototropizmada kritik rol oynadığı keşfedildi.</li>
+                        <li>Koleoptil ucu kesildiğinde veya ışık geçirmeyen başlıkla kapatıldığında fototropizma görülmez.</li>
+                        <li>1926'da Hollandalı bilim insanları, <strong>oksini</strong> fototropizmadan sorumlu kimyasal olarak tanımladılar.</li>
+                        <li><strong>Oksin mekanizması:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Oksin, koleoptil uç kısımlarında üretilir.</li>
+                                <li>Işık almayan tarafta aşağıya doğru taşınır.</li>
+                                <li>Işık almayan taraftaki hücreler daha hızlı büyür.</li>
+                                <li>Asimetrik büyüme sonucu koleoptil ışığa doğru kıvrılır.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Yapay oksinler</strong> günümüzde çiftçiler tarafından kök oluşumu, meyve verme, çiçek açma ve yabani ot kontrolü için kullanılmaktadır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-wind"></i> NASTİ HAREKETLERİNİN ÇEŞİTLERİ</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Nasti Türü</th>
+                            <th>Uyaran</th>
+                            <th>Örnek</th>
+                            <th>Mekanizma</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Fotonasti</strong></td>
+                            <td>Işık</td>
+                            <td>Akşam sefası çiçekleri (aydınlıkta kapalı, karanlıkta açık)</td>
+                            <td>Turgor basıncı değişimi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Termonasti</strong></td>
+                            <td>Sıcaklık</td>
+                            <td>Lale çiçekleri (5-10°C'ta kapalı, 15-20°C'ta açık)</td>
+                            <td>Turgor basıncı değişimi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sismonasti</strong></td>
+                            <td>Sarsıntı/Dokunma</td>
+                            <td>Küstüm otu, böcekçil bitkiler</td>
+                            <td>Turgor basıncı değişimi</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="important-note">
+                        <strong>📌 Önemli Not:</strong> Nasti hareketleri uyaranın yönüne bağlı olmadığı için pozitif/negatif ayrımı yoktur. Periyodik hareketler, gece-gündüz süresince tekrarlanan nasti hareketleridir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-calendar-alt"></i> FOTOPERİYODİZM VE BİTKİ GRUPLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>Fotoperiyodizm:</strong> Bitkilerin gün ve gece uzunluğuna verdikleri biyolojik yanıt.</li>
+                        <li><strong>Fotoperiyot:</strong> Bitkilerin gelişim gösterdikleri evre.</li>
+                        <li>Araştırmalar, çiçeklenmeyi kontrol eden faktörün <strong>gece uzunluğu</strong> olduğunu göstermiştir.</li>
+                        
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Bitki Grubu</th>
+                                <th>Işık İhtiyacı</th>
+                                <th>Çiçeklenme Zamanı</th>
+                                <th>Örnek Bitkiler</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Uzun Gün Bitkileri</strong></td>
+                                <td>12+ saat ışık (kısa gece)</td>
+                                <td>İlkbahar-yaz</td>
+                                <td>Ispanak, dereotu, şeker pancarı, marul, yonca</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kısa Gün Bitkileri</strong></td>
+                                <td>12 saatten az ışık (uzun gece)</td>
+                                <td>Sonbahar-kış</td>
+                                <td>Soya fasulyesi, çilek, patates, kasımpatı</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nötr Gün Bitkileri</strong></td>
+                                <td>Gün uzunluğundan etkilenmez</td>
+                                <td>Her mevsim</td>
+                                <td>Ayçiçeği, karanfil, domates, pamuk, tütün</td>
+                            </tr>
+                        </table>
+                        
+                        <li><strong>Pratik uygulama:</strong> Çiçekçiler, yılbaşı bitkilerini kasımdan itibaren günde 12 saatten fazla karanlıkta bırakarak yılbaşına kadar çiçek açmalarını sağlarlar.</li>
+                        <li>Fotoperiyodizmin çiçeklenmeye etkisi, yeryüzünde bitki türlerinin dağılımını da etkilemektedir.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> DENEYLER VE KEŞİFLER</div>
+                    <ul class="summary-list">
+                        <li><strong>Koleoptil deneyleri:</strong> Işık algılama ve oksin keşfi için temel deneylerdir.</li>
+                        <li><strong>Jelatin blok deneyi:</strong> Koleoptil ucunun jelatin blokla ayrılmasına rağmen kıvrılmanın devam etmesi, sinyalin kimyasal bir madde olduğunu gösterdi.</li>
+                        <li><strong>Mika engeli deneyi:</strong> Koleoptil ucunun mika ile ayrılması durumunda kıvrılma olmaması, sinyalin fiziksel temasla iletildiğini gösterdi.</li>
+                        <li><strong>Agar blok deneyleri:</strong> Oksinin agar bloklara difüzyonla geçebildiğini ve büyümeyi uyardığını kanıtladı.</li>
+                        <li><strong>Fotoperiyodizm deneyleri:</strong> Gün uzunluğunun yapay olarak değiştirilmesiyle bitkilerin tepkileri incelenmiştir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Bitkilerde Hareket ve Fotoperiyodizm Soruları
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Ali, pencere kenarındaki saksı bitkisinin gövdesinin pencereye doğru eğildiğini fark etti. Bitkiyi 180 derece döndürdüğünde, bir hafta sonra bitkinin yine pencereye doğru eğildiğini gördü. Bu olay hangi bitki hareketine örnektir ve nasıl gerçekleşir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Pencereden gelen tek yönlü ışık, bitkinin asimetrik büyümesine neden olur.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Fototropizma (pozitif fototropizma).</p>
+                        <p><strong>Açıklama:</strong> Bitkinin gövdesi ışığa doğru yönelir. Işık almayan tarafta oksin hormonu birikir ve bu taraftaki hücreler daha hızlı büyür. Asimetrik büyüme sonucu bitki ışığa doğru kıvrılır. Bitki döndürüldüğünde, oksin yeni ışık almayan tarafta birikerek aynı mekanizmayla tekrar ışığa yönelimi sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir çiftçi, tarlasındaki mısır bitkilerinin köklerinin her zaman toprağın derinliklerine doğru büyüdüğünü, gövdelerinin ise yukarı doğru uzadığını gözlemliyor. Bu durum hangi tropizma türüyle açıklanır ve mekanizması nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Geotropizma (gravitropizma).</p>
+                        <p><strong>Açıklama:</strong> Kökler pozitif geotropizma (yer çekimine doğru), gövdeler negatif geotropizma (yer çekimine zıt yönde) gösterir. Yer çekimi, oksin hormonunun dağılımını etkiler. Köklerde oksin, alt tarafta birikir ve buradaki hücre büyümesini baskılar, böylece kök aşağı büyür. Gövdelerde ise alt tarafta biriken oksin hücre büyümesini uyarır ve gövde yukarı büyür.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Sarmaşık bitkisi neden bir duvara veya ağaca sarılır? Bu hareketin bitkiye sağladığı avantajlar nelerdir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong> Haptotropizma (tigmotropizma).</p>
+                        <p><strong>Açıklama:</strong> Sarmaşık bitkisi dokunma uyarısına karşı pozitif haptotropizma gösterir. Özel ipliksi uzantılarıyla temas ettiği yüzeye sarılır. Bu hareket bitkiye destek sağlar, ışığa daha iyi ulaşmasını kolaylaştırır ve rekabet avantajı kazandırır. Tırmanıcı bitkiler bu şekilde daha az enerji harcayarak yükselebilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Küstüm otu bitkisine dokunulduğunda yapraklarını neden kapatır? Bu hareket bitkiyi nasıl korur?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Sismonasti (tigmonasti).</p>
+                        <p><strong>Açıklama:</strong> Dokunma uyarısı, yaprak hücrelerindeki turgor basıncının hızla değişmesine neden olur. Özellikle pulvinus adı verilen yaprak sapındaki özel hücreler su kaybederek yaprağın kapanmasını sağlar. Bu hareket bitkiyi otçul hayvanlardan korur, ayrıca ani hareketle böcekleri uzaklaştırabilir. Tehlike geçtikten sonra turgor basıncı normale döner ve yapraklar tekrar açılır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">Akşam sefası bitkisinin çiçekleri neden gündüz kapalı, akşam açıktır? Bu ritmik hareket bitkiye ne gibi avantajlar sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Fotonasti.</p>
+                        <p><strong>Açıklama:</strong> Işık varlığı veya yokluğu, çiçek yapraklarındaki hücrelerin turgor basıncını değiştirir. Gündüz ışıkta turgor basıncı düşer ve çiçek kapanır, akşam karanlıkta turgor basıncı artar ve çiçek açılır. Bu ritmik hareket, çiçeği gündüz sıcağından ve aşırı su kaybından korur. Ayrıca gece açan çiçekler, gece aktif olan tozlaştırıcıları (böcekleri) çekmeye adapte olmuştur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Çiftçiler neden bazı bitkileri seralarda yapay ışıklandırma ile yetiştirir? Örneğin ıspanak yetiştiriciliğinde yapay ışık nasıl kullanılır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Fotoperiyodizmi kontrol etmek için.</p>
+                        <p><strong>Açıklama:</strong> Ispanak bir uzun gün bitkisidir ve çiçeklenip tohum vermesi için günde 12 saatten fazla ışığa ihtiyaç duyar. Çiftçiler, kış aylarında günler kısa olduğunda bile ıspanak yetiştirmek istediklerinde, seralarda yapay ışıklandırma kullanarak gün uzunluğunu artırırlar. Böylece bitkinin çiçeklenmesi (ve istenmeyen tohum oluşumu) engellenir veya yapraklı kısımların büyümesi teşvik edilir.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir bahçıvan, kasımpatı bitkilerinin yılbaşından önce çiçek açmasını istiyor. Bunun için bitkileri nasıl bir ışık rejimine tabi tutmalıdır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Kısa gün (uzun gece) koşulları sağlamalıdır.</p>
+                        <p><strong>Açıklama:</strong> Kasımpatı kısa gün bitkisidir ve çiçeklenmesi için uzun gece (kısa gün) periyotlarına ihtiyaç duyar. Bahçıvan, bitkileri kasım ayından itibaren günde 12 saatten fazla karanlık bir odada tutarak yapay olarak uzun gece koşulları oluşturur. Bu, bitkinin çiçek tomurcukları geliştirmesini tetikler ve yılbaşına kadar çiçek açmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Domates bitkisi neredeyse her mevsim sera koşullarında yetiştirilebiliyor. Bu durum domatesin hangi fotoperiyodik gruba ait olduğunu gösterir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Nötr gün bitkisi.</p>
+                        <p><strong>Açıklama:</strong> Domates, nötr gün bitkisidir. Çiçeklenmesi gün uzunluğundan etkilenmez, içsel denetim mekanizmalarıyla düzenlenir. Bu nedenle gün uzunluğu kısa veya uzun olsa da, uygun sıcaklık ve besin koşulları sağlandığında her mevsim yetiştirilebilir. Bu özellik, domatesi ticari tarım için ideal kılar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">Bitki kökleri, toprakta su kaynağına doğru neden büyür? Bu hareketin mekanizması nasıldır?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Hidrotropizma (pozitif hidrotropizma).</p>
+                        <p><strong>Açıklama:</strong> Kökler, suyun varlığını algılayarak bu yönde büyür. Kök ucundaki hücreler nem gradientini algılar. Daha kuru tarafta oksin birikimi artar ve buradaki hücre büyümesi baskılanır. Daha nemli tarafta ise hücre büyümesi devam eder, böylece kök suya doğru kıvrılır. Bu hayati bir adaptasyondur, çünkü su bitkiler için temel bir ihtiyaçtır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Lale çiçekleri soğuk havada kapalı, ılık havada açık durur. Bu hareket nasıl gerçekleşir ve bitkiye ne fayda sağlar?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Termonasti.</p>
+                        <p><strong>Açıklama:</strong> Sıcaklık değişimi, çiçek yapraklarındaki hücrelerin turgor basıncını etkiler. Düşük sıcaklıkta (5-10°C) hücrelerdeki su hareketi yavaşlar, turgor basıncı düşer ve çiçek kapanır. Yüksek sıcaklıkta (15-20°C) turgor basıncı artar, çiçek açılır. Bu hareket, çiçeği soğuktan ve don hasarından korur. Ayrıca, tozlaştırıcıların (arılar) daha aktif olduğu ılık havalarda çiçeğin açık olması tozlaşma şansını artırır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Böcekçil bitkiler, böcek dokunduğunda yapraklarını hızla kapatır. Bu hareket nasıl bu kadar hızlı gerçekleşir ve bitki böceği nasıl sindirir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Sismonasti ve sindirim enzimleri.</p>
+                        <p><strong>Açıklama:</strong> Dokunma uyarısı, yaprak yüzeyindeki tüyler tarafından algılanır. Bu elektriksel bir sinyal oluşturur ve yaprak hücrelerindeki turgor basıncı aniden değişir (özellikle iyon akışıyla su hareketi). Yaprak, saniyeler içinde kapanır. Yakalanan böcek, yaprak tarafından salgılanan sindirim enzimleriyle parçalanır ve bitki tarafından azot ve mineral kaynağı olarak emilir. Bu adaptasyon, azotça fakir topraklarda yaşayan bitkilere avantaj sağlar.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Bitki kökü yaralandığında neden yara bölgesinden uzaklaşacak şekilde büyür? Bu hareketin adı nedir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Travmatropizma.</p>
+                        <p><strong>Açıklama:</strong> Yaralanma sonucu salgılanan bir hormon (muhtemelen etilen veya absisik asit), yara bölgesinde birikir. Bu hormon, o bölgedeki hücre büyümesini inhibe eder veya yaranın karşı tarafındaki hücre büyümesini uyarır. Sonuçta kök, yaralanan bölgeden uzaklaşacak şekilde büyür. Bu, kökü enfeksiyon ve daha fazla hasardan koruyan bir savunma mekanizmasıdır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 13 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">13</div>
+                        <div class="question-text">Tarımda yapay oksinler hangi amaçlarla kullanılır? Örnekler veriniz.</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(13)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-13">
+                        <p><strong>Cevap:</strong> Çeşitli tarımsal uygulamalarda.</p>
+                        <p><strong>Açıklama:</strong> 
+                        1. <strong>Köklenmeyi teşvik:</strong> Kesik gövdelerde ve yapraklarda kök oluşumunu hızlandırmak için (çelikle üretim).
+                        2. <strong>Meyve tutumu:</strong> Tozlaşma olmadan meyve oluşmasını sağlamak (örneğin domates, salatalık).
+                        3. <strong>Çiçeklenmeyi düzenleme:</strong> Belirli zamanlarda çiçek açmayı teşvik etmek.
+                        4. <strong>Yabani ot kontrolü:</strong> Aşırı dozda oksin benzeri herbisitler yabani otları öldürmek için (2,4-D gibi).
+                        5. <strong>Meyve dökülmesini önleme:</strong> Olgunlaşmadan önce meyve dökülmesini azaltmak.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 14 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">14</div>
+                        <div class="question-text">Neden bazı bitkiler yalnızca belirli mevsimlerde çiçek açar? Bu mekanizma nasıl işler?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(14)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-14">
+                        <p><strong>Cevap:</strong> Fotoperiyodizm ve fitokrom sistemi.</p>
+                        <p><strong>Açıklama:</strong> Bitkiler, <strong>fitokrom</strong> adı verilen ışık algılayıcı pigmentlerle gün/gece uzunluğunu ölçer. Uzun gün bitkileri, kritik bir minimum gece uzunluğundan daha kısa gecelerde (ilkbahar/yaz) çiçeklenmeyi tetikleyen sinyaller üretir. Kısa gün bitkileri ise kritik bir minimum gece uzunluğundan daha uzun gecelerde (sonbahar/kış) çiçeklenir. Bu mekanizma, bitkilerin tozlaştırıcıların bol olduğu ve çevre koşullarının uygun olduğu en iyi zamanda çiçek açmasını sağlayan bir evrimsel adaptasyondur.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 15 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">15</div>
+                        <div class="question-text">Bir bitkinin kökleri, toprakta gübre yığınından uzaklaşırken, komşu bir su kaynağına doğru büyüyor. Bu hangi iki tropizma hareketine örnektir?</div>
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(15)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-15">
+                        <p><strong>Cevap:</strong> Negatif kemotropizma ve pozitif hidrotropizma.</p>
+                        <p><strong>Açıklama:</strong> Kökler, aşırı gübre (yüksek tuz/konsantrasyon) gibi zararlı kimyasallardan uzaklaşarak negatif kemotropizma gösterir. Aynı zamanda su kaynağına doğru yönelerek pozitif hidrotropizma gösterir. Bu iki tropizma bir arada çalışarak kökün hem zararlılardan kaçmasını hem de hayati kaynaklara (su) ulaşmasını sağlar. Kök ucu bu farklı uyaranları aynı anda algılayıp entegre bir büyüme yanıtı oluşturabilir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Bitkilerde Hareket ve Fotoperiyodizm Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #9b59b6; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #2c3e50; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden bitkilerde yer değiştirme hareketi yokken, hayvanlarda vardır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep-Sonuç İlişkisi:</strong> Bu fark, organizmaların beslenme stratejileri, hücre yapıları ve enerji ihtiyaçlarından kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Bitkiler neden hareket etmez?</strong></p>
+                            <ol>
+                                <li><strong>Beslenme stratejisi:</strong> Bitkiler ototroftur, kendi besinini fotosentezle üretir. Işık, CO₂ ve su gibi kaynaklar genellikle sabittir veya yaygındır, bu nedenle onları aramak için hareket etmeye ihtiyaç yoktur.</li>
+                                <li><strong>Hücre duvarı:</strong> Bitki hücrelerinde selülozdan yapılmış sert bir hücre duvarı vardır. Bu, hücre şeklini sabitler ve hayvan hücrelerindeki gibi esnek hareketi engeller.</li>
+                                <li><strong>Enerji verimliliği:</strong> Hareket etmek çok enerji gerektirir. Bitkiler enerjisini kök, gövde, yaprak büyümesi ve üreme gibi sabit kalıp kaynakları toplamaya yönlendirir.</li>
+                                <li><strong>Kök sistemi:</strong> Toprağa sabitlenmiş geniş kök ağı, su ve mineralleri geniş bir alandan emer, bu da hareket ihtiyacını azaltır.</li>
+                            </ol>
+                            <p><strong>Hayvanlar neden hareket eder?</strong> Heterotrof beslenme, av-avcı ilişkileri, eş bulma, uygun yaşam alanı arama gibi nedenlerle hareket hayati öneme sahiptir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden fototropizmada oksin, ışık almayan tarafta birikir ve büyümeyi uyarır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu, oksinin ışığa duyarlığı ve taşınma mekanizmasıyla ilgilidir.</p>
+                        <div class="reasoning-answer">
+                            <p>Oksin (IAA) ışığa duyarlıdır. Tek yönlü ışık geldiğinde:</p>
+                            <ol>
+                                <li><strong>Oksin ışık tarafından parçalanır veya inaktive edilir:</strong> Işık alan tarafta oksin konsantrasyonu düşer.</li>
+                                <li><strong>Oksin aktif taşınmayla gölgeli tarafa taşınır:</strong> Taşıma proteinleri, oksini ışık almayan tarafa pompalar.</li>
+                                <li><strong>Asimetrik dağılım oluşur:</strong> Işık almayan tarafta oksin birikir.</li>
+                                <li><strong>Oksin hücre duvarını gevşetir:</strong> Yüksek oksin konsantrasyonu, hücre duvarındaki proteinleri (ekspansinler) aktive eder, duvar esner.</li>
+                                <li><strong>Su girişi ve hücre uzaması:</strong> Gevşeyen hücre duvarına su girer (osmotik basınçla), hücre uzar.</li>
+                                <li><strong>Asimetrik büyüme ve kıvrılma:</strong> Işık almayan taraftaki hücreler daha fazla uzayınca organ ışığa doğru kıvrılır.</li>
+                            </ol>
+                            <p><strong>Evrimsel mantık:</strong> Bu mekanizma, bitkinin ışık (enerji kaynağı) yönüne yönelmesini sağlar. Gövde pozitif fototropizma ile ışığa, kök negatif fototropizma ile ışıktan (ve kuraklıktan) uzaklaşır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Nasti hareketleri uyaranın yönüne bağlı değilken, tropizma hareketleri neden uyaranın yönüne bağlıdır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu fark, hareketin amacı ve gerçekleşme mekanizmasından kaynaklanır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Tropizma - Yönelim için:</strong></p>
+                            <ol>
+                                <li><strong>Amaç:</strong> Sürekli bir yönelim, bir kaynağa (ışık, su) doğru veya bir tehlikeden (aşırı tuz, yara) uzaklaşmak için. Uyaranın yönü sabit ve uzun sürelidir.</li>
+                                <li><strong>Mekanizma:</strong> Büyüme hareketidir (oksinle asimetrik büyüme). Hücreler kalıcı olarak uzar veya şekil değiştirir. Yön değişirse, büyüme yönü de değişir.</li>
+                                <li><strong>Örnek:</strong> Bitki sürekli ışık yönüne doğru büyür. Işık yönü değişirse, oksin dağılımı değişir ve büyüme yeni yöne doğru olur.</li>
+                            </ol>
+                            <p><strong>Nasti - Hızlı tepki için:</strong></p>
+                            <ol>
+                                <li><strong>Amaç:</strong> Anlık, hızlı bir tepki (dokunma, ışık değişimi, sıcaklık). Uyaranın yönü önemli değildir, varlığı veya yokluğu önemlidir.</li>
+                                <li><strong>Mekanizma:</strong> Turgor hareketidir. Hücrelerdeki su basıncı (turgor) değişir, bu geçici bir durumdur. Hareket geri dönüşlüdür.</li>
+                                <li><strong>Örnek:</strong> Küstüm otuna dokunulduğunda yapraklar kapanır. Dokunma nereden gelirse gelsin tepki aynıdır. Uyaran ortadan kalkınca yapraklar eski haline döner.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden "uzun gün bitkileri" aslında "kısa gece bitkileri", "kısa gün bitkileri" ise "uzun gece bitkileridir"?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu, fotoperiyodizm deneylerinin sonuçlarına dayanır.</p>
+                        <div class="reasoning-answer">
+                            <p>İlk başta çiçeklenmenin gün uzunluğu ile kontrol edildiği düşünülüyordu. Ancak kritik deneyler şunu gösterdi:</p>
+                            <p><strong>Kısa Gün Bitkisi Deneyi:</strong> Bitkiye kısa gün (uzun gece) verilirse çiçek açar. Ancak, <strong>uzun gecenin ortasına kısa bir ışık parlaması verilirse çiçek açmaz.</strong> Bu, çiçeklenmenin kesintisiz uzun bir gece gerektirdiğini, yani kritik faktörün "gece uzunluğu" olduğunu kanıtlar.</p>
+                            <p><strong>Uzun Gün Bitkisi Deneyi:</strong> Bitkiye uzun gün (kısa gece) verilirse çiçek açar. Eğer <strong>kısa geceyi, geceyi ikiye bölecek şekilde uzatırsanız (toplam gece uzunluğu artsa bile) çiçeklenme olur.</strong> Bu da, uzun gün bitkilerinin aslında "kesintisiz uzun bir geceye" toleransı olmadığını, yani "kısa gece" gerektirdiğini gösterir.</p>
+                            <p><strong>Biyolojik Mekanizma:</strong> Fitokrom adlı pigment, kırmızı (Pr) ve uzak kırmızı (Pfr) formlar arasında dönüşür. Uzun karanlık dönemde Pfr formu Pr'ye dönüşür. Kısa gün bitkileri için belirli bir Pfr/Pr oranı çiçeklenmeyi tetikler. Gece ortasındaki ışık, Pfr seviyesini artırarak bu oranı bozar ve çiçeklenmeyi engeller.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden kökler pozitif geotropizma, gövdeler negatif geotropizma gösterir? Bu iş bölümünün mantığı nedir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Bu, bitkinin topraktaki kaynaklara ulaşma ve ışığı yakalama stratejisidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kökler neden aşağı (pozitif geotropizma)?</strong></p>
+                            <ol>
+                                <li><strong>Su ve mineral kaynakları toprakta:</strong> Su yer çekimi etkisiyle aşağı doğru hareket eder. Köklerin aşağı büyümesi, derinlerdeki su kaynaklarına ulaşmasını sağlar.</li>
+                                <li><strong>Ankraj görevi:</strong> Köklerin toprağa derinlemesine nüfuz etmesi, bitkiyi rüzgar ve erozyona karşı sabitler.</li>
+                                <li><strong>Oksin duyarlılığı farkı:</strong> Kök hücreleri oksine çok duyarlıdır. Yer çekimi etkisiyle kökün alt tarafında biriken oksin, buradaki hücre büyümesini <strong>baskılar</strong>. Üst taraftaki hücreler daha hızlı büyüyünce kök aşağı kıvrılır.</li>
+                            </ol>
+                            <p><strong>Gövdeler neden yukarı (negatif geotropizma)?</strong></p>
+                            <ol>
+                                <li><strong>Işık kaynağı yukarıda:</strong> Fotosentez için gerekli ışık güneşten gelir. Gövdenin yukarı büyümesi, yaprakları ışığa doğru taşır.</li>
+                                <li><strong>Tozlaşma ve rekabet:</strong> Çiçeklerin yüksekte olması tozlaştırıcıları çeker ve diğer bitkilerle ışık için rekabette avantaj sağlar.</li>
+                                <li><strong>Oksin etkisi:</strong> Gövde hücreleri oksine daha az duyarlıdır. Yer çekimi etkisiyle gövdenin alt tarafında biriken oksin, buradaki hücre büyümesini <strong>uyarır</strong>. Üst taraftan daha hızlı büyüyen alt kısım, gövdeyi yukarı doğru iter.</li>
+                            </ol>
+                            <p><strong>Sonuç:</strong> Bu zıt tropizmalar, bitkinin kaynaklara (su-mineral aşağıda, ışık yukarıda) ulaşmasını optimize eden mükemmel bir iş bölümüdür.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Nasti hareketleri (küstüm otu, akşam sefası) neden turgor basıncı değişimiyle olur ve bu kadar hızlıdır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Mantık Yürütme:</strong> Turgor basıncı, suyun hücreye giriş-çıkışıyla hızla değiştirilebilen bir fiziksel kuvvettir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Turgor basıncı nedir?</strong> Bitki hücresi suyla dolduğunda, hücre duvarına yaptığı basınçtır. Hücrenin sert ve dik durmasını sağlar.</p>
+                            <p><strong>Nasıl hızlı değişir?</strong></p>
+                            <ol>
+                                <li><strong>İyon pompaları:</strong> Uyaran (dokunma, ışık), hücre zarındaki iyon kanallarını açar (özellikle potasyum ve klor iyonları).</li>
+                                <li><strong>Osmotik değişim:</strong> İyonlar hücre dışına çıkınca, hücrenin osmotik konsantrasyonu düşer.</li>
+                                <li><strong>Su hareketi:</strong> Su, osmozla hücreden dışarı çıkar (konsantrasyon gradienti nedeniyle).</li>
+                                <li><strong>Turgor kaybı:</strong> Su kaybıyla hücre içi basınç (turgor) düşer, hücre büzülür.</li>
+                                <li><strong>Hareket:</strong> Özel yapıların (pulvinus) bir tarafındaki hücreler turgor kaybederken diğer tarafındakiler aynı kalırsa, yaprak kapanır veya hareket eder.</li>
+                            </ol>
+                            <p><strong>Neden bu kadar hızlı?</strong> İyon akışı ve su hareketi kimyasal/fiziksel süreçlerdir ve saniyeler içinde gerçekleşebilir. Büyüme hareketleri (tropizma) ise yeni protein sentezi ve hücre duvarı sentezi gerektirdiğinden saatler/günler alır.</p>
+                            <p><strong>Evrimsel mantık:</strong> Hızlı nasti hareketleri, bitkiyi ani tehlikelerden (otçul hayvanlar) korur veya gece tozlaştırıcılarını çekmek gibi zamanlı tepkiler sağlar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meraklısına / İleri Biyoloji Section -->
+        <div class="content-section" id="advanced-section">
+            <button class="back-btn" id="back-from-advanced">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-microscope"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="advanced-container">
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-atom"></i> OKSİN SİNYAL YOLU: BİR HORMON NASIL HÜCRE BÜYÜMESİNİ KONTROL EDER?</div>
+                    <div class="advanced-content">
+                        <p>Oksin (IAA - İndol-3-Asetik Asit) sadece hücre duvarını gevşetmez, karmaşık bir sinyal iletim kaskadını tetikler:</p>
+                        <ol>
+                            <li><strong>Algılama:</strong> TIR1/AFB adlı reseptör proteinleri, hücre çekirdeğinde oksini bağlar.</li>
+                            <li><strong>Ubikitin-Proteazom Yıkımı:</strong> Oksin bağlanınca, reseptör, Aux/IAA adlı baskılayıcı proteinleri işaretler. Bu proteinler ubikitinlenip proteazomda yıkılır.</li>
+                            <li><strong>Transkripsiyon Faktörlerinin Serbest Kalması:</strong> Aux/IAA proteinleri, ARF adlı transkripsiyon faktörlerini baskılar. Bunlar yıkılınca ARF'ler serbest kalır.</li>
+                            <li><strong>Gen Ekspresyonu:</strong> ARF'ler, DNA'ya bağlanarak ekspansinler (hücre duvarı gevşetici enzimler), H⁺-ATPaz pompaları (hücre duvarını asidikleştirir) ve diğer büyüme ile ilgili genleri aktive eder.</li>
+                            <li><strong>Asit Büyüme Teorisi:</strong> H⁺-ATPaz pompaları hücre duvarı alanını asidikleştirir (pH düşürür). Düşük pH, ekspansinlerin aktifleşmesini ve hücre duvarındaki bağları koparmasını sağlar. Gevşeyen duvara su girer, hücre uzar.</li>
+                        </ol>
+                        <p>Bu yol, oksin konsantrasyonuna ve hücre tipine göre farklı genleri aktive ederek, aynı hormonun gövdede büyümeyi uyarırken kökte baskılamasını açıklar.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-ruler-combined"></i> FİTOKROM SİSTEMİ: BİTKİLER ZAMANI NASIL ÖLÇER?</div>
+                    <div class="advanced-content">
+                        <p>Fitokrom, fotoperiyodizmi algılayan ana fotoreseptördür. İki interkonvertible (birbirine dönüşebilir) formu vardır:</p>
+                        <ul>
+                            <li><strong>Pr (Kırmızı ışık soğurur form):</strong> En aktif sentezlenen form. Kırmızı ışık (660 nm) aldığında Pfr'ye dönüşür.</li>
+                            <li><strong>Pfr (Uzak kırmızı ışık soğurur form):</strong> Biyolojik olarak aktif form. Uzak kırmızı ışık (730 nm) aldığında Pr'ye dönüşür. Ayrıca karanlıkta yavaşça (saatler içinde) Pr'ye geri döner (karanlık geri dönüşümü).</li>
+                        </ul>
+                        <p><strong>Mekanizma:</strong></p>
+                        <ol>
+                            <li><strong>Gündüz:</strong> Güneş ışığında bol kırmızı ışık vardır, Pr → Pfr dönüşümü olur. Pfr seviyesi yüksektir.</li>
+                            <li><strong>Gece:</strong> Karanlıkta, Pfr yavaşça Pr'ye döner ve ayrıca parçalanır. Uzun bir gecenin sonunda Pfr seviyesi çok düşüktür.</li>
+                            <li><strong>Saat:</strong> Bitki, Pfr/Pr oranını veya mutlak Pfr seviyesini bir "zaman ölçeri" gibi kullanır. Kısa gün bitkileri için düşük Pfr seviyesi (uzun geceyi algılayan) çiçeklenme genlerini açabilir.</li>
+                            <li><strong>Gece ortası ışık patlaması:</strong> Kırmızı ışık, Pr'yi Pfr'ye çevirerek Pfr seviyesini aniden yükseltir. Bu, uzun gece algısını bozar ve kısa gün bitkisinin çiçeklenmesini engeller.</li>
+                        </ol>
+                        <p>İlginç bir detay: Fitokrom aynı zamanda çimlenme, kotiledon genişlemesi ve gölge kaçınma tepkisini de kontrol eder.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-bolt"></i> SİSMONASTİDEKİ ELEKTRİKSEL SİNYAL: BİTKİLERDE "SİNİR İMPULSU"</div>
+                    <div class="advanced-content">
+                        <p>Küstüm otu (Mimosa pudica) veya böcekçil bitkilerdeki ani kapanma hareketi, hayvan sinir sistemindekine benzer bir elektriksel sinyal (aksiyon potansiyeli) ile başlar.</p>
+                        <p><strong>Süreç:</strong></p>
+                        <ol>
+                            <li><strong>Uyarı Algılama:</strong> Dokunma, mekanik reseptör hücrelerinin zarında gerilim kapılı iyon kanallarını açar.</li>
+                            <li><strong>Depolarizasyon:</strong> Kalsiyum (Ca²⁺) iyonları hücreye girer, hücre içi pozitif yük artar (depolarizasyon). Bu lokal bir sinyaldir.</li>
+                            <li><strong>Aksiyon Potansiyelinin Yayılması:</strong> Depolarizasyon, voltaj kapılı iyon kanallarını açar ve sinyal komşu hücrelere flöem veya özelleşmiş iletim dokuları boyunca yayılır. İletim hızı birkaç cm/sn'dir (hayvan sinirlerinden yavaş ama bitki için hızlı).</li>
+                            <li><strong>Hedef Hücrelerde Tepki:</strong> Sinyal, pulvinusdaki motor hücrelere ulaşınca, potasyum (K⁺) ve klor (Cl⁻) iyon kanalları açılır. İyonlar hücre dışına çıkar, osmotik su kaybı olur, turgor düşer ve hareket gerçekleşir.</li>
+                        </ol>
+                        <p><strong>Önemli:</strong> Bu elektriksel sinyal kimyasal sinapslardan geçmez, hücreler arası bağlantılar (plazmodezmata) ve iyon akışıyla iletilir. Bu, bitkilerin de çevrelerine hızlı tepki verebilen dinamik organizmalar olduğunu gösterir.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-calendar-plus"></i> VERNALİZASYON: SOĞUKLAMA GEREKSİNİMİ</div>
+                    <div class="advanced-content">
+                        <p>Bazı bitkiler (buğday, arpa, şeker pancarının bazı çeşitleri) çiçeklenmek için sadece uygun fotoperiyodu değil, aynı zamanda uzun bir soğuk dönemi (vernalizasyon) de gerektirir. Bu, tohumun veya genç bitkinin belirli bir süre (haftalar/aylar) düşük sıcaklıkta (0-10°C) kalmasıdır.</p>
+                        <p><strong>Mantığı:</strong> Bitki, kışı atlatmadan çiçeklenmeye ve tohum vermeye kalkmasın diye. Çiçeklenmeyi bahara erteler.</p>
+                        <p><strong>Moleküler Mekanizma:</strong> Soğuk, <strong>FLC (Flowering Locus C)</strong> geninin ifadesini baskılayan epigenetik değişikliklere (histon modifikasyonları, DNA metilasyonu) neden olur. FLC proteini, çiçeklenmeyi teşvik eden genleri (FT, SOC1) baskılar. Soğuklama süresi yeterli olunca FLC kalıcı olarak susturulur ve ilkbaharda fotoperiyot uygun olduğunda çiçeklenme hızla gerçekleşir.</p>
+                        <p>Bu mekanizma, bitkilerin mevsimsel döngülerle senkronize olmasını ve soğuk kış aylarında çiçeklenmeyerek enerji kaybından ve don hasarından kaçınmasını sağlar.</p>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-title"><i class="fas fa-robot"></i> BİTKİ HAREKETLERİNDEN İLHAM ALAN BİYOMİMETİK TASARIMLAR</div>
+                    <div class="advanced-content">
+                        <p>Bitki hareketlerindeki akıllı mekanizmalar, mühendislere ve tasarımcılara ilham veriyor:</p>
+                        <ol>
+                            <li><strong>Hafıza Alaşımlı (Şekil Bellekli) Malzemeler:</strong> Küstüm otunun turgor hareketi, sıcaklık veya elektrikle şekil değiştiren, sonra eski haline dönebilen akıllı alaşımların geliştirilmesine ilham oldu. Uygulama: Otomotiv, uzay, tıbbi stentler.</li>
+                            <li><strong>Işığa Yönelen Güneş Panelleri:</strong> Fototropizmadan esinlenerek, gün boyunca güneşi takip eden (heliostat) ve verimi %30'a kadar artıran güneş panelleri tasarlandı.</li>
+                            <li><strong>Kapanan Yapılar:</strong> Böcekçil bitkilerin kapanma mekanizması, kirlilik veya tehlikeli madde algılandığında otomatik kapanan valfler veya kapılar için model oldu.</li>
+                            <li><strong>Hidrotropik Sensörler:</strong> Köklerin suya yönelimi, toprak nemini algılayıp sulama sistemlerini otomatik kontrol eden sensörlere ilham verdi.</li>
+                            <li><strong>Bitki Esinli Robotlar (Plantoid'ler):</strong> Kök benzeri yapay uzantıları olan, toprakta ilerleyip örnek toplayabilen robotlar geliştiriliyor. Köklerin geotropizma ve hidrotropizması taklit ediliyor.</li>
+                        </ol>
+                        <p>Doğanın 3.8 milyar yıllık Ar-Ge'si, bitkilerde mükemmel çözümler barındırıyor!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="content-section" id="audio-section">
+        <button class="back-btn" id="back-from-audio">
+            <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+        </button>
+        <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-headphones"></i> Hücre ve Organeller Sesli Özet
+        </h2>
+        
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                Ders özetini dinlemek için oynat butonuna basın.
+            </div>
+            
+            <audio controls style="width: 100%; max-width: 600px; height: 50px; outline: none; border-radius: 25px;">
+                <source src="BURAYA_GITHUB_LINKINI_YAPISTIRIN" type="audio/mp4">
+                Tarayıcınız ses dosyasını desteklemiyor.
+            </audio>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+document.getElementById('audio-btn').addEventListener('click', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('audio-section').classList.add('active');
+    updateProgress('audio');
+});
+
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('advanced-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('advanced-section').classList.add('active');
+            updateProgress('advanced');
+        });
+
+        // Back buttons
+        document.getElementById('back-from-flashcards').addEventListener('click', () => {
+            document.getElementById('flashcard-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+document.getElementById('back-from-audio').addEventListener('click', () => {
+    document.getElementById('audio-section').classList.remove('active');
+    document.getElementById('dashboard').style.display = 'grid';
+});
+
+        document.getElementById('back-from-mindmap').addEventListener('click', () => {
+            document.getElementById('mindmap-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-summary').addEventListener('click', () => {
+            document.getElementById('summary-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-contextual').addEventListener('click', () => {
+            document.getElementById('contextual-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-test').addEventListener('click', () => {
+            document.getElementById('test-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('back-from-reasoning').addEventListener('click', () => {
+            document.getElementById('reasoning-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        document.getElementById('back-from-advanced').addEventListener('click', () => {
+            document.getElementById('advanced-section').classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 7) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Bitkilerde Hareket ve Fotoperiyodizm Sorusu
+        const csvData = `Bitkilerde hareket türleri nelerdir?,"Tropizma (yönelim) ve Nasti (ırganım) olarak iki ana grupta incelenir. Tropizma uyaranın yönüne bağlı, nasti ise uyaranın yönüne bağlı olmayan hareketlerdir."`
+        + `\nTropizma nedir?,"Uyaranın yönüne bağlı olarak gerçekleşen yönelim hareketleridir. Oksin hormonunun etkisiyle organların asimetrik büyümesi sonucu oluşur. Pozitif (uyarana doğru) veya negatif (uyarandan uzak) olabilir."`
+        + `\nNasti nedir?,"Uyaranın yönüne bağlı olmayan, turgor basıncı değişimiyle gerçekleşen durum değiştirme hareketleridir. Pozitif/negatif ayrımı yoktur."`
+        + `\nFototropizma nedir?,"Bitkilerin ışığa doğru yönelmelerini sağlayan tropizma hareketidir. Gövde pozitif fototropizma (ışığa doğru), kök negatif fototropizma (ışıktan uzak) gösterir."`
+        + `\nOksin hormonunun fototropizmada rolü nedir?,"Oksin, ışık almayan tarafta birikerek buradaki hücrelerin daha hızlı büyümesini sağlar. Asimetrik büyüme sonucu organ ışığa doğru kıvrılır."`
+        + `\nGeotropizma (gravitropizma) nedir?,"Bitkilerin yer çekimine karşı verdikleri tropizma tepkisidir. Kökler pozitif geotropizma (aşağı), gövdeler negatif geotropizma (yukarı) gösterir."`
+        + `\nHaptotropizma (tigmotropizma) nedir?,"Bitkilerin dokunma uyarısına karşı verdikleri tropizma tepkisidir. Sarmaşık, asma gibi sarılıcı bitkiler pozitif haptotropizma gösterir."`
+        + `\nHidrotropizma nedir?,"Bitki köklerinin suya doğru yönelme hareketidir. Her zaman pozitiftir. Kökler nem gradientini algılayarak su kaynağına doğru büyür."`
+        + `\nKemotropizma nedir?,"Bitki köklerinin kimyasal maddelere karşı gösterdiği tropizma tepkisidir. Yararlı maddelere doğru pozitif, zararlı maddelerden uzaklaşma negatif kemotropizmadır."`
+        + `\nTravmatropizma nedir?,"Bitkilerde yaralanmalara bağlı olarak gösterilen yönelme hareketleridir. Genellikle köklerde görülür, kök yara yönünün tersine doğru büyür."`
+        + `\nFotonasti nedir? Örnek veriniz.,"Işık etkisiyle gerçekleşen nasti hareketidir. Akşam sefası bitkisinin çiçekleri aydınlıkta kapalı, karanlıkta açıktır."`
+        + `\nTermonasti nedir? Örnek veriniz.,"Sıcaklık etkisiyle gerçekleşen nasti hareketidir. Lale çiçekleri 5-10°C'ta kapalı, 15-20°C'ta açıktır."`
+        + `\nSismonasti (tigmonasti) nedir? Örnek veriniz.,"Sarsıntı ve dokunma olaylarına bağlı olarak gerçekleşen nasti hareketidir. Küstüm otunun dokunulunca yapraklarını kapatması, böcekçil bitkilerin böcek konduğunda yapraklarını kapatması."`
+        + `\nPeriyodik hareketler nedir?,"Farklı uyaranların oluşturduğu nasti hareketlerinin bir günlük (gece-gündüz) süresince tekrarlanmasıdır."`
+        + `\nKoleoptil nedir?,"Çimen fidelerinin kınla kuşatılmış gövdesidir. Fototropizma deneylerinde ve oksinin keşfinde kullanılmıştır."`
+        + `\nFotoperiyodizm nedir?,"Bitkilerin gün ve gece uzunluğuna verdikleri biyolojik yanıttır. Çiçeklenme, yaprak dökümü gibi fizyolojik olayları kontrol eder."`
+        + `\nFotoperiyot nedir?,"Bitkilerin gelişim gösterdikleri evredir. Gün uzunluğu yapay olarak değiştirilerek incelenebilir."`
+        + `\nUzun gün bitkileri nedir? Örnek veriniz.,"Günde 12 saatten fazla ışığa (kısa geceye) ihtiyaç duyan bitkilerdir. Ispanak, dereotu, şeker pancarı, marul, yonca. İlkbahar-yaz aylarında çiçek açar."`
+        + `\nKısa gün bitkileri nedir? Örnek veriniz.,"Günde 12 saatten az ışığa (uzun geceye) ihtiyaç duyan bitkilerdir. Soya fasulyesi, çilek, patates, kasımpatı. Sonbahar-kış aylarında çiçek açar."`
+        + `\nNötr gün bitkileri nedir? Örnek veriniz.,"Gün uzunluğundan etkilenmeyen, çiçeklenmesi içsel denetim mekanizmasıyla düzenlenen bitkilerdir. Ayçiçeği, karanfil, domates, pamuk, tütün."`
+        + `\nBitkilerde çiçeklenmeyi kontrol eden faktör nedir?,"Araştırmalar, çiçeklenmeyi kontrol eden faktörün gün uzunluğu değil, gece uzunluğu olduğunu göstermiştir. Uzun gün bitkileri aslında 'kısa gece', kısa gün bitkileri 'uzun gece' bitkileridir."`
+        + `\nYapay oksinler tarımda hangi amaçlarla kullanılır?,"Kesik gövde ve yapraklarda kök oluşumu, çiçek açma, tozlaşma olmadan meyve verme, yabani otların yok edilmesi gibi amaçlarla kullanılır."`
+        + `\nTurgor basıncı nedir?,"Bitki hücresi suyla dolduğunda, hücre duvarına yaptığı basınçtır. Nasti hareketlerinin temel mekanizmasını oluşturur."`
+        + `\nYılbaşı bitkisi (sütleğengillerden) nasıl yılbaşına kadar çiçek açtırılır?,"Bitki kasım ayından itibaren günde 12 saatten fazla karanlık bir odada bırakılarak kısa gün bitkisine yetecek kadar ışık alması sağlanır."`
+        + `\nPozitif ve negatif tropizma arasındaki fark nedir?,"Pozitif tropizma: Uyarana doğru yönelim (örn: gövdenin ışığa yönelmesi). Negatif tropizma: Uyarandan uzaklaşma (örn: kökün ışıktan uzaklaşması)."`;
+
+        // Process CSV data
+        const lines = csvData.split('\n');
+        const flashcards = lines.map(line => {
+            let parts = [];
+            let inQuotes = false;
+            let currentPart = '';
+            
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    parts.push(currentPart);
+                    currentPart = '';
+                } else {
+                    currentPart += line[i];
+                }
+            }
+            parts.push(currentPart);
+            
+            const question = parts[0].replace(/^"|"$/g, '').trim();
+            const answer = parts[1].replace(/^"|"$/g, '').trim();
+            
+            return { question, answer };
+        });
+
+        // Flashcard variables
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        // DOM elements for flashcards
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (PDF'teki tüm kavramları kapsayacak şekilde)
+        const testQuestions = [
+            {
+                question: "Bitkilerde hareketler temel olarak kaç grupta incelenir?",
+                options: [
+                    "1 grup",
+                    "2 grup: Tropizma ve Nasti",
+                    "3 grup: Tropizma, Nasti, Fotoperiyodizm",
+                    "4 grup: Fototropizma, Geotropizma, Haptotropizma, Hidrotropizma",
+                    "5 grup"
+                ],
+                correct: 1,
+                explanation: "Bitkilerde hareketler temel olarak 2 grupta incelenir: Tropizma (yönelim) ve Nasti (ırganım)."
+            },
+            {
+                question: "Aşağıdakilerden hangisi tropizma hareketi değildir?",
+                options: [
+                    "Fototropizma",
+                    "Geotropizma",
+                    "Fotonasti",
+                    "Haptotropizma",
+                    "Hidrotropizma"
+                ],
+                correct: 2,
+                explanation: "Fotonasti, nasti hareketidir. Tropizma hareketleri: Fototropizma, Geotropizma, Haptotropizma, Hidrotropizma, Kemotropizma, Travmatropizma."
+            },
+            {
+                question: "Fototropizmada bitki organlarının ışığa doğru kıvrılmasını sağlayan hormon hangisidir?",
+                options: [
+                    "Giberellin",
+                    "Oksin",
+                    "Sitokinin",
+                    "Absisik asit",
+                    "Etilen"
+                ],
+                correct: 1,
+                explanation: "Fototropizmada bitki organlarının ışığa doğru kıvrılmasını sağlayan hormon oksindir (IAA). Oksin, ışık almayan tarafta birikerek asimetrik büyümeyi sağlar."
+            },
+            {
+                question: "Aşağıdaki bitki organlarından hangisi pozitif fototropizma gösterir?",
+                options: [
+                    "Bitki kökü",
+                    "Bitki gövdesi",
+                    "Yaprak sapı",
+                    "Çiçek tomurcuğu",
+                    "Tohum"
+                ],
+                correct: 1,
+                explanation: "Bitki gövdesi pozitif fototropizma (ışığa doğru) gösterir. Bitki kökü ise negatif fototropizma (ışıktan uzak) gösterir."
+            },
+            {
+                question: "Geotropizmada kökler ve gövdeler nasıl hareket eder?",
+                options: [
+                    "Kökler yukarı, gövdeler aşağı",
+                    "Her ikisi de yukarı",
+                    "Her ikisi de aşağı",
+                    "Kökler aşağı, gövdeler yukarı",
+                    "Kökler ve gövdeler yatay"
+                ],
+                correct: 3,
+                explanation: "Geotropizmada kökler pozitif geotropizma (aşağı), gövdeler negatif geotropizma (yukarı) gösterir."
+            },
+            {
+                question: "Sarmaşık bitkisinin bir duvara sarılması hangi tropizma hareketine örnektir?",
+                options: [
+                    "Fototropizma",
+                    "Geotropizma",
+                    "Haptotropizma",
+                    "Hidrotropizma",
+                    "Kemotropizma"
+                ],
+                correct: 2,
+                explanation: "Sarmaşık bitkisinin bir duvara sarılması, dokunma uyarısına karşı verilen tepki olduğu için haptotropizma (tigmotropizma) hareketidir."
+            },
+            {
+                question: "Akşam sefası bitkisinin çiçeklerinin aydınlıkta kapalı, karanlıkta açık olması hangi hareket türüdür?",
+                options: [
+                    "Fototropizma",
+                    "Geotropizma",
+                    "Fotonasti",
+                    "Termonasti",
+                    "Sismonasti"
+                ],
+                correct: 2,
+                explanation: "Akşam sefası bitkisinin çiçeklerinin ışık varlığı/yokluğuna göre açılıp kapanması fotonasti hareketidir."
+            },
+            {
+                question: "Küstüm otu bitkisinin dokunulduğunda yapraklarını kapatması hangi hareket türüdür?",
+                options: [
+                    "Fototropizma",
+                    "Haptotropizma",
+                    "Fotonasti",
+                    "Sismonasti",
+                    "Termonasti"
+                ],
+                correct: 3,
+                explanation: "Küstüm otunun dokunmaya karşı ani tepki vermesi sismonasti (tigmonasti) hareketidir."
+            },
+            {
+                question: "Lale çiçeklerinin sıcaklığa bağlı olarak açılıp kapanması hangi hareket türüdür?",
+                options: [
+                    "Fotonasti",
+                    "Termonasti",
+                    "Sismonasti",
+                    "Fototropizma",
+                    "Haptotropizma"
+                ],
+                correct: 1,
+                explanation: "Lale çiçeklerinin sıcaklığa bağlı olarak açılıp kapanması termonasti hareketidir."
+            },
+            {
+                question: "Bitkilerin gün ve gece uzunluğuna verdikleri biyolojik yanıta ne ad verilir?",
+                options: [
+                    "Tropizma",
+                    "Nasti",
+                    "Fotoperiyodizm",
+                    "Fototropizma",
+                    "Geotropizma"
+                ],
+                correct: 2,
+                explanation: "Bitkilerin gün ve gece uzunluğuna verdikleri biyolojik yanıta fotoperiyodizm adı verilir."
+            },
+            {
+                question: "Aşağıdaki bitkilerden hangisi uzun gün bitkisine örnektir?",
+                options: [
+                    "Soya fasulyesi",
+                    "Çilek",
+                    "Ispanak",
+                    "Patates",
+                    "Kasımpatı"
+                ],
+                correct: 2,
+                explanation: "Ispanak, uzun gün bitkisidir. Uzun gün bitkileri: Ispanak, dereotu, şeker pancarı, marul, yonca."
+            },
+            {
+                question: "Aşağıdaki bitkilerden hangisi kısa gün bitkisine örnektir?",
+                options: [
+                    "Ispanak",
+                    "Dereotu",
+                    "Soya fasulyesi",
+                    "Marul",
+                    "Yonca"
+                ],
+                correct: 2,
+                explanation: "Soya fasulyesi, kısa gün bitkisidir. Kısa gün bitkileri: Soya fasulyesi, çilek, patates, kasımpatı."
+            },
+            {
+                question: "Aşağıdaki bitkilerden hangisi nötr gün bitkisine örnektir?",
+                options: [
+                    "Ispanak",
+                    "Soya fasulyesi",
+                    "Ayçiçeği",
+                    "Kasımpatı",
+                    "Şeker pancarı"
+                ],
+                correct: 2,
+                explanation: "Ayçiçeği, nötr gün bitkisidir. Nötr gün bitkileri: Ayçiçeği, karanfil, domates, pamuk, tütün."
+            },
+            {
+                question: "Bitkilerde çiçeklenmeyi kontrol eden asıl faktör nedir?",
+                options: [
+                    "Gün uzunluğu",
+                    "Gece uzunluğu",
+                    "Sıcaklık",
+                    "Nem",
+                    "Toprak pH'ı"
+                ],
+                correct: 1,
+                explanation: "Araştırmalar, bitkilerde çiçeklenmeyi kontrol eden asıl faktörün gün uzunluğu değil, gece uzunluğu olduğunu göstermiştir."
+            },
+            {
+                question: "Koleoptil ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+                options: [
+                    "Bitki kökünün bir kısmıdır",
+                    "Çimen fidelerinin kınla kuşatılmış gövdesidir",
+                    "Çiçeğin erkek organıdır",
+                    "Tohumun kabuğudur",
+                    "Yaprağın damar sistemidir"
+                ],
+                correct: 1,
+                explanation: "Koleoptil, çimen fidelerinin kınla kuşatılmış gövdesidir. Fototropizma deneyleri ve oksin keşfinde kullanılmıştır."
+            },
+            {
+                question: "Yapay oksinler tarımda aşağıdakilerden hangisi için kullanılmaz?",
+                options: [
+                    "Kesik gövde ve yapraklarda kök oluşumu",
+                    "Çiçek açmasını sağlama",
+                    "Tozlaşma olmadan meyve oluşması",
+                    "Yabani otların yok edilmesi",
+                    "Tohum çimlenmesini hızlandırma"
+                ],
+                correct: 4,
+                explanation: "Yapay oksinler tarımda kök oluşumu, çiçek açma, meyve oluşumu ve yabani ot kontrolü için kullanılır. Tohum çimlenmesini hızlandırmak için genellikle giberellin hormonu kullanılır."
+            },
+            {
+                question: "Bitki köklerinin suya doğru yönelmesine ne ad verilir?",
+                options: [
+                    "Fototropizma",
+                    "Geotropizma",
+                    "Haptotropizma",
+                    "Hidrotropizma",
+                    "Kemotropizma"
+                ],
+                correct: 3,
+                explanation: "Bitki köklerinin suya doğru yönelmesine hidrotropizma denir. Her zaman pozitiftir."
+            },
+            {
+                question: "Bitki köklerinin aşırı tuz veya zararlı kimyasallardan uzaklaşmasına ne ad verilir?",
+                options: [
+                    "Pozitif kemotropizma",
+                    "Negatif kemotropizma",
+                    "Pozitif hidrotropizma",
+                    "Negatif hidrotropizma",
+                    "Pozitif fototropizma"
+                ],
+                correct: 1,
+                explanation: "Bitki köklerinin aşırı tuz veya zararlı kimyasallardan uzaklaşması negatif kemotropizmadır. Yararlı maddelere doğru yönelim pozitif kemotropizmadır."
+            },
+            {
+                question: "Nasti hareketlerinin temel mekanizması nedir?",
+                options: [
+                    "Oksin hormonunun asimetrik dağılımı",
+                    "Turgor basıncı değişimi",
+                    "Hücre bölünmesi",
+                    "Fotosentez hızı değişimi",
+                    "Solunum hızı değişimi"
+                ],
+                correct: 1,
+                explanation: "Nasti hareketlerinin temel mekanizması turgor basıncı değişimidir. Hücrelerdeki su basıncı değişerek hareket oluşur."
+            },
+            {
+                question: "Periyodik hareketler neyi ifade eder?",
+                options: [
+                    "Uyaranın yönüne bağlı hareketler",
+                    "Nasti hareketlerinin gece-gündüz süresince tekrarlanması",
+                    "Tropizma hareketlerinin mevsimsel tekrarlanması",
+                    "Bitkilerin yer değiştirme hareketleri",
+                    "Köklerin dairesel hareketleri"
+                ],
+                correct: 1,
+                explanation: "Periyodik hareketler, nasti hareketlerinin bir günlük (gece-gündüz) süresince tekrarlanmasını ifade eder."
+            },
+            {
+                question: "Bir bitkinin yaralanan bölgeden uzaklaşacak şekilde büyümesine ne ad verilir?",
+                options: [
+                    "Fototropizma",
+                    "Geotropizma",
+                    "Travmatropizma",
+                    "Hidrotropizma",
+                    "Kemotropizma"
+                ],
+                correct: 2,
+                explanation: "Bir bitkinin yaralanan bölgeden uzaklaşacak şekilde büyümesine travmatropizma denir. Genellikle köklerde görülür."
+            },
+            {
+                question: "Fotoperiyodizm hangi fizyolojik olayları etkiler?",
+                options: [
+                    "Sadece çiçeklenme",
+                    "Çiçeklenme ve yaprak dökümü",
+                    "Sadece kök gelişimi",
+                    "Sadece tohum çimlenmesi",
+                    "Sadece meyve olgunlaşması"
+                ],
+                correct: 1,
+                explanation: "Fotoperiyodizm, bitkilerde çiçeklenme, yaprak dökümü, tomurcuk gelişimi gibi birçok fizyolojik olayı etkiler."
+            },
+            {
+                question: "Uzun gün bitkileri aslında hangi bitkilerdir?",
+                options: [
+                    "Uzun gece bitkileri",
+                    "Kısa gece bitkileri",
+                    "Nötr gece bitkileri",
+                    "Sabit gece bitkileri",
+                    "Değişken gece bitkileri"
+                ],
+                correct: 1,
+                explanation: "Uzun gün bitkileri aslında 'kısa gece' bitkileridir. Çiçeklenmeleri için kesintisiz uzun bir geceye toleransları yoktur."
+            },
+            {
+                question: "Kısa gün bitkileri aslında hangi bitkilerdir?",
+                options: [
+                    "Uzun gece bitkileri",
+                    "Kısa gece bitkileri",
+                    "Nötr gece bitkileri",
+                    "Sabit gece bitkileri",
+                    "Değişken gece bitkileri"
+                ],
+                correct: 0,
+                explanation: "Kısa gün bitkileri aslında 'uzun gece' bitkileridir. Çiçeklenmeleri için kesintisiz uzun bir gece gereklidir."
+            },
+            {
+                question: "Yılbaşı bitkisini yılbaşına kadar çiçek açtırmak için ne yapılır?",
+                options: [
+                    "Günde 24 saat ışık verilir",
+                    "Günde 12 saatten fazla karanlıkta bırakılır",
+                    "Sürekli sıcak ortamda tutulur",
+                    "Bol su verilir",
+                    "Yapay oksin uygulanır"
+                ],
+                correct: 1,
+                explanation: "Yılbaşı bitkisi kısa gün bitkisidir. Kasım ayından itibaren günde 12 saatten fazla karanlıkta bırakılarak çiçeklenmesi sağlanır."
+            },
+            {
+                question: "Bitki kökü hem suya doğru hem de aşırı gübreden uzaklaşıyorsa, hangi iki tropizma birlikte çalışıyordur?",
+                options: [
+                    "Pozitif fototropizma ve negatif geotropizma",
+                    "Pozitif hidrotropizma ve negatif kemotropizma",
+                    "Negatif fototropizma ve pozitif geotropizma",
+                    "Pozitif haptotropizma ve negatif travmatropizma",
+                    "Pozitif kemotropizma ve negatif hidrotropizma"
+                ],
+                correct: 1,
+                explanation: "Kökün suya doğru yönelmesi pozitif hidrotropizma, aşırı gübreden uzaklaşması negatif kemotropizmadır."
+            },
+            {
+                question: "Aşağıdaki nasti hareketlerinden hangisi en hızlı gerçekleşir?",
+                options: [
+                    "Fotonasti",
+                    "Termonasti",
+                    "Sismonasti",
+                    "Hidronasti",
+                    "Kemonasti"
+                ],
+                correct: 2,
+                explanation: "Sismonasti (dokunmaya tepki) en hızlı nasti hareketidir. Küstüm otu ve böcekçil bitkilerde saniyeler içinde gerçekleşir."
+            },
+            {
+                question: "Aşağıdakilerden hangisi tropizma ve nasti arasındaki temel farklardan biri değildir?",
+                options: [
+                    "Tropizma büyüme hareketi, nasti turgor hareketidir",
+                    "Tropizma yavaş, nasti hızlıdır",
+                    "Tropizma uyaran yönüne bağlı, nasti bağlı değildir",
+                    "Tropizma geri dönüşsüz, nasti geri dönüşlüdür",
+                    "Tropizma sadece köklerde, nasti sadece yapraklarda görülür"
+                ],
+                correct: 4,
+                explanation: "Tropizma sadece köklerde, nasti sadece yapraklarda görülür ifadesi yanlıştır. Her iki hareket de farklı organlarda görülebilir."
+            },
+            {
+                question: "Fotoperiyodizmin keşfi ve uygulanması tarıma ne gibi avantajlar sağlamıştır?",
+                options: [
+                    "Bitkilerin her mevsim yetiştirilebilmesi",
+                    "Çiçeklenme zamanının kontrol edilebilmesi",
+                    "Verimin artırılması",
+                    "Hastalıklara direncin artırılması",
+                    "Hepsi"
+                ],
+                correct: 4,
+                explanation: "Fotoperiyodizmin keşfi, bitkilerin her mevsim yetiştirilebilmesi, çiçeklenme zamanının kontrolü, verim artışı ve dolaylı olarak hastalık direnci gibi birçok avantaj sağlamıştır."
+            },
+            {
+                question: "Bitkilerin hareket yetenekleri ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+                options: [
+                    "Bitkiler hiç hareket edemez",
+                    "Bitkiler sadece yön değiştirebilir",
+                    "Bitkiler hayvanlar gibi yer değiştirebilir",
+                    "Bitkiler hem yön değiştirebilir hem de hızlı durum değiştirebilir",
+                    "Bitkiler sadece çok yavaş büyüme hareketi yapabilir"
+                ],
+                correct: 3,
+                explanation: "Bitkiler hem tropizma ile yön değiştirebilir (yavaş büyüme hareketi), hem de nasti ile hızlı durum değiştirebilir (turgor hareketi)."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Bitkilerde hareket ve fotoperiyodizm konusunu tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
