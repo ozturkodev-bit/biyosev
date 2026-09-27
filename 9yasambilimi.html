@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2XPK1TZNV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q2XPK1TZNV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Ekmek Kırıntısı (Breadcrumb) Tasarımı */
+    .breadcrumb-container {
+        padding: 15px 20px;
+        background-color: #f1f3f5; /* Açık gri arka plan */
+        border-bottom: 2px solid #e9ecef;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin-bottom: 20px; /* Yazı ile arasına boşluk koyar */
+    }
+
+    .breadcrumb-container a {
+        text-decoration: none;
+        color: #2980b9; /* Link rengi (Mavi) */
+        font-weight: bold;
+    }
+
+    .breadcrumb-container a:hover {
+        color: #e74c3c; /* Üzerine gelince renk değişsin (Kırmızı) */
+        text-decoration: underline;
+    }
+
+    .separator {
+        margin: 0 10px;
+        color: #95a5a6; /* Araya konan / işaretinin rengi */
+        font-weight: bold;
+    }
+
+    .current-page {
+        color: #7f8c8d; /* Şu anki sayfa adı (Gri ve tıklanmaz) */
+        font-weight: normal;
+    }
+</style>
+    <title>Yaşam Bilimi: Biyoloji Öğrenme Portalı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #e74c3c;
+        }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            margin: 20px auto;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            transform: rotateY(180deg);
+            border: 3px solid #3498db;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-btn {
+            padding: 12px 25px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .flashcard-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Mind Map Styles */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mindmap-node {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .mindmap-node:hover {
+            transform: translateY(-5px);
+        }
+
+        .mindmap-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e74c3c;
+        }
+
+        .mindmap-content {
+            list-style-type: none;
+        }
+
+        .mindmap-content li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mindmap-content li:before {
+            content: "•";
+            color: #e74c3c;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contextual Questions Styles */
+        .contextual-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contextual-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .contextual-question:hover {
+            transform: translateX(5px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .context-scenario {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #28a745;
+        }
+
+        .context-scenario i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .answer-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .answer-content {
+            background: #ffeaea;
+            border-left: 4px solid #e74c3c;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        /* Test Styles */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateX(5px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #fef2f2;
+            border-color: #e74c3c;
+        }
+
+        .option.selected {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #e74c3c;
+        }
+
+        .test-result {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-total {
+            opacity: 0.8;
+        }
+
+        /* Summary Styles */
+        .summary-content {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-section:hover {
+            transform: translateX(10px);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title i {
+            color: #e74c3c;
+        }
+
+        .summary-list {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .summary-list li {
+            margin: 12px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .summary-list li:before {
+            content: "✓";
+            color: #e74c3c;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .highlight {
+            background: #ffeaea;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .important-note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .diagram-note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* Progress and Stats */
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #e74c3c);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .comparison-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Reasoning Section Styles */
+        .reasoning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reasoning-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .reasoning-section:hover {
+            transform: translateX(5px);
+        }
+
+        .reasoning-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-title i {
+            color: #f39c12;
+        }
+
+        .reasoning-content {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed #f39c12;
+        }
+
+        .reasoning-question {
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .reasoning-answer {
+            background: #fef9e7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #f39c12;
+        }
+
+        /* Curiosity Section Styles */
+        .curiosity-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .curiosity-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .curiosity-section:hover {
+            transform: translateX(5px);
+        }
+
+        .curiosity-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .curiosity-title i {
+            color: #9b59b6;
+        }
+
+        .curiosity-content {
+            background: #f5f0fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Sesli Özet (TTS) Kontrolleri */
+        .tts-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 25px 0 15px;
+        }
+
+        .tts-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            background: #3498db;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tts-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .tts-btn.tts-stop-btn {
+            background: #e74c3c;
+        }
+
+        .tts-select {
+            padding: 12px 18px;
+            border-radius: 25px;
+            border: 2px solid #3498db;
+            font-weight: 600;
+            color: #2c3e50;
+            background: white;
+            cursor: pointer;
+        }
+
+        .tts-status {
+            margin-top: 15px;
+            color: #555;
+            font-size: 1.05rem;
+            min-height: 1.5em;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-container {
+                height: 350px;
+            }
+            
+            .mindmap {
+                grid-template-columns: 1fr;
+            }
+            
+            .flashcard-controls {
+                flex-wrap: wrap;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb-container">
+    
+    <a href="index.html">Ana Sayfa</a> 
+    
+    <span class="separator">/</span> 
+    
+    <a href="index.html">9. Sınıf</a> 
+    
+    <span class="separator">/</span> 
+    
+    <span class="current-page">Yaşam Bilimi: Biyoloji</span>
+
+</nav>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dna"></i> Yaşam Bilimi: Biyoloji Öğrenme Portalı</h1>
+            <div class="subtitle">8 farklı öğrenme yöntemi ile biyolojinin önemini, bilimin doğasını, bilimsel araştırma süreçlerini ve bilim etiğini keşfedin</div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-info">
+                    <span><i class="fas fa-check-circle"></i> Tamamlanan: <span id="completed-count">0</span>/8</span>
+                    <span><i class="fas fa-chart-line"></i> İlerleme: <span id="progress-percent">0%</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+        <div class="card" id="audio-btn">
+                <i class="fas fa-headphones"></i>
+                <div class="card-title">Dinleyerek Öğren</div>
+                <div class="card-description">Konunun sesli özetini dinleyerek bilgilerinizi pekiştirin.</div>
+            </div>
+            <div class="card" id="flashcard-btn">
+                <i class="fas fa-layer-group"></i>
+                <div class="card-title">Bilgi Kartları</div>
+                <div class="card-description">25 adet soru-cevap kartı ile biyolojinin önemini, bilimin doğasını ve bilim etiğini tekrar edin.</div>
+            </div>
+            <div class="card" id="mindmap-btn">
+                <i class="fas fa-project-diagram"></i>
+                <div class="card-title">Zihin Haritası</div>
+                <div class="card-description">Konuyu görsel olarak öğrenin ve kavramlar arasındaki bağlantıları keşfedin.</div>
+            </div>
+            <div class="card" id="summary-btn">
+                <i class="fas fa-book"></i>
+                <div class="card-title">Detaylı Özet</div>
+                <div class="card-description">Biyolojinin önemini, dönüm noktalarını, bilimin doğasını ve bilim etiğini kapsamlı özet şeklinde öğrenin.</div>
+            </div>
+            <div class="card" id="contextual-btn">
+                <i class="fas fa-question-circle"></i>
+                <div class="card-title">Bağlam Temelli Sorular</div>
+                <div class="card-description">Gerçek hayat senaryoları ile konu sorularını çözün ve cevaplarını görün.</div>
+            </div>
+            <div class="card" id="test-btn">
+                <i class="fas fa-file-alt"></i>
+                <div class="card-title">Test Çöz</div>
+                <div class="card-description">30 soruluk test ile konu hakkındaki bilgilerinizi sınayın.</div>
+            </div>
+            <div class="card" id="reasoning-btn">
+                <i class="fas fa-brain"></i>
+                <div class="card-title">Mantık Yürütme</div>
+                <div class="card-description">Sebep-sonuç ilişkileri ile konunun mantığını anlayın, ezberden kurtulun.</div>
+            </div>
+            <div class="card" id="curiosity-btn">
+                <i class="fas fa-search-plus"></i>
+                <div class="card-title">Meraklısına - İleri Biyoloji</div>
+                <div class="card-description">Biyoloji ve bilim tarihi ile ilgili ilginç detayları ve üst düzey bilgileri keşfedin.</div>
+            </div>
+        </div>
+
+        <!-- Flashcard Section -->
+        <div class="content-section" id="flashcard-section">
+            <button class="back-btn" id="back-from-flashcards">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-layer-group"></i> Yaşam Bilimi: Biyoloji Bilgi Kartları
+            </h2>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">❓</div>
+                        <div class="question" id="question" style="font-size: 1.5rem; font-weight: 600; line-height: 1.6;">
+                            <!-- Question will be loaded here -->
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-mouse-pointer"></i> Kartı çevirmek için tıklayın
+                        </div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👍</div>
+                        <div class="answer" id="answer" style="font-size: 1.4rem; line-height: 1.6;">
+                            <!-- Answer will be loaded here -->
+                        </div>
+                        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9rem;">
+                            <i class="fas fa-redo"></i> Tekrar çevirmek için tıklayın
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Önceki
+                </button>
+                <button class="flashcard-btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Kartı Çevir
+                </button>
+                <button class="flashcard-btn" id="next-btn">
+                    Sonraki <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="flashcard-btn" id="shuffle-btn" style="background: #3498db;">
+                    <i class="fas fa-random"></i> Karıştır
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 1.1rem;">
+                <span id="current-card">1</span> / <span id="total-cards">25</span> Kart
+            </div>
+        </div>
+
+        <!-- Mind Map Section -->
+        <div class="content-section" id="mindmap-section">
+            <button class="back-btn" id="back-from-mindmap">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-project-diagram"></i> Yaşam Bilimi: Biyoloji Zihin Haritası
+            </h2>
+            
+            <div class="mindmap">
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Biyolojinin Tanımı ve Önemi</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Tanım:</strong> Canlıların yapılarını ve işlevlerini inceleyerek yaşamın doğasını anlamaya yardımcı olan bilim dalı</li>
+                        <li><strong>İlişkili alanlar:</strong> Sağlık bilimleri, çevre, ekonomi, tarım, genetik</li>
+                        <li><strong>Katkıları:</strong> Hastalıkların anlaşılması, yeni tedavi yöntemleri, ekosistemlerin korunması, tarımsal verimliliğin artırılması</li>
+                        <li><strong>Doğa bilimlerinin parçası:</strong> Canlıların birbirleriyle ve çevreleriyle etkileşimini inceler</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Biyolojide Dönüm Noktaları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>1389-1459:</strong> Hastalık etmenlerinin bulaşma yolları (Akşemseddin)</li>
+                        <li><strong>1665:</strong> Mikroskobun keşfi (Robert Hooke)</li>
+                        <li><strong>1838:</strong> Hücre teorisi (Schleiden, Schwann, Virchow)</li>
+                        <li><strong>1865:</strong> Kalıtım kuralları (Gregor Mendel)</li>
+                        <li><strong>1928:</strong> Penisilin / antibiyotik (Alexander Fleming)</li>
+                        <li><strong>1953:</strong> DNA çift sarmal yapısı (Watson, Crick, Franklin)</li>
+                        <li><strong>1973-2021:</strong> Rekombinant DNA, PCR, klonlama, İnsan Genom Projesi, CRISPR-Cas, mRNA aşıları</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilimin Doğası (7 Temel Özellik)</div>
+                    <ul class="mindmap-content">
+                        <li>Bilimsel bilginin <strong>değişebilir</strong> olması</li>
+                        <li>Bilimsel bilginin <strong>sosyal ve kültürel</strong> yapısı</li>
+                        <li>Bilimsel bilginin <strong>özgünlüğü</strong></li>
+                        <li><strong>Öznellik</strong> (subjektiflik)</li>
+                        <li><strong>Teori ve kanun</strong> yapılarının farklılığı (hiyerarşi yoktur)</li>
+                        <li>Bilimsel bilginin <strong>gözlem ve çıkarımlara</strong> dayalı olması</li>
+                        <li><strong>Bilimsel yöntem algısı:</strong> Evrensel tek bir bilimsel yöntem yoktur</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilimsel Yöntem Basamakları</div>
+                    <ul class="mindmap-content">
+                        <li><strong>I. Gözlem yapma:</strong> Olayların sistematik ve dikkatli incelenmesi</li>
+                        <li><strong>II. Problemi belirleme:</strong> "Neden?", "Nasıl?" sorularının sorulması</li>
+                        <li><strong>III. Veri toplama:</strong> Güvenilir ve çok sayıda veri toplanması</li>
+                        <li><strong>IV. Hipotez oluşturma:</strong> Test edilebilir bir önerme sunulması</li>
+                        <li><strong>V. Hipoteze dayalı tahminler:</strong> Akıl yürütmeyle öngörüde bulunma</li>
+                        <li><strong>VI. Deney tasarlama:</strong> Kontrollü deney veya kaynak araştırması</li>
+                        <li><strong>VII. Analiz ve sonuç çıkarma:</strong> Verilerin yorumlanması (çıkarım)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Hipotez, Tahmin ve Değişkenler</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Hipotez:</strong> Neden-sonuç bağlantısı için sunulan, test edilebilir önerme</li>
+                        <li><strong>Tahmin:</strong> Hipotez doğrulanmadan akıl yürütmeyle çıkarılan sonuç</li>
+                        <li><strong>Bağımsız değişken:</strong> Araştırmacı tarafından değiştirilen değişken</li>
+                        <li><strong>Bağımlı değişken:</strong> Bağımsız değişkene bağlı olarak değişen değişken</li>
+                        <li><strong>Kontrol grubu:</strong> Deneye tabi tutulmayan, karşılaştırma yapılan grup</li>
+                        <li><strong>Çıkarım:</strong> Elde edilen verilerin yorumlanması</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Bilim Etiği</div>
+                    <ul class="mindmap-content">
+                        <li><strong>Temel ilkeler:</strong> Dürüstlük, adalet, zarar vermeme, gönüllü onam, insan haklarına saygı</li>
+                        <li><strong>Etik dışı davranışlar:</strong> Veri uydurma/çarpıtma, intihal, kaynak göstermeme, katkı olmayanları yazar yapma</li>
+                        <li><strong>Şeffaflık:</strong> Sonuçları desteklemeyen veriler de yayımlanmalıdır</li>
+                        <li><strong>Örnek olay:</strong> "Human Challenge" çalışması (gönüllü onamı ve adalet tartışması)</li>
+                    </ul>
+                </div>
+                
+                <div class="mindmap-node">
+                    <div class="mindmap-title">Güvenilir Kaynak ve Bilimsel Düşünce</div>
+                    <ul class="mindmap-content">
+                        <li>Kaynak <strong>bilimsel makale</strong> mi, <strong>hakemli</strong> mi?</li>
+                        <li><strong>.edu/.gov</strong> uzantılı güvenilir sitelerden mi alınmış?</li>
+                        <li>Uzman incelemesi veya görüşü var mı? Son gelişmeleri yansıtıyor mu?</li>
+                        <li>Yeni iddialar doğrudan kabul edilmez; <strong>bilimsel olarak değerlendirilir</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="content-section" id="summary-section">
+            <button class="back-btn" id="back-from-summary">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-book"></i> Yaşam Bilimi: Biyoloji Detaylı Özet
+            </h2>
+            
+            <div class="summary-content">
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-dna"></i> BİYOLOJİNİN TANIMI VE ÖNEMİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Biyoloji:</strong> Canlıların yapılarını ve işlevlerini inceleyerek yaşamın doğasının anlaşılmasına yardımcı olan bilim dalıdır.</li>
+                        <li>Canlıların birbirleriyle ve çevreleriyle nasıl etkileşime girdiğini inceleyen <span class="highlight">doğal bilimlerin bir parçasıdır</span>.</li>
+                        <li>Sağlık bilimlerindeki önemli çalışmaların temelini oluşturur: İnsan vücudunun anlaşılması, hastalıkların mekanizmalarının aydınlatılması, yeni tedavi yöntemlerinin geliştirilmesi.</li>
+                        <li>Çevre ve ekonomiyle ilgili katkılarda bulunur: <span class="highlight">ekosistemlerin korunması</span>, biyolojik çeşitliliğin sürdürülmesi, tarımsal verimliliğin artırılması.</li>
+                        <li>Biyoloji hem <strong>ekonomik gelişme</strong> hem de <strong>çevresel sürdürülebilirlik</strong> için oldukça önemli bir bilim dalıdır.</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Unutmayın:</strong> Biyoloji bilimindeki dönüm noktaları, insanlığın yaşamını ve doğayı anlama şeklini kökten değiştirir ve kendisinden sonra gelen araştırmalara yön verir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-history"></i> BİYOLOJİ BİLİMİNDE DÖNÜM NOKTALARI</div>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Yıl</th>
+                            <th>Keşif / Çalışma</th>
+                            <th>Bilim İnsanları</th>
+                            <th>Önemi</th>
+                        </tr>
+                        <tr>
+                            <td><strong>1389-1459</strong></td>
+                            <td>Hastalık etmenlerinin bulaşma yollarının keşfi</td>
+                            <td>Akşemseddin</td>
+                            <td>Mikroorganizmaların hastalıklardaki rolü ilk defa ortaya konmuş, hastalıkların mikroorganizmalarla bulaşabileceği fikri öne sürülmüştür.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1665</strong></td>
+                            <td>Mikroskobun keşfi</td>
+                            <td>Robert Hooke</td>
+                            <td>Bileşik mikroskobun temeli atılmış, "Micrographia" adlı eser yayımlanmış, canlıların mikro dünyasına yolculuk başlamıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1838</strong></td>
+                            <td>Hücre teorisinin oluşturulması</td>
+                            <td>Matthias Schleiden, Theodor Schwann, Rudolf Virchow</td>
+                            <td>Organizmaların temel yapı taşı olan hücreler tanımlanmış, biyolojiye yeni bir bakış açısı getirilmiştir.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1865</strong></td>
+                            <td>Kalıtım kurallarının belirlenmesi</td>
+                            <td>Gregor Johann Mendel</td>
+                            <td>Özelliklerin ebeveynden yavrulara belirli kalıplar içinde aktarıldığı gösterilmiş, genetik bilginin nesiller arasında nasıl aktarıldığı ilk kez açıklanmıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1928</strong></td>
+                            <td>Antibiyotiğin (penisilin) keşfi</td>
+                            <td>Alexander Fleming</td>
+                            <td>Bakteri kaynaklı hastalıkların tedavisinde çığır açan ilk antibiyotik keşfedilmiştir.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1953</strong></td>
+                            <td>DNA çift sarmal yapısının keşfi</td>
+                            <td>James Watson, Francis Crick (Rosalind Franklin'in X ışını kırınım çalışmaları ile)</td>
+                            <td>Genetik materyalin hücrede nasıl saklandığı ortaya çıkarılmıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1973</strong></td>
+                            <td>Rekombinant DNA teknolojisi</td>
+                            <td>Stanley Norman Cohen, Herbert Wayne Boyer</td>
+                            <td>Genetik materyalin çoğaltılıp başka canlılara aktarılmasıyla biyoteknoloji, tıp, tarım ve endüstride önemli gelişmeler yaşanmıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1985</strong></td>
+                            <td>Polimeraz zincir reaksiyonunun (PCR) keşfi</td>
+                            <td>Kary Mullis</td>
+                            <td>Belirli bir DNA dizisini milyonlarca kez çoğaltan teknik, moleküler biyoloji ve genetik araştırmalarda köklü bir değişim olmuştur.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1990-2003</strong></td>
+                            <td>İnsan Genom Projesi</td>
+                            <td>Uluslararası araştırma ekipleri</td>
+                            <td>İnsan genomunun DNA dizisi tamamen ortaya çıkarılarak genetik araştırmalarda önemli gelişmelere imza atılmıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1996</strong></td>
+                            <td>Canlı klonlanması</td>
+                            <td>Ian Wilmut, Keith Campbell</td>
+                            <td>Yetişkin bir somatik hücreden klonlanan ilk memeli olan Dolly adlı koyun üretilmiş, genetik kopya üretimi mümkün olmuştur.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2012</strong></td>
+                            <td>CRISPR-Cas sisteminin keşfi</td>
+                            <td>Jennifer Anne Doudna, Emmanuelle Charpentier</td>
+                            <td>İstenilen bir gen bölgesinde kontrollü düzenleme yapılmasına imkân veren teknoloji; gen tedavisi, genetik hastalıkların düzeltilmesi, bitki ve hayvanlarda genetik iyileştirmeler sağlamıştır.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2021</strong></td>
+                            <td>Yeni nesil aşıların geliştirilmesi</td>
+                            <td>mRNA teknolojisi ekipleri</td>
+                            <td>mRNA teknolojisiyle geliştirilen aşılarla COVID-19 pandemisi kontrol altına alınmış, kanser tedavisi için umut verici sonuçlar elde edilmiştir.</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 İpucu:</strong> Dönüm noktasına seçilecek diğer çalışmalar: Rekombinant DNA teknolojisi, polimeraz zincir reaksiyonu, canlı klonlanması, insan genom projesi, CRISPR-Cas sistemi, mRNA aşıları.
+                    </div>
+                </div>
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-atom"></i> BİLİMİN DOĞASI VE ÖZELLİKLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Bilim:</strong> Evrendeki olaylara ve merak edilen sorulara yanıt arama sürecinde sistematik bilgi edinme; bilgilerin güvenilir ve geçerli olarak açıklanabilmesidir.</li>
+                        <li><strong>Bilimin doğası:</strong> Bilimsel araştırmaların nasıl yapıldığını, bilimsel bilginin nasıl elde edildiğini ve değerlendirildiğini, toplumda nasıl kullanıldığını açıklayan kavramdır.</li>
+                        <li><strong>1. Bilimsel bilgi değişebilir:</strong> Kesin, mutlak ve değişmez değildir; yeni bulgular ışığında zamanla değişebilir.</li>
+                        <li><strong>2. Sosyal ve kültürel yapı:</strong> Toplumların yaşam tarzları, anlayışları ve kültürel öğeleri bilimsel bilginin üretilmesinde etkilidir.</li>
+                        <li><strong>3. Özgünlük:</strong> Daha önce bilinmeyen bir gerçeğin açığa çıkarılması veya mevcut bilginin yeni bir bakış açısıyla yeniden değerlendirilmesidir.</li>
+                        <li><strong>4. Öznellik:</strong> Bilim insanlarının yaşantıları, bakış açıları, eğitimleri ve değerleri çalışmalarında etkili olabilir. Bu yüzden bilimsel bilgi mutlak olarak nesnel değildir.</li>
+                        <li><strong>5. Teori ve kanun farklıdır:</strong> Aralarında hiyerarşi yoktur. <span class="highlight">Kanunlar "nasıl", teoriler "neden"</span> sorusuna cevap arar. Teoriler zamanla kanuna dönüşmez.</li>
+                        <li><strong>6. Gözlem ve çıkarımlara dayalı:</strong> Bilimsel bilgi sistematik bir süreçte gözlemlere ve çıkarımlara dayalı olarak üretilir.</li>
+                        <li><strong>7. Tek bir bilimsel yöntem yoktur:</strong> Evrensel olarak kabul edilen tek bir bilimsel yöntem bulunmaz; farklı disiplinlerde farklı yöntemler uygulanabilir.</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Neden Önemli?</strong> Bilimin doğasını bilmek; yazılı ve görsel basında çıkan yeni iddiaların doğrudan kabul edilmesi yerine <em>bilimsel olarak değerlendirilmesini</em> sağlar. Örneğin "aşılar otizm yapar mı?", "küresel ısınma iklim değişikliğine neden olur mu?" gibi sorularda bilimsel kaynakların nasıl inceleneceğini anlamamızı sağlar.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-flask"></i> BİLİMSEL YÖNTEM BASAMAKLARI</div>
+                    <ul class="summary-list">
+                        <li><strong>I. Gözlem Yapma:</strong> Duyu organları ve araç gereçlerle bilgi toplanması; olayların sistematik ve dikkatli incelenmesidir. (Örnek: Ormanda bir güvenin kanatlarındaki baykuş yüzüne benzeyen desenleri fark etmek.)</li>
+                        <li><strong>II. Problemi Belirleme:</strong> Gözlem ve veriler ışığında çözüme ulaştırılmak istenen durumun tam olarak ifade edilmesi. "Neden?", "Nasıl?" soruları sorulur.</li>
+                        <li><strong>III. Veri Toplama:</strong> Araştırmanın doğruluğu ve güvenilirliği için titizlikle planlanan adım. Bilimsel çözümün çok sayıda veriye dayandırılması gerekir.</li>
+                        <li><strong>IV. Hipotez Oluşturma:</strong> Olayın nedeninin/sonucunun açıklanması için sunulan; test edilebilir, doğruluğu ya da yanlışlığı ispatlanabilir önerme. (Örnek: "Göz desenleri güveyi yiyebilecek avcıları uzaklaştırır.")</li>
+                        <li><strong>V. Hipoteze Dayalı Tahminler:</strong> Hipotez test edilmeden akıl yürütmeyle çıkarılan sonuç. (Örnek: "Bir güvenin kanatlarında göz desenleri varsa avcı kuşlar güveyi yemekten kaçınır.")</li>
+                        <li><strong>VI. Deney Tasarlama:</strong> Tahminleri test etmek için kontrollü deney tasarlanması veya bilimsel kaynaklardan kanıt toplanması.</li>
+                        <li><strong>VII. Analiz ve Sonuç Çıkarma:</strong> Elde edilen verilerin yorumlanmasına <span class="highlight">çıkarım</span> denir. Bulgular hipotezle çelişirse hipotez gözden geçirilir/gerekiyorsa değiştirilir; yetersizse yeni gözlem veya deneyler yapılır; destekliyorsa sonuçlar raporlanıp duyurulur.</li>
+                    </ul>
+                    
+                    <div class="diagram-note">
+                        <strong>💡 Unutmayın:</strong> Fizik, kimya, biyoloji gibi bilim dallarında bilimsel sürecin benzer adımları izlenir; ancak bilimde evrensel tek bir doğru yöntem yoktur. Fizikte deneysel ve matematiksel modeller, sosyal bilimlerde gözlem ve anketler daha çok tercih edilir.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-balance-scale"></i> HİPOTEZ, TAHMİN VE DENEY DEĞİŞKENLERİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Hipotez:</strong> Belirli bir durumun ya da olayın nedeninin, bağlantısının veya sonucunun açıklanması için sunulan önermedir.</li>
+                        <li><strong>Tahmin:</strong> Hipotezin doğruluğu test edilmeden akıl yürütme yoluyla çıkarılan sonuçtur. Zaman kaybını önleyerek araştırmaları kolaylaştırır.</li>
+                        <li><strong>Bağımsız değişken:</strong> Araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkendir. (Güve örneğinde: göz desenlerinin bulunma durumu.)</li>
+                        <li><strong>Bağımlı değişken:</strong> Bağımsız değişkene bağlı olarak değişen değişkendir. (Güve örneğinde: desen durumuna göre değişen güve sayıları.)</li>
+                        <li><strong>Kontrollü deney:</strong> Bağımsız değişken dışında tüm koşulların eşit tutulduğu deneydir. Böylece sonuçların hangi değişkenden kaynaklandığı anlaşılabilir.</li>
+                        <li><strong>Çıkarım:</strong> Elde edilen verilerin yorumlanmasıdır. Tek bir kanıt kesin sonuç sayılmaz; bilim insanları asla tek kanıtla yetinmez.</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Ampul Örneği:</strong> Ampul yanmadığında önce elektriklerin kesik olmadığı kontrol edilir, sonra ampul değiştirilir veya anahtar kontrol edilir. Bu günlük süreç de bilimsel düşünme adımlarına benzer: gözlem → problem → hipotez → test → sonuç.
+                    </div>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-tree"></i> BİLİMSEL ARAŞTIRMA SÜRECİ: SÖĞÜT AĞAÇLARI ÖRNEĞİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Gözlem:</strong> Gölün kuzey kıyısındaki söğütler sağlıklı; güney kıyısındakilerde sararma, erken dökülme ve gelişim geriliği var. Hastalıklı ağaçların çoğu yeni yapılan otoparkın drenaj hattına yakın.</li>
+                        <li><strong>Problem/Soru:</strong> Güneydeki söğütler neden hastalanıyor? Toprak veya suda kuzeyde olmayan etkenler var mı?</li>
+                        <li><strong>Hipotez:</strong> "Güney kıyısındaki drenaj hattına yakın ağaçlar, otoparktan sızan motorlu taşıt atıklarını kökleriyle alır, klorofil kaybı yaşar ve hastalanır."</li>
+                        <li><strong>Kontrollü deney:</strong> Özdeş genç söğüt fidanları iki gruba ayrılır: <span class="highlight">Kontrol grubu</span> normal göl suyuyla, <span class="highlight">deney grubu</span> otopark drenajından alınan atık su karışımlı göl suyuyla sulanır.</li>
+                        <li><strong>Sonuç ve çıkarım:</strong> Deney grubunda hastalık belirtileri görülürse hipotez desteklenir.</li>
+                        <li><strong>Tek kanıt yetmez:</strong> Ağaçlar başka bir nedenden (örneğin mantar enfeksiyonu veya taban suyu seviyesi) de hastalanmış olabilir. Bu nedenle farklı kontrollü deneylerle yeni kanıtlar aranır.</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-title"><i class="fas fa-user-shield"></i> BİLİM ETİĞİ</div>
+                    <ul class="summary-list">
+                        <li><strong>Bilim etiği:</strong> Bilimsel araştırmaların insan haklarına, dürüstlüğe ve toplumsal değerlere uygun yürütülmesini sağlayan ilkeler bütünüdür.</li>
+                        <li><strong>Temel ilkeler:</strong> Dürüstlük, kaynak gösterme (atıf), verileri olduğu gibi raporlama, gönüllü onam (açık rıza), zarar vermeme, adalet, insan haklarına saygı.</li>
+                        <li><strong>Etik dışı davranışlar:</strong>
+                            <ul style="margin-left: 20px; list-style-type: circle;">
+                                <li>Veri uydurma, verileri değiştirme veya çarpıtma</li>
+                                <li>Araştırma sonuçlarını desteklemeyen verileri saklama/yayımlamama</li>
+                                <li>İntihal (başkasının bulgularını kendi çalışması gibi sunma)</li>
+                                <li>Kaynak göstermeme</li>
+                                <li>Katkısı olmayan kişileri yazar listesine ekleme</li>
+                            </ul>
+                        </li>
+                        <li><strong>Human Challenge örneği (2021, İngiltere):</strong> 18-30 yaş arasındaki 36 sağlıklı gönüllüye kontrollü koşullarda bilerek canlı SARS-CoV-2 verilmiştir. Amaç; virüsün bulaşması için gereken en düşük dozu belirlemek, bağışıklık sisteminin ilk saatlerdeki tepkisini incelemek ve bulaştırıcılığı anlamaktı.</li>
+                        <li><strong>Etik tartışma:</strong> Çalışmada gönüllülerin bilerek enfekte edilmesi tıbbın temel etik ilkeleriyle çelişebileceği savunulmuş; buna karşılık toplum sağlığı için büyük yarar sağlayabileceği ileri sürülmüştür. <span class="highlight">Gönüllü onamı ve adalet</span> ilkeleri açısından riskler dikkate alınmalıdır.</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <strong>📌 Unutmayın:</strong> Anket verilerinin doğruluğu ve güvenilirliği çok önemlidir; istenildiği gibi değiştirilemez. Bilimsel kaynaklardan derlenen bilgiler için mutlaka kaynak gösterilmelidir.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contextual Questions Section -->
+        <div class="content-section" id="contextual-section">
+            <button class="back-btn" id="back-from-contextual">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-question-circle"></i> Bağlam Temelli Yaşam Bilimi: Biyoloji Soruları (12 Adet)
+            </h2>
+            
+            <div class="contextual-container">
+                <!-- Soru 1 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">1</div>
+                        <div class="question-text">Akşam ders çalışırken odanın ampulü bir anda sönüyor. Elektriklerin kesik olmadığını kontrol ettin. Bu sıradan günlük durumda bilimsel yöntemi adım adım nasıl uygularsın?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ampul yanmıyor ama evdeki diğer lambalar çalışıyor. Anahtar da çalışıyor gibi görünüyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(1)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-1">
+                        <p><strong>Cevap:</strong> Günlük karar süreçleri de bilimsel düşünme adımlarını takip eder.</p>
+                        <p><strong>Açıklama:</strong> Adım adım bilimsel süreç şöyle işletilir:</p>
+                        <ul>
+                            <li><strong>Gözlem:</strong> Ampulün sönmesi fark edilir.</li>
+                            <li><strong>Problem belirleme:</strong> "Ampul neden söndü?" sorusu sorulur.</li>
+                            <li><strong>Veri toplama:</strong> Elektriklerin kesik olmadığı, diğer lambaların yandığı, anahtarın çalıştığı kontrol edilir.</li>
+                            <li><strong>Hipotez:</strong> "Ampulün filamanı patlamıştır."</li>
+                            <li><strong>Tahmin:</strong> "Eğer ampul patlamışsa yeni bir ampul takıldığında ışık yanacaktır."</li>
+                            <li><strong>Deney (test):</strong> Ampul değiştirilir.</li>
+                            <li><strong>Sonuç:</strong> Işık yanarsa hipotez desteklenir; yanmazsa sorun anahtar veya kablolarda aranır ve süreç yeni hipotezle devam eder.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 2 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">2</div>
+                        <div class="question-text">Bir arkadaşın sosyal medyada gördüğü "aşılar otizm yapıyor" iddiasına inanıyor ve aşı olmak istemiyor. Bu iddiayı bilimin doğası açısından nasıl değerlendirmelisin?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: İddia, bir blog yazısında yer alıyor. Arkadaşın "internette herkes bunu söylüyor" diyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(2)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-2">
+                        <p><strong>Cevap:</strong> Bu iddia doğrudan kabul edilmemeli, bilimsel olarak değerlendirilmelidir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li>Bilimsel bilgi <strong>gözlemlere ve çıkarımlara dayanır</strong>; tek bir blog yazısı yeterli kanıt değildir.</li>
+                            <li>İddiayı destekleyen <strong>hakemli bilimsel makaleler</strong> ve çok sayıda veri olup olmadığı kontrol edilmelidir (.edu/.gov uzantılı kaynaklar, uzman görüşleri).</li>
+                            <li>Geniş katılımlı bilimsel çalışmalar aşı ile otizm arasında bir bağlantı bulamamış; iddiaya kaynaklık eden çalışma yöntemsel hataları nedeniyle geri çekilmiştir.</li>
+                            <li>Bilimin doğasını bilmek; basında çıkan <strong>yeni iddiaların doğrudan kabul edilmesi yerine bilimsel olarak sorgulanmasını</strong> sağlar.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 3 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">3</div>
+                        <div class="question-text">Ormanda yürüyüş yaparken bir ağacın gövdesinde dinlenen bir güve görüyorsun. Güvenin kanatlarında baykuş yüzüne benzeyen göz desenleri var. Bu gözlemden yola çıkarak bir hipotez, bir tahmin ve deneydeki değişkenleri belirleyebilir misin?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Bazı kuşlar güveleri yiyor; baykuşlar ise diğer kuşları avlıyor. Güvelerin göz desenleri onlara yaşamsal avantaj sağlıyor olabilir mi?
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(3)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-3">
+                        <p><strong>Cevap:</strong></p>
+                        <ul>
+                            <li><strong>Hipotez:</strong> "Göz desenleri güveyi yiyebilecek avcıları uzaklaştırır."</li>
+                            <li><strong>Tahmin:</strong> "Bir güvenin kanatlarında göz desenleri varsa avcı kuşlar güveyi yemekten kaçınır."</li>
+                            <li><strong>Kontrollü deney:</strong> Eşit sayıda benekli ve beneksiz güve, avcı kuşların olduğu ortamda bir süre bekletilir; kalan güve sayıları karşılaştırılır.</li>
+                            <li><strong>Bağımsız değişken:</strong> Güvelerin göz deseni bulundurma durumu.</li>
+                            <li><strong>Bağımlı değişken:</strong> Desen durumuna göre değişen (avlanmayan) güve sayıları.</li>
+                        </ul>
+                        <p><strong>Açıklama:</strong> Detaylı gözlemlerde göz desenli güvelerin daha az avlandığı tespit edilirse hipotez desteklenir. Veriler yetersizse yeni gözlem veya deneylerle ilave veriler toplanır.</p>
+                    </div>
+                </div>
+                
+                <!-- Soru 4 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">4</div>
+                        <div class="question-text">Gölün kuzey kıyısındaki söğüt ağaçları gür ve sağlıklı; güney kıyısındakilerde sararma ve gelişim geriliği var. Hastalıklı ağaçların çoğu yeni yapılan otoparkın drenaj hattına yakın. Bu gizemi çözmek için nasıl bir kontrollü deney tasarlanır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Her iki kıyı da aynı su kaynağından besleniyor ve aynı toprak yapısına sahip. Yapılan gözlemlerde hastalıklı ağaçların yapraklarında klorofilin ciddi oranda azaldığı belirlenmiş.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(4)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-4">
+                        <p><strong>Cevap:</strong> Hipotez: "Drenaj hattına yakın ağaçlar, otoparktan sızan motorlu taşıt atıklarını kökleriyle alır, klorofil kaybı yaşar ve hastalanır."</p>
+                        <p><strong>Açıklama:</strong> Kontrollü deney:</p>
+                        <ul>
+                            <li>Özdeş genç söğüt fidanları iki gruba ayrılır.</li>
+                            <li><strong>Kontrol grubu:</strong> Normal göl suyuyla sulanır.</li>
+                            <li><strong>Deney grubu:</strong> Otopark drenajından alınan atık su karışımlı göl suyuyla sulanır.</li>
+                            <li><strong>Bağımsız değişken:</strong> Sulamada kullanılan suyun içeriği. <strong>Bağımlı değişken:</strong> Ağaçların sağlık durumu (yaprak sararması, klorofil miktarı).</li>
+                            <li>Işık, sıcaklık, toprak gibi diğer koşullar her iki grupta eşit tutulur.</li>
+                            <li>Bilim insanları asla tek kanıtla yetinmez: Sorun bir mantar enfeksiyonu veya taban suyu seviyesi gibi başka bir nedenle de oluşmuş olabilir; farklı kontrollü deneylerle yeni kanıtlar aranır.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 5 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">5</div>
+                        <div class="question-text">2021'de İngiltere'de yapılan "Human Challenge" çalışmasında sağlıklı gönüllülere bilerek COVID-19 virüsü verildi ve yaklaşık 4.500 sterlin ödeme yapıldı. Gönüllü onamı ve adalet ilkeleri açısından bu durum hangi riskleri ortaya çıkarır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: 18-30 yaş arasındaki 36 gönüllü, yüksek güvenlikli birimde 14 gün izole edildi. Amaç, virüsün bulaşması için gereken en düşük dozu belirlemek ve bağışıklık sisteminin ilk saatlerdeki tepkisini incelemekti.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(5)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-5">
+                        <p><strong>Cevap:</strong> Yüksek ödeme, özellikle ekonomik açıdan zor durumdaki bireylerin kararını özgürce vermesini etkileyebilir; bu da gerçek "gönüllü onamı" konusunda soru işaretleri doğurur.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li><strong>Gönüllü onamı riski:</strong> Ödeme miktarı, gönüllülerin riskleri tam anlamadan "rıza göstermesine" yol açabilir.</li>
+                            <li><strong>Adalet riski:</strong> Riskin belirli bir grup (gençler, ekonomik olarak dezavantajlılar) üzerinde yoğunlaşması adalet ilkesiyle çelişebilir.</li>
+                            <li><strong>Zarar vermeme riski:</strong> Virüsün genç bireylerdeki uzun vadeli etkileri çalışma sırasında tam olarak bilinmiyordu.</li>
+                            <li><strong>Toplumsal yarar dengesi:</strong> Çalışmanın aşı ve tedavi geliştirme sürecini hızlandırıp milyonlarca insanın yaşamını koruyabileceği de savunulmuştur. Etik değerlendirmede <span class="highlight">bireysel haklar ile toplumsal yarar arasındaki denge</span> gözetilmelidir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 6 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">6</div>
+                        <div class="question-text">Bir biyoloji öğretmeni üç gruba dönem ödevi veriyor. İkinci raporun hayvan fotoğrafları üçüncü raporla aynı; üçüncü raporda kaynakça yok; iki grubun anket sonuçları birbirinin tam zıddı ve ikinci gruptan iki öğrenci hiç çalışmamış ama isimleri yazılı. Burada hangi bilim etiği ihlalleri var?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Ödev; bir doğal yaşam parkında gözlem yapmayı, fotoğraf çekmeyi, güvenilir kaynaklardan araştırma yapmayı ve anket uygulamayı içeriyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(6)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-6">
+                        <p><strong>Cevap:</strong> Bu durumda birden fazla etik ihlali vardır.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li><strong>İntihal:</strong> Üçüncü rapordaki fotoğrafların ikinci rapordan alınması (başkasının çalışmasının izinsiz kullanımı).</li>
+                            <li><strong>Kaynak göstermeme:</strong> Üçüncü raporda kaynakça bulunmaması; derlenen bilgiler için mutlaka kaynak gösterilmelidir.</li>
+                            <li><strong>Yazarlık etiği ihlali:</strong> Hiç katkı sağlamayan iki kişinin isimlerinin raporda yer alması.</li>
+                            <li><strong>Veri manipülasyonu şüphesi:</strong> Anket sonuçlarının iki grupta birbirinin tam zıddı çıkması, verilerin değiştirilmiş veya uydurulmuş olabileceğini düşündürür. Anket verileri istenildiği gibi değiştirilemez.</li>
+                            <li><strong>Dürüstlük ilkesi:</strong> Bilimsel araştırmalarda süreç açık ve dürüst biçimde raporlanmalıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 7 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">7</div>
+                        <div class="question-text">Bir arkadaşın "Mendel sadece bahçede bezelye ekti; bunun biyolojiye ne katkısı olabilir?" diyor. Mendel'in çalışmalarını biyoloji tarihinde bir dönüm noktası yapan nedir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Gregor Johann Mendel, 1865'te bezelyeler üzerinde yaptığı çalışmalarda özelliklerin ebeveynden yavrulara belirli kalıplar içinde aktarıldığını gösterdi.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(7)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-7">
+                        <p><strong>Cevap:</strong> Mendel'in çalışmaları, genetik bilginin nesiller arasında nasıl aktarıldığının ilk sistemli açıklamasıdır.</p>
+                        <p><strong>Açıklama:</strong> Mendel;</p>
+                        <ul>
+                            <li>Kalıtımın rastgele olmadığını, belirli kalıplar (kurallar) izlediğini gösterdi.</li>
+                            <li>Kalıtım biliminin (genetiğin) öncüsü kabul edildi.</li>
+                            <li>Bu temel olmasaydı kalıtsal hastalıkların anlaşılması, ıslah çalışmaları, genetik danışmanlık ve modern biyoteknoloji gelişemezdi.</li>
+                            <li>Bir çalışmanın önemi, uyguladığı yöntemin sağlamlığı ve ortaya koyduğu açıklamanın insanlığa katkısıyla ölçülür.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 8 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">8</div>
+                        <div class="question-text">Penisilin keşfedildiğinde birçok hastalık "kesin çözüm" bulunmuş gibi görünüyordu. Bugün ise antibiyotiğe dirençli mikroorganizmalar giderek artıyor. Bu durum bilimsel bilginin değişebilir olduğuna nasıl bir örnektir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Antibiyotiklerin yanlış ve aşırı kullanımı sonucu dirençli bakteriler ortaya çıkıyor. Yine de penisilin ve türevleri hâlâ en etkili antibiyotikler arasında.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(8)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-8">
+                        <p><strong>Cevap:</strong> Bilimsel bilgiler kesin, mutlak ve değişmez değildir; zamanla yeni bulgular ışığında değişebilir ve güncellenebilir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li>Penisilin keşfi devrim niteliğindeydi; ancak direnç mekanizmalarının anlaşılmasıyla bilimsel bilgi güncellendi.</li>
+                            <li>Bu durum bilimin <strong>değişebilen doğasını</strong> gösterir: Yeni verilerle açıklamalar gözden geçirilir.</li>
+                            <li>Günümüzde akılcı antibiyotik kullanımı, yeni nesil antibiyotikler ve dirençle mücadele stratejileri geliştirilmektedir.</li>
+                            <li>"Bilim her soruna kesin ve ebedi çözüm bulur" düşüncesi bilimin doğasına aykırıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 9 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">9</div>
+                        <div class="question-text">DNA'nın çift sarmal yapısı denince genellikle Watson ve Crick akla gelir; oysa Rosalind Franklin'in X ışını kırınım çalışmaları bu keşifte kilit rol oynamıştır. Bu durum bilimin doğasının hangi özellikleriyle açıklanabilir?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: DNA'nın hangi biyomolekülün genetik bilgiyi taşıdığı uzun süre tartışmalıydı; farklı bilim insanları aynı konuya farklı bakış açıları getirdi.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(9)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-9">
+                        <p><strong>Cevap:</strong> Bu durum; bilimin sosyal ve kültürel yapısı, öznelliği ve bilimsel bilginin toplumsal süreçlerle şekillenebileceğini gösterir.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li><strong>Öznellik:</strong> Bilim insanlarının bakış açıları ve teorik yaklaşımları çalışmaları etkiler.</li>
+                            <li><strong>Sosyal ve kültürel yapı:</strong> Kimin hangi katkının tanındığı toplumsal dinamiklerden etkilenebilir.</li>
+                            <li><strong>Kolektif süreç:</strong> Bilimsel bilgi, birçok araştırmacının verileri ve çıkarımları üzerine inşa edilir.</li>
+                            <li><strong>Değişebilirlik:</strong> Genetik materyalin önce protein, sonra RNA, en sonunda DNA olduğu düşünülmüştür; yeni teknolojiler ve verilerle anlayış değişmiştir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 10 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">10</div>
+                        <div class="question-text">Bir bilim insanı, kalıtsal hastalıkları önlemek için doğmamış bebeklerin genlerinin düzenlenebileceğini öneriyor. Bazıları bunu tedavi olarak görüyor, bazıları "tasarım bebek" riskinden korkuyor. Bu tartışmada bilim etiği açısından hangi sorular sorulmalıdır?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: CRISPR-Cas teknolojisi istenilen bir gen bölgesinde kontrollü düzenleme yapılmasına imkân veriyor; gen tedavisi ve genetik hastalıkların düzeltilmesinde umut vaat ediyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(10)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-10">
+                        <p><strong>Cevap:</strong> Etik değerlendirme; gönüllü onam, zarar vermeme, adalet ve insan hakları ilkeleri üzerinden yapılmalıdır.</p>
+                        <p><strong>Açıklama:</strong> Sorulması gereken sorular:</p>
+                        <ul>
+                            <li>Doğmamış birey bu müdahaleye <strong>onam veremez</strong>; kim karar verecek?</li>
+                            <li>Düzenlemelerin <strong>uzun vadeli ve geri döndürülemez</strong> etkileri nelerdir? (Değişiklikler soya aktarılabilir.)</li>
+                            <li>"Hastalık" ile "özellik" arasındaki sınır nerede çizilmeli?</li>
+                            <li>Bu teknolojiye herkes <strong>adil bir şekilde</strong> erişebilecek mi?</li>
+                            <li>Araştırma, etik kurul onayı ve yasal düzenlemelerle yürütülmeli midir? (Kesinlikle evet.)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 11 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">11</div>
+                        <div class="question-text">Sınıf arkadaşın "Bilim kesin ve mutlak bilgiler üretir; bir kere ispatlandıysa bir daha değişmez." diyor. Bu görüşü bilimin doğası açısından değerlendir.</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Tartışma sırasında arkadaşın, bilimsel bilginin hiç değişmediğini savunuyor.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(11)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-11">
+                        <p><strong>Cevap:</strong> Bu görüş bilimin doğasına aykırıdır.</p>
+                        <p><strong>Açıklama:</strong></p>
+                        <ul>
+                            <li>Bilimsel bilgiler <strong>kesin, mutlak ve değişmez değildir</strong>; zamanla yeni bulgular ve gelişmeler ışığında değişebilir.</li>
+                            <li><strong>Örnek:</strong> Genetik bilgiyi taşıyan molekülün protein olduğu düşünülüyordu; yapılan deneyler ve yeni teknolojilerle bu bilgi değişti ve genetik materyalin DNA olduğu gösterildi.</li>
+                            <li>Bilim; güvenilir ve geçerli açıklamalar üretme sürecidir ve <strong>kendini güncelleyebilir</strong>.</li>
+                            <li>Bu, bilimsel bilginin "güvenilmez" olduğu anlamına gelmez; tam tersine şeffaf ve öz-düzeltici bir süreç olduğunun göstergesidir.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Soru 12 -->
+                <div class="contextual-question">
+                    <div class="question-header">
+                        <div class="question-icon">12</div>
+                        <div class="question-text">Ödevin için internette bir blog yazısı ile hakemli bir bilimsel makale buldun; ikisi de aynı konuda farklı şeyler söylüyor. Hangi kaynağa güvenmelisin? Bir kaynağın güvenilirliğini hangi ölçütlerle kontrol edersin?</div>
+                    </div>
+                    <div class="context-scenario">
+                        <i class="fas fa-info-circle"></i> Senaryo: Araştırma yaparken yararlandığınız kaynakların güvenilirliğini kontrol etmek, bilimsel süreçlerin önemli bir parçasıdır.
+                    </div>
+                    <button class="answer-btn" onclick="toggleAnswer(12)">
+                        <i class="fas fa-eye"></i> Cevabı Göster
+                    </button>
+                    <div class="answer-content" id="answer-12">
+                        <p><strong>Cevap:</strong> Hakemli bilimsel makaleye güvenilmelidir.</p>
+                        <p><strong>Açıklama:</strong> Kaynak güvenilirliği şu ölçütlerle kontrol edilir:</p>
+                        <ul>
+                            <li>Kaynak <strong>bilimsel makale</strong> mi?</li>
+                            <li><strong>Hakem/editör değerlendirmesinden</strong> geçmiş mi?</li>
+                            <li><strong>".edu" veya ".gov"</strong> uzantılı güvenilir web sitelerinden mi alınmış?</li>
+                            <li>Kaynak hakkında <strong>uzman incelemesi veya görüşü</strong> var mı?</li>
+                            <li>Kaynak, alanındaki <strong>son gelişmeleri</strong> yansıtıyor mu?</li>
+                            <li>Kaynak, kendi içinde tutarlı mı ve <strong>başka kaynaklarla</strong> destekleniyor mu? Çatışma durumunda birden fazla güvenilir kaynağa başvurulmalıdır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="content-section" id="test-section">
+            <button class="back-btn" id="back-from-test">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-alt"></i> Yaşam Bilimi: Biyoloji Testi (30 Soru)
+            </h2>
+            
+            <div class="test-container" id="test-container">
+                <!-- Test questions will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="flashcard-btn" id="submit-test" style="background: #3498db; padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Testi Bitir ve Sonuçları Gör
+                </button>
+                <button class="flashcard-btn" id="clear-selections" style="background: #f39c12; margin-left: 10px;">
+                    <i class="fas fa-eraser"></i> Seçimleri Temizle
+                </button>
+            </div>
+            
+            <div class="test-result" id="test-result">
+                <div class="score-circle">
+                    <div class="score-number" id="score">0</div>
+                    <div class="score-total">/ 30</div>
+                </div>
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Test Sonuçlarınız</h3>
+                <div id="test-message" style="font-size: 1.2rem; margin-bottom: 20px;"></div>
+                <div id="detailed-result" style="margin-bottom: 20px;"></div>
+                <button class="back-btn" id="restart-test" style="margin-top: 15px; background: white; color: #e74c3c; padding: 12px 25px;">
+                    <i class="fas fa-redo"></i> Testi Yeniden Başlat
+                </button>
+            </div>
+        </div>
+
+        <!-- Reasoning Section -->
+        <div class="content-section" id="reasoning-section">
+            <button class="back-btn" id="back-from-reasoning">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-brain"></i> Mantık Yürütme: Neden ve Nasıl?
+            </h2>
+            
+            <div class="reasoning-container">
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 1. Neden bilimsel bilgi "mutlak ve kesin" olarak kabul edilmez?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Bilimsel bilgi, sürekli gelişen bir araştırma sürecinin ürünüdür.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Kanıt:</strong> DNA'nın keşfi örneğinde olduğu gibi, hangi biyomolekülün (protein, RNA, DNA) genetik bilgiyi taşıdığı uzun süre tartışmalıydı. Yeni teknolojilerin geliştirilmesi ve daha fazla deneysel veri elde edilmesiyle genetik bilginin DNA tarafından taşındığı gösterilmiştir.</p>
+                            <p><strong>Sonuç:</strong> Yeni bulgular ve gelişmeler ışığında bilimsel bilgiler değişebilir. Ancak bu durum bilimin "güvenilmez" olduğunu değil, şeffaf ve kendini düzeltebilen bir süreç olduğunu gösterir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 2. Neden bir hipotez mutlaka test edilebilir olmalıdır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Hipotez, bilimsel sürecin merkezinde yer alan ve araştırmaya yön veren önermedir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mantık:</strong> Bir önerme ancak gözlemler veya deneylerle test edilebiliyorsa "bilimsel" nitelik taşır. Test edilemeyen bir iddianın doğruluğu ya da yanlışlığı ispatlanamaz; bu nedenle bilimsel araştırmanın konusu olamaz.</p>
+                            <p><strong>Sonuç:</strong> Test edilebilirlik; bilimsel bilgi ile spekülasyonu birbirinden ayıran temel ölçüttür.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 3. Kontrollü deneyde neden yalnızca bir değişken değiştirilir?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Elde edilen sonucun hangi etkenden kaynaklandığının kesin olarak anlaşılabilmesi gerekir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mantık:</strong> Birden fazla değişken aynı anda değiştirilirse gözlenen etki hangi değişkene ait anlaşılamaz. Örneğin söğüt ağacı deneyinde hem suyun içeriği hem de ışık miktarı değiştirilseydi ağaçların hastalanma nedeni belirsiz kalırdı.</p>
+                            <p><strong>Sonuç:</strong> Bağımsız değişken dışında tüm koşullar eşit tutulur; böylece neden-sonuç ilişkisi kurulabilir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 4. Neden bilimde evrensel olarak kabul edilen tek bir bilimsel yöntem yoktur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Farklı bilim dallarının araştırma konuları ve doğaları birbirinden farklıdır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Karşılaştırma:</strong> Fizikte deneysel ve matematiksel modeller sıkça kullanılırken sosyal bilimlerde gözlem ve anketler daha çok tercih edilir. Biyolojide ise hem deney hem gözlem hem de moleküler teknikler bir arada kullanılır.</p>
+                            <p><strong>Sonuç:</strong> Araştırılan konuya, alanın doğasına ve araştırmacıların tercihlerine bağlı olarak farklı bilimsel yöntemler uygulanabilir. Bu çeşitlilik ve esneklik, bilimsel araştırmanın doğasının bir parçasıdır.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 5. Neden bilimsel teori ile bilimsel kanun arasında hiyerarşi yoktur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Teori ve kanun farklı sorulara cevap veren farklı bilgi türleridir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mantık:</strong> Kanunlar, doğal olayların <strong>"nasıl"</strong> gerçekleştiğini ifade eder (gözlemlenebilir düzenler). Teoriler ise bu düzenleri açıklayarak <strong>"neden"</strong> sorusuna cevap arar.</p>
+                            <p><strong>Yaygın yanılgı:</strong> "Teoriler zamanla kanuna dönüşür" düşüncesi yanlıştır; her iki kavram da kendi kapsamında bilgi sunar ve aralarında bir geçiş/dönüşüm olmaz. Örneğin evrim teorisi bir "bekleyen kanun" değildir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 6. Neden bir bilimsel sonuç tek kanıtla kesinleştirilemez?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Her bulgunun alternatif açıklamaları olabilir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Örnek:</strong> Söğüt ağaçlarındaki hastalık, otopark atıklarından kaynaklanıyor olabileceği gibi gözlemlenmeyen başka bir nedenden (mantar enfeksiyonu, taban suyu seviyesindeki farklılık) de kaynaklanabilir.</p>
+                            <p><strong>Sonuç:</strong> Bilim insanları asla tek bir kanıtla yetinmez; farklı kontrollü deneylerle varsayımlarını doğrulayacak yeni kanıtlar ararlar. Tekrarlanabilir ve bağımsız doğrulamalar, bilimsel güvenilirliğin temelidir.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 7. Neden bilimsel çalışmalarda kaynak göstermek zorunludur?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Bilim, birikimli ve şeffaf bir bilgi üretim sürecidir.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mantık:</strong> Kaynak göstermek;</p>
+                            <ul>
+                                <li>Başkalarının emeğine ve fikrî mülkiyetine saygı gösterilmesini sağlar (intihali önler).</li>
+                                <li>Bilgilerin <strong>izlenebilir</strong> olmasını ve doğrulanabilmesini mümkün kılar.</li>
+                                <li>Okuyucunun konuyu derinlemesine incelemesine olanak tanır.</li>
+                                <li>Bilimsel bilginin güvenilirliği için olmazsa olmaz bir dürüstlük göstergesidir.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reasoning-section">
+                    <div class="reasoning-title"><i class="fas fa-question-circle"></i> 8. Neden araştırma sonuçlarını desteklemeyen veriler de yayımlanmalıdır?</div>
+                    <div class="reasoning-content">
+                        <p><strong>Sebep:</strong> Seçici raporlama, bilimsel tabloyu çarpıtır.</p>
+                        <div class="reasoning-answer">
+                            <p><strong>Mantık:</strong> Yalnızca hipotezi destekleyen verilerin yayımlanması (yayın yanlılığı), diğer araştırmaların aynı konuda tekrar tekrar gereksiz deney yapmasına ve yanlış sonuçlara ulaşmasına yol açar. Olumsuz veya desteklemeyen sonuçlar da bilimin bir parçasıdır ve bilim insanlarının aynı yanlış yolda ilerlemesini önler.</p>
+                            <p><strong>Sonuç:</strong> Dürüstlük ve şeffaflık, bilim etiğinin temel ilkeleridir; veriler olduğu gibi raporlanmalıdır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curiosity Section -->
+        <div class="content-section" id="curiosity-section">
+            <button class="back-btn" id="back-from-curiosity">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-search-plus"></i> Meraklısına - İleri Biyoloji
+            </h2>
+            
+            <div class="curiosity-container">
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 1. CRISPR-CAS9: HÜCRE İÇİNDEKİ "GENETİK MAKAS"</div>
+                    <div class="curiosity-content">
+                        <p>CRISPR-Cas sistemi (2012), Jennifer Doudna ve Emmanuelle Charpentier'in çalışmalarıyla biyoteknolojide devrim yarattı. Peki nasıl çalışır?</p>
+                        <p><strong>Çalışma Prensibi:</strong></p>
+                        <ul>
+                            <li><strong>Rehber RNA:</strong> Düzenlenmek istenen gen bölgesinin adresini gösteren kısa bir RNA molekülüdür.</li>
+                            <li><strong>Cas9 proteini:</strong> Rehber RNA'nın gösterdiği noktaya giderek DNA'yı kesen "moleküler makas"tır.</li>
+                            <li><strong>Onarım:</strong> Hücrenin kendi onarım mekanizmaları devreye girer; istenirse bu sırada yeni bir DNA dizisi eklenir ya da hatalı gen susturulur.</li>
+                        </ul>
+                        <p><strong>Uygulamalar:</strong> Genetik hastalıkların düzeltilmesi (orak hücre anemisi, kistik fibrozis), kanser araştırmaları, tarımda dayanıklı bitki çeşitleri, sıtma taşıyan sivrisinek popülasyonlarıyla mücadele.</p>
+                        <p><strong>Etik Boyut:</strong> İnsan embriyolarında kalıcı (soya aktarılan) değişiklikler yapılması tüm dünyada büyük etik tartışmalara yol açmaktadır.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 2. mRNA AŞILARI: HÜCRELERE "TALİMAT" GÖNDERMEK</div>
+                    <div class="curiosity-content">
+                        <p>COVID-19 ile hayatımıza giren mRNA aşıları (2021), geleneksel aşılardan temel bir noktada ayrılır: Hastalığın zayıflatılmış halini değil, virüsün bir parçasının üretilmesini sağlayacak yapıları (mRNA talimatını) vücuda verir.</p>
+                        <p><strong>Nasıl çalışır?</strong></p>
+                        <ul>
+                            <li>Aşıyla verilen mRNA, hücrelerimize virüsün yüzey proteinini (S proteini) üretme talimatını taşır.</li>
+                            <li>Bağışıklık sistemi bu yabancı proteini tanır ve antikor üretir.</li>
+                            <li>Gerçek virüsle karşılaşıldığında bağışıklık sistemi hızla yanıt verir.</li>
+                            <li>mRNA hücrenin çekirdeğine girmez ve DNA'ya karışmaz; görevi bitince parçalanır.</li>
+                        </ul>
+                        <p><strong>Gelecek:</strong> Kanser aşıları (kişiye özel tümör proteinlerine karşı), nadir görülen genetik hastalıklar ve grip gibi diğer bulaşıcı hastalıklar için mRNA tabanlı çalışmalar hızla sürmektedir.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 3. DOLLY VE KLONLAMANIN GİZEMİ: ERKEN YAŞLANMA</div>
+                    <div class="curiosity-content">
+                        <p>1996'da Ian Wilmut ve Keith Campbell, yetişkin bir somatik hücreden klonlanan ilk memeli olan Dolly adlı koyunu üretti. Dolly, normal bir koyundan daha hızlı yaşlandı ve genç yaşta uykuya yatırıldı.</p>
+                        <p><strong>Telomer Teorisi:</strong></p>
+                        <ul>
+                            <li>Kromozomların uçlarında <strong>telomer</strong> adı verilen koruyucu yapılar bulunur; her bölünmede biraz kısalır (biyolojik saat).</li>
+                            <li>Dolly, klonlandığı yetişkin hücrenin kısalmış telomerlerini devraldı; bu yüzden biyolojik olarak "yaşlı" doğmuş olabilir.</li>
+                            <li>Klonlanan hayvanlarda erken yaşlanma, kalp-damar ve eklem sorunları daha sık görülmüştür.</li>
+                        </ul>
+                        <p><strong>Etik Sorular:</strong> İnsan klonlama neden yasaktır? Kopyalanan bireyin hakları nelerdir? Klonlama teknolojisi hayvan refahı açısından nasıl düzenlenmelidir?</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 4. PCR: BİR DNA PARÇACIĞINDAN MİLYONLARCA KOPYA</div>
+                    <div class="curiosity-content">
+                        <p>Kary Mullis'in 1985'te keşfettiği PCR (polimeraz zincir reaksiyonu), belirli bir DNA dizisini kısa sürede milyonlarca kez çoğaltır. Günümüzde neredeyse her genetik çalışmanın temel aracıdır.</p>
+                        <p><strong>Nerede kullanılır?</strong></p>
+                        <ul>
+                            <li><strong>Pandemi testleri:</strong> COVID-19 PCR testlerinde virüsün RNA'sı tespit edilir.</li>
+                            <li><strong>Adli tıp:</strong> Olay yerindeki tek bir saç teli veya kan damlasından DNA "parmak izi" oluşturulur.</li>
+                            <li><strong>Akrabalık testleri:</strong> Kimlik tespiti ve soy ağacı araştırmaları.</li>
+                            <li><strong>Antik araştırmaları:</strong> Yüzyıllar önce yaşamış bireylerin DNA'sının incelenmesi.</li>
+                        </ul>
+                        <p>Bu teknik olmasaydı modern genetik, adli bilimler ve moleküler biyoloji bugünkü seviyesine ulaşamazdı.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 5. PENİSİLİNİN HİKÂYESİ: BİR "KAZA" NASIL DEVRİM OLDU?</div>
+                    <div class="curiosity-content">
+                        <p>1928'de Alexander Fleming, deney yaparken petri kabindeki bakteri kültürünün bir mantar (Penicillium) tarafından istila edildiğini fark etti. Mantarın çevresindeki bakterilerin öldüğünü gözlemledi. İşte penisilin bu gözlemin sonucunda keşfedildi!</p>
+                        <p><strong>Dönüm Noktası:</strong></p>
+                        <ul>
+                            <li>Fleming'in gözlemi, Ernst Chain ve Howard Florey'nin çalışmaları ile üretime dönüştürüldü.</li>
+                            <li>Önceden ölümcül olan birçok hastalık (zatürre, yara enfeksiyonları) kontrol altına alındı.</li>
+                            <li>Cerrahi müdahalelerin güvenilirliği arttı.</li>
+                        </ul>
+                        <p><strong>Günümüz:</strong> Antibiyotiklere dirençli mikroorganizmalar (örneğin MRSA) artmaktadır. Bu nedenle "akılcı antibiyotik kullanımı" (gereksiz yere kullanmama, doktor kontrolünde tam kür) büyük önem taşır. Unutmayın: <strong>Gözlem + merak = büyük keşifler!</strong></p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 6. ROSALIND FRANKLIN VE "PHOTO 51"</div>
+                    <div class="curiosity-content">
+                        <p>DNA'nın çift sarmal yapısının keşfinde (1953) Watson ve Crick'in adı öne çıksa da asıl dönüm noktası, Rosalind Franklin'in X ışını kırınım tekniğiyle elde ettiği "Photo 51" adlı görüntüdür.</p>
+                        <p><strong>Photo 51 Neydi?</strong></p>
+                        <ul>
+                            <li>DNA molekülünün X ışınlarıyla fotoğraflanması sonucu oluşan kırınım deseni.</li>
+                            <li>Bu desen, DNA'nın sarmal yapıda olduğunu ve boyutlarını ortaya koyuyordu.</li>
+                            <li>Franklin'in verileri, Watson ve Crick'in modelini kurmasında belirleyici oldu.</li>
+                        </ul>
+                        <p><strong>Bilimin Doğası Dersi:</strong> Bu hikâye; bilimsel bilginin kolektif bir süreç olduğunu, farklı bakış açılarının ve tekniklerin (X ışını kırınımı, modelleme, kimyasal analiz) bir araya gelerek keşifleri mümkün kıldığını gösterir. Bugün Franklin'in katkısı bilim tarihinde hak ettiği yeri giderek daha fazla almaktadır.</p>
+                    </div>
+                </div>
+                
+                <div class="curiosity-section">
+                    <div class="curiosity-title"><i class="fas fa-star"></i> 7. HeLa HÜCRELERİ: MODERN TIBBIN GİZLİ KAHRAMANLARI</div>
+                    <div class="curiosity-content">
+                        <p>1951'de Henrietta Lacks adlı hastadan alınan kanser hücreleri, laboratuvarda "ölümsüz" olarak üreyen ilk insan hücre hattı oldu: HeLa hücreleri.</p>
+                        <p><strong>Bilime Katkıları:</strong></p>
+                        <ul>
+                            <li>Polio (çocuk felci) aşısının geliştirilmesi,</li>
+                            <li>Kanser, radyasyon, genetik ve virüs araştırmaları,</li>
+                            <li>Uzayda hücre davranışlarının incelenmesi,</li>
+                            <li>Binlerce bilimsel makalede kullanılması.</li>
+                        </ul>
+                        <p><strong>Etik Tartışma:</strong> Hücreler, Lacks'in bilgisi ve onayı olmadan alınmış ve kullanılmıştır. Ailesi bu durumdan yıllar sonra haberdar olmuştur. Bu olay; <strong>gönüllü onamın</strong> ve hasta haklarının bilimsel araştırmalardaki merkezî önemini gösteren temel bir vaka olarak bilim etiği derslerinde işlenir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Section -->
+        <div class="content-section" id="audio-section">
+            <button class="back-btn" id="back-from-audio">
+                <i class="fas fa-arrow-left"></i> Ana Menüye Dön
+            </button>
+            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-headphones"></i> Yaşam Bilimi: Biyoloji Sesli Özet
+            </h2>
+            
+            <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 15px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <div style="margin-bottom: 25px; font-size: 1.2rem; color: #555;">
+                    <i class="fas fa-music" style="color: #3498db; margin-right: 10px;"></i>
+                    Ders özetini dinlemek için oynat butonuna basın. (Tarayıcınızın seslendirme özelliği kullanılır.)
+                </div>
+                
+                <div class="tts-controls">
+                    <button class="tts-btn" id="tts-play"><i class="fas fa-play"></i> Oynat</button>
+                    <button class="tts-btn" id="tts-pause"><i class="fas fa-pause"></i> Duraklat</button>
+                    <button class="tts-btn tts-stop-btn" id="tts-stop"><i class="fas fa-stop"></i> Durdur</button>
+                    <select class="tts-select" id="tts-rate" title="Okuma hızı">
+                        <option value="0.75">Yavaş (0,75x)</option>
+                        <option value="1" selected>Normal (1x)</option>
+                        <option value="1.25">Hızlı (1,25x)</option>
+                        <option value="1.5">Çok hızlı (1,5x)</option>
+                    </select>
+                </div>
+                
+                <div class="tts-status" id="tts-status">Hazır. Oynat'a bastığınızda sesli özet başlar.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Dashboard Navigation
+        document.getElementById('flashcard-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('flashcard-section').classList.add('active');
+            updateProgress('flashcard');
+        });
+
+        document.getElementById('mindmap-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('mindmap-section').classList.add('active');
+            updateProgress('mindmap');
+        });
+
+        document.getElementById('summary-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('summary-section').classList.add('active');
+            updateProgress('summary');
+        });
+
+        document.getElementById('contextual-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('contextual-section').classList.add('active');
+            updateProgress('contextual');
+        });
+
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('test-section').classList.add('active');
+            loadTestQuestions();
+            updateProgress('test');
+        });
+
+        document.getElementById('reasoning-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('reasoning-section').classList.add('active');
+            updateProgress('reasoning');
+        });
+
+        document.getElementById('curiosity-btn').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('curiosity-section').classList.add('active');
+            updateProgress('curiosity');
+        });
+
+        // Back buttons
+        const backButtons = [
+            ['back-from-flashcards', 'flashcard-section'],
+            ['back-from-mindmap', 'mindmap-section'],
+            ['back-from-summary', 'summary-section'],
+            ['back-from-contextual', 'contextual-section'],
+            ['back-from-test', 'test-section'],
+            ['back-from-reasoning', 'reasoning-section'],
+            ['back-from-curiosity', 'curiosity-section']
+        ];
+
+        backButtons.forEach(([btnId, sectionId]) => {
+            document.getElementById(btnId).addEventListener('click', () => {
+                document.getElementById(sectionId).classList.remove('active');
+                document.getElementById('dashboard').style.display = 'grid';
+                if (sectionId === 'test-section') {
+                    document.getElementById('test-result').style.display = 'none';
+                }
+            });
+        });
+
+        // Progress Tracking
+        const completedSections = new Set();
+        
+        function updateProgress(section) {
+            if (!completedSections.has(section)) {
+                completedSections.add(section);
+                const count = completedSections.size;
+                const percent = Math.round((count / 8) * 100);
+                
+                document.getElementById('completed-count').textContent = count;
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-fill').style.width = percent + '%';
+            }
+        }
+
+        // FLASHCARD SYSTEM - 25 Yaşam Bilimi: Biyoloji Sorusu
+        const flashcards = [
+            {
+                question: "Biyoloji nedir?",
+                answer: "Canlıların yapılarını ve işlevlerini inceleyerek yaşamın doğasının anlaşılmasına yardımcı olan bilim dalıdır. Canlıların birbirleriyle ve çevreleriyle nasıl etkileşime girdiğini de inceler."
+            },
+            {
+                question: "Biyoloji biliminin insanlığa katkıları nelerdir?",
+                answer: "Hastalıkların anlaşılması ve tedavi yöntemlerinin geliştirilmesi, ekosistemlerin korunması, biyolojik çeşitliliğin sürdürülmesi, tarımsal verimliliğin artırılması. Biyoloji hem ekonomik gelişme hem de çevresel sürdürülebilirlik için önemlidir."
+            },
+            {
+                question: "Penisilin ne zaman ve kim tarafından keşfedilmiştir?",
+                answer: "1928 yılında Alexander Fleming tarafından keşfedilmiştir. Bakteri kaynaklı hastalıkların tedavisinde çığır açan antibiyotiklerin ilk örneğidir."
+            },
+            {
+                question: "Mikroskobun keşfi (1665) neden bir dönüm noktasıdır?",
+                answer: "Robert Hooke'un geliştirdiği bileşik mikroskopla canlıların mikro dünyası keşfedilmiş, gözlemlenen canlıların çizimlerini içeren 'Micrographia' adlı eser yayımlanmıştır."
+            },
+            {
+                question: "Hücre teorisini kimler oluşturmuştur?",
+                answer: "Matthias Schleiden ve Theodor Schwann (1838). Organizmaların temel yapı taşı olan hücreler tanımlanmış, Rudolf Virchow hücrelerin ancak hücrelerden oluştuğunu belirterek teoriyi geliştirmiştir."
+            },
+            {
+                question: "Mendel'in kalıtım çalışmaları neden önemlidir?",
+                answer: "1865'te bezelyelerle yaptığı çalışmalarda bazı özelliklerin ebeveynden yavrulara belirli kalıplar içinde aktarıldığı gösterilmiş, genetik bilginin nesiller arasında nasıl aktarıldığı ilk kez açıklanmıştır."
+            },
+            {
+                question: "DNA'nın çift sarmal yapısı ne zaman ve kimler tarafından ortaya konmuştur?",
+                answer: "1953'te James Watson ve Francis Crick tarafından ortaya konmuştur. Rosalind Franklin'in X ışını kırınım çalışmaları bu keşifte kilit rol oynamıştır."
+            },
+            {
+                question: "Akşemseddin'in biyoloji tarihindeki yeri nedir?",
+                answer: "Mikroorganizmaların hastalıklardaki rolünü ilk defa ortaya koyan ve hastalıkların mikroorganizmalar yoluyla bulaşabileceği fikrini öne süren öncü tabiptir (1389-1459)."
+            },
+            {
+                question: "Rekombinant DNA teknolojisi (1973) nedir?",
+                answer: "Stanley Norman Cohen ve Herbert Wayne Boyer'in geliştirdiği; genetik materyalin çoğaltılması ve başka canlılara aktarılmasını sağlayan teknoloji. Biyoteknoloji, tıp, tarım ve endüstride önemli gelişmeler yaşanmıştır."
+            },
+            {
+                question: "Polimeraz zincir reaksiyonu (PCR) nedir?",
+                answer: "Kary Mullis'in 1985'te keşfettiği, belirli bir DNA dizisini milyonlarca kez çoğaltmak için kullanılan teknik. Moleküler biyoloji ve genetik araştırmalar için köklü bir değişim olarak kabul edilir."
+            },
+            {
+                question: "Canlı klonlanması (1996) neden bir dönüm noktasıdır?",
+                answer: "Ian Wilmut ve Keith Campbell, yetişkin bir somatik hücreden klonlanan ilk memeli olan Dolly adlı koyunu üretmiştir. Bu sayede organizmaların genetik olarak birebir kopyalarının üretilmesi mümkün olmuştur."
+            },
+            {
+                question: "İnsan Genom Projesi (1990-2003) neyi başarmıştır?",
+                answer: "İnsan genomunun DNA dizisi tamamen ortaya çıkarılarak haritalanmış, genetik araştırmalarda önemli gelişmelere imza atılmıştır."
+            },
+            {
+                question: "CRISPR-Cas sistemi (2012) ne işe yarar?",
+                answer: "Jennifer Doudna ve Emmanuelle Charpentier'in keşfettiği bu teknoloji, istenilen bir gen bölgesinde kontrollü düzenleme yapılmasına imkân verir. Gen tedavisi, genetik hastalıkların düzeltilmesi, bitki ve hayvanlarda genetik iyileştirmeler sağlanmıştır."
+            },
+            {
+                question: "mRNA aşıları (2021) hangi teknolojiye dayanır ve neyi başarmıştır?",
+                answer: "mRNA teknolojisi kullanılarak geliştirilen yeni nesil aşılarla COVID-19 pandemisi kontrol altına alınmış, kanser hastalığının tedavisi için umut verici sonuçlar elde edilmiştir."
+            },
+            {
+                question: "Bilimin doğası neyi ifade eder?",
+                answer: "Bilimsel araştırmaların nasıl yapıldığını, bilimsel bilginin nasıl elde edildiğini ve değerlendirildiğini, toplumda nasıl kullanıldığını açıklayan kavramdır. Bilimsel bilgi gelişim sürecindeki değerler ve kabuller olarak da tanımlanır."
+            },
+            {
+                question: "Bilimsel bilginin değişebilir olması ne demektir?",
+                answer: "Bilimsel bilgiler kesin, mutlak ve değişmez değildir. Zaman içinde yeni bulgular ve gelişmeler ışığında değişebilir. Örneğin genetik materyalin önce protein, sonra DNA olduğu düşünülmüştür."
+            },
+            {
+                question: "Bilimsel teori ile bilimsel kanun arasındaki fark nedir?",
+                answer: "Aralarında hiyerarşi yoktur ve teoriler zamanla kanuna dönüşmez. Kanunlar doğal olayların 'nasıl' gerçekleştiğine cevap verir; teoriler kanunları açıklayarak 'neden' sorusuna cevap vermeye çalışır."
+            },
+            {
+                question: "Öznellik bilimsel bilgiyi nasıl etkiler?",
+                answer: "Bilim insanlarının yaşantıları, bakış açıları, eğitimleri, kabulleri ve değerleri çalışmalarında etkili olabilir. Yorum ve çıkarımlara bağlı olarak bilimsel bilgi şekillenebilir; bu yüzden bilimsel bilgi mutlak olarak nesnel değildir."
+            },
+            {
+                question: "Bilimsel bilginin sosyal ve kültürel yapısı ne demektir?",
+                answer: "Bilim ve bilimsel bilgi, toplumun kültürel ve sosyal özelliklerinden bağımsız düşünülemez. Toplumların yaşam tarzları, anlayışları, kabulleri ve kültürel öğeler bilimsel bilginin üretilmesinde etkilidir."
+            },
+            {
+                question: "Bilimsel yöntemin ilk basamağı nedir?",
+                answer: "Gözlem yapma. Duyu organları ve bazı araç gereçler kullanılarak olayların ve süreçlerin sistematik, dikkatli bir şekilde incelenmesidir. Gözlemler hipotez geliştirilmesine ve sonuçların yorumlanmasına yardımcı olur."
+            },
+            {
+                question: "Hipotez nedir?",
+                answer: "Belirli bir durumun ya da olayın nedeninin, bağlantısının veya sonucunun açıklanması için sunulan önermedir. Deneyler veya gözlemler kullanılarak test edilebilir, doğruluğu ya da yanlışlığı ispatlanabilir olmalıdır."
+            },
+            {
+                question: "Hipotez ile tahmin arasındaki fark nedir?",
+                answer: "Tahmin, hipotezin doğruluğu test edilmeden akıl yürütme yoluyla hipotezden çıkarılan sonuçtur. Örneğin 'Göz desenleri güveyi yiyebilecek avcıları uzaklaştırır' hipotez; 'Göz desenleri varsa avcı kuşlar güveyi yemez' tahmindir."
+            },
+            {
+                question: "Bağımsız ve bağımlı değişken nedir?",
+                answer: "Kontrollü deneyde araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkene bağımsız değişken; bağımsız değişkene bağlı olarak değişen değişkene bağımlı değişken denir. Güve örneğinde göz deseninin varlığı bağımsız, güve sayısı bağımlı değişkendir."
+            },
+            {
+                question: "Deney sonuçları hipotezi desteklemiyorsa ne yapılır?",
+                answer: "Hipotez tekrar gözden geçirilir ve gerekiyorsa değiştirilir. Veriler yeterli değilse yeni gözlem veya deneyler yapılarak ilave veriler elde edilir. Veriler hipotezi destekliyorsa sonuçlar raporlanarak bilim çevrelerine duyurulur."
+            },
+            {
+                question: "Bilim etiğinin temel ilkeleri nelerdir?",
+                answer: "Dürüstlük, kaynak gösterme (atıf), verileri olduğu gibi raporlama, gönüllü onam, zarar vermeme, adalet ve insan haklarına saygı. Anket verilerinin değiştirilmesi, intihal, kaynak göstermeme ve katkı olmayanları yazar yapma etik dışıdır."
+            }
+        ];
+
+        let currentCardIndex = 0;
+        const totalCards = flashcards.length;
+
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const currentCardElement = document.getElementById('current-card');
+        const totalCardsElement = document.getElementById('total-cards');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const flipButton = document.getElementById('flip-btn');
+        const shuffleButton = document.getElementById('shuffle-btn');
+
+        // Initialize flashcards
+        totalCardsElement.textContent = totalCards;
+        loadCard();
+
+        function loadCard() {
+            const currentCard = flashcards[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            currentCardElement.textContent = currentCardIndex + 1;
+            flashcardElement.classList.remove('flipped');
+        }
+
+        // Flashcard event listeners
+        prevButton.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                loadCard();
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                loadCard();
+            }
+        });
+
+        flipButton.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        flashcardElement.addEventListener('click', () => {
+            flashcardElement.classList.toggle('flipped');
+        });
+
+        shuffleButton.addEventListener('click', () => {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            loadCard();
+        });
+
+        // Contextual Questions - Answer Toggle
+        function toggleAnswer(questionNumber) {
+            const answerElement = document.getElementById(`answer-${questionNumber}`);
+            answerElement.classList.toggle('show');
+            
+            const button = event.currentTarget;
+            if (answerElement.classList.contains('show')) {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Cevabı Gizle';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i> Cevabı Göster';
+            }
+        }
+
+        // TEST SYSTEM - 30 Questions (Based on PDF content)
+        const testQuestions = [
+            {
+                question: "Biyoloji bilimi temel olarak neyi inceler?",
+                options: [
+                    "Sadece insan vücudunun hastalıklarını",
+                    "Canlıların yapılarını ve işlevlerini",
+                    "Sadece bitkilerin fotosentezini",
+                    "Cansız varlıkların fiziksel özelliklerini",
+                    "Yer çekiminin canlılara etkisini"
+                ],
+                correct: 1,
+                explanation: "Biyoloji, canlıların yapılarını ve işlevlerini inceleyerek yaşamın doğasının anlaşılmasına yardımcı olan bilim dalıdır. Canlıların birbirleriyle ve çevreleriyle etkileşimini de inceler."
+            },
+
+            {
+                question: "Penisilin hangi yılda keşfedilmiştir?",
+                options: [
+                    "1665",
+                    "1838",
+                    "1865",
+                    "1928",
+                    "1953"
+                ],
+                correct: 3,
+                explanation: "Alexander Fleming, penisilini 1928'de keşfetmiştir. Bu keşif, bakteri kaynaklı hastalıkların tedavisinde çığır açan antibiyotiklerin ilk örneğidir."
+            },
+            {
+                question: "Geliştirdiği mikroskobu kullanarak binlerce canlıyı inceleyen ve gözlemlerini \"Micrographia\" adlı eserinde 1665'te yayımlayan bilim insanı kimdir?",
+                options: [
+                    "Robert Hooke",
+                    "Gregor Mendel",
+                    "Alexander Fleming",
+                    "James Watson",
+                    "Akşemseddin"
+                ],
+                correct: 0,
+                explanation: "Robert Hooke, bileşik mikroskobun temelini oluşturan mikroskopla canlıların mikro dünyasını incelemiş ve \"Micrographia\" adlı eserini 1665'te yayımlamıştır."
+            },
+            {
+                question: "Hücre teorisinin oluşturulmasında (1838) görev alan bilim insanları kimlerdir?",
+                options: [
+                    "Watson ve Crick",
+                    "Schleiden ve Schwann",
+                    "Cohen ve Boyer",
+                    "Wilmut ve Campbell",
+                    "Mullis ve Fleming"
+                ],
+                correct: 1,
+                explanation: "Matthias Schleiden ve Theodor Schwann hücre teorisini oluşturmuştur. Rudolf Virchow hücrelerin ancak hücrelerden oluştuğunu belirterek teoriye katkı sağlamıştır."
+            },
+            {
+                question: "Kalıtım kurallarını bezelyeler üzerinde yaptığı çalışmalarla belirleyen, kalıtım biliminin öncüsü kabul edilen bilim insanı kimdir?",
+                options: [
+                    "Charles Darwin",
+                    "Louis Pasteur",
+                    "Gregor Johann Mendel",
+                    "Francis Crick",
+                    "Kary Mullis"
+                ],
+                correct: 2,
+                explanation: "Gregor Johann Mendel, 1865'te bezelyelerle yaptığı çalışmalarda özelliklerin ebeveynden yavrulara belirli kalıplar içinde aktarıldığını göstermiştir."
+            },
+            {
+                question: "DNA'nın çift sarmal yapısı hangi yılda ortaya konmuştur?",
+                options: [
+                    "1928",
+                    "1953",
+                    "1973",
+                    "1985",
+                    "1996"
+                ],
+                correct: 1,
+                explanation: "James Watson ve Francis Crick, DNA'nın kendisi etrafında dönen çift sarmal bir yapıya sahip olduğunu 1953'te belirlemiştir."
+            },
+            {
+                question: "DNA'nın çift sarmal yapısının keşfinde X ışını kırınım çalışmaları ile kilit rol oynayan bilim insanı kimdir?",
+                options: [
+                    "Rosalind Franklin",
+                    "Jennifer Doudna",
+                    "Theodor Schwann",
+                    "Emmanuelle Charpentier",
+                    "Matthias Schleiden"
+                ],
+                correct: 0,
+                explanation: "Rosalind Franklin'in X ışını kırınım çalışmaları, Watson ve Crick'in DNA modelini kurmasında belirleyici olmuştur."
+            },
+            {
+                question: "Tıp tarihinde mikroorganizmaların hastalıklardaki rolünü ilk defa ortaya koyan ve hastalıkların mikroorganizmalar yoluyla bulaşabileceğini öne süren tabip kimdir?",
+                options: [
+                    "Robert Hooke",
+                    "Alexander Fleming",
+                    "Akşemseddin",
+                    "James Watson",
+                    "Ian Wilmut"
+                ],
+                correct: 2,
+                explanation: "Akşemseddin (1389-1459), hastalıkların mikroorganizmalar yoluyla bulaşabileceği fikrini öne süren ilk tabip olarak kabul edilmektedir."
+            },
+            {
+                question: "Rekombinant DNA teknolojisi hangi yılda ve kimler tarafından geliştirilmiştir?",
+                options: [
+                    "1928 - Alexander Fleming",
+                    "1953 - Watson ve Crick",
+                    "1973 - Stanley Norman Cohen ve Herbert Wayne Boyer",
+                    "1985 - Kary Mullis",
+                    "1996 - Ian Wilmut ve Keith Campbell"
+                ],
+                correct: 2,
+                explanation: "Rekombinant DNA teknolojisi 1973'te Cohen ve Boyer tarafından geliştirilmiş; genetik materyalin çoğaltılması ve başka canlılara aktarılması sağlanmıştır."
+            },
+            {
+                question: "Belirli bir DNA dizisini milyonlarca kez çoğaltmak için kullanılan, moleküler biyolojide devrim yaratan teknik hangisidir?",
+                options: [
+                    "Rekombinant DNA teknolojisi",
+                    "Klonlama",
+                    "Polimeraz zincir reaksiyonu (PCR)",
+                    "CRISPR-Cas sistemi",
+                    "Elektroforez"
+                ],
+                correct: 2,
+                explanation: "Kary Mullis'in 1985'te keşfettiği polimeraz zincir reaksiyonu (PCR), belirli bir DNA dizisini milyonlarca kez çoğaltmak için kullanılır."
+            },
+            {
+                question: "1996'da yetişkin bir somatik hücreden klonlanan ilk memeli hayvan hangisidir?",
+                options: [
+                    "Bir fare",
+                    "Bir köpek",
+                    "Dolly adlı bir koyun",
+                    "Bir inek",
+                    "Bir maymun"
+                ],
+                correct: 2,
+                explanation: "Ian Wilmut ve Keith Campbell, Dolly adlı koyunu yetişkin bir somatik hücreden klonlayarak canlı klonlanmasını gerçekleştirmiştir."
+            },
+            {
+                question: "İnsan Genom Projesi hangi yıllar arasında yürütülmüş ve neyi ortaya çıkarmıştır?",
+                options: [
+                    "1953-1960; DNA'nın çift sarmal yapısı",
+                    "1973-1980; rekombinant DNA teknolojisi",
+                    "1985-1990; PCR tekniği",
+                    "1990-2003; insan genomunun DNA dizisi",
+                    "2012-2018; CRISPR-Cas sistemi"
+                ],
+                correct: 3,
+                explanation: "İnsan Genom Projesi (1990-2003) ile insan genomunun DNA dizisi tamamen ortaya çıkarılarak haritalanmıştır."
+            },
+            {
+                question: "CRISPR-Cas sisteminin keşfi (2012) hangi bilim insanlarıyla ilişkilidir?",
+                options: [
+                    "Kary Mullis ve Ian Wilmut",
+                    "Jennifer Doudna ve Emmanuelle Charpentier",
+                    "James Watson ve Francis Crick",
+                    "Stanley Cohen ve Herbert Boyer",
+                    "Matthias Schleiden ve Theodor Schwann"
+                ],
+                correct: 1,
+                explanation: "Jennifer Doudna ve Emmanuelle Charpentier, istenilen bir gen bölgesinde kontrollü düzenleme yapılmasına imkân veren CRISPR-Cas sistemini keşfetmiştir."
+            },
+            {
+                question: "mRNA teknolojisi kullanılarak geliştirilen yeni nesil aşılar ilk olarak hangi alanda yaygın olarak kullanılmıştır?",
+                options: [
+                    "Kanser tedavisi",
+                    "COVID-19 pandemisinin kontrol altına alınması",
+                    "Çiçek hastalığının yok edilmesi",
+                    "Diyabet tedavisi",
+                    "Organ nakli uygulamaları"
+                ],
+                correct: 1,
+                explanation: "2021'de mRNA teknolojisiyle geliştirilen aşılarla COVID-19 pandemisi kontrol altına alınmış; kanser tedavisi için umut verici sonuçlar elde edilmiştir."
+            },
+            {
+                question: "Bilimsel bilgi ile ilgili aşağıdaki ifadelerden hangisi bilimin doğasına uygundur?",
+                options: [
+                    "Bilimsel bilgi kesin, mutlak ve değişmezdir.",
+                    "Bilimsel bilgi zamanla yeni bulgular ışığında değişebilir.",
+                    "Bilimsel bilgi tamamen öznellikten uzaktır.",
+                    "Bilimsel bilgi yalnızca deneylerle elde edilir.",
+                    "Bilimsel bilgi bir kez kabul edildikten sonra güncellenemez."
+                ],
+                correct: 1,
+                explanation: "Bilimsel bilgiler kesin, mutlak ve değişmez değildir; zaman içinde yeni bulgular ve gelişmeler ışığında değişebilir."
+            },
+            {
+                question: "Bilimsel kanunlar ile bilimsel teoriler arasındaki ilişki ile ilgili doğru ifade hangisidir?",
+                options: [
+                    "Teoriler zamanla kanuna dönüşür.",
+                    "Kanunlar teorilerden daha üst düzey bilgi sunar.",
+                    "Aralarında hiyerarşi yoktur; kanunlar 'nasıl', teoriler 'neden' sorusuna cevap arar.",
+                    "Kanunlar yalnızca fizikte, teoriler yalnızca biyolojide kullanılır.",
+                    "Teoriler kanıtlanamayan varsayımlardır."
+                ],
+                correct: 2,
+                explanation: "Teori ve kanun arasında hiyerarşik bir ilişki yoktur. Kanunlar doğal olayların 'nasıl' gerçekleştiğine cevap verirken teoriler kanunları açıklayarak 'neden' sorusuna cevap vermeye çalışır."
+            },
+            {
+                question: "\"Bilim insanlarının yaşantıları, bakış açıları ve eğitimleri yaptıkları çalışmalarda etkili olabilir.\" Bu durum bilimin doğasının hangi özelliği ile açıklanır?",
+                options: [
+                    "Değişebilirlik",
+                    "Özgünlük",
+                    "Öznellik",
+                    "Gözleme dayalılık",
+                    "Bilimsel yöntem algısı"
+                ],
+                correct: 2,
+                explanation: "Bilim insanlarının yorum ve çıkarımlarına bağlı olarak bilimsel bilgi şekillenebilir; bu durum öznellik (subjektiflik) olarak adlandırılır."
+            },
+            {
+                question: "Evrensel olarak kabul edilen tek bir bilimsel yöntemin olmaması, bilimin doğasının hangi özelliğiyle ilişkilidir?",
+                options: [
+                    "Bilimsel bilginin değişebilir olması",
+                    "Bilimsel yöntem algısı: bilimde tek bir doğru yöntem yoktur",
+                    "Bilimsel bilginin özgünlüğü",
+                    "Öznellik",
+                    "Sosyal ve kültürel yapı"
+                ],
+                correct: 1,
+                explanation: "Bilimsel yöntem basamaklarının her bilimsel çalışmada aynı şekilde ilerlemesi gerektiğine yönelik söylem, bilimin doğasına göre bir yanılgıdır. Farklı disiplinlerde farklı yöntemler uygulanabilir."
+            },
+            {
+                question: "Bilimsel bilginin sosyal ve kültürel yapısı ile ilgili doğru ifade hangisidir?",
+                options: [
+                    "Bilimsel bilgi toplumun kültüründen tamamen bağımsız gelişir.",
+                    "Toplumların yaşam tarzları, anlayışları ve kültürel öğeleri bilimsel bilginin üretilmesinde etkilidir.",
+                    "Bilimsel bilgi yalnızca laboratuvar ortamında üretilir.",
+                    "Bilim insanları her zaman aynı sonuca ulaşır.",
+                    "Kültürel öğeler bilimsel araştırmaları hiç etkilemez."
+                ],
+                correct: 1,
+                explanation: "Bilim ve bilimsel bilgi, toplumun kültürel ve sosyal özelliklerinden bağımsız olarak düşünülemez."
+            },
+            {
+                question: "Bilimsel araştırmanın genel akışında ilk basamak olarak kabul edilen adım hangisidir?",
+                options: [
+                    "Hipotez kurma",
+                    "Deney tasarlama",
+                    "Gözlem yapma",
+                    "Verileri analiz etme",
+                    "Araştırma sonuçlarının paylaşılması"
+                ],
+                correct: 2,
+                explanation: "Gözlem, bilimsel bir araştırmanın ilk aşaması olarak kabul edilir. Olayların sistematik ve dikkatli bir şekilde incelenmesini içerir."
+            },
+            {
+                question: "Hipotez ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+                options: [
+                    "Hipotezler test edilemeyen önermelerdir.",
+                    "Hipotez, doğruluğu ya da yanlışlığı deney veya gözlemlerle ispatlanabilir bir önermedir.",
+                    "Hipotezler yalnızca fizik biliminde kullanılır.",
+                    "Hipotez, araştırmanın sonunda elde edilen kesin sonuçtur.",
+                    "Hipotez kurmak bilimsel yöntemin isteğe bağlı bir adımıdır."
+                ],
+                correct: 1,
+                explanation: "Hipotez; belirli bir durumun nedeninin, bağlantısının veya sonucunun açıklanması için sunulan, test edilebilir bir önermedir."
+            },
+            {
+                question: "\"Bir güvenin kanatlarında göz desenleri varsa avcı kuşlar güveyi yemekten kaçınır.\" Bu ifade bilimsel süreçte hangi kavrama örnektir?",
+                options: [
+                    "Gözlem",
+                    "Problem belirleme",
+                    "Hipotez",
+                    "Tahmin",
+                    "Çıkarım"
+                ],
+                correct: 3,
+                explanation: "Tahmin, hipotezin doğruluğu test edilmeden akıl yürütme yoluyla hipotezden çıkarılan sonuçtur. Hipotez ise \"Göz desenleri güveyi yiyebilecek avcıları uzaklaştırır\" cümlesidir."
+            },
+            {
+                question: "Kontrollü bir deneyde araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkene ne ad verilir?",
+                options: [
+                    "Bağımlı değişken",
+                    "Kontrol grubu",
+                    "Bağımsız değişken",
+                    "Sabit değişken",
+                    "Çıkarım"
+                ],
+                correct: 2,
+                explanation: "Kontrollü deneylerde araştırmacı tarafından değiştirilen ve etkisi araştırılan değişkene bağımsız değişken denir."
+            },
+            {
+                question: "Güve deneyinde göz desenlerinin varlığına göre değişen kalan güve sayısı hangi tür bir değişkendir?",
+                options: [
+                    "Bağımsız değişken",
+                    "Bağımlı değişken",
+                    "Kontrol değişkeni",
+                    "Sabit değişken",
+                    "Karıştırıcı değişken"
+                ],
+                correct: 1,
+                explanation: "Bağımsız değişkene (göz deseni varlığı) bağlı olarak değişen güve sayıları bağımlı değişkendir."
+            },
+            {
+                question: "Deney sonucunda elde edilen veriler hipotezi desteklemiyorsa bilim insanı ne yapmalıdır?",
+                options: [
+                    "Verileri değiştirerek hipotezi doğrulamalıdır.",
+                    "Sonuçları hiçbir şekilde yayımlamamalıdır.",
+                    "Hipotezi gözden geçirmeli, gerekiyorsa değiştirmeli veya yeni veriler toplamalıdır.",
+                    "Hipotezi hemen bilimsel kanun olarak ilan etmelidir.",
+                    "Deneyi tekrar etmeden sonuca varmalıdır."
+                ],
+                correct: 2,
+                explanation: "Bulgular hipotezle çelişirse hipotez tekrar gözden geçirilir ve gerekiyorsa değiştirilir. Veriler yeterli değilse yeni gözlem veya deneylerle ilave veriler toplanır."
+            },
+            {
+                question: "Veriler hipotezi destekliyorsa bilimsel süreç nasıl devam eder?",
+                options: [
+                    "Sonuçlar raporlanarak bilim çevrelerine duyurulur.",
+                    "Sonuçlar gizli tutulur.",
+                    "Hipotez silinerek süreç sonlandırılır.",
+                    "Hiçbir raporlama yapılmaz.",
+                    "Değişkenler değiştirilerek deney geçersiz sayılır."
+                ],
+                correct: 0,
+                explanation: "Veriler hipotezi destekliyorsa deney sonuçları raporlanarak bilim çevrelerine duyurulur. Bu, bilimsel bilginin paylaşılması ve doğrulanması için gereklidir."
+            },
+            {
+                question: "2021'de İngiltere'de yapılan \"Human Challenge\" çalışmasının amacı aşağıdakilerden hangisidir?",
+                options: [
+                    "Aşının yan etkilerini gizlemek",
+                    "Virüsün bulaşması için gereken en düşük dozu belirlemek ve bağışıklık sisteminin ilk saatlerdeki tepkisini incelemek",
+                    "Gönüllülere yüksek miktarda ödeme yapmak",
+                    "Yeni bir virüs türü üretmek",
+                    "Karantina uygulamalarını tamamen kaldırmak"
+                ],
+                correct: 1,
+                explanation: "Çalışmanın amacı; virüsün bulaşması için gereken en düşük dozu belirlemek, bağışıklık sisteminin özellikle ilk saatlerde verdiği tepkiyi incelemek ve bazı bireylerin neden daha fazla bulaştırıcı olabildiğini anlamaktı."
+            },
+            {
+                question: "Bilim etiği açısından aşağıdaki davranışlardan hangisi kesinlikle etik dışıdır?",
+                options: [
+                    "Kaynak göstererek araştırma yapmak",
+                    "Anket verilerini olduğu gibi raporlamak",
+                    "Sonuçları desteklemeyen verileri yayımlamamak veya verileri değiştirmek",
+                    "Katkısı olmayan kişileri yazar listesine eklememek",
+                    "Gönüllülerden açık rıza (onam) almak"
+                ],
+                correct: 2,
+                explanation: "Araştırma sonuçlarını desteklemeyen verilerin yayımlanmaması, verilerin değiştirilmesi veya çarpıtılması bilim etiğine aykırıdır. Veriler olduğu gibi raporlanmalıdır."
+            },
+            {
+                question: "Bilimsel bir yayın veya rapor hazırlanırken aşağıdakilerden hangisi zorunludur?",
+                options: [
+                    "Yalnızca kendi görüşlerine yer vermek",
+                    "Bilimsel kaynaklardan derlenen bilgiler için kaynak göstermek (atıf yapmak)",
+                    "Sonuçlara uymayan verileri çıkarmak",
+                    "Katkısı olmayan arkadaşların isimlerini eklemek",
+                    "Anket sonuçlarını istenildiği gibi düzenlemek"
+                ],
+                correct: 1,
+                explanation: "Bilimsel kaynaklardan derlenen bilgiler için mutlaka kaynak gösterilmelidir. Kaynak göstermeme (intihal) bilim etiğinin en önemli ihlallerindendir."
+            },
+            {
+                question: "Söğüt ağaçları örneğinde bilim insanı, hastalığın nedenini araştırırken neden kontrollü bir deney tasarlamıştır?",
+                options: [
+                    "Hipotezini test edip kanıt toplamak için",
+                    "Gözlem yapmayı bırakmak için",
+                    "Veri toplama adımını atlamak için",
+                    "Sonuçları önceden belirlemek için",
+                    "Bilimin doğasını reddetmek için"
+                ],
+                correct: 0,
+                explanation: "Kontrollü deneyler, hipoteze dayalı tahminleri test etmek için tasarlanır. Böylece hastalığın atık sulardan kaynaklanıp kaynaklanmadığı bilimsel kanıtlarla değerlendirilir."
+            }
+        ];
+
+        let userAnswers = new Array(testQuestions.length).fill(-1);
+
+        function loadTestQuestions() {
+            const container = document.getElementById('test-container');
+            container.innerHTML = '';
+            userAnswers.fill(-1);
+
+            testQuestions.forEach((q, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-text">${q.question}</span>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-q="${index}" data-opt="${optIndex}">
+                                <div class="option-letter">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const qIndex = parseInt(this.getAttribute('data-q'));
+                    const optIndex = parseInt(this.getAttribute('data-opt'));
+                    
+                    // Remove previous selection for this question
+                    const options = document.querySelectorAll(`.option[data-q="${qIndex}"]`);
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Mark selected option
+                    this.classList.add('selected');
+                    userAnswers[qIndex] = optIndex;
+                });
+            });
+        }
+
+        document.getElementById('submit-test').addEventListener('click', () => {
+            let score = 0;
+            const total = testQuestions.length;
+
+            // Check answers
+            testQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll(`.option[data-q="${index}"]`);
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                    options[q.correct].classList.add('correct');
+                } else if (userAnswers[index] !== -1) {
+                    options[userAnswers[index]].classList.add('wrong');
+                    options[q.correct].classList.add('correct');
+                } else {
+                    // If not answered, still show correct answer
+                    options[q.correct].classList.add('correct');
+                }
+            });
+
+            // Show results
+            const resultDiv = document.getElementById('test-result');
+            document.getElementById('score').textContent = `${score}`;
+            
+            let message = '';
+            if (score === total) {
+                message = '🎉 MÜKEMMEL! Tüm soruları doğru cevapladınız! Yaşam bilimini tamamen öğrenmişsiniz.';
+            } else if (score >= total * 0.85) {
+                message = '👏 ÇOK İYİ! Konuyu çok iyi anlamışsınız. Sadece birkaç detay üzerinde çalışın.';
+            } else if (score >= total * 0.70) {
+                message = '👍 İYİ! Konuyu anlamışsınız ama bazı noktaları tekrar etmeniz faydalı olacaktır.';
+            } else if (score >= total * 0.50) {
+                message = '📚 ORTA SEVİYE! Temelleri anlamışsınız ama detaylar üzerinde çalışmalısınız.';
+            } else {
+                message = '📖 GELİŞTİRME GEREKİYOR! Konuyu tekrar çalışmanızı öneririm. Bilgi kartları ve mantık yürütme bölümlerinden başlayın.';
+            }
+            
+            document.getElementById('test-message').textContent = message;
+            
+            // Show detailed result
+            const correctCount = score;
+            const wrongCount = userAnswers.filter((ans, idx) => ans !== -1 && ans !== testQuestions[idx].correct).length;
+            const emptyCount = userAnswers.filter(ans => ans === -1).length;
+            
+            document.getElementById('detailed-result').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #28a745; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${correctCount}</div>
+                        <div>Doğru</div>
+                    </div>
+                    <div style="background: #dc3545; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${wrongCount}</div>
+                        <div>Yanlış</div>
+                    </div>
+                    <div style="background: #6c757d; padding: 15px; border-radius: 8px; color: white;">
+                        <div style="font-size: 1.5rem; font-weight: bold;">${emptyCount}</div>
+                        <div>Boş</div>
+                    </div>
+                </div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    Başarı Oranı: <strong>${Math.round((score/total)*100)}%</strong>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('restart-test').addEventListener('click', () => {
+            loadTestQuestions();
+            document.getElementById('test-result').style.display = 'none';
+        });
+
+        document.getElementById('clear-selections').addEventListener('click', () => {
+            loadTestQuestions();
+        });
+
+        // Keyboard shortcuts for flashcards
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            loadCard();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentCardIndex < totalCards - 1) {
+                            currentCardIndex++;
+                            loadCard();
+                        }
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flashcardElement.classList.toggle('flipped');
+                        break;
+                }
+            }
+        });
+
+// Sesli Bölüm Mantığı (Tarayıcı Seslendirme - TTS)
+    const audioBtn = document.getElementById('audio-btn');
+    const audioSection = document.getElementById('audio-section');
+    const backFromAudio = document.getElementById('back-from-audio');
+
+    const ttsText = `Yaşam Bilimi: Biyoloji - Konu Özeti.
+Biyoloji, canlıların yapılarını ve işlevlerini inceleyerek yaşamın doğasının anlaşılmasına yardımcı olan bilim dalıdır. Sağlık bilimlerinin temelini oluşturur; ekosistemlerin korunmasına, biyolojik çeşitliliğin sürdürülmesine ve tarımsal verimliliğin artırılmasına katkı sağlar.
+Biyoloji tarihindeki dönüm noktaları şunlardır: Akşemseddin, hastalıkların mikroorganizmalarla bulaşabileceğini öne süren ilk tabiptir. Robert Hooke, 1665'te mikroskobu geliştirerek Micrographia adlı eseri yayımlamıştır. Schleiden ve Schwann 1838'de hücre teorisini oluşturmuştur. Mendel, 1865'te kalıtım kurallarını belirlemiştir. Alexander Fleming 1928'de penisilini keşfetmiştir. Watson ve Crick 1953'te DNA'nın çift sarmal yapısını ortaya koymuştur; Rosalind Franklin'in X ışını kırınım çalışmaları bu keşifte kilit rol oynamıştır. Cohen ve Boyer 1973'te rekombinant DNA teknolojisini geliştirmiştir. Kary Mullis 1985'te polimeraz zincir reaksiyonunu keşfetmiştir. 1996'da Dolly adlı koyun klonlanmıştır. İnsan Genom Projesi ile 1990-2003 yıllarında insan DNA dizisi haritalanmıştır. Doudna ve Charpentier 2012'de CRISPR-Cas sistemini keşfetmiştir. 2021'de mRNA aşıları geliştirilmiştir.
+Bilimin doğası; bilimsel araştırmaların nasıl yapıldığını, bilimsel bilginin nasıl elde edildiğini ve toplumda nasıl kullanıldığını açıklayan kavramdır. Bilimsel bilgi kesin, mutlak ve değişmez değildir; yeni bulgularla değişebilir. Bilimin sosyal ve kültürel bir yapısı vardır. Bilim insanlarının bakış açıları çalışmaları etkileyebilir. Kanunlar olayların nasıl gerçekleştiğini, teoriler ise neden gerçekleştiğini açıklar; aralarında hiyerarşi yoktur. Bilimde evrensel tek bir bilimsel yöntem de yoktur.
+Bilimsel yöntemin basamakları şunlardır: Gözlem yapma, problemi belirleme, veri toplama, hipotez oluşturma, hipoteze dayalı tahminlerde bulunma, deney tasarlama ve analiz yaparak sonuç çıkarma. Hipotez, test edilebilir bir önermedir. Tahmin, hipotezden akıl yürütmeyle çıkarılan sonuçtur. Kontrollü deneyde araştırmacı tarafından değiştirilen değişkene bağımsız değişken, ona bağlı olarak değişene bağımlı değişken denir. Sonuçlar hipotezi desteklemiyorsa hipotez gözden geçirilir ve yeni veriler toplanır.
+Bilim etiği; dürüstlük, kaynak gösterme, verileri olduğu gibi raporlama, gönüllü onam, zarar vermeme ve adalet ilkelerini içerir. Veri uydurma, intihal, kaynak göstermeme ve katkı olmayanları yazar yapma etik dışı davranışlardır. Anket verileri istenildiği gibi değiştirilemez. Sonuçları desteklemeyen veriler de yayımlanmalıdır.
+Unutmayın: Bilim, merak edilen sorulara güvenilir ve geçerli yanıtlar arama sürecidir; gözlem, eleştirel düşünme ve dürüstlük gerektirir.`;
+
+    const ttsPlayBtn = document.getElementById('tts-play');
+    const ttsPauseBtn = document.getElementById('tts-pause');
+    const ttsStopBtn = document.getElementById('tts-stop');
+    const ttsRateSelect = document.getElementById('tts-rate');
+    const ttsStatus = document.getElementById('tts-status');
+
+    let ttsChunks = [];
+    let ttsIndex = 0;
+    let ttsPaused = false;
+    let ttsSpeaking = false;
+
+    function splitIntoChunks(text) {
+        const sentences = text.split(/(?<=[.!?])\s+/);
+        const chunks = [];
+        let current = '';
+        sentences.forEach(s => {
+            if ((current + ' ' + s).trim().length > 220) {
+                if (current) chunks.push(current.trim());
+                current = s;
+            } else {
+                current = (current + ' ' + s).trim();
+            }
+        });
+        if (current) chunks.push(current.trim());
+        return chunks;
+    }
+
+    function speakChunk() {
+        if (ttsIndex >= ttsChunks.length) {
+            ttsSpeaking = false;
+            ttsPaused = false;
+            ttsStatus.textContent = 'Sesli özet tamamlandı. Tekrar dinlemek için Oynat\'a basın.';
+            return;
+        }
+        const utterance = new SpeechSynthesisUtterance(ttsChunks[ttsIndex]);
+        utterance.lang = 'tr-TR';
+        utterance.rate = parseFloat(ttsRateSelect.value);
+        const voices = window.speechSynthesis.getVoices();
+        const trVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('tr'));
+        if (trVoice) utterance.voice = trVoice;
+        utterance.onend = () => {
+            ttsIndex++;
+            if (ttsSpeaking && !ttsPaused) speakChunk();
+        };
+        utterance.onerror = () => {
+            ttsSpeaking = false;
+            ttsStatus.textContent = 'Seslendirme başlatılamadı. Tarayıcınızın ses ayarlarından Türkçe bir ses seçmeyi deneyin.';
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'none';
+            audioSection.classList.add('active');
+            updateProgress('audio');
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if (ttsPlayBtn) {
+        ttsPlayBtn.addEventListener('click', () => {
+            if (!('speechSynthesis' in window)) {
+                ttsStatus.textContent = 'Tarayıcınız seslendirmeyi desteklemiyor.';
+                return;
+            }
+            if (ttsSpeaking && ttsPaused) {
+                ttsPaused = false;
+                window.speechSynthesis.resume();
+                ttsStatus.textContent = 'Devam ediliyor...';
+                return;
+            }
+            if (ttsSpeaking) return;
+            window.speechSynthesis.cancel();
+            ttsChunks = splitIntoChunks(ttsText);
+            ttsIndex = 0;
+            ttsPaused = false;
+            ttsSpeaking = true;
+            ttsStatus.textContent = 'Sesli özet okunuyor...';
+            speakChunk();
+        });
+    }
+
+    if (ttsPauseBtn) {
+        ttsPauseBtn.addEventListener('click', () => {
+            if (ttsSpeaking && !ttsPaused) {
+                window.speechSynthesis.pause();
+                ttsPaused = true;
+                ttsStatus.textContent = 'Duraklatıldı. Devam etmek için Oynat\'a basın.';
+            }
+        });
+    }
+
+    if (ttsStopBtn) {
+        ttsStopBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+            ttsSpeaking = false;
+            ttsPaused = false;
+            ttsIndex = 0;
+            ttsStatus.textContent = 'Durduruldu. Yeniden dinlemek için Oynat\'a basın.';
+        });
+    }
+
+    if (ttsRateSelect) {
+        ttsRateSelect.addEventListener('change', () => {
+            if (ttsSpeaking && !ttsPaused) {
+                window.speechSynthesis.cancel();
+                ttsStatus.textContent = 'Sesli özet okunuyor...';
+                speakChunk();
+            }
+        });
+    }
+
+    if (backFromAudio) {
+        backFromAudio.addEventListener('click', () => {
+            audioSection.classList.remove('active');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Sesi durdur
+            window.speechSynthesis.cancel();
+            ttsSpeaking = false;
+            ttsPaused = false;
+            ttsIndex = 0;
+            if (ttsStatus) ttsStatus.textContent = 'Hazır. Oynat\'a bastığınızda sesli özet başlar.';
+        });
+    }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a41d51534f33c8e6',t:'MTc5MDU0MTU2NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
